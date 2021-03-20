@@ -63,4 +63,4 @@ class DB():
     def all_route_readings(self, routeID):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.scan(FilterExpression=Key(Keys.ROUTE_ID).eq(routeID))
-        return response['Items']
+        return [decode_item(i) for i in response['Items']]
