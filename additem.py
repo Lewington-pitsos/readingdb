@@ -5,12 +5,11 @@ from pprint import pprint
 from readingdb.db import DB
 from readingdb.constants import *
 
-db = DB()
+db = DB("http://localhost:8000")
 
 start_id = 4
 
 for i in range(800):
-
     add_response = db.put_reading(
         103,
         3,

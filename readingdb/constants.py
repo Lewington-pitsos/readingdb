@@ -1,3 +1,6 @@
+class Database():
+    READING_TABLE_NAME = "Readings"
+
 class ReadingTypes():
     POSITIONAL = "PositionalReading"
 
