@@ -1,8 +1,9 @@
+from pprint import pprint
+
 import boto3
 from boto3.dynamodb.conditions import Key
-from botocore.exceptions import ClientError
 
-from readingdb.normalize import *
+from readingdb.clean import *
 
 class DB():
     def __init__(self, url, resource_name='dynamodb') -> None:
@@ -13,21 +14,21 @@ class DB():
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName': 'readingID',
+                    'AttributeName':  Keys.READING_ID,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': 'routeID',
+                    'AttributeName': Keys.ROUTE_ID,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': 'readingID',
+                    'AttributeName': Keys.READING_ID,
                     'AttributeType': 'N'
                 },
                 {
-                    'AttributeName': 'routeID',
+                    'AttributeName': Keys.ROUTE_ID,
                     'AttributeType': 'N'
                 },
 
@@ -49,25 +50,17 @@ class DB():
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(
         Item={
-                'readingID': reading_id,
-                'routeID': route_id,
-                'userID': user_id,
-                'type': reading_type, 
-                'reading': reading_value, 
-                'timestamp': timestamp, 
+                Keys.READING_ID: reading_id,
+                Keys.ROUTE_ID: route_id,
+                Keys.USER_ID: user_id,
+                Keys.TYPE: reading_type, 
+                Keys.READING: reading_value, 
+                Keys.TIMESTAMP: timestamp, 
             }
         )
         return response
 
     def all_route_readings(self, routeID):
         table = self.db.Table(Database.READING_TABLE_NAME)
-
-        print("table size:", table.table_size_bytes)
-
-        try:
-            response = table.scan(FilterExpression=Key('routeID').eq(routeID))
-        except ClientError as e:
-            print(e.response['Error']['Message'])
-        else:
-            print(response)
-            return response['Items']
+        response = table.scan(FilterExpression=Key(Keys.ROUTE_ID).eq(routeID))
+        return response['Items']

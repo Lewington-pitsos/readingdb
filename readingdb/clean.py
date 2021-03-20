@@ -10,6 +10,9 @@ def encoded_value(reading_type, reading_value):
         position[PositionReading.LONGITUDE] = int(reading_value[PositionReading.LONGITUDE] * PositionReading.ENCODING_COEFFICIENT)
 
         return position
+
+    if reading_type == ReadingTypes.IMAGE:
+        return reading_value
     
     raise ValueError(f"Unrecognized reading type: {reading_type}")
 
@@ -24,6 +27,9 @@ def decoded_value(reading_type, reading_value):
         position[PositionReading.LONGITUDE] = float(reading_value[PositionReading.LONGITUDE]) / PositionReading.ENCODING_COEFFICIENT
 
         return position
+    
+    if reading_type == ReadingTypes.IMAGE:
+        return reading_value
     
     raise ValueError(f"Unrecognized reading type: {reading_type}")
 
