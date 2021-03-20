@@ -1,27 +1,26 @@
+import time
+
 from pprint import pprint
-import boto3
 
+from readingdb.db import DB
+from readingdb.constants import *
 
-def put_movie(title, year, plot, rating, dynamodb=None):
-    if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', endpoint_url="http://localhost:8000")
+db = DB()
 
-    table = dynamodb.Table('Movies')
-    response = table.put_item(
-       Item={
-            'year': year,
-            'title': title,
-            'info': {
-                'plot': plot,
-                'rating': rating
-            }
-        }
+start_id = 4
+
+for i in range(800):
+
+    add_response = db.put_reading(
+        103,
+        3,
+        start_id + i,
+        ReadingTypes.POSITIONAL,
+        {
+            PositionReading.LATITUDE: 41.86648, 
+            PositionReading.LONGITUDE: -174.39999
+        },
+        int(time.time())
     )
-    return response
-
-
-if __name__ == '__main__':
-    movie_resp = put_movie("The Bee", 2021,
-                           "buzz buzz.", 0)
-    print("Put movie succeeded:")
-    pprint(movie_resp, sort_dicts=False)
+    print("Put reading succeeded:")
+    pprint(add_response, sort_dicts=False)

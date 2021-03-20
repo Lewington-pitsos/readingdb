@@ -6,31 +6,31 @@ def create_movie_table(dynamodb=None):
         dynamodb = boto3.resource('dynamodb', endpoint_url="http://localhost:8000")
 
     table = dynamodb.create_table(
-        TableName='Movies',
+        TableName='Readings',
         KeySchema=[
             {
-                'AttributeName': 'year',
-                'KeyType': 'HASH'  # Partition key
+                'AttributeName': 'readingID',
+                'KeyType': 'HASH'  
             },
             {
-                'AttributeName': 'title',
-                'KeyType': 'RANGE'  # Sort key
+                'AttributeName': 'routeID',
+                'KeyType': 'RANGE'
             }
         ],
         AttributeDefinitions=[
             {
-                'AttributeName': 'year',
+                'AttributeName': 'readingID',
                 'AttributeType': 'N'
             },
             {
-                'AttributeName': 'title',
-                'AttributeType': 'S'
+                'AttributeName': 'routeID',
+                'AttributeType': 'N'
             },
 
         ],
         ProvisionedThroughput={
-            'ReadCapacityUnits': 10,
-            'WriteCapacityUnits': 10
+            'ReadCapacityUnits': 200,
+            'WriteCapacityUnits': 200
         }
     )
     return table
