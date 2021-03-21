@@ -39,6 +39,9 @@ class PredictionReading():
     LINEBLUR_CONFIDENCE = "lineblurConfidence"
     GOOD_CONDITION_CONFIDENCE = "goodConditionConfidence"
 
+    LATITUDE = "latitude"
+    LONGITUDE = "longitude"
+
     IS_LATCRACK = "isLatCrackFault"
     IS_LONGCRACK = "isLongCrackFault"
     IS_CROCODILECRACK =  "isCrocodileCrackFault"
@@ -53,8 +56,10 @@ class PredictionReading():
         POTHOLE_CONFIDENCE,
         LINEBLUR_CONFIDENCE,
         GOOD_CONDITION_CONFIDENCE,
+        LATITUDE,
+        LONGITUDE
     ]
-    ENCODING_COEFFICIENT = 1e+10
+    ENCODING_COEFFICIENT = 1e+15
 
     BOOL_FIELDS = [
         IS_LATCRACK,

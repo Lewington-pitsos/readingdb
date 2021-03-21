@@ -24,6 +24,8 @@ for i in range(20):
             PredictionReading.LINEBLUR_CONFIDENCE: 0.00011,
             PredictionReading.GOOD_CONDITION_CONFIDENCE: 0.0000901,
             PredictionReading.IS_CROCODILECRACK: True,
+            PredictionReading.LATITUDE: 41.86648,
+            PredictionReading.LONGITUDE:  -174.39999
         },
         int(time.time())
     )
