@@ -9,7 +9,10 @@ class DB():
     def __init__(self, url, resource_name='dynamodb') -> None:
         self.db = boto3.resource(resource_name, endpoint_url=url)
 
-    def create_reading_table(self):
+    def all_tables(self):
+        return list(self.db.tables.all())
+
+    def create_reading_table(self, readCapacity=200, writeCapacity=200):
         table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
@@ -34,17 +37,25 @@ class DB():
 
             ],
             ProvisionedThroughput={
-                'ReadCapacityUnits': 200,
-                'WriteCapacityUnits': 200
+                'ReadCapacityUnits': readCapacity,
+                'WriteCapacityUnits': writeCapacity
             }
         )
         return table
     
-    def delete_table(self):
-        table = self.db.Table(Database.READING_TABLE_NAME)
+    def delete_table(self, table_name):
+        table = self.db.Table(table_name)
         table.delete()
 
-    def put_reading(self, user_id, route_id, reading_id, reading_type, reading_value, timestamp):
+    def put_reading(
+        self, 
+        user_id, 
+        route_id, 
+        reading_id, 
+        reading_type, 
+        reading_value, 
+        timestamp
+    ):
         reading_value = encoded_value(reading_type, reading_value)
 
         table = self.db.Table(Database.READING_TABLE_NAME)

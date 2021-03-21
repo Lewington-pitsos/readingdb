@@ -3,30 +3,27 @@ from os import read
 
 from readingdb.constants import *
 
+def encoded_dict(encoding_cls, value_dict):
+    clone = copy.deepcopy(value_dict)
+
+    for f in encoding_cls.FLOAT_FIELDS:
+        if f in clone:
+            clone[f] = int(clone[f] * encoding_cls.ENCODING_COEFFICIENT)
+    
+    for f in encoding_cls.BOOL_FIELDS:
+        if f in clone:
+            clone[f] = 1 if clone[f] else 0
+    
+    return clone
+
 def encoded_value(reading_type, reading_value):
-    if reading_type == ReadingTypes.POSITIONAL:
-        position = copy.deepcopy(reading_value)
-
-        position[PositionReading.LATITUDE] = int(reading_value[PositionReading.LATITUDE] * PositionReading.ENCODING_COEFFICIENT)
-        position[PositionReading.LONGITUDE] = int(reading_value[PositionReading.LONGITUDE] * PositionReading.ENCODING_COEFFICIENT)
-
-        return position
-
     if reading_type == ReadingTypes.IMAGE:
         return reading_value
-    
+
+    if reading_type == ReadingTypes.POSITIONAL:
+        return encoded_dict(PositionReading, reading_value)
     if reading_type == ReadingTypes.PREDICTION:
-        pred = copy.deepcopy(reading_value)
-
-        for f in PredictionReading.FLOAT_FIELDS:
-            if f in pred:
-                pred[f] = int(pred[f] * PredictionReading.ENCODING_COEFFICIENT)
-
-        for f in PredictionReading.BOOL_FIELDS:
-            if f in pred:
-                pred[f] = 1 if pred[f] else 0
-        
-        return pred
+        return encoded_dict(PredictionReading, reading_value)
 
     raise ValueError(f"Unrecognized reading type: {reading_type}")
 
@@ -38,30 +35,26 @@ def decode_item(item):
 
     return item
 
+
+def decoded_dict(decoding_cls, value_dict):
+    clone = copy.deepcopy(value_dict)
+
+    for f in decoding_cls.FLOAT_FIELDS:
+        if f in clone:
+            clone[f] = float(clone[f]) / decoding_cls.ENCODING_COEFFICIENT
+
+    for f in decoding_cls.BOOL_FIELDS:
+        if f in clone:
+            clone[f] = True if clone[f] == 1 else False
+
 def decoded_value(reading_type, reading_value):
-    if reading_type == ReadingTypes.POSITIONAL:
-        position = copy.deepcopy(reading_value)
-
-        position[PositionReading.LATITUDE] = float(reading_value[PositionReading.LATITUDE]) / PositionReading.ENCODING_COEFFICIENT
-        position[PositionReading.LONGITUDE] = float(reading_value[PositionReading.LONGITUDE]) / PositionReading.ENCODING_COEFFICIENT
-
-        return position
-    
     if reading_type == ReadingTypes.IMAGE:
         return reading_value
 
+    if reading_type == ReadingTypes.POSITIONAL:
+        return decoded_dict(PositionReading, reading_value)
     if reading_type == ReadingTypes.PREDICTION:
-        pred = copy.deepcopy(reading_value)
-
-        for f in PredictionReading.FLOAT_FIELDS:
-            if f in pred:
-                pred[f] = float(pred[f]) / PredictionReading.ENCODING_COEFFICIENT
-
-        for f in PredictionReading.BOOL_FIELDS:
-            if f in pred:
-                pred[f] = True if pred[f] == 1 else False
-
-        return pred
+        return decoded_dict(PredictionReading, reading_value)
 
     raise ValueError(f"Unrecognized reading type: {reading_type}")
 

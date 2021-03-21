@@ -19,16 +19,26 @@ class PositionReading():
     LATITUDE = "latitude"
     LONGITUDE = "longitude"
     ENCODING_COEFFICIENT = 1e+15
+
+    FLOAT_FIELDS = [
+        LATITUDE, 
+        LONGITUDE
+    ]
+
+    BOOL_FIELDS = []
+
 class ImageReading():
     FILENAME = "filename"
 class PredictionReading():
     BASIS = "basis"
+
     LATCRACK_CONFIDENCE = "latCrackConfidence"
     LONGCRACK_CONFIDENCE = "longCrackConfidence"
     CROCODILECRACK_CONFIDENCE =  "crocodileCrackConfidence"
     POTHOLE_CONFIDENCE = "potholeConfidence"
     LINEBLUR_CONFIDENCE = "lineblurConfidence"
     GOOD_CONDITION_CONFIDENCE = "goodConditionConfidence"
+
     IS_LATCRACK = "isLatCrackFault"
     IS_LONGCRACK = "isLongCrackFault"
     IS_CROCODILECRACK =  "isCrocodileCrackFault"
@@ -53,8 +63,6 @@ class PredictionReading():
         IS_POTHOLE,
         IS_LINEBLUR
     ]
-
-
 
 class PredictionBasis():
     FILENAME = "filename"
