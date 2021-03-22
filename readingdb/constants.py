@@ -18,7 +18,6 @@ class ReadingTypes():
 class PositionReading():
     LATITUDE = "Latitude"
     LONGITUDE = "Longitude"
-    ENCODING_COEFFICIENT = 1e+15
 
     FLOAT_FIELDS = [
         LATITUDE, 
@@ -59,7 +58,6 @@ class PredictionReading():
         LATITUDE,
         LONGITUDE
     ]
-    ENCODING_COEFFICIENT = 1e+15
 
     BOOL_FIELDS = [
         IS_LATCRACK,

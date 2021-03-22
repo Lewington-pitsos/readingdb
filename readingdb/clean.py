@@ -1,5 +1,9 @@
+import json
 import copy
+from decimal import Decimal
 from os import read
+
+import numpy as np
 
 from readingdb.constants import *
 
@@ -8,7 +12,7 @@ def encoded_dict(encoding_cls, value_dict):
 
     for f in encoding_cls.FLOAT_FIELDS:
         if f in clone:
-            clone[f] = int(clone[f] * encoding_cls.ENCODING_COEFFICIENT)
+            clone[f] = Decimal(str(clone[f]))
     
     for f in encoding_cls.BOOL_FIELDS:
         if f in clone:
@@ -41,8 +45,8 @@ def decoded_dict(decoding_cls, value_dict):
 
     for f in decoding_cls.FLOAT_FIELDS:
         if f in clone:
-            clone[f] = float(clone[f]) / decoding_cls.ENCODING_COEFFICIENT
-
+            clone[f] = float(clone[f]) 
+            
     for f in decoding_cls.BOOL_FIELDS:
         if f in clone:
             clone[f] = True if clone[f] == 1 else False
@@ -60,3 +64,12 @@ def decoded_value(reading_type, reading_value):
     raise ValueError(f"Unrecognized reading type: {reading_type}")
 
     return reading_value
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.bool_):
+            return super(CustomJSONEncoder, self).encode(bool(obj))
+        if isinstance(obj, Decimal):
+            return int(obj)
+
+        return super(CustomJSONEncoder, self).default(obj)
