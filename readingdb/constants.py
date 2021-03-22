@@ -2,22 +2,22 @@ class Database():
     READING_TABLE_NAME = "Readings"
 
 class Keys():
-    READING_ID = "readingID"
-    ROUTE_ID = "routeID"
-    USER_ID = "userID"
-    TYPE = "type"
-    READING = "reading"
-    TIMESTAMP = "timestamp"
+    READING_ID = "ReadingID"
+    ROUTE_ID = "RouteID"
+    USER_ID = "UserID"
+    TYPE = "Type"
+    READING = "Reading"
+    TIMESTAMP = "Timestamp"
 
 class ReadingTypes():
-    POSITIONAL = "positionalReading"
-    IMAGE = "imageReading"
-    PREDICTION = "predictionReading"
+    POSITIONAL = "PositionalReading"
+    IMAGE = "ImageReading"
+    PREDICTION = "PredictionReading"
 
 
 class PositionReading():
-    LATITUDE = "latitude"
-    LONGITUDE = "longitude"
+    LATITUDE = "Latitude"
+    LONGITUDE = "Longitude"
     ENCODING_COEFFICIENT = 1e+15
 
     FLOAT_FIELDS = [
@@ -28,26 +28,26 @@ class PositionReading():
     BOOL_FIELDS = []
 
 class ImageReading():
-    FILENAME = "filename"
+    FILENAME = "ImageFileName"
 class PredictionReading():
-    BASIS = "basis"
+    BASIS = "Basis"
 
-    LATCRACK_CONFIDENCE = "latCrackConfidence"
-    LONGCRACK_CONFIDENCE = "longCrackConfidence"
-    CROCODILECRACK_CONFIDENCE =  "crocodileCrackConfidence"
-    POTHOLE_CONFIDENCE = "potholeConfidence"
-    LINEBLUR_CONFIDENCE = "lineblurConfidence"
-    GOOD_CONDITION_CONFIDENCE = "goodConditionConfidence"
+    LATCRACK_CONFIDENCE = "LatCrackConfidence"
+    LONGCRACK_CONFIDENCE = "LongCrackConfidence"
+    CROCODILECRACK_CONFIDENCE =  "CrocodileCrackConfidence"
+    POTHOLE_CONFIDENCE = "PotholeConfidence"
+    LINEBLUR_CONFIDENCE = "LineblurConfidence"
+    GOOD_CONDITION_CONFIDENCE = "GoodConditionConfidence"
 
-    LATITUDE = "latitude"
-    LONGITUDE = "longitude"
+    LATITUDE = "Latitude"
+    LONGITUDE = "Longitude"
 
-    IS_LATCRACK = "isLatCrackFault"
-    IS_LONGCRACK = "isLongCrackFault"
-    IS_CROCODILECRACK =  "isCrocodileCrackFault"
-    IS_POTHOLE = "isPotholeFault"
-    IS_LINEBLUR = "isLineblurFault"
-    IS_GOOD_CONDITION = "isGoodCondition"
+    IS_LATCRACK = "IsLatCrackFault"
+    IS_LONGCRACK = "IsLongCrackFault"
+    IS_CROCODILECRACK =  "IsCrocodileCrackFault"
+    IS_POTHOLE = "IsPotholeFault"
+    IS_LINEBLUR = "IsLineblurFault"
+    IS_GOOD_CONDITION = "IsGoodCondition"
 
     FLOAT_FIELDS = [
         LATCRACK_CONFIDENCE,
@@ -69,5 +69,11 @@ class PredictionReading():
         IS_LINEBLUR
     ]
 
+    FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [BASIS]
+    
+
 class PredictionBasis():
-    FILENAME = "filename"
+    FILENAME = "ImageFileName"
+
+class EntryKeys():
+    TIMESTAMP = "Date"

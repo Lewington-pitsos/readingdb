@@ -46,6 +46,7 @@ def decoded_dict(decoding_cls, value_dict):
     for f in decoding_cls.BOOL_FIELDS:
         if f in clone:
             clone[f] = True if clone[f] == 1 else False
+    return clone
 
 def decoded_value(reading_type, reading_value):
     if reading_type == ReadingTypes.IMAGE:

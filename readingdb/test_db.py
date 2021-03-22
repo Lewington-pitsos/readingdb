@@ -45,4 +45,3 @@ class TestFileUtils(unittest.TestCase):
             self.db.delete_table(Database.READING_TABLE_NAME)
         if len(tables) > 1:
             raise ValueError(f"Too many tables in database: {tables}")
-        
