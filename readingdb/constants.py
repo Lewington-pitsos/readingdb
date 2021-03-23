@@ -1,7 +1,7 @@
 class Database():
     READING_TABLE_NAME = "Readings"
 
-class Keys():
+class ReadingKeys():
     READING_ID = "ReadingID"
     ROUTE_ID = "RouteID"
     USER_ID = "UserID"

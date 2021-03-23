@@ -35,7 +35,7 @@ def encoded_value(reading_type, reading_value):
 
 
 def decode_item(item):
-    item[Keys.READING] = decoded_value(item[Keys.TYPE], item[Keys.READING])
+    item[ReadingKeys.READING] = decoded_value(item[ReadingKeys.TYPE], item[ReadingKeys.READING])
 
     return item
 
