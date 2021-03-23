@@ -1,13 +1,22 @@
 class Database():
     READING_TABLE_NAME = "Readings"
+    ROUTE_TABLE_NAME = "Routes"
+
+
+
+
+class ReadingRouteKeys():
+    ROUTE_ID = "RouteID"
 
 class ReadingKeys():
     READING_ID = "ReadingID"
-    ROUTE_ID = "RouteID"
-    USER_ID = "UserID"
     TYPE = "Type"
     READING = "Reading"
     TIMESTAMP = "Timestamp"
+
+class RouteKeys():
+    USER_ID = "UserID"
+    NAME = 'Name'
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"

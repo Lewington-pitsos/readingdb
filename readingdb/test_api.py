@@ -9,9 +9,8 @@ class TestAPIEntryConsumption(unittest.TestCase):
 
     def setUp(self):
         self.api = API("http://localhost:8000")
-        self.api.create_reading_table()
+        self.api.create_reading_db()
         
-
     def test_reads_and_loads_entries_correctly(self):
         with open("readingdb/test_data/ftg_filtered_entries.json", "r") as f:
             entries = json.load(f)
@@ -35,4 +34,4 @@ class TestAPIEntryConsumption(unittest.TestCase):
         self.assertEqual(readings, expected_readings)
     
     def tearDown(self):
-        self.api.delete_table(Database.READING_TABLE_NAME)
+        self.api.teardown_reading_db()

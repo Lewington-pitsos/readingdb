@@ -12,8 +12,8 @@ class DB():
     def all_tables(self):
         return list(self.db.tables.all())
 
-    def create_reading_table(self, readCapacity=200, writeCapacity=200):
-        table = self.db.create_table(
+    def create_reading_db(self, readCapacity=200, writeCapacity=200):
+        reading_table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
                 {
@@ -21,7 +21,7 @@ class DB():
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingKeys.ROUTE_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'KeyType': 'RANGE'
                 }
             ],
@@ -31,7 +31,7 @@ class DB():
                     'AttributeType': 'N'
                 },
                 {
-                    'AttributeName': ReadingKeys.ROUTE_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'AttributeType': 'N'
                 },
 
@@ -41,20 +41,54 @@ class DB():
                 'WriteCapacityUnits': writeCapacity
             }
         )
-        return table
+
+        route_table = self.db.create_table(
+            TableName=Database.ROUTE_TABLE_NAME,
+            KeySchema=[
+                {
+                    'AttributeName':  RouteKeys.USER_ID,
+                    'KeyType': 'HASH'  
+                },
+                {
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'KeyType': 'RANGE'
+                }
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeType': 'N'
+                },
+                {
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeType': 'N'
+                },
+
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 25,
+                'WriteCapacityUnits': 25
+            }
+        )
+
+        return (reading_table, route_table)
     
     def delete_table(self, table_name):
-        table = self.db.Table(table_name)
-        table.delete()
+        self.db.Table(table_name).delete()
+
+    def teardown_reading_db(self):
+        self.delete_table(Database.READING_TABLE_NAME)
+        self.delete_table(Database.ROUTE_TABLE_NAME)
 
     def put_reading(
         self, 
-        user_id, 
+        user_id,
         route_id, 
         reading_id, 
         reading_type, 
         reading_value, 
-        timestamp
+        timestamp,
+        route_name=None
     ):
         reading_value = encoded_value(reading_type, reading_value)
         
@@ -62,17 +96,33 @@ class DB():
         response = table.put_item(
         Item={
                 ReadingKeys.READING_ID: reading_id,
-                ReadingKeys.ROUTE_ID: route_id,
-                ReadingKeys.USER_ID: user_id,
+                ReadingRouteKeys.ROUTE_ID: route_id,
                 ReadingKeys.TYPE: reading_type, 
                 ReadingKeys.READING: reading_value, 
                 ReadingKeys.TIMESTAMP: timestamp, 
             }
         )
-        return response
 
+        route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
+
+        route = {
+                RouteKeys.USER_ID: user_id,
+                ReadingRouteKeys.ROUTE_ID: route_id
+            }
+        
+        if route_name:
+            route[RouteKeys.NAME] = route_name
+
+        route_response = route_table.put_item(
+            Item=route
+        )
+
+        return {
+            Database.READING_TABLE_NAME: response,
+            Database.ROUTE_TABLE_NAME: route_response
+        }
 
     def all_route_readings(self, routeID):
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.scan(FilterExpression=Key(ReadingKeys.ROUTE_ID).eq(routeID))
+        response = table.scan(FilterExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(routeID))
         return [decode_item(i) for i in response['Items']]
