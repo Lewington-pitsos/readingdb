@@ -26,6 +26,8 @@ from readingdb.api import API
 
 api = API(url="https://dynamodb.ap-southeast-2.amazonaws.com")
 
+api.create_reading_db()
+
 with open("readingdb/test_data/ftg_filtered_entries.json", "r") as f:
     entries = json.load(f)
 

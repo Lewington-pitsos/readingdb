@@ -4,7 +4,7 @@ import decimal
 
 from readingdb.constants import Database
 from readingdb.api import API
-
+from readingdb.constants import *
 class TestAPIEntryConsumption(unittest.TestCase):
 
     def setUp(self):
@@ -31,7 +31,7 @@ class TestAPIEntryConsumption(unittest.TestCase):
                 if isinstance(v, decimal.Decimal):
                     r[k] = int(v)
         
-        self.assertEqual(readings, expected_readings)
+        self.assertEqual(readings, sorted(expected_readings, key=lambda e: e[ReadingKeys.READING_ID]))
     
     def tearDown(self):
         self.api.teardown_reading_db()

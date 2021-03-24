@@ -17,21 +17,21 @@ class DB():
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  ReadingKeys.READING_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': ReadingKeys.READING_ID,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'AttributeType': 'N'
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': ReadingKeys.READING_ID,
                     'AttributeType': 'N'
                 },
 
@@ -130,5 +130,5 @@ class DB():
 
     def all_route_readings(self, routeID):
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.scan(FilterExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(routeID))
+        response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(routeID))
         return [decode_item(i) for i in response['Items']]
