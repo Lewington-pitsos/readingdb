@@ -6,7 +6,7 @@ from boto3.dynamodb.conditions import Key
 from readingdb.clean import *
 
 class DB():
-    def __init__(self, url, resource_name='dynamodb') -> None:
+    def __init__(self, url, resource_name='dynamodb'):
         self.db = boto3.resource(resource_name, endpoint_url=url)
 
     def all_tables(self):
@@ -72,7 +72,13 @@ class DB():
         )
 
         return (reading_table, route_table)
+
     
+    def routes_for(self, user_id):
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
+        return response['Items']
+
     def delete_table(self, table_name):
         self.db.Table(table_name).delete()
 

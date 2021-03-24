@@ -2,9 +2,6 @@ class Database():
     READING_TABLE_NAME = "Readings"
     ROUTE_TABLE_NAME = "Routes"
 
-
-
-
 class ReadingRouteKeys():
     ROUTE_ID = "RouteID"
 
@@ -23,7 +20,6 @@ class ReadingTypes():
     IMAGE = "ImageReading"
     PREDICTION = "PredictionReading"
 
-
 class PositionReading():
     LATITUDE = "Latitude"
     LONGITUDE = "Longitude"
@@ -34,9 +30,9 @@ class PositionReading():
     ]
 
     BOOL_FIELDS = []
-
 class ImageReading():
     FILENAME = "ImageFileName"
+
 class PredictionReading():
     BASIS = "Basis"
 
@@ -78,7 +74,6 @@ class PredictionReading():
 
     FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [BASIS]
     
-
 class PredictionBasis():
     FILENAME = "ImageFileName"
 

@@ -10,6 +10,26 @@ class TestFileUtils(unittest.TestCase):
         # We assume that a dynamodb server is running on that endpoint already
         self.db = DB("http://localhost:8000")
     
+    def test_creates_new_sessions(self):
+        self.db.create_reading_db()
+        routes = self.db.routes_for(103)
+        self.assertEqual(len(routes), 0)
+
+        for i in range(21):
+            self.db.put_reading(
+                103,
+                3,
+                i,
+                ReadingTypes.IMAGE,
+                {
+                    ImageReading.FILENAME: "https://aws/s3/somebucket/file.jpg" 
+                },
+                int(time.time())
+            )
+        
+        routes = self.db.routes_for(103)
+        self.assertEqual(len(routes), 1)
+
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()
         tables = self.db.all_tables()
