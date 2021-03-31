@@ -19,6 +19,7 @@ class ReadingTypes():
     POSITIONAL = "PositionalReading"
     IMAGE = "ImageReading"
     PREDICTION = "PredictionReading"
+    ANNOTATION = "Annotation"
 
 class PositionReading():
     LATITUDE = "Latitude"
