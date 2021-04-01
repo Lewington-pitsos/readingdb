@@ -44,6 +44,10 @@ class EntryKeys():
 class ImageReadingKeys():
     FILENAME = "ImageFileName"
 
+class S3Path():
+    BUCKET = "Bucket"
+    KEY = 'Key'
+
 class PredictionReading(ImageReadingKeys):
     TIMESTAMP = EntryKeys.TIMESTAMP
     FILENAME = ImageReadingKeys.FILENAME

@@ -1,17 +1,18 @@
 import boto3
 import copy
 
+from boto3.dynamodb.conditions import Key
+
 from readingdb.db import DB
 from readingdb.normalize import *
 from readingdb.constants import *
+
 class API(DB):
     def __init__(self, url, resource_name='dynamodb', bucket="mobileappsessions172800-main"):
         super().__init__(url=url, resource_name=resource_name)
         self.bucket = bucket
 
         self.s3_client = boto3.client('s3')
-
-        self.aws_loc = url.split("/")[-1].replace("dynamodb.", "")
 
     def upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
@@ -41,9 +42,6 @@ class API(DB):
 
         return entry
 
-    def s3_url(self, object_name):
-        return f"https://{self.bucket}.s3.{self.aws_loc}/{object_name}" 
-
     def save_img_entry(self, entry_type, route_id, reading_id, entry):
         if ImageReadingKeys.FILENAME not in entry:
                 raise ValueError(f"Expected reading entry to have key {ImageReadingKeys.FILENAME}, no such keyw as found: {entry}")
@@ -51,7 +49,10 @@ class API(DB):
         _, object_name = self.upload_file(route_id, entry[ImageReadingKeys.FILENAME], self.bucket)
 
         clone = copy.deepcopy(entry)
-        clone[ImageReadingKeys.FILENAME] = self.s3_url(object_name)
+        clone[ImageReadingKeys.FILENAME] = {
+            S3Path.BUCKET: self.bucket,
+            S3Path.KEY: object_name
+        }
         self.save_primitive_entry(entry_type, route_id, reading_id, clone)
 
         return clone
