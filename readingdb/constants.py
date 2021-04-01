@@ -38,14 +38,15 @@ class PositionReading():
     ]
 
     BOOL_FIELDS = []
-class ImageReading():
-    FILENAME = "ImageFileName"
 
 class EntryKeys():
     TIMESTAMP = "Date"
+class ImageReadingKeys():
+    FILENAME = "ImageFileName"
 
-class PredictionReading(EntryKeys):
-    BASIS = "Basis"
+class PredictionReading(ImageReadingKeys):
+    TIMESTAMP = EntryKeys.TIMESTAMP
+    FILENAME = ImageReadingKeys.FILENAME
 
     LATCRACK_CONFIDENCE = "LatCrackConfidence"
     LONGCRACK_CONFIDENCE = "LongCrackConfidence"
@@ -83,8 +84,8 @@ class PredictionReading(EntryKeys):
         IS_LINEBLUR
     ]
 
-    FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [BASIS]
+    FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [TIMESTAMP, FILENAME]
     
-class PredictionBasis():
-    FILENAME = ImageReading.FILENAME
+class ImageReading():
+    FILENAME = ImageReadingKeys.FILENAME
 

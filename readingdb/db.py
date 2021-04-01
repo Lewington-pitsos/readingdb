@@ -101,8 +101,6 @@ class DB():
             for k, v in sample_data.items():
                 encoded_sample_data[k] = encoded_value(k, v)
 
-            print(encoded_sample_data)
-
             route[RouteKeys.SAMPLE_DATA] = encoded_sample_data
         
         if route_name:

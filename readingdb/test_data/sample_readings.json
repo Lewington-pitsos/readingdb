@@ -11,17 +11,14 @@
             "Latitude": -37.86239206888201,
             "LineblurConfidence": 0.07951127,
             "Longitude": 145.2121390353605,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_126.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.12874809
+            "CrocodileCrackConfidence": 0.12874809,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_126.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116330126
-
     },
     {
         "ReadingID": 90,
@@ -35,17 +32,14 @@
             "Latitude": -37.866052920408166,
             "LineblurConfidence": 0.061844468,
             "Longitude": 145.2114892102041,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_084.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.05772375
+            "CrocodileCrackConfidence": 0.05772375,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_084.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349084
-
     },
     {
         "ReadingID": 45,
@@ -59,13 +53,11 @@
             "Latitude": -37.8622574127276,
             "LineblurConfidence": 0.06213421400000001,
             "Longitude": 145.21223509027675,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_11_714.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07401253
+            "CrocodileCrackConfidence": 0.07401253,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_11_714.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116331714
@@ -82,17 +74,14 @@
             "Latitude": -37.862735184067255,
             "LineblurConfidence": 0.20865186,
             "Longitude": 145.21582274752802,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_915.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.055573326
+            "CrocodileCrackConfidence": 0.055573326,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_915.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116315915
-
     },
     {
         "ReadingID": 59,
@@ -106,17 +95,14 @@
             "Latitude": -37.86186913153678,
             "LineblurConfidence": 0.08389751599999999,
             "Longitude": 145.21251206474875,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_293.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06463462
+            "CrocodileCrackConfidence": 0.06463462,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_293.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336293
-
     },
     {
         "ReadingID": 9,
@@ -130,17 +116,14 @@
             "Latitude": -37.861850919201196,
             "LineblurConfidence": 0.058343478,
             "Longitude": 145.21280549103346,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_966.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.26552084
+            "CrocodileCrackConfidence": 0.26552084,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_966.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317966
-
     },
     {
         "ReadingID": 23,
@@ -154,17 +137,14 @@
             "Latitude": -37.861950404453324,
             "LineblurConfidence": 0.16508323,
             "Longitude": 145.2133756009885,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_410.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.14793935
+            "CrocodileCrackConfidence": 0.14793935,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_410.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322410
-
     },
     {
         "ReadingID": 57,
@@ -178,17 +158,14 @@
             "Latitude": -37.86192119632192,
             "LineblurConfidence": 0.083581425,
             "Longitude": 145.21247492512745,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_679.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.17381409
+            "CrocodileCrackConfidence": 0.17381409,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_679.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335679
-
     },
     {
         "ReadingID": 85,
@@ -202,17 +179,14 @@
             "Latitude": -37.86655363539416,
             "LineblurConfidence": 0.06608162,
             "Longitude": 145.21145309955983,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_019.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.05562075
+            "CrocodileCrackConfidence": 0.05562075,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_019.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347019
-
     },
     {
         "ReadingID": 58,
@@ -226,17 +200,14 @@
             "Latitude": -37.8619083921158,
             "LineblurConfidence": 0.07209708,
             "Longitude": 145.21248405881283,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_830.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0623008
+            "CrocodileCrackConfidence": 0.0623008,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_830.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335830
-
     },
     {
         "ReadingID": 97,
@@ -250,17 +221,14 @@
             "Latitude": -37.8655803327531,
             "LineblurConfidence": 0.09122359,
             "Longitude": 145.21152329235696,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_033.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.123848215
+            "CrocodileCrackConfidence": 0.123848215,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_033.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116351033
-
     },
     {
         "ReadingID": 91,
@@ -274,17 +242,14 @@
             "Latitude": -37.866030612525016,
             "LineblurConfidence": 0.10968022,
             "Longitude": 145.21149081900762,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_176.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10508976
+            "CrocodileCrackConfidence": 0.10508976,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_176.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349176
-
     },
     {
         "ReadingID": 63,
@@ -298,17 +263,14 @@
             "Latitude": -37.86433719573475,
             "LineblurConfidence": 0.09028079,
             "Longitude": 145.21161634076418,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_208.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09354786
+            "CrocodileCrackConfidence": 0.09354786,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_208.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116337208
-
     },
     {
         "ReadingID": 30,
@@ -322,17 +284,14 @@
             "Latitude": -37.8618074,
             "LineblurConfidence": 0.0,
             "Longitude": 145.2125561,
-            "Basis": {
-                "ImageFileName": "AUS_3.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0
+            "CrocodileCrackConfidence": 0.0,
+            "ImageFileName": "AUS_3.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326037
-
     },
     {
         "ReadingID": 12,
@@ -346,17 +305,14 @@
             "Latitude": -37.86187191766351,
             "LineblurConfidence": 0.06492043,
             "Longitude": 145.21292582477287,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_904.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.24853715
+            "CrocodileCrackConfidence": 0.24853715,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_904.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318904
-
     },
     {
         "ReadingID": 15,
@@ -370,17 +326,14 @@
             "Latitude": -37.861909302985524,
             "LineblurConfidence": 0.10503765,
             "Longitude": 145.2131400650125,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_574.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08895807
+            "CrocodileCrackConfidence": 0.08895807,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_574.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320574
-
     },
     {
         "ReadingID": 1,
@@ -394,17 +347,14 @@
             "Latitude": -37.86272820872698,
             "LineblurConfidence": 0.15731642,
             "Longitude": 145.21580309946958,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_817.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06576594
+            "CrocodileCrackConfidence": 0.06576594,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_817.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116315817
-
     },
     {
         "ReadingID": 60,
@@ -418,17 +368,14 @@
             "Latitude": -37.86185251150764,
             "LineblurConfidence": 0.07491431400000001,
             "Longitude": 145.2125239203933,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_489.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0728531
+            "CrocodileCrackConfidence": 0.0728531,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_489.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336489
-
     },
     {
         "ReadingID": 53,
@@ -442,17 +389,14 @@
             "Latitude": -37.86199776717043,
             "LineblurConfidence": 0.07215205,
             "Longitude": 145.21242030447925,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_776.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08850670599999999
+            "CrocodileCrackConfidence": 0.08850670599999999,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_776.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334776
-
     },
     {
         "ReadingID": 28,
@@ -466,17 +410,14 @@
             "Latitude": -37.861999072531205,
             "LineblurConfidence": 0.061800577,
             "Longitude": 145.21365449816278,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_04_584.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07801659400000001
+            "CrocodileCrackConfidence": 0.07801659400000001,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_04_584.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116324584
-
     },
     {
         "ReadingID": 46,
@@ -490,17 +431,14 @@
             "Latitude": -37.86222485103787,
             "LineblurConfidence": 0.07632448,
             "Longitude": 145.21225831766208,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_12_098.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.097075686
+            "CrocodileCrackConfidence": 0.097075686,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_12_098.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116332098
-
     },
     {
         "ReadingID": 67,
@@ -514,17 +452,14 @@
             "Latitude": -37.86398564295235,
             "LineblurConfidence": 0.06944169,
             "Longitude": 145.21167690355438,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_147.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06837662
+            "CrocodileCrackConfidence": 0.06837662,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_147.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116339147
-
     },
     {
         "ReadingID": 3,
@@ -538,17 +473,14 @@
             "Latitude": -37.8620316,
             "LineblurConfidence": 0.0,
             "Longitude": 145.2138409,
-            "Basis": {
-                "ImageFileName": "AUS_3.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0
+            "CrocodileCrackConfidence": 0.0,
+            "ImageFileName": "AUS_3.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316022
-
     },
     {
         "ReadingID": 5,
@@ -562,17 +494,14 @@
             "Latitude": -37.861816667978026,
             "LineblurConfidence": 0.19438824,
             "Longitude": 145.21260921105343,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_436.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06602093
+            "CrocodileCrackConfidence": 0.06602093,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_436.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316436
-
     },
     {
         "ReadingID": 8,
@@ -586,17 +515,14 @@
             "Latitude": -37.86183842757863,
             "LineblurConfidence": 0.10364077,
             "Longitude": 145.21273390657015,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_408.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.05797871
+            "CrocodileCrackConfidence": 0.05797871,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_408.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317408
-
     },
     {
         "ReadingID": 68,
@@ -610,17 +536,14 @@
             "Latitude": -37.863899159880035,
             "LineblurConfidence": 0.10706893,
             "Longitude": 145.21169180218817,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_624.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09340905
+            "CrocodileCrackConfidence": 0.09340905,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_624.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116339624
-
     },
     {
         "ReadingID": 10,
@@ -634,17 +557,14 @@
             "Latitude": -37.861854993529704,
             "LineblurConfidence": 0.06346142,
             "Longitude": 145.21282883937096,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_148.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.057640683
+            "CrocodileCrackConfidence": 0.057640683,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_148.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318148
-
     },
     {
         "ReadingID": 35,
@@ -658,17 +578,14 @@
             "Latitude": -37.86262898909323,
             "LineblurConfidence": 0.083248004,
             "Longitude": 145.21197003193737,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_332.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0972441
+            "CrocodileCrackConfidence": 0.0972441,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_332.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327332
-
     },
     {
         "ReadingID": 64,
@@ -682,17 +599,14 @@
             "Latitude": -37.86428624868377,
             "LineblurConfidence": 0.08374411,
             "Longitude": 145.2116251175275,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_489.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.095883206
+            "CrocodileCrackConfidence": 0.095883206,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_489.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116337489
-
     },
     {
         "ReadingID": 39,
@@ -706,17 +620,14 @@
             "Latitude": -37.86256844470139,
             "LineblurConfidence": 0.1619592,
             "Longitude": 145.21201322035688,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_046.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11744273
+            "CrocodileCrackConfidence": 0.11744273,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_046.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116328046
-
     },
     {
         "ReadingID": 72,
@@ -730,17 +641,14 @@
             "Latitude": -37.86342595061646,
             "LineblurConfidence": 0.07270928,
             "Longitude": 145.21177332301454,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_234.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06273585599999999
+            "CrocodileCrackConfidence": 0.06273585599999999,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_234.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116342234
-
     },
     {
         "ReadingID": 7,
@@ -754,17 +662,14 @@
             "Latitude": -37.86183354733899,
             "LineblurConfidence": 0.15130536,
             "Longitude": 145.21270593988018,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_190.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.064414024
+            "CrocodileCrackConfidence": 0.064414024,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_190.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317190
-
     },
     {
         "ReadingID": 82,
@@ -778,17 +683,14 @@
             "Latitude": -37.8643711,
             "LineblurConfidence": 0.0,
             "Longitude": 145.2116105,
-            "Basis": {
-                "ImageFileName": "AUS_3.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0
+            "CrocodileCrackConfidence": 0.0,
+            "ImageFileName": "AUS_3.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116346024
-
     },
     {
         "ReadingID": 47,
@@ -802,17 +704,14 @@
             "Latitude": -37.8621155489075,
             "LineblurConfidence": 0.094555,
             "Longitude": 145.21233628667153,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_387.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.13889818
+            "CrocodileCrackConfidence": 0.13889818,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_387.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333387
-
     },
     {
         "ReadingID": 29,
@@ -826,17 +725,14 @@
             "Latitude": -37.86203135374937,
             "LineblurConfidence": 0.064657256,
             "Longitude": 145.21383948883675,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_026.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10444152
+            "CrocodileCrackConfidence": 0.10444152,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_026.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326026
-
     },
     {
         "ReadingID": 83,
@@ -850,17 +746,14 @@
             "Latitude": -37.86673913029212,
             "LineblurConfidence": 0.16638526,
             "Longitude": 145.2114397220088,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_254.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.13885255
+            "CrocodileCrackConfidence": 0.13885255,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_254.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116346254
-
     },
     {
         "ReadingID": 61,
@@ -874,17 +767,14 @@
             "Latitude": -37.861833432392565,
             "LineblurConfidence": 0.09588097,
             "Longitude": 145.21253753018937,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_714.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.100605406
+            "CrocodileCrackConfidence": 0.100605406,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_714.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336714
-
     },
     {
         "ReadingID": 80,
@@ -898,17 +788,14 @@
             "Latitude": -37.86277614908364,
             "LineblurConfidence": 0.16296071,
             "Longitude": 145.21188526578916,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_818.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10496529
+            "CrocodileCrackConfidence": 0.10496529,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_818.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345818
-
     },
     {
         "ReadingID": 11,
@@ -922,17 +809,14 @@
             "Latitude": -37.861858150014974,
             "LineblurConfidence": 0.09070189,
             "Longitude": 145.21284692791812,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_289.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.36052346
+            "CrocodileCrackConfidence": 0.36052346,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_289.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318289
-
     },
     {
         "ReadingID": 22,
@@ -946,17 +830,14 @@
             "Latitude": -37.861947292740886,
             "LineblurConfidence": 0.14603361,
             "Longitude": 145.21335776901648,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_271.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.15883419
+            "CrocodileCrackConfidence": 0.15883419,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_271.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322271
-
     },
     {
         "ReadingID": 24,
@@ -970,17 +851,14 @@
             "Latitude": -37.861960993230156,
             "LineblurConfidence": 0.09295940400000001,
             "Longitude": 145.2134362810085,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_883.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.12035413
+            "CrocodileCrackConfidence": 0.12035413,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_883.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322883
-
     },
     {
         "ReadingID": 20,
@@ -994,17 +872,14 @@
             "Latitude": -37.86192716734898,
             "LineblurConfidence": 0.101448655,
             "Longitude": 145.21324243849227,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_372.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06376736
+            "CrocodileCrackConfidence": 0.06376736,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_372.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321372
-
     },
     {
         "ReadingID": 49,
@@ -1018,17 +893,14 @@
             "Latitude": -37.862092653969405,
             "LineblurConfidence": 0.065398775,
             "Longitude": 145.2123526184268,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_657.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07270138
+            "CrocodileCrackConfidence": 0.07270138,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_657.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333657
-
     },
     {
         "ReadingID": 41,
@@ -1042,17 +914,14 @@
             "Latitude": -37.8624710140204,
             "LineblurConfidence": 0.05351346,
             "Longitude": 145.2120827210488,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_195.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07162763
+            "CrocodileCrackConfidence": 0.07162763,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_195.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116329195
-
     },
     {
         "ReadingID": 96,
@@ -1066,17 +935,14 @@
             "Latitude": -37.865661562545014,
             "LineblurConfidence": 0.10233054,
             "Longitude": 145.2115174342137,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_698.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.049546562
+            "CrocodileCrackConfidence": 0.049546562,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_698.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116350698
-
     },
     {
         "ReadingID": 98,
@@ -1090,17 +956,14 @@
             "Latitude": -37.86543387665066,
             "LineblurConfidence": 0.16773722,
             "Longitude": 145.2115338545018,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_637.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.118417904
+            "CrocodileCrackConfidence": 0.118417904,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_637.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116351637
-
     },
     {
         "ReadingID": 34,
@@ -1114,17 +977,14 @@
             "Latitude": -37.862653155972325,
             "LineblurConfidence": 0.047033973,
             "Longitude": 145.21195279286235,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_047.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07097623
+            "CrocodileCrackConfidence": 0.07097623,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_047.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327047
-
     },
     {
         "ReadingID": 14,
@@ -1138,17 +998,14 @@
             "Latitude": -37.86190733298053,
             "LineblurConfidence": 0.11872995,
             "Longitude": 145.21312877570642,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_486.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.39582366
+            "CrocodileCrackConfidence": 0.39582366,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_486.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320486
-
     },
     {
         "ReadingID": 87,
@@ -1162,17 +1019,14 @@
             "Latitude": -37.866361836094434,
             "LineblurConfidence": 0.11902177,
             "Longitude": 145.21146693177272,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_810.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07317341
+            "CrocodileCrackConfidence": 0.07317341,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_810.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347810
-
     },
     {
         "ReadingID": 48,
@@ -1186,17 +1040,14 @@
             "Latitude": -37.8621075780772,
             "LineblurConfidence": 0.06456393,
             "Longitude": 145.21234197254188,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_481.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.054019354000000006
+            "CrocodileCrackConfidence": 0.054019354000000006,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_481.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333481
-
     },
     {
         "ReadingID": 65,
@@ -1210,17 +1061,14 @@
             "Latitude": -37.864059615894696,
             "LineblurConfidence": 0.08182671,
             "Longitude": 145.21166416006886,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_739.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06855531
+            "CrocodileCrackConfidence": 0.06855531,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_739.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116338739
-
     },
     {
         "ReadingID": 0,
@@ -1234,17 +1082,14 @@
             "Latitude": -37.862661302401925,
             "LineblurConfidence": 0.13115914,
             "Longitude": 145.2156146385008,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_54_877.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06610913
+            "CrocodileCrackConfidence": 0.06610913,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_54_877.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116314877
-
     },
     {
         "ReadingID": 27,
@@ -1258,17 +1103,14 @@
             "Latitude": -37.861985036245635,
             "LineblurConfidence": 0.064486824,
             "Longitude": 145.21357406185723,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_957.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08237660000000001
+            "CrocodileCrackConfidence": 0.08237660000000001,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_957.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323957
-
     },
     {
         "ReadingID": 17,
@@ -1282,17 +1124,14 @@
             "Latitude": -37.86191566072891,
             "LineblurConfidence": 0.09147025,
             "Longitude": 145.21317649868197,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_858.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.051769115
+            "CrocodileCrackConfidence": 0.051769115,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_858.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320858
-
     },
     {
         "ReadingID": 26,
@@ -1306,17 +1145,14 @@
             "Latitude": -37.86197894713929,
             "LineblurConfidence": 0.06845506,
             "Longitude": 145.21353916763854,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_685.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09288807
+            "CrocodileCrackConfidence": 0.09288807,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_685.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323685
-
     },
     {
         "ReadingID": 84,
@@ -1330,17 +1166,14 @@
             "Latitude": -37.86662031656663,
             "LineblurConfidence": 0.16100395,
             "Longitude": 145.21144829063627,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_744.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11382635
+            "CrocodileCrackConfidence": 0.11382635,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_744.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116346744
-
     },
     {
         "ReadingID": 25,
@@ -1354,17 +1187,14 @@
             "Latitude": -37.86197117905142,
             "LineblurConfidence": 0.06855789,
             "Longitude": 145.21349465185222,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_338.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11765845
+            "CrocodileCrackConfidence": 0.11765845,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_338.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323338
-
     },
     {
         "ReadingID": 40,
@@ -1378,17 +1208,14 @@
             "Latitude": -37.86255343579752,
             "LineblurConfidence": 0.15140383,
             "Longitude": 145.21202392672978,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_223.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10274824
+            "CrocodileCrackConfidence": 0.10274824,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_223.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116328223
-
     },
     {
         "ReadingID": 66,
@@ -1402,17 +1229,14 @@
             "Latitude": -37.8640126575808,
             "LineblurConfidence": 0.10557903,
             "Longitude": 145.21167224968343,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_998.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10425679
+            "CrocodileCrackConfidence": 0.10425679,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_998.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116338998
-
     },
     {
         "ReadingID": 19,
@@ -1426,17 +1250,14 @@
             "Latitude": -37.86192369745382,
             "LineblurConfidence": 0.09351869,
             "Longitude": 145.21322255391914,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_217.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.056078315
+            "CrocodileCrackConfidence": 0.056078315,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_217.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321217
-
     },
     {
         "ReadingID": 56,
@@ -1450,17 +1271,14 @@
             "Latitude": -37.861933491751635,
             "LineblurConfidence": 0.06818928,
             "Longitude": 145.21246615437,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_534.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.058378915999999996
+            "CrocodileCrackConfidence": 0.058378915999999996,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_534.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335534
-
     },
     {
         "ReadingID": 81,
@@ -1474,17 +1292,14 @@
             "Latitude": -37.86274967837388,
             "LineblurConfidence": 0.17378719,
             "Longitude": 145.21188982595802,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_964.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10028581
+            "CrocodileCrackConfidence": 0.10028581,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_964.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345964
-
     },
     {
         "ReadingID": 55,
@@ -1498,17 +1313,14 @@
             "Latitude": -37.86194892463583,
             "LineblurConfidence": 0.072569855,
             "Longitude": 145.2124551455572,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_352.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.05763455
+            "CrocodileCrackConfidence": 0.05763455,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_352.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335352
-
     },
     {
         "ReadingID": 76,
@@ -1522,17 +1334,14 @@
             "Latitude": -37.862975223325556,
             "LineblurConfidence": 0.1592885,
             "Longitude": 145.21185097082082,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_720.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.101327635
+            "CrocodileCrackConfidence": 0.101327635,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_720.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116344720
-
     },
     {
         "ReadingID": 77,
@@ -1546,17 +1355,14 @@
             "Latitude": -37.86288003755415,
             "LineblurConfidence": 0.11951096,
             "Longitude": 145.21186736868822,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_245.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.079008415
+            "CrocodileCrackConfidence": 0.079008415,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_245.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345245
-
     },
     {
         "ReadingID": 32,
@@ -1570,17 +1376,14 @@
             "Latitude": -37.862695554005825,
             "LineblurConfidence": 0.062347232999999995,
             "Longitude": 145.2119225488711,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_547.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09428660000000001
+            "CrocodileCrackConfidence": 0.09428660000000001,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_547.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326547
-
     },
     {
         "ReadingID": 38,
@@ -1594,17 +1397,14 @@
             "Latitude": -37.86258599748726,
             "LineblurConfidence": 0.06112985,
             "Longitude": 145.2120006993445,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_839.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09704818
+            "CrocodileCrackConfidence": 0.09704818,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_839.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327839
-
     },
     {
         "ReadingID": 31,
@@ -1618,17 +1418,14 @@
             "Latitude": -37.86272006006919,
             "LineblurConfidence": 0.0748047,
             "Longitude": 145.21190506784413,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_258.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09109863
+            "CrocodileCrackConfidence": 0.09109863,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_258.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326258
-
     },
     {
         "ReadingID": 36,
@@ -1642,17 +1439,14 @@
             "Latitude": -37.862619746321926,
             "LineblurConfidence": 0.09019978,
             "Longitude": 145.21197662512748,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_441.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06361837
+            "CrocodileCrackConfidence": 0.06361837,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_441.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327441
-
     },
     {
         "ReadingID": 86,
@@ -1666,17 +1460,14 @@
             "Latitude": -37.86640475452181,
             "LineblurConfidence": 0.16586468,
             "Longitude": 145.21146383657464,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_633.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.089394554
+            "CrocodileCrackConfidence": 0.089394554,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_633.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347633
-
     },
     {
         "ReadingID": 42,
@@ -1690,17 +1481,14 @@
             "Latitude": -37.86245871859068,
             "LineblurConfidence": 0.05941509,
             "Longitude": 145.21209149180626,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_340.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06471455
+            "CrocodileCrackConfidence": 0.06471455,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_340.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116329340
-
     },
     {
         "ReadingID": 51,
@@ -1714,17 +1502,14 @@
             "Latitude": -37.86204236990167,
             "LineblurConfidence": 0.07177415,
             "Longitude": 145.21238848780044,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_250.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11085112400000001
+            "CrocodileCrackConfidence": 0.11085112400000001,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_250.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334250
-
     },
     {
         "ReadingID": 79,
@@ -1738,17 +1523,14 @@
             "Latitude": -37.8628379745085,
             "LineblurConfidence": 0.20176499,
             "Longitude": 145.21187461498388,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_477.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.102972254
+            "CrocodileCrackConfidence": 0.102972254,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_477.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345477
-
     },
     {
         "ReadingID": 73,
@@ -1762,17 +1544,14 @@
             "Latitude": -37.86336013645452,
             "LineblurConfidence": 0.11094011,
             "Longitude": 145.21178466096856,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_597.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10140459
+            "CrocodileCrackConfidence": 0.10140459,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_597.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116342597
-
     },
     {
         "ReadingID": 74,
@@ -1786,17 +1565,14 @@
             "Latitude": -37.863163419193604,
             "LineblurConfidence": 0.1018188,
             "Longitude": 145.21181854989447,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_23_682.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09898299
+            "CrocodileCrackConfidence": 0.09898299,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_23_682.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116343682
-
     },
     {
         "ReadingID": 75,
@@ -1810,17 +1586,14 @@
             "Latitude": -37.863052278473845,
             "LineblurConfidence": 0.19776243,
             "Longitude": 145.21183769635675,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_295.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.12982678
+            "CrocodileCrackConfidence": 0.12982678,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_295.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116344295
-
     },
     {
         "ReadingID": 88,
@@ -1834,17 +1607,14 @@
             "Latitude": -37.86624835686275,
             "LineblurConfidence": 0.11566230000000001,
             "Longitude": 145.21147511568628,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_278.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.068233505
+            "CrocodileCrackConfidence": 0.068233505,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_278.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116348278
-
     },
     {
         "ReadingID": 70,
@@ -1858,17 +1628,14 @@
             "Latitude": -37.86372927594135,
             "LineblurConfidence": 0.08801855,
             "Longitude": 145.21172106847717,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_561.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09652634
+            "CrocodileCrackConfidence": 0.09652634,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_561.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116340561
-
     },
     {
         "ReadingID": 89,
@@ -1882,17 +1649,14 @@
             "Latitude": -37.86613148295318,
             "LineblurConfidence": 0.13823172,
             "Longitude": 145.21148354441777,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_760.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08899598
+            "CrocodileCrackConfidence": 0.08899598,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_760.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116348760
-
     },
     {
         "ReadingID": 13,
@@ -1906,17 +1670,14 @@
             "Latitude": -37.86189437124314,
             "LineblurConfidence": 0.093374,
             "Longitude": 145.2130544972042,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_59_907.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06728618
+            "CrocodileCrackConfidence": 0.06728618,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_59_907.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116319907
-
     },
     {
         "ReadingID": 21,
@@ -1930,17 +1691,14 @@
             "Latitude": -37.86194373330005,
             "LineblurConfidence": 0.1753392,
             "Longitude": 145.21333737129305,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_112.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.20780599
+            "CrocodileCrackConfidence": 0.20780599,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_112.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322112
-
     },
     {
         "ReadingID": 16,
@@ -1954,17 +1712,14 @@
             "Latitude": -37.86191342208687,
             "LineblurConfidence": 0.07669698400000001,
             "Longitude": 145.2131636699251,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_758.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11500833
+            "CrocodileCrackConfidence": 0.11500833,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_758.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320758
-
     },
     {
         "ReadingID": 50,
@@ -1978,17 +1733,14 @@
             "Latitude": -37.86205127348871,
             "LineblurConfidence": 0.07144169,
             "Longitude": 145.21238213656227,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_145.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0811214
+            "CrocodileCrackConfidence": 0.0811214,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_145.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334145
-
     },
     {
         "ReadingID": 94,
@@ -2002,17 +1754,14 @@
             "Latitude": -37.86590500944378,
             "LineblurConfidence": 0.07854370000000001,
             "Longitude": 145.2114998772709,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_694.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09100793
+            "CrocodileCrackConfidence": 0.09100793,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_694.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349694
-
     },
     {
         "ReadingID": 69,
@@ -2026,17 +1775,14 @@
             "Latitude": -37.86375484011996,
             "LineblurConfidence": 0.107807145,
             "Longitude": 145.2117166644785,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_420.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08118389999999999
+            "CrocodileCrackConfidence": 0.08118389999999999,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_420.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116340420
-
     },
     {
         "ReadingID": 78,
@@ -2050,17 +1796,14 @@
             "Latitude": -37.862863357380874,
             "LineblurConfidence": 0.07319462,
             "Longitude": 145.21187024221928,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_337.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.055591499999999995
+            "CrocodileCrackConfidence": 0.055591499999999995,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_337.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345337
-
     },
     {
         "ReadingID": 44,
@@ -2074,17 +1817,14 @@
             "Latitude": -37.862370615477055,
             "LineblurConfidence": 0.10509406,
             "Longitude": 145.21215433882008,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_379.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.11004369
+            "CrocodileCrackConfidence": 0.11004369,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_379.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116330379
-
     },
     {
         "ReadingID": 93,
@@ -2098,17 +1838,14 @@
             "Latitude": -37.865961506582636,
             "LineblurConfidence": 0.07620814,
             "Longitude": 145.21149580280112,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_461.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.05864659
+            "CrocodileCrackConfidence": 0.05864659,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_461.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349461
-
     },
     {
         "ReadingID": 6,
@@ -2122,17 +1859,14 @@
             "Latitude": -37.86182143628557,
             "LineblurConfidence": 0.12602669,
             "Longitude": 145.21263653630552,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_649.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.09415048
+            "CrocodileCrackConfidence": 0.09415048,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_649.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316649
-
     },
     {
         "ReadingID": 18,
@@ -2146,17 +1880,14 @@
             "Latitude": -37.86191939926111,
             "LineblurConfidence": 0.14700261,
             "Longitude": 145.21319792270594,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_025.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08612621599999999
+            "CrocodileCrackConfidence": 0.08612621599999999,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_025.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321025
-
     },
     {
         "ReadingID": 95,
@@ -2170,17 +1901,14 @@
             "Latitude": -37.865724849039616,
             "LineblurConfidence": 0.14452438,
             "Longitude": 145.21151287010804,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_437.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.10113442
+            "CrocodileCrackConfidence": 0.10113442,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_437.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116350437
-
     },
     {
         "ReadingID": 54,
@@ -2194,17 +1922,14 @@
             "Latitude": -37.861986150109246,
             "LineblurConfidence": 0.075616874,
             "Longitude": 145.21242859133284,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_913.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0797192
+            "CrocodileCrackConfidence": 0.0797192,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_913.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334913
-
     },
     {
         "ReadingID": 92,
@@ -2218,17 +1943,14 @@
             "Latitude": -37.865985754281716,
             "LineblurConfidence": 0.07851883,
             "Longitude": 145.21149405410165,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_361.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.07047864
+            "CrocodileCrackConfidence": 0.07047864,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_361.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349361
-
     },
     {
         "ReadingID": 99,
@@ -2242,17 +1964,14 @@
             "Latitude": -37.86528111614646,
             "LineblurConfidence": 0.26647153,
             "Longitude": 145.21154487130855,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_32_267.jpg"
-            },
             "IsLineblurFault": true,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.08395402
+            "CrocodileCrackConfidence": 0.08395402,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_32_267.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116352267
-
     },
     {
         "ReadingID": 71,
@@ -2266,17 +1985,14 @@
             "Latitude": -37.86353962962346,
             "LineblurConfidence": 0.092225894,
             "Longitude": 145.2117537392758,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_21_607.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.089351915
+            "CrocodileCrackConfidence": 0.089351915,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_21_607.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116341607
-
     },
     {
         "ReadingID": 62,
@@ -2290,17 +2006,14 @@
             "Latitude": -37.8627388,
             "LineblurConfidence": 0.0,
             "Longitude": 145.2118917,
-            "Basis": {
-                "ImageFileName": "AUS_3.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0
+            "CrocodileCrackConfidence": 0.0,
+            "ImageFileName": "AUS_3.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116337021
-
     },
     {
         "ReadingID": 33,
@@ -2314,17 +2027,14 @@
             "Latitude": -37.86267825560816,
             "LineblurConfidence": 0.04950208,
             "Longitude": 145.2119348884195,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_751.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.077531494
+            "CrocodileCrackConfidence": 0.077531494,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_751.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326751
-
     },
     {
         "ReadingID": 52,
@@ -2338,17 +2048,14 @@
             "Latitude": -37.8620165918973,
             "LineblurConfidence": 0.0688113,
             "Longitude": 145.21240687614713,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_554.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.06787465
+            "CrocodileCrackConfidence": 0.06787465,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_554.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334554
-
     },
     {
         "ReadingID": 37,
@@ -2362,17 +2069,14 @@
             "Latitude": -37.86259659699563,
             "LineblurConfidence": 0.053083498,
             "Longitude": 145.21199313834668,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_714.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.32629663
+            "CrocodileCrackConfidence": 0.32629663,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_714.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327714
-
     },
     {
         "ReadingID": 4,
@@ -2386,16 +2090,13 @@
             "Latitude": -37.861807825341984,
             "LineblurConfidence": 0.21797581,
             "Longitude": 145.2125585374638,
-            "Basis": {
-                "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_041.jpg"
-            },
             "IsLineblurFault": false,
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
-            "CrocodileCrackConfidence": 0.0684142
+            "CrocodileCrackConfidence": 0.0684142,
+            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_041.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316041
-
     }
 ]

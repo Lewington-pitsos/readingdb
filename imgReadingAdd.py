@@ -16,7 +16,7 @@ for i in range(100):
         start_id + i,
         ReadingTypes.IMAGE,
         {
-            ImageReading.FILENAME: "https://aws/s3/somebucket/file.jpg" 
+            ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
         },
         int(time.time())
     )

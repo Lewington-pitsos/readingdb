@@ -44,26 +44,14 @@ class API(DB):
     def s3_url(self, object_name):
         return f"https://{self.bucket}.s3.{self.aws_loc}/{object_name}" 
 
-    def get_filename(self, entry_type, entry):
-        if entry_type == ReadingTypes.IMAGE:
-            if ImageReading.FILENAME not in entry:
-                raise ValueError(f"Expected reading entry to have key {ImageReading.FILENAME}, no such keyw as found: {entry}")
-
-            return entry[ImageReading.FILENAME]
-
-        if entry_type == ReadingTypes.PREDICTION:
-            if PredictionReading.BASIS not in entry or PredictionBasis.FILENAME not in entry[PredictionReading.BASIS]:
-                raise ValueError(f"Expected reading entry to have key {ImageReading.FILENAME}, no such keyw as found: {entry}")
-
-            return entry[PredictionReading.BASIS][PredictionBasis.FILENAME]
-
-
     def save_img_entry(self, entry_type, route_id, reading_id, entry):
-        filename = self.get_filename(entry_type, entry)
-        _, object_name = self.upload_file(route_id, filename, self.bucket)
+        if ImageReadingKeys.FILENAME not in entry:
+                raise ValueError(f"Expected reading entry to have key {ImageReadingKeys.FILENAME}, no such keyw as found: {entry}")
+
+        _, object_name = self.upload_file(route_id, entry[ImageReadingKeys.FILENAME], self.bucket)
 
         clone = copy.deepcopy(entry)
-        clone[PredictionReading.BASIS][PredictionBasis.FILENAME] = self.s3_url(object_name)
+        clone[ImageReadingKeys.FILENAME] = self.s3_url(object_name)
         self.save_primitive_entry(entry_type, route_id, reading_id, clone)
 
         return clone

@@ -1,7 +1,5 @@
 from readingdb.constants import *
 
-
-
 def entry_to_prediction(entry):
     pred = {}
 
@@ -11,10 +9,6 @@ def entry_to_prediction(entry):
 
     pred[EntryKeys.TIMESTAMP] = int(entry[EntryKeys.TIMESTAMP])
     
-    pred[PredictionReading.BASIS] = {
-        PredictionBasis.FILENAME: entry[PredictionBasis.FILENAME] 
-    }
-
     return pred
 
 normalization_map = {

@@ -16,9 +16,7 @@ for i in range(20):
         start_id + i,
         ReadingTypes.PREDICTION,
         {
-            PredictionReading.BASIS: {
-                PredictionBasis.FILENAME: "https://aws/s3/somebucket/file.jpg"
-            },
+            ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg",
             PredictionReading.CROCODILECRACK_CONFIDENCE: 0.72510201,
             PredictionReading.LATCRACK_CONFIDENCE: 0.119,
             PredictionReading.LINEBLUR_CONFIDENCE: 0.00011,
