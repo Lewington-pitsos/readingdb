@@ -1,0 +1,5 @@
+{
+    "readings": [
+        {"type": "inferences", "format": "json_entries", "path": ""}
+    ]
+}

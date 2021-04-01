@@ -1,0 +1,7 @@
+{
+    "name": "Knox City",
+    "readings":  [
+        {"type": "gps", "format": "json_entries", "path": ""},
+        {"type": "camera", "format": "json_entries", "path": ""}
+    ]
+}
