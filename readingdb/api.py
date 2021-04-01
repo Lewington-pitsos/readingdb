@@ -8,10 +8,10 @@ class API(DB):
     def __init__(self, url, resource_name='dynamodb', bucket="mobileappsessions172800-main"):
         super().__init__(url=url, resource_name=resource_name)
         self.bucket = bucket
-        if self.bucket[-1] != "/":
-            self.bucket += "/"
 
         self.s3_client = boto3.client('s3')
+
+        self.aws_loc = url.split("/")[-1].replace("dynamodb.", "")
 
     def upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
@@ -19,29 +19,53 @@ class API(DB):
 
         return response, object_name
 
-    def save_entry(self, route_id, user_id, reading_id, entry):
+    def save_entry(self, entry_type, route_id, reading_id, entry):
+        if entry_type in ReadingTypes.IMAGE_TYPES:
+            return self.save_img_entry(entry_type, route_id, reading_id, entry)
 
+        return self.save_primitive_entry(entry_type, route_id, reading_id, entry)
+
+    def save_primitive_entry(self, entry_type, route_id, reading_id, entry):
         ts = entry[EntryKeys.TIMESTAMP]
 
         if isinstance(ts, float):
             ts = int(ts)
+
         self.put_reading(
             route_id,
             reading_id,
-            ReadingTypes.PREDICTION,
-            entry_to_prediction(entry),
+            entry_type,
+            entry,
             ts
         )
 
-    def s3_url(self, object_name):
-        return "https://" + self.bucket + object_name
+        return entry
 
-    def save_img_entry(self, route_id, user_id, reading_id, entry):
-        if ImageReading.FILENAME not in entry:
-            raise ValueError(f"Expected reading entry to have key {ImageReading.FILENAME}, no such keyw as found: {entry}")
-        
-        _, object_name = self.upload_file(route_id, entry[ImageReading.FILENAME], self.bucket)
+    def s3_url(self, object_name):
+        return f"https://{self.bucket}.s3.{self.aws_loc}/{object_name}" 
+
+    def get_filename(self, entry_type, entry):
+        if entry_type == ReadingTypes.IMAGE:
+            if ImageReading.FILENAME not in entry:
+                raise ValueError(f"Expected reading entry to have key {ImageReading.FILENAME}, no such keyw as found: {entry}")
+
+            return entry[ImageReading.FILENAME]
+
+        if entry_type == ReadingTypes.PREDICTION:
+            if PredictionReading.BASIS not in entry or PredictionBasis.FILENAME not in entry[PredictionReading.BASIS]:
+                raise ValueError(f"Expected reading entry to have key {ImageReading.FILENAME}, no such keyw as found: {entry}")
+
+            return entry[PredictionReading.BASIS][PredictionBasis.FILENAME]
+
+
+    def save_img_entry(self, entry_type, route_id, reading_id, entry):
+        filename = self.get_filename(entry_type, entry)
+        _, object_name = self.upload_file(route_id, filename, self.bucket)
 
         clone = copy.deepcopy(entry)
-        clone[ImageReading.FILENAME] = self.s3_url(object_name)
-        self.save_entry(route_id, user_id, reading_id, clone)
+        clone[PredictionReading.BASIS][PredictionBasis.FILENAME] = self.s3_url(object_name)
+        self.save_primitive_entry(entry_type, route_id, reading_id, clone)
+
+        return clone
+
+

@@ -1,4 +1,5 @@
 from pprint import pprint
+from random import sample
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -12,7 +13,7 @@ class DB():
     def all_tables(self):
         return list(self.db.tables.all())
 
-    def create_reading_db(self, readCapacity=200, writeCapacity=200):
+    def create_reading_db(self, readCapacity=500, writeCapacity=500):
         reading_table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
@@ -28,7 +29,7 @@ class DB():
             AttributeDefinitions=[
                 {
                     'AttributeName': ReadingRouteKeys.ROUTE_ID,
-                    'AttributeType': 'N'
+                    'AttributeType': 'S'
                 },
                 {
                     'AttributeName': ReadingKeys.READING_ID,
@@ -57,17 +58,17 @@ class DB():
             AttributeDefinitions=[
                 {
                     'AttributeName': RouteKeys.USER_ID,
-                    'AttributeType': 'N'
+                    'AttributeType': 'S'
                 },
                 {
                     'AttributeName': ReadingRouteKeys.ROUTE_ID,
-                    'AttributeType': 'N'
+                    'AttributeType': 'S'
                 },
 
             ],
             ProvisionedThroughput={
-                'ReadCapacityUnits': 25,
-                'WriteCapacityUnits': 25
+                'ReadCapacityUnits': 50,
+                'WriteCapacityUnits': 50
             }
         )
 
@@ -86,13 +87,23 @@ class DB():
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
-    def put_route(self, user_id, route_id, route_name=None): 
+    def put_route(self, user_id, route_id, route_name=None, sample_data=None): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
 
         route = {
                 RouteKeys.USER_ID: user_id,
                 ReadingRouteKeys.ROUTE_ID: route_id
             }
+
+        if sample_data:
+            encoded_sample_data = {}
+
+            for k, v in sample_data.items():
+                encoded_sample_data[k] = encoded_value(k, v)
+
+            print(encoded_sample_data)
+
+            route[RouteKeys.SAMPLE_DATA] = encoded_sample_data
         
         if route_name:
             route[RouteKeys.NAME] = route_name
@@ -109,6 +120,8 @@ class DB():
     ):
         reading_value = encoded_value(reading_type, reading_value)
         
+        print(reading_value)
+
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(
             Item={

@@ -14,12 +14,19 @@ class ReadingKeys():
 class RouteKeys():
     USER_ID = "UserID"
     NAME = 'Name'
+    SAMPLE_DATA = "SampleData"
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"
     IMAGE = "ImageReading"
     PREDICTION = "PredictionReading"
     ANNOTATION = "Annotation"
+
+    IMAGE_TYPES = [
+        PREDICTION,
+        ANNOTATION,
+        IMAGE
+    ]
 
 class PositionReading():
     LATITUDE = "Latitude"
@@ -34,7 +41,10 @@ class PositionReading():
 class ImageReading():
     FILENAME = "ImageFileName"
 
-class PredictionReading():
+class EntryKeys():
+    TIMESTAMP = "Date"
+
+class PredictionReading(EntryKeys):
     BASIS = "Basis"
 
     LATCRACK_CONFIDENCE = "LatCrackConfidence"
@@ -76,7 +86,5 @@ class PredictionReading():
     FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [BASIS]
     
 class PredictionBasis():
-    FILENAME = "ImageFileName"
+    FILENAME = ImageReading.FILENAME
 
-class EntryKeys():
-    TIMESTAMP = "Date"

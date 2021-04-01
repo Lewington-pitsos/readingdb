@@ -2,17 +2,20 @@ import boto3
 import json
 import random
 import string
+import time
+from tqdm import tqdm
 
-from datetime import datetime
 from readingdb.api import API
-class Uploader():
-    @staticmethod
-    def load_json_entries(path_key, reading):
-        with open(reading[path_key], "r") as f:
-            entries = json.load(f)
-        
-        return entries
+from readingdb.constants import *
+from readingdb.normalize import normalize
 
+def load_json_entries(path_key, reading):
+    with open(reading[path_key], "r") as f:
+        entries = json.load(f)
+    
+    return entries
+
+class Uploader():
     AUTH_RESULT_KEY = "AuthenticationResult"
     ACCESS_TOKEN_KEY = "AccessToken"
     USER_ATTR_KEY = "UserAttributes"
@@ -28,20 +31,26 @@ class Uploader():
     READING_FORMAT_KEY = "format"
     READING_PATH_KEY = "path"
 
-    GPS_TYPE = "gps"
-    CAMERA_TYPE = "camera"
     JSON_ENTRIES_FORMAT = "json_entries"
 
     RECOGNIZED_READING_TYPES = {
-        CAMERA_TYPE:{
+        ReadingTypes.IMAGE:{
             JSON_ENTRIES_FORMAT: load_json_entries
         },
-        GPS_TYPE:{
+        ReadingTypes.POSITIONAL:{
+            JSON_ENTRIES_FORMAT: load_json_entries
+        },
+        ReadingTypes.PREDICTION:{
             JSON_ENTRIES_FORMAT: load_json_entries
         }
     }
 
-    def __init__(self, auth, region_name="ap-southeast-2", ddburl="https://dynamodb.ap-southeast-2.amazonaws.com"):
+    def __init__(
+        self, 
+        auth, 
+        region_name="ap-southeast-2", 
+        ddburl="https://dynamodb.ap-southeast-2.amazonaws.com"
+    ):
         cclient = boto3.client('cognito-idp', region_name=region_name)
 
         auth_resp = cclient.initiate_auth(
@@ -49,7 +58,8 @@ class Uploader():
             AuthParameters={
                 'USERNAME': auth.username,
                 'PASSWORD': auth.password},
-            ClientId=auth.clientid)
+            ClientId=auth.clientid
+        )
 
         if not self.ACCESS_TOKEN_KEY in auth_resp[self.AUTH_RESULT_KEY]:
             raise ValueError(f"Unexpected cognito authentication response: {auth_resp}")
@@ -68,6 +78,31 @@ class Uploader():
 
         self.api = API(url=ddburl)
 
+    def upload(self, route):
+        route_key = self.generate_route_id()
+        route_id = str(time.time()) + "-" + route_key
+
+        print(f"uploading route {route} as {route_id}")
+
+        initial_entries = {}
+
+        for reading in route[self.ROUTE_READINGS_KEY]:
+            print(f"starting upload for reading {reading}")
+
+            entries = self.load_reading(reading)    
+
+            if len(entries) > 0:
+                saved_entries = self.save_entries(route_id, reading[self.READING_TYPE_KEY], entries)
+                initial_entries[reading[self.READING_TYPE_KEY]] = saved_entries[0]
+                print("Finished saving all readings to FDS database")
+            else:
+                print("No entries found for reading specification")
+
+        route_name = route[self.ROUTE_NAME_KEY] if self.ROUTE_NAME_KEY in route else route_key
+
+        self.api.put_route(self.usr_sub, route_id, route_name, sample_data=initial_entries)
+        print(f"Finished uploading route {route_id} for user {self.uname}")
+
     def load_reading(self, reading):
         reading_type = reading[self.READING_TYPE_KEY] 
 
@@ -85,34 +120,18 @@ class Uploader():
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
     def save_entries(self, route_id, entry_type, entries):
-        for i, e in enumerate(entries):
-            self.api.save_entry(
+        saved_entries = []        
+
+        print("uploading entries")
+        for i, e in enumerate(tqdm(entries)):
+            e = normalize(entry_type, e) 
+            saved_entry = self.api.save_entry(
+                entry_type,
                 route_id,
-                self.usr_sub,
                 i+1,
                 e 
             )
 
-    def upload(self, route):
-        route_key = self.generate_route_id()
-        route_id = str(datetime.utcnow()) + "-" + route_key
+            saved_entries.append(saved_entry)
 
-        print(f"uploading route {route} as {route_id}")
-
-        initial_entries = {}
-
-        for reading in route[self.ROUTE_READINGS_KEY]:
-            print(f"starting upload for reading {reading}")
-
-            entries = self.load_reading(reading)    
-
-            if len(entries) > 0:
-                initial_entries[reading[self.READING_TYPE_KEY]] = entries[0]
-                self.save_entries(route_id, reading[self.READING_TYPE_KEY], entries)
-                print("Finished saving all readings to FDS database")
-            else:
-                print("No entries found for reading specification")
-
-        route_name = route[self.ROUTE_NAME_KEY] if self.ROUTE_NAME_KEY in route else route_key
-
-        self.api.put_route(self.usr_sub, route_id, route_name)
+        return saved_entries
