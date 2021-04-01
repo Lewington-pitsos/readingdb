@@ -86,29 +86,7 @@ class DB():
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
-    def put_reading(
-        self, 
-        user_id,
-        route_id, 
-        reading_id, 
-        reading_type, 
-        reading_value, 
-        timestamp,
-        route_name=None
-    ):
-        reading_value = encoded_value(reading_type, reading_value)
-        
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.put_item(
-        Item={
-                ReadingKeys.READING_ID: reading_id,
-                ReadingRouteKeys.ROUTE_ID: route_id,
-                ReadingKeys.TYPE: reading_type, 
-                ReadingKeys.READING: reading_value, 
-                ReadingKeys.TIMESTAMP: timestamp, 
-            }
-        )
-
+    def put_route(self, user_id, route_id, route_name=None): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
 
         route = {
@@ -119,14 +97,30 @@ class DB():
         if route_name:
             route[RouteKeys.NAME] = route_name
 
-        route_response = route_table.put_item(
-            Item=route
-        )
+        return route_table.put_item(Item=route)
 
-        return {
-            Database.READING_TABLE_NAME: response,
-            Database.ROUTE_TABLE_NAME: route_response
-        }
+    def put_reading(
+        self, 
+        route_id, 
+        reading_id, 
+        reading_type, 
+        reading_value, 
+        timestamp,
+    ):
+        reading_value = encoded_value(reading_type, reading_value)
+        
+        table = self.db.Table(Database.READING_TABLE_NAME)
+        response = table.put_item(
+            Item={
+                    ReadingKeys.READING_ID: reading_id,
+                    ReadingRouteKeys.ROUTE_ID: route_id,
+                    ReadingKeys.TYPE: reading_type, 
+                    ReadingKeys.READING: reading_value, 
+                    ReadingKeys.TIMESTAMP: timestamp, 
+                }
+            )
+
+        return response
 
     def all_route_readings(self, routeID):
         table = self.db.Table(Database.READING_TABLE_NAME)

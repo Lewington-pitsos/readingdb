@@ -18,7 +18,7 @@ class TestAPIEntryConsumption(unittest.TestCase):
         rid = 0
 
         for e in entries[500:600]:
-            self.api.save_entry(103, 45, rid, e)
+            self.api.save_entry(45, 103, rid, e)
             rid+=1
 
         readings = self.api.all_route_readings(45)

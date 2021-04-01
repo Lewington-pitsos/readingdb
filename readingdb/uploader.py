@@ -36,7 +36,7 @@ class Uploader():
         CAMERA_TYPE:{
             JSON_ENTRIES_FORMAT: load_json_entries
         },
-        GPS_TYPE: {
+        GPS_TYPE:{
             JSON_ENTRIES_FORMAT: load_json_entries
         }
     }
@@ -82,7 +82,7 @@ class Uploader():
         return self.RECOGNIZED_READING_TYPES[reading_type][format_type](self.READING_PATH_KEY, reading)
 
     def generate_route_id(self):
-        return str(datetime.utcnow()) + "_" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=20))
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
     def save_entries(self, route_id, entry_type, entries):
         for i, e in enumerate(entries):
@@ -94,7 +94,9 @@ class Uploader():
             )
 
     def upload(self, route):
-        route_id = self.generate_route_id()
+        route_key = self.generate_route_id()
+        route_id = str(datetime.utcnow()) + "-" + route_key
+
         print(f"uploading route {route} as {route_id}")
 
         initial_entries = {}
@@ -110,3 +112,7 @@ class Uploader():
                 print("Finished saving all readings to FDS database")
             else:
                 print("No entries found for reading specification")
+
+        route_name = route[self.ROUTE_NAME_KEY] if self.ROUTE_NAME_KEY in route else route_key
+
+        self.api.put_route(self.usr_sub, route_id, route_name)

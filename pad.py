@@ -1,3 +1,6 @@
-import boto3
-cognito = boto3.client('cognito-identity')
-response = cognito.get_credentials_for_identity(IdentityId="id")
+
+from readingdb.db import DB
+
+db = DB("http://localhost:8000")
+# db.teardown_reading_db()
+print(db.all_tables())
