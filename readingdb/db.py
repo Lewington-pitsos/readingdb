@@ -74,12 +74,6 @@ class DB():
 
         return (reading_table, route_table)
 
-    
-    def routes_for(self, user_id):
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
-        return response['Items']
-
     def delete_table(self, table_name):
         self.db.Table(table_name).delete()
 
@@ -87,24 +81,9 @@ class DB():
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
-    def put_route(self, user_id, route_id, route_name=None, sample_data=None): 
+    def put_route(self, user_id, route_id, name=None, sample_data=None): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
-
-        route = {
-                RouteKeys.USER_ID: user_id,
-                ReadingRouteKeys.ROUTE_ID: route_id
-            }
-
-        if sample_data:
-            encoded_sample_data = {}
-
-            for k, v in sample_data.items():
-                encoded_sample_data[k] = encoded_value(k, v)
-
-            route[RouteKeys.SAMPLE_DATA] = encoded_sample_data
-        
-        if route_name:
-            route[RouteKeys.NAME] = route_name
+        route = encoded_route_item(user_id, route_id, name, sample_data)
 
         return route_table.put_item(Item=route)
 
@@ -117,8 +96,6 @@ class DB():
         timestamp,
     ):
         reading_value = encoded_value(reading_type, reading_value)
-        
-        print(reading_value)
 
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(
@@ -133,7 +110,12 @@ class DB():
 
         return response
 
-    def all_route_readings(self, routeID):
+    def all_route_readings(self, route_id):
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(routeID))
+        response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id))
         return [decode_item(i) for i in response['Items']]
+
+    def routes_for_user(self, user_id):
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
+        return [decoded_route_item(i) for i in response['Items']]

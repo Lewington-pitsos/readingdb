@@ -20,6 +20,9 @@ class API(DB):
 
         return response, object_name
 
+    def routes_for_user(user_id):
+        
+
     def save_entry(self, entry_type, route_id, reading_id, entry):
         if entry_type in ReadingTypes.IMAGE_TYPES:
             return self.save_img_entry(entry_type, route_id, reading_id, entry)

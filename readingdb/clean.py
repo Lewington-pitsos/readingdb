@@ -33,12 +33,40 @@ def encoded_value(reading_type, reading_value):
 
     return reading_value
 
-
 def decode_item(item):
     item[ReadingKeys.READING] = decoded_value(item[ReadingKeys.TYPE], item[ReadingKeys.READING])
 
     return item
 
+def encoded_route_item(user_id, route_id, route_name=None, sample_data=None):
+    route = {
+        RouteKeys.USER_ID: user_id,
+        ReadingRouteKeys.ROUTE_ID: route_id
+    }
+
+    if sample_data:
+        encoded_sample_data = {}
+
+        for k, v in sample_data.items():
+            encoded_sample_data[k] = encoded_value(k, v)
+
+        route[RouteKeys.SAMPLE_DATA] = encoded_sample_data
+    
+    if route_name:
+        route[RouteKeys.NAME] = route_name
+
+    return route
+    
+def decoded_route_item(item):
+
+    if RouteKeys.SAMPLE_DATA in item:
+        decoded_sample_data = {}
+        for k, v in item[RouteKeys.SAMPLE_DATA].items():
+            decoded_sample_data[k] = decoded_value(k, v)
+        
+        item[RouteKeys.SAMPLE_DATA] = decoded_sample_data
+
+    return item
 
 def decoded_dict(decoding_cls, value_dict):
     clone = copy.deepcopy(value_dict)

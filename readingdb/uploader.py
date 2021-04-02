@@ -57,7 +57,8 @@ class Uploader():
             AuthFlow='USER_PASSWORD_AUTH',
             AuthParameters={
                 'USERNAME': auth.username,
-                'PASSWORD': auth.password},
+                'PASSWORD': auth.password
+            },
             ClientId=auth.clientid
         )
 
