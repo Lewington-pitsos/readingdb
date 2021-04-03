@@ -4,7 +4,6 @@ import time
 from readingdb.db import DB
 from readingdb.constants import *
 
-
 class TestDBOps(unittest.TestCase):
     def setUp(self):
         # We assume that a dynamodb server is running on that endpoint already
@@ -15,6 +14,8 @@ class TestDBOps(unittest.TestCase):
         readings = self.db.routes_for_user("103")
         self.assertEqual(len(readings), 0)
 
+        reading_time = int(time.time())
+
         for i in range(21):
             self.db.put_reading(
                 "103",
@@ -23,11 +24,19 @@ class TestDBOps(unittest.TestCase):
                 {
                     ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
                 },
-                int(time.time())
+                reading_time
             )
         
         readings = self.db.all_route_readings("103")
         self.assertEqual(len(readings), 21)
+        first_reading = readings[0]
+        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "103")
+        self.assertEqual(first_reading[ReadingKeys.READING_ID], 0)
+        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
+        self.assertEqual(first_reading[ReadingKeys.READING], {
+                ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
+        })
+        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
 
     def test_creates_new_route(self):
         self.db.create_reading_db()

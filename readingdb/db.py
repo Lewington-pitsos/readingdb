@@ -7,8 +7,14 @@ from boto3.dynamodb.conditions import Key
 from readingdb.clean import *
 
 class DB():
-    def __init__(self, url, resource_name='dynamodb'):
-        self.db = boto3.resource(resource_name, endpoint_url=url)
+    def __init__(self, url, auth, resource_name='dynamodb', config=None):
+        self.db = boto3.resource(
+            resource_name, 
+            endpoint_url=url, 
+            config=config,
+            aws_access_key_id=auth.id_token,
+            aws_secret_access_key=auth.access_token,
+        )
 
     def all_tables(self):
         return list(self.db.tables.all())

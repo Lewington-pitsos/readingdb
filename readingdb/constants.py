@@ -93,3 +93,5 @@ class PredictionReading(ImageReadingKeys):
 class ImageReading():
     FILENAME = ImageReadingKeys.FILENAME
 
+class LambdaEvents():
+    ROUTE_ID = "RouteID"

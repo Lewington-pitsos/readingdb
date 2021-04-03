@@ -8,6 +8,7 @@ from tqdm import tqdm
 from readingdb.api import API
 from readingdb.constants import *
 from readingdb.normalize import normalize
+from readingdb.cognito import CognitoAuth
 
 def load_json_entries(path_key, reading):
     with open(reading[path_key], "r") as f:
@@ -15,16 +16,7 @@ def load_json_entries(path_key, reading):
     
     return entries
 
-class Uploader():
-    AUTH_RESULT_KEY = "AuthenticationResult"
-    ACCESS_TOKEN_KEY = "AccessToken"
-    USER_ATTR_KEY = "UserAttributes"
-    ATTR_NAME_KEY = "Name"
-    ATTR_VALUE_KEY = "Value"
-    USERNAME_KEY = "Username"
-
-    USER_SUB = 'sub'
-    
+class Uploader():  
     ROUTE_NAME_KEY = "route"
     ROUTE_READINGS_KEY = "readings"
     READING_TYPE_KEY = "type"
@@ -51,31 +43,7 @@ class Uploader():
         region_name="ap-southeast-2", 
         ddburl="https://dynamodb.ap-southeast-2.amazonaws.com"
     ):
-        cclient = boto3.client('cognito-idp', region_name=region_name)
-
-        auth_resp = cclient.initiate_auth(
-            AuthFlow='USER_PASSWORD_AUTH',
-            AuthParameters={
-                'USERNAME': auth.username,
-                'PASSWORD': auth.password
-            },
-            ClientId=auth.clientid
-        )
-
-        if not self.ACCESS_TOKEN_KEY in auth_resp[self.AUTH_RESULT_KEY]:
-            raise ValueError(f"Unexpected cognito authentication response: {auth_resp}")
-
-        self.access_token = auth_resp[self.AUTH_RESULT_KEY][self.ACCESS_TOKEN_KEY]
-        user_resp = cclient.get_user(AccessToken=auth_resp[self.AUTH_RESULT_KEY][self.ACCESS_TOKEN_KEY])
-
-        self.uname = user_resp[self.USERNAME_KEY]
-
-        for attr in user_resp[self.USER_ATTR_KEY]:
-            if attr[self.ATTR_NAME_KEY] == self.USER_SUB:
-                self.usr_sub = attr[self.ATTR_VALUE_KEY]
-                break
-        else:
-            raise ValueError(f"Could not identify a user sub value in user response: {user_resp}")
+        self.cognito = CognitoAuth(auth, region_name)
 
         self.api = API(url=ddburl)
 

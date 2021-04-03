@@ -8,11 +8,18 @@ from readingdb.normalize import *
 from readingdb.constants import *
 
 class API(DB):
-    def __init__(self, url, resource_name='dynamodb', bucket="mobileappsessions172800-main"):
-        super().__init__(url=url, resource_name=resource_name)
+    def __init__(
+        self, 
+        url, 
+        auth,
+        resource_name='dynamodb', 
+        bucket="mobileappsessions172800-main",
+        config=None
+    ):
+        super().__init__(url=url, auth=auth, resource_name=resource_name, config=config)
         self.bucket = bucket
 
-        self.s3_client = boto3.client('s3')
+        self.s3_client = boto3.client('s3', config=config)
 
     def upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
@@ -20,7 +27,7 @@ class API(DB):
 
         return response, object_name
 
-    def routes_for_user(user_id):
+    # def routes_for_user(user_id):
         
 
     def save_entry(self, entry_type, route_id, reading_id, entry):
