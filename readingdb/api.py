@@ -1,7 +1,10 @@
 import boto3
 import copy
-import abc
-
+import json
+import time
+import random
+import string
+import tqdm
 
 from boto3.dynamodb.conditions import Key
 
@@ -15,13 +18,6 @@ def load_json_entries(path_key, reading):
     
     return entries
 
-class ReadingDB(abc.ABC):
-    @abstractmethod
-    def upload(route):
-        """
-        Takes 
-        """
-        raise NotImplementedError("upload function is not implemented")
 
 
 class API(DB):

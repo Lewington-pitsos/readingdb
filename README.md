@@ -1,4 +1,4 @@
-# Installation
+## Installation
 
 First install the local [dynamodb server](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
 
@@ -11,3 +11,7 @@ Finally start the local dynamodb server on port 8000, and confirm that everythin
 Then you can start running scripts, e.g.:
 
     python maketable.py
+
+## API
+
+The API can be found at `readingdb/readingdb.py`
