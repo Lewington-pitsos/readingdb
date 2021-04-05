@@ -28,7 +28,7 @@ class ReadingTypes():
         IMAGE
     ]
 
-class PositionReading():
+class PositionReadingKeys():
     LATITUDE = "Latitude"
     LONGITUDE = "Longitude"
 
@@ -90,7 +90,7 @@ class PredictionReading(ImageReadingKeys):
 
     FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [TIMESTAMP, FILENAME]
     
-class ImageReading():
+class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
 
 class LambdaEvents():

@@ -5,6 +5,9 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
+from readingdb.reading import AbstractReading, decode_reading
+from readingdb.route import Route
+from readingdb.constants import *
 
 class DB():
     def __init__(self, url, resource_name='dynamodb', config=None):
@@ -85,41 +88,34 @@ class DB():
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
-    def put_route(self, user_id, route_id, name=None, sample_data=None): 
+    def put_route(self, route: Route): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        route = encoded_route_item(user_id, route_id, name, sample_data)
+        return route_table.put_item(Item=route.item_data())
 
-        return route_table.put_item(Item=route)
-
-    def put_reading(
-        self, 
-        route_id, 
-        reading_id, 
-        reading_type, 
-        reading_value, 
-        timestamp,
-    ):
-        reading_value = encoded_value(reading_type, reading_value)
-
+    def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.put_item(
-            Item={
-                    ReadingKeys.READING_ID: reading_id,
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    ReadingKeys.TYPE: reading_type, 
-                    ReadingKeys.READING: reading_value, 
-                    ReadingKeys.TIMESTAMP: timestamp, 
-                }
-            )
+        response = table.put_item(Item=reading.item_data())
 
         return response
 
     def all_route_readings(self, route_id):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id))
-        return [decode_item(i) for i in response['Items']]
+
+        items = []
+        for item in response["Items"]:
+            decode_reading(item[ReadingKeys.TYPE], item)
+            items.append(item)
+
+        return items
 
     def routes_for_user(self, user_id):
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
-        return [decoded_route_item(i) for i in response['Items']]
+
+        items = []
+        for item in response["Items"]:
+            Route.decode_item(item)
+            items.append(item)
+
+        return items

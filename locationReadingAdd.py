@@ -16,8 +16,8 @@ for i in range(800):
         start_id + i,
         ReadingTypes.POSITIONAL,
         {
-            PositionReading.LATITUDE: 41.86648, 
-            PositionReading.LONGITUDE: -174.39999
+            PositionReadingKeys.LATITUDE: 41.86648, 
+            PositionReadingKeys.LONGITUDE: -174.39999
         },
         int(time.time())
     )
