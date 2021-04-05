@@ -7,6 +7,19 @@ import numpy as np
 
 from readingdb.constants import *
 
+
+def encode_float(value: float) -> Decimal:
+    return Decimal(str(value))
+
+def encode_bool(value: bool) -> int:
+    return 1 if value else 0
+
+def decode_float(value: Decimal) -> float:
+    return float(value)
+
+def decode_bool(value: int) -> bool:
+    return value == 1
+
 def encoded_dict(encoding_cls, value_dict):
     clone = copy.deepcopy(value_dict)
 

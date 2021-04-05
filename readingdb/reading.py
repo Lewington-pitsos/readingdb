@@ -1,9 +1,11 @@
 
 from decimal import Decimal
-from typing import Dict, List
+from typing import Any, Dict, List
 from readingdb import route
 
 from readingdb.constants import *
+from readingdb.conditions import *
+from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
 class Reading():
     def __init__(self, id: int, route_id: int, date: int, readingType: str) -> None:
         self.id: int = id
@@ -34,6 +36,10 @@ class ImageReading(Reading):
         }
 
         return data
+
+    def decode(self, item: Dict[str, Any]):
+        pass
+
 class PositionReading(Reading):
     def __init__(self, id: int, route_id: int, date: int, readingType: str, lat: int, long: int) -> None:
         super().__init__(id, route_id, date, readingType)
@@ -50,6 +56,9 @@ class PositionReading(Reading):
         }
 
         return data
+
+    def decode(self, item: Dict[str, Any]):
+        pass
 
 class PredictionReading(PositionReading):
     def __init__(
@@ -69,15 +78,25 @@ class PredictionReading(PositionReading):
         self.predictionBinaries: Dict[str, bool] = predictionBinaries
         self.predictionConfidences: Dict[str, bool] = predictionConfidences
     
+    def decode(self, item: Dict[str, Any]):
+        super().decode(item)
+
+        for k, v in item[ReadingKeys.READING]:
+            if k in CONDITION_BIARIES:
+                item[ReadingKeys.READING][k] = decode_bool(v)
+            if k in CONDITION_CONFS:
+                item[ReadingKeys.READING][k] = decode_float(v)
+
+
     def item_data(self):
         data = super().item_data()
 
         data[ReadingKeys.READING][ImageReadingKeys.FILENAME] = self.url
 
         for k, v in self.predictionBinaries.items():
-            data[ReadingKeys.READING][k] = 1 if v else 0
+            data[ReadingKeys.READING][k] = encode_bool(v)
 
         for k, v in self.predictionConfidences.items():
-            data[ReadingKeys.READING][k] = Decimal(str(v))
+            data[ReadingKeys.READING][k] = encode_float(v)
 
         return data
