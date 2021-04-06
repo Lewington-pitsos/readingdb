@@ -142,3 +142,26 @@ class TestDownloadJsonFiles(unittest.TestCase):
         }
 
         self.assertEqual(user_routes[0], expected_sample_data)
+
+
+        s3 = boto3.resource(
+            "s3",
+            region_name=self.region_name,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key
+        )
+
+        bucket = s3.Bucket(TEST_BUCKET)
+
+        bucket_objects = []
+
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(set(bucket_objects), set([
+            "mocks/apple.json", 
+            "mocks/file.json",
+            route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
+            route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg'
+        ]))
+

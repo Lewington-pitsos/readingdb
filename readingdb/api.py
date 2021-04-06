@@ -103,6 +103,5 @@ class API(DB):
             e = json_to_reading(entry_type, e)
             e = self.__save_entry(e)
             finalized.append(e)
-            break
 
         return finalized
