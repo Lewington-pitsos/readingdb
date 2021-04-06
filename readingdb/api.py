@@ -27,7 +27,7 @@ class API(DB):
 
         self.s3_client = boto3.client('s3', config=config)
 
-    def upload(self, route_spec: RouteSpec, user_id: str):
+    def upload(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_key = self.__generate_route_id()
         route_id = str(time.time()) + "-" + route_key
 
@@ -57,6 +57,8 @@ class API(DB):
 
         self.put_route(route)
         print(f"Finished uploading route {route_id} for user {user_id}")
+
+        return route
 
 
     def __upload_file(self, route_id, file_name, bucket):

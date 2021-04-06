@@ -1,5 +1,8 @@
 import json
 import os
+from pprint import pprint
+from typing import List
+from readingdb.route import Route
 from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
@@ -101,7 +104,41 @@ class TestDownloadJsonFiles(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
 
 
-        api.upload(route_spec, user_id)
+        route = api.upload(route_spec, user_id)
 
-        user_routes = api.routes_for_user(user_id)
+        user_routes: List[Route] = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
+        
+        expected_sample_data = {
+            'Status': 1,
+            'RouteID': route.id,
+            'UserID': 'asdy7asdh',
+            'Name': route.name,
+            'SampleData': {
+                'PredictionReading': {
+                'Reading': {
+                    'CrocodileCrackConfidence': 0.17722677,
+                    'ImageFileName': '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
+                    'IsCrocodileCrackFault': False,
+                    'IsLatCrackFault': False,
+                    'IsLineblurFault': False,
+                    'IsLongCrackFault': False,
+                    'IsPotholeFault': False,
+                    'LatCrackConfidence': 0.07661053,
+                    'Latitude': -37.8714232,
+                    'LineblurConfidence': 0.09903459,
+                    'LongCrackConfidence': 0.6557837,
+                    'Longitude': 145.2450816,
+                    'PotholeConfidence': 0.14074452
+                    },
+                    'ReadingID': 0,
+                    'RouteID': route.id,
+                    'Timestamp': 1616116106935,
+                    'Type': 'PredictionReading'
+                }
+            }
+        }
+
+        print(user_routes[0])
+
+        self.assertEqual(user_routes[0], expected_sample_data)

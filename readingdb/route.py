@@ -23,11 +23,12 @@ class Route():
                 self.sample_data[k] = encode_reading(k, v)
 
     @classmethod
-    def decode_item(self, item: Dict[str, Any]) -> None:
+    def decode_item(cls, item: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in item:
             for k, v in item[RouteKeys.SAMPLE_DATA].items():
                 decode_reading(k, v)
                 item[RouteKeys.SAMPLE_DATA][k] = v
+        item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
 
     def item_data(self) ->  Dict[str, Any]:
         data = {

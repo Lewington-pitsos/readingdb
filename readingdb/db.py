@@ -1,5 +1,6 @@
 from pprint import pprint
 from random import sample
+from typing import Any, List, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -17,10 +18,10 @@ class DB():
             config=config,
         )
 
-    def all_tables(self):
+    def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
 
-    def create_reading_db(self, readCapacity=500, writeCapacity=500):
+    def create_reading_db(self, readCapacity=500, writeCapacity=500) -> Tuple[Any, Any]:
         reading_table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
@@ -81,10 +82,10 @@ class DB():
 
         return (reading_table, route_table)
 
-    def delete_table(self, table_name):
+    def delete_table(self, table_name) -> None:
         self.db.Table(table_name).delete()
 
-    def teardown_reading_db(self):
+    def teardown_reading_db(self) -> None:
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
@@ -98,7 +99,7 @@ class DB():
 
         return response
 
-    def all_route_readings(self, route_id):
+    def all_route_readings(self, route_id: str) -> List[AbstractReading]:
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id))
 
@@ -109,7 +110,7 @@ class DB():
 
         return items
 
-    def routes_for_user(self, user_id):
+    def routes_for_user(self, user_id: str) -> List[Route]:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
 
