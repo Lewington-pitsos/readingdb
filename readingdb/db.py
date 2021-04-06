@@ -1,4 +1,3 @@
-from pprint import pprint
 from random import sample
 from typing import Any, List, Tuple
 
@@ -6,7 +5,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import AbstractReading, decode_reading
+from readingdb.reading import AbstractReading, ddb_to_dict
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -105,7 +104,7 @@ class DB():
 
         items = []
         for item in response["Items"]:
-            decode_reading(item[ReadingKeys.TYPE], item)
+            ddb_to_dict(item[ReadingKeys.TYPE], item)
             items.append(item)
 
         return items

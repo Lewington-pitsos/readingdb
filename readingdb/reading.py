@@ -52,7 +52,7 @@ class ImageReading(Reading):
             ImageReadingKeys.FILENAME: self.url
         }
 
-        self.add_uri_data(data)
+        self.add_uri_data(data[ReadingKeys.READING])
 
         return data
 
@@ -92,8 +92,6 @@ class PositionReading(Reading):
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
 
-        print(item)
-
         item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LATITUDE])
         item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE])
 
@@ -129,11 +127,7 @@ class PredictionReading(ImageReading, PositionReading):
 
     def item_data(self):
         data = PositionReading.item_data(self)
-        print(data)
-
-        self.add_uri_data(data)
-
-        data[ReadingKeys.READING][ImageReadingKeys.FILENAME] = self.url
+        self.add_uri_data(data[ReadingKeys.READING])
 
         for k, v in self.predictionBinaries.items():
             data[ReadingKeys.READING][k] = encode_bool(v)
@@ -150,10 +144,10 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
     ReadingTypes.ANNOTATION: PredictionReading,
 }
 
-def decode_reading(reading_type, reading) -> None:
+def ddb_to_dict(reading_type, reading) -> None:
     READING_TYPE_MAP[reading_type].decode(reading)
 
-def encode_reading(reading_type, reading) -> AbstractReading:
+def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
             reading[ReadingKeys.READING_ID],
@@ -173,7 +167,6 @@ def encode_reading(reading_type, reading) -> AbstractReading:
         )
     elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
         binaries: Dict[str, bool] = {}
-        print(reading)
         reading_data = reading[ReadingKeys.READING]
 
         for key in CONDITION_BIARIES:

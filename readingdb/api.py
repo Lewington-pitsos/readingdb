@@ -1,6 +1,7 @@
+from typing import List
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
-from readingdb.reading import ImageReading, Reading, encode_reading
+from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
 import time
@@ -41,8 +42,8 @@ class API(DB):
             entries = reading_spec.load_readings()   
 
             if len(entries) > 0:
-                self.__save_entries(route_id, reading_spec.reading_type, entries)
-                initial_entries[reading_spec.reading_type] = entries[0]
+                finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
+                initial_entries[reading_spec.reading_type] = finalized_entries[0]
 
                 print("Finished saving all readings to FDS database")
             else:
@@ -67,13 +68,14 @@ class API(DB):
 
         return response, object_name
 
-    def __save_entry(self, entry: Reading) -> None:
+    def __save_entry(self, entry: Reading) -> AbstractReading:
         if entry.readingType in ReadingTypes.IMAGE_TYPES:
-            self.__save_img_entry(entry)
+            return self.__save_img_entry(entry)
 
         self.put_reading(entry)
+        return entry
 
-    def __save_img_entry(self, entry: ImageReading) -> None:
+    def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
         _, object_name = self.__upload_file(
             entry.route_id, 
             entry.url, 
@@ -87,13 +89,20 @@ class API(DB):
 
         self.put_reading(entry)
 
+        return entry
+
     def __generate_route_id(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
-    def __save_entries(self, route_id, entry_type, entries) -> None:
+    def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
         print("uploading entries")
+        finalized: List[AbstractReading] = []
         for i, e in enumerate(tqdm(entries)):
             e[ReadingKeys.READING_ID] = i
             e[ReadingRouteKeys.ROUTE_ID] = route_id
-            e = encode_reading(entry_type, e)
-            self.__save_entry(e)
+            e = json_to_reading(entry_type, e)
+            e = self.__save_entry(e)
+            finalized.append(e)
+            break
+
+        return finalized

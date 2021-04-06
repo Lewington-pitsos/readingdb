@@ -1,9 +1,10 @@
 import copy
+from pprint import pprint
 
 from typing import Any, Dict
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, decode_reading, encode_reading
+from readingdb.reading import AbstractReading, ddb_to_dict, json_to_reading
 
 class Route():
     def __init__(self, user_id: str, id: str, name: str=None, sample_data: Dict[str, AbstractReading]=None) -> None:
@@ -18,16 +19,13 @@ class Route():
         self.sample_data: Dict[str, AbstractReading] = copy.deepcopy(sample_data)  
         self.status = RouteStatus.UPLOADED
 
-        if self.sample_data:
-            for k, v in self.sample_data.items():
-                self.sample_data[k] = encode_reading(k, v)
-
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in item:
             for k, v in item[RouteKeys.SAMPLE_DATA].items():
-                decode_reading(k, v)
+                ddb_to_dict(k, v)
                 item[RouteKeys.SAMPLE_DATA][k] = v
+                
         item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
 
     def item_data(self) ->  Dict[str, Any]:
