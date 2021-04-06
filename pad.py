@@ -14,15 +14,15 @@
 # with open("readingdb/test_data/sample_readings.json", "w") as f:
 #     json.dump(entries, f, indent="    ")
 
-from readingdb.db import DB
-import time
+# from readingdb.db import DB
+# import time
 
-db = DB("https://dynamodb.ap-southeast-2.amazonaws.com")
+# db = DB("https://dynamodb.ap-southeast-2.amazonaws.com")
 
-db.teardown_reading_db()
-
-
-time.sleep(10)
+# db.teardown_reading_db()
 
 
-db.create_reading_db()
+# time.sleep(10)
+
+
+# db.create_reading_db()

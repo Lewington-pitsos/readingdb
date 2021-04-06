@@ -1,5 +1,6 @@
 import abc
 from os import read
+from readingdb.s3uri import S3Uri
 from typing import Any, Dict
 
 from readingdb.constants import *
@@ -8,21 +9,19 @@ from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
 
 
 class AbstractReading(abc.ABC):
-
     @abc.abstractmethod
     def item_data(self) -> Dict[str, Any]:
-
-        raise ValueError("not implemented")
+        raise NotImplementedError("not implemented")
 
     @abc.abstractclassmethod
     def decode(cls, item: Dict[str, Any]):
+        raise NotImplementedError("not implemented")
 
-        raise ValueError("not implemented")
 class Reading(AbstractReading):
     def __init__(self, id: int, route_id: str, date: int, readingType: str) -> None:
         self.id: int = id
         self.route_id: str = route_id
-        self.date: int = date
+        self.date: int = int(date) if isinstance(date, float) else date
         self.readingType: str = readingType
 
     def item_data(self):
@@ -38,13 +37,13 @@ class Reading(AbstractReading):
         item[ReadingKeys.READING_ID] = int(item[ReadingKeys.READING_ID])
         item[ReadingKeys.TIMESTAMP] = int(item[ReadingKeys.TIMESTAMP])
 
-        
 
 class ImageReading(Reading):
     def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str) -> None:
         super().__init__(id, route_id, date, readingType)
 
         self.url: str = url
+        self.uri = None
 
     def item_data(self):
         data = super().item_data()
@@ -53,12 +52,24 @@ class ImageReading(Reading):
             ImageReadingKeys.FILENAME: self.url
         }
 
+        self.add_uri_data(data)
+
         return data
 
     @classmethod
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
         pass
+
+    def add_uri_data(self, data):
+        if self.uri:
+            data[ImageReadingKeys.FILENAME] = {
+                S3Path.BUCKET: self.uri.bucket,
+                S3Path.KEY: self.uri.object_name
+            }
+
+    def set_uri(self, uri: S3Uri):
+        self.uri: S3Uri = uri
 
 class PositionReading(Reading):
     def __init__(self, id: int, route_id: str, date: int, readingType: str, lat: int, long: int) -> None:
@@ -84,7 +95,7 @@ class PositionReading(Reading):
         item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LATITUDE])
         item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE])
 
-class PredictionReading(PositionReading):
+class PredictionReading(ImageReading, PositionReading):
     def __init__(
         self, id: int, 
         route_id: str, 
@@ -96,9 +107,10 @@ class PredictionReading(PositionReading):
         predictionBinaries: Dict[str, bool],
         predictionConfidences: Dict[str, float],
     ):
-        super().__init__(id, route_id, date, readingType, lat, long)    
+        PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
 
-        self.url: str = url
+        self.url = url
+        self.uri = None
         self.predictionBinaries: Dict[str, bool] = predictionBinaries
         self.predictionConfidences: Dict[str, bool] = predictionConfidences
     
@@ -115,6 +127,8 @@ class PredictionReading(PositionReading):
 
     def item_data(self):
         data = super().item_data()
+
+        self.add_uri_data(data)
 
         data[ReadingKeys.READING][ImageReadingKeys.FILENAME] = self.url
 
@@ -156,7 +170,7 @@ def encode_reading(reading_type, reading) -> AbstractReading:
         )
     elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
         binaries: Dict[str, bool] = {}
-
+        print(reading)
         reading_data = reading[ReadingKeys.READING]
 
         for key in CONDITION_BIARIES:

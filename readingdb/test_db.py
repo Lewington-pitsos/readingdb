@@ -4,7 +4,7 @@ import time
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import PredictionReading, ImageReading
+from readingdb.reading import ImageReading
 from readingdb.route import Route
 
 class TestDBOps(unittest.TestCase):
