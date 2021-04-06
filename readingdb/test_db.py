@@ -50,6 +50,11 @@ class TestDBOps(unittest.TestCase):
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
+        self.assertEqual(routes[0], {
+            "RouteID": "103",
+            "UserID": "3",
+            "Status": 1,
+        })
 
     def test_creates_new_route_with_name(self):
         name = "someName"

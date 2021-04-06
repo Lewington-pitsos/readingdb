@@ -33,6 +33,7 @@ class Route():
         data = {
             RouteKeys.USER_ID: self.user_id,
             ReadingRouteKeys.ROUTE_ID: self.id,
+            RouteKeys.STATUS: int(self.status)
         }
 
         if self.name:

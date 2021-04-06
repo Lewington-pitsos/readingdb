@@ -15,6 +15,7 @@ class RouteKeys():
     USER_ID = "UserID"
     NAME = 'Name'
     SAMPLE_DATA = "SampleData"
+    STATUS = 'Status'
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"
