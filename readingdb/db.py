@@ -1,5 +1,5 @@
 from random import sample
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -98,9 +98,10 @@ class DB():
 
         return response
 
-    def all_route_readings(self, route_id: str) -> List[AbstractReading]:
+    def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id))
+        response = table.query(
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)) & Key(RouteKeys.USER_ID).eq(user_id)
 
         items = []
         for item in response["Items"]:
@@ -109,7 +110,7 @@ class DB():
 
         return items
 
-    def routes_for_user(self, user_id: str) -> List[Route]:
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
 

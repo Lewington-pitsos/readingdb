@@ -23,14 +23,14 @@ class TestDBOps(unittest.TestCase):
             self.db.put_reading(
                 ImageReading(
                     i,
-                    "103",
+                    "xxxa",
                     reading_time,
                     ReadingTypes.IMAGE,
                     "https://aws/s3/somebucket/file.jpg", 
                 )
             )
         
-        readings = self.db.all_route_readings("103")
+        readings = self.db.all_route_readings("xxxa", "103")
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "103")

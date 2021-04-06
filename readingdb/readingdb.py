@@ -1,5 +1,5 @@
 import abc
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from readingdb.route import Route
 from readingdb.reading import Reading
@@ -34,27 +34,42 @@ class ReadingDB(abc.ABC):
         """
         raise NotImplementedError("all_route_readings is not implemented")
 
-    # Other
+    # Other Saving Methods
 
     @abc.abstractmethod
-    def upload(reading_spec: ReadingSpec, user_id: str) -> str:
+    def upload(reading_spec: ReadingSpec, user_id: str) -> Route:
         """Uploads all readings listed within reading_spec as a single route.
         Returns the ID of the newly created route.
         """
         raise NotImplementedError("upload is not implemented")
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def update_route_name(route_id: str, user_id: str, name: str):
         """Sets the name of the given route to the given name.
         """
         raise NotImplementedError("not implemented")
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def process_upload(s3_uri: str, user_id: str) -> str:
         """Uploads all readings that exist within the se_uri (which 
         will be a zipped file) as a new route.
 
         Returns the id of the newly created route.
+        """
+        raise NotImplementedError("not implemented")
+    
+    # Other Loading Methods
+
+    @abc.abstractmethod
+    def all_route_readings(route_id: str, user_id: str) -> List[Dict[str, Any]]:
+        """Loads and returns all the readings for the given route
+        """
+        raise NotImplementedError("not implemented")
+
+    @abc.abstractmethod
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        """Loads and returns all the routes for the given user
+        including sample readings only.
         """
         raise NotImplementedError("not implemented")
 
