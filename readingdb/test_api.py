@@ -1,6 +1,7 @@
 import json
 import os
 from pprint import pprint
+from readingdb.constants import ReadingRouteKeys, RouteKeys
 from typing import List
 from readingdb.route import Route
 from readingdb.routespec import RouteSpec
@@ -93,6 +94,23 @@ class TestDownloadJsonFiles(unittest.TestCase):
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
     
+    def test_updates_route_name(self):
+        user_id = "aghsghavgas"
+        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.upload(route_spec, user_id)
+
+        self.assertEqual(route.name, route.id.split("-")[-1])
+
+        api.update_route_name(route.id, user_id, "Belgrave")
+
+        loaded_route = api.get_route(route.id, user_id)
+        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[RouteKeys.NAME], "Belgrave")
+
+
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
 
@@ -104,7 +122,7 @@ class TestDownloadJsonFiles(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.upload(route_spec, user_id)
 
-        user_routes: List[Route] = api.routes_for_user(user_id)
+        user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
 
         expected_sample_data = {
@@ -138,7 +156,7 @@ class TestDownloadJsonFiles(unittest.TestCase):
                 'Timestamp': 1616116106935,
                 }
             },
-            'Name': route.name,
+            'RouteName': route.name,
         }
 
         self.assertEqual(user_routes[0], expected_sample_data)

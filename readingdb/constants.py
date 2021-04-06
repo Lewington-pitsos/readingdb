@@ -13,7 +13,7 @@ class ReadingKeys():
 
 class RouteKeys():
     USER_ID = "UserID"
-    NAME = 'Name'
+    NAME = 'RouteName'
     SAMPLE_DATA = "SampleData"
     STATUS = 'Status'
 

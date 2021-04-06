@@ -67,6 +67,12 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError("not implemented")
 
     @abc.abstractmethod
+    def get_route(route_id: str, user_id: str) -> Dict[str, Any]:
+        """Loads and returns all the specified route
+        """
+        raise NotImplementedError("not implemented")
+
+    @abc.abstractmethod
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         """Loads and returns all the routes for the given user
         including sample readings only.

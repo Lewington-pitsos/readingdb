@@ -101,7 +101,8 @@ class DB():
     def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.query(
-            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)) & Key(RouteKeys.USER_ID).eq(user_id)
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+        )
 
         items = []
         for item in response["Items"]:
@@ -109,6 +110,17 @@ class DB():
             items.append(item)
 
         return items
+
+    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+        )
+        
+        item = response["Items"][0]
+        Route.decode_item(item)
+
+        return item
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
@@ -120,3 +132,17 @@ class DB():
             items.append(item)
 
         return items
+
+    def update_route_name(self, route_id: str, user_id: str, name: str):
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        
+        table.update_item(
+            Key={
+                ReadingRouteKeys.ROUTE_ID: route_id,
+                RouteKeys.USER_ID: user_id
+            },
+            UpdateExpression=f"set {RouteKeys.NAME} = :r",
+            ExpressionAttributeValues={
+                ':r': name,
+            },
+        )

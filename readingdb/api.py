@@ -61,7 +61,6 @@ class API(DB):
 
         return route
 
-
     def __upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
         response = self.s3_client.upload_file(file_name, bucket, object_name)
