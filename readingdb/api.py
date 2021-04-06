@@ -1,4 +1,6 @@
-from typing import List
+from readingdb.readingdb import ReadingDB
+from readingdb.routestatus import RouteStatus
+from typing import Any, Dict, List
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
@@ -15,7 +17,7 @@ from readingdb.db import DB
 from readingdb.normalize import *
 from readingdb.constants import *
 
-class API(DB):
+class API(DB, ReadingDB):
     def __init__(
         self, 
         url, 
@@ -61,6 +63,14 @@ class API(DB):
 
         return route
 
+    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
+        self.__save_entries(route_id, ReadingTypes.PREDICTION, readings)
+
+        self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+
+    def set_as_predicting(self, route_id: str, user_id: str) -> None:
+        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
+
     def __upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
         response = self.s3_client.upload_file(file_name, bucket, object_name)
@@ -75,16 +85,17 @@ class API(DB):
         return entry
 
     def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
-        _, object_name = self.__upload_file(
-            entry.route_id, 
-            entry.url, 
-            self.bucket
-        )
+        if not entry.has_uri():
+            _, object_name = self.__upload_file(
+                entry.route_id, 
+                entry.url, 
+                self.bucket
+            )
 
-        entry.set_uri(S3Uri(
-            self.bucket,
-            object_name,
-        ))
+            entry.set_uri(S3Uri(
+                self.bucket,
+                object_name,
+            ))
 
         self.put_reading(entry)
 

@@ -15,7 +15,7 @@ class RouteKeys():
     USER_ID = "UserID"
     NAME = 'RouteName'
     SAMPLE_DATA = "SampleData"
-    STATUS = 'Status'
+    STATUS = 'RouteStatus'
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"
@@ -93,6 +93,7 @@ class PredictionReading(ImageReadingKeys):
     
 class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
+    URI = "S3Uri"
 
 class LambdaEvents():
     ROUTE_ID = "RouteID"

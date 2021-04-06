@@ -1,6 +1,7 @@
 import json
 import os
 from pprint import pprint
+from readingdb.routestatus import RouteStatus
 from readingdb.constants import ReadingRouteKeys, RouteKeys
 from typing import List
 from readingdb.route import Route
@@ -111,6 +112,54 @@ class TestDownloadJsonFiles(unittest.TestCase):
         self.assertEqual(loaded_route[RouteKeys.NAME], "Belgrave")
 
 
+    def test_update_route_status(self):
+        user_id = "aghsghavgas"
+        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.upload(route_spec, user_id)
+
+        self.assertEqual(RouteStatus.UPLOADED, route.status)
+        api.set_as_predicting(route.id, user_id)
+
+        loaded_route = api.get_route(route.id, user_id)
+        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.PREDICTING)
+
+        preds = [{
+            'Reading': {
+                'CrocodileCrackConfidence': 0.17722677,
+                'ImageFileName': "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                'S3Uri': {
+                    "Bucket": TEST_BUCKET,
+                    "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
+                },
+                'IsCrocodileCrackFault': False,
+                'IsLatCrackFault': False,
+                'IsLineblurFault': False,
+                'IsLongCrackFault': False,
+                'IsPotholeFault': False,
+                'LatCrackConfidence': 0.07661053,
+                'Latitude': -37.8714232,
+                'LineblurConfidence': 0.09903459,
+                'LongCrackConfidence': 0.6557837,
+                'Longitude': 145.2450816,
+                'PotholeConfidence': 0.14074452,
+            },
+            'ReadingID': 0,
+            'Type': 'PredictionReading',
+
+            'RouteID': route.id,
+            'Timestamp': 1616116106935,
+        }]
+
+        api.save_predictions(preds, route.id, user_id)
+
+        loaded_route = api.get_route(route.id, user_id)
+        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
+
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
 
@@ -126,14 +175,15 @@ class TestDownloadJsonFiles(unittest.TestCase):
         self.assertEqual(len(user_routes), 1)
 
         expected_sample_data = {
-            'Status': 1,
+            'RouteStatus': 1,
             'RouteID': route.id,
             'UserID': 'asdy7asdh',
             'SampleData': {
                 'PredictionReading': {
                 'Reading': {
+                    "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
                     'CrocodileCrackConfidence': 0.17722677,
-                    'ImageFileName': {
+                    'S3Uri': {
                         "Bucket": TEST_BUCKET,
                         "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                     },
@@ -161,7 +211,6 @@ class TestDownloadJsonFiles(unittest.TestCase):
 
         self.assertEqual(user_routes[0], expected_sample_data)
 
-
         s3 = boto3.resource(
             "s3",
             region_name=self.region_name,
@@ -182,4 +231,3 @@ class TestDownloadJsonFiles(unittest.TestCase):
             route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
             route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg'
         ]))
-

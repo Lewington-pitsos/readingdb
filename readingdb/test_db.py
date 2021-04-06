@@ -55,7 +55,7 @@ class TestDBOps(unittest.TestCase):
             "UserID": "3",
             "Status": 1,
         })
-
+    
     def test_creates_new_route_with_name(self):
         name = "someName"
         self.db.create_reading_db()

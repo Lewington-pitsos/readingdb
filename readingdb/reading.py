@@ -39,20 +39,18 @@ class Reading(AbstractReading):
 
 
 class ImageReading(Reading):
-    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str) -> None:
+    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str, uri: str = None) -> None:
         super().__init__(id, route_id, date, readingType)
 
         self.url: str = url
-        self.uri = None
+        self.uri = uri
 
     def item_data(self):
         data = super().item_data()
 
-        data[ReadingKeys.READING] = {
-            ImageReadingKeys.FILENAME: self.url
-        }
+        data[ReadingKeys.READING] = {}
 
-        self.add_uri_data(data[ReadingKeys.READING])
+        self.add_file_data(data[ReadingKeys.READING])
 
         return data
 
@@ -61,15 +59,21 @@ class ImageReading(Reading):
         super().decode(item)
         pass
 
-    def add_uri_data(self, data):
+    def add_file_data(self, data):
+        if self.url:
+            data[ImageReadingKeys.FILENAME] = self.url
+
         if self.uri:
-            data[ImageReadingKeys.FILENAME] = {
+            data[ImageReadingKeys.URI] = {
                 S3Path.BUCKET: self.uri.bucket,
                 S3Path.KEY: self.uri.object_name
             }
 
     def set_uri(self, uri: S3Uri):
         self.uri: S3Uri = uri
+
+    def has_uri(self) -> bool:
+        return self.uri is not None
 
 class PositionReading(Reading):
     def __init__(self, id: int, route_id: str, date: int, readingType: str, lat: int, long: int) -> None:
@@ -106,11 +110,12 @@ class PredictionReading(ImageReading, PositionReading):
         url: str,
         predictionBinaries: Dict[str, bool],
         predictionConfidences: Dict[str, float],
+        uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
 
         self.url = url
-        self.uri = None
+        self.uri = uri
         self.predictionBinaries: Dict[str, bool] = predictionBinaries
         self.predictionConfidences: Dict[str, bool] = predictionConfidences
     
@@ -127,7 +132,9 @@ class PredictionReading(ImageReading, PositionReading):
 
     def item_data(self):
         data = PositionReading.item_data(self)
-        self.add_uri_data(data[ReadingKeys.READING])
+
+
+        self.add_file_data(data[ReadingKeys.READING])
 
         for k, v in self.predictionBinaries.items():
             data[ReadingKeys.READING][k] = encode_bool(v)
@@ -147,6 +154,9 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
 def ddb_to_dict(reading_type, reading) -> None:
     READING_TYPE_MAP[reading_type].decode(reading)
 
+def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
+    return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
+
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
@@ -164,6 +174,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReadi
             reading[ReadingKeys.TIMESTAMP],
             reading_type,
             reading[ReadingKeys.READING][ImageReadingKeys.FILENAME],
+            get_uri(reading[ReadingKeys.READING])
         )
     elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
         binaries: Dict[str, bool] = {}
@@ -179,7 +190,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReadi
         for key in CONDITION_CONFS:
             if key in reading_data:
                 confidences[key] = reading_data[key]
- 
+
         return PredictionReading(
             reading[ReadingKeys.READING_ID],
             reading[ReadingRouteKeys.ROUTE_ID],
@@ -190,6 +201,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReadi
             reading_data[ImageReadingKeys.FILENAME],
             binaries,
             confidences,
+            get_uri(reading_data)
         )
     else:
         raise ValueError(f"unrecognized reading type {reading_type} for reading {reading}")

@@ -1,4 +1,5 @@
 from random import sample
+from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 
 import boto3
@@ -116,7 +117,7 @@ class DB():
         response = table.query(
             KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
         )
-        
+
         item = response["Items"][0]
         Route.decode_item(item)
 
@@ -133,7 +134,7 @@ class DB():
 
         return items
 
-    def update_route_name(self, route_id: str, user_id: str, name: str):
+    def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         
         table.update_item(
@@ -144,5 +145,19 @@ class DB():
             UpdateExpression=f"set {RouteKeys.NAME} = :r",
             ExpressionAttributeValues={
                 ':r': name,
+            },
+        )
+
+    def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        
+        table.update_item(
+            Key={
+                ReadingRouteKeys.ROUTE_ID: route_id,
+                RouteKeys.USER_ID: user_id
+            },
+            UpdateExpression=f"set {RouteKeys.STATUS} = :r",
+            ExpressionAttributeValues={
+                ':r': status,
             },
         )
