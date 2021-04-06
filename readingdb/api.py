@@ -18,8 +18,6 @@ def load_json_entries(path_key, reading):
     
     return entries
 
-
-
 class API(DB):
     ROUTE_NAME_KEY = "route"
     ROUTE_READINGS_KEY = "readings"
