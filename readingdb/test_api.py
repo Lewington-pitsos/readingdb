@@ -103,3 +103,5 @@ class TestDownloadJsonFiles(unittest.TestCase):
 
         api.upload(route_spec, user_id)
 
+        user_routes = api.routes_for_user(user_id)
+        self.assertEqual(len(user_routes), 1)

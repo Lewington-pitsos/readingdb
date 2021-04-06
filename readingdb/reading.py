@@ -92,6 +92,8 @@ class PositionReading(Reading):
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
 
+        print(item)
+
         item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LATITUDE])
         item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE])
 
@@ -116,7 +118,7 @@ class PredictionReading(ImageReading, PositionReading):
     
     @classmethod
     def decode(cls, item: Dict[str, Any]):
-        super().decode(item)
+        PositionReading.decode(item)
 
         for k, v in item[ReadingKeys.READING].items():
             if k in CONDITION_BIARIES:
@@ -126,7 +128,8 @@ class PredictionReading(ImageReading, PositionReading):
 
 
     def item_data(self):
-        data = super().item_data()
+        data = PositionReading.item_data(self)
+        print(data)
 
         self.add_uri_data(data)
 
