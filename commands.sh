@@ -11,7 +11,7 @@ python -m unittest discover
 # local testing
 docker build -t readingdb:latest ./ && docker run -p 9000:8080 readingdb:latest
 
-curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"RouteID": "1617260062.1409826-EPILIQLB84EE3CH"}'
 
 
 # deploying to aws ecr
