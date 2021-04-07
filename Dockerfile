@@ -5,12 +5,12 @@ ADD readingdb ./readingdb
 
 COPY lamb.py ./
 COPY requirements.txt ./
+COPY aws/credentials ./
 
 # Install NPM dependencies for function
 RUN pip install -r requirements.txt
 
-ENV AWS_ACCESS_KEY_ID=AKIA52XQLVT4QKU7LEPX
-ENV AWS_SECRET_ACCESS_KEY=QfQ7cendKQuOdLHbaa94y1I4b0yeM08Z0H5TfuM5
+ENV AWS_SHARED_CREDENTIALS_FILE=credentials
 
 # Set the CMD to your handler
 CMD [ "lamb.handler" ]

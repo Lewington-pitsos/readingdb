@@ -1,25 +1,43 @@
 import logging
 
 from readingdb.api import API
-from readingdb.constants import LambdaEvents
+from readingdb.constants import *
 from readingdb.auth import Auth
 from botocore.config import Config
+from typing import Dict, Any
 
-logger = logging.getLogger()
+logger = logging.getLogger("main")
 logger.setLevel(logging.INFO)
 
-def handler(event, context):
+EVENT_NAME = "Name"
+EVENT_GET_ROUTE = "GetRoute"
+
+
+
+RESPONSE_ERROR = "Error"
+RESPONSE_SUCCESS = "Success"
+
+def handler(event: Dict[str, Any], context):
     logger.info('Event: %s', event)
+
+    event_name = event[EVENT_NAME]
 
     api = API("https://dynamodb.ap-southeast-2.amazonaws.com", config=Config(
         region_name="ap-southeast-2",
     ))
 
-    route_id = event[LambdaEvents.ROUTE_ID]
-    readings = api.all_route_readings(route_id)
 
-    logger.info(f"Found {len(readings)} for route {route_id} readings")
-    logger.info(f"First Reading: {readings[0]}")
+    if event_name == EVENT_GET_ROUTE:
+        route_id = event[ReadingRouteKeys.ROUTE_ID]
+        route = api.get_route(route_id)
+
+        return {}
+    else:
+        return {RESPONSE_ERROR: f"Unknown event name {event_name}"}
+    
+
+
+)
 
     response = {'result': readings}
     return response

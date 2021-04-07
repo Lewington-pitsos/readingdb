@@ -94,6 +94,3 @@ class PredictionReading(ImageReadingKeys):
 class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
     URI = "S3Uri"
-
-class LambdaEvents():
-    ROUTE_ID = "RouteID"
