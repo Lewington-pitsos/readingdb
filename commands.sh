@@ -9,9 +9,8 @@ python -m unittest discover
 # docker lambda related
 
 # local testing
-docker build -t readingdb:latest ./
+docker build -t readingdb:latest ./ && docker run -p 9000:8080 readingdb:latest
 
-docker run -p 9000:8080 readingdb:latest
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
 
 

@@ -99,10 +99,10 @@ class DB():
 
         return response
 
-    def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
+    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.query(
-            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)
         )
 
         items = []

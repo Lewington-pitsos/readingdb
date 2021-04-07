@@ -4,7 +4,7 @@ import time
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import ImageReading
+from readingdb.reading import ImageReading, json_to_reading
 from readingdb.route import Route
 
 class TestDBOps(unittest.TestCase):
@@ -30,10 +30,10 @@ class TestDBOps(unittest.TestCase):
                 )
             )
         
-        readings = self.db.all_route_readings("xxxa", "103")
+        readings = self.db.all_route_readings("xxxa")
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "103")
+        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "xxxa")
         self.assertEqual(first_reading[ReadingKeys.READING_ID], 0)
         self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
         self.assertEqual(first_reading[ReadingKeys.READING], {
@@ -53,7 +53,7 @@ class TestDBOps(unittest.TestCase):
         self.assertEqual(routes[0], {
             "RouteID": "103",
             "UserID": "3",
-            "Status": 1,
+            "RouteStatus": 1,
         })
     
     def test_creates_new_route_with_name(self):
@@ -118,7 +118,7 @@ class TestDBOps(unittest.TestCase):
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route("3", "103", sample_data=sample_entry))
+        self.db.put_route(Route("3", "103", sample_data= json_to_reading(sample_entry)))
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)

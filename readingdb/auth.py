@@ -2,7 +2,6 @@ import abc
 from typing import Any, Dict
 
 import boto3
-from boto3 import CognitoIdentityProvider
 
 from readingdb.authresponse import AuthResponse
 
