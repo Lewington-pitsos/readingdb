@@ -6,8 +6,6 @@ from boto3 import CognitoIdentityProvider
 
 from readingdb.authresponse import AuthResponse
 
-
-
 class AbstractAuth(abc.ABC):
     @abc.abstractmethod
     def get_user(accessToken: str) -> AuthResponse:
