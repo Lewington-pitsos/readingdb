@@ -68,7 +68,7 @@ class TestDBOps(unittest.TestCase):
         self.assertEqual(routes[0][RouteKeys.NAME], name)
 
     def test_creates_new_route_with_sample_data(self):
-        sample_entry = {"PredictionReading": {
+        sample_entry = {
             "ReadingID": 78,
             "Type": "PredictionReading",
             "Reading": {
@@ -90,7 +90,7 @@ class TestDBOps(unittest.TestCase):
             "Timestamp": 1616116106935,
             "MillisecondPrecision": True,
             "Row": 30,
-        }}
+        }
    
         expected_entry = {"PredictionReading": {
             "ReadingID": 78,
@@ -118,7 +118,11 @@ class TestDBOps(unittest.TestCase):
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route("3", "103", sample_data= json_to_reading(sample_entry)))
+        self.db.put_route(Route(
+            "3", 
+            "103", 
+            sample_data={"PredictionReading": json_to_reading("PredictionReading", sample_entry)}
+        ))
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)

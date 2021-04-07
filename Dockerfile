@@ -3,7 +3,7 @@ FROM public.ecr.aws/lambda/python:3.8
 # Copy function code and package.json
 ADD readingdb ./readingdb
 
-COPY lamb.py ./
+COPY readingdb/lamb.py ./
 COPY requirements.txt ./
 COPY aws/credentials ./
 
