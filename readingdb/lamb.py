@@ -17,6 +17,7 @@ EVENT_ACCESS_TOKEN = "AccessToken"
 # Event Types
 EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_READINGS = "GetReadings"
+EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -47,6 +48,12 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
     resp[RESPONSE_BODY_KEY] = body
     return resp
 
+def get_key(event, key):
+    if not key in event:
+        return key_missing_error_response(key)
+
+    return event[key]
+
 def handler(event: Dict[str, Any], context):
     logger.info('Event: %s', event)
 
@@ -70,21 +77,35 @@ def handler(event: Dict[str, Any], context):
 
     #  ------------ Per-Event-Type handling -------------
 
-    if event_name == EVENT_GET_ROUTE:
-        if not ReadingRouteKeys.ROUTE_ID in event:
-            return key_missing_error_response(ReadingRouteKeys.ROUTE_ID)
+    resp = {}
 
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
-        user_id = user_data.user_sub
-        route = api.get_route(route_id, user_id)
+    if event_name == EVENT_GET_ROUTE:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+
+        route = api.get_route(route_id, user_data.user_sub)
         return success_response(route)
 
     elif event_name == EVENT_GET_READINGS:
-        if not ReadingRouteKeys.ROUTE_ID in event:
-            return key_missing_error_response(ReadingRouteKeys.ROUTE_ID) 
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
 
         route_id = event[ReadingRouteKeys.ROUTE_ID]
         readings = api.all_route_readings(route_id)
+
+        return success_response(readings)
+
+    elif event_name == EVENT_UPDATE_ROUTE_NAME:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp
+            return err_resp 
+        saddas
+        
+
+        route_id = event[ReadingRouteKeys.ROUTE_ID]
+        readings = api.update_route_name(route_id)
 
         return success_response(readings)
 
