@@ -8,11 +8,8 @@ import time
 import boto3
 
 from readingdb.lamb import handler
+from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
-
-CURRENT_DIR = os.path.dirname(__file__)
-
-CREDENTIALS_FILE = CURRENT_DIR + "/test_data/fdsadmin.json"
 NO_CREDS_REASON = f"no credentials file located at {CREDENTIALS_FILE}"
 
 def credentials_present():
@@ -21,43 +18,12 @@ def credentials_present():
 class TestLambda(unittest.TestCase): 
     # Helper Code
 
-    USERNAME_KEY = "username"
-    PASSWORD_KEY = "password"
-    CLIENT_ID = "client_id"
-
-    ACCESS_TOKEN_KEY = 'AccessToken'
-    AUTH_RESULT_KEY = 'AuthenticationResult'
-
     @classmethod
     def setUpClass(cls):
         if credentials_present():
-            cls.access_token = cls.get_access_token()
+            cls.access_token = get_access_token()
         else:
             cls.access_token = ""
-    
-    @classmethod
-    def get_credentials(cls) -> Tuple[str, str, str]:
-        with open(CREDENTIALS_FILE, "r") as f:
-            creds = json.load(f)
-        
-        return creds[cls.USERNAME_KEY], creds[cls.PASSWORD_KEY], creds[cls.CLIENT_ID]
-
-    @classmethod
-    def get_access_token(cls) -> str:
-        cclient = boto3.client('cognito-idp', region_name="ap-southeast-2")
-
-        uname, pwd, cid = cls.get_credentials()
-
-        auth_resp = cclient.initiate_auth(
-            AuthFlow='USER_PASSWORD_AUTH',
-            AuthParameters={
-                'USERNAME': uname,
-                'PASSWORD': pwd
-            },
-            ClientId=cid
-        )
-
-        return auth_resp[cls.AUTH_RESULT_KEY][cls.ACCESS_TOKEN_KEY]
 
     # Tests
 

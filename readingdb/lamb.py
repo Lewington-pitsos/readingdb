@@ -49,10 +49,12 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
     return resp
 
 def get_key(event, key):
-    if not key in event:
-        return key_missing_error_response(key)
+    err = None
 
-    return event[key]
+    if not key in event:
+        err = key_missing_error_response(key)
+
+    return event[key], err
 
 def handler(event: Dict[str, Any], context):
     logger.info('Event: %s', event)
@@ -99,15 +101,16 @@ def handler(event: Dict[str, Any], context):
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
-        if err_resp
+        if err_resp:
             return err_resp 
-        saddas
-        
+        name, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp 
 
         route_id = event[ReadingRouteKeys.ROUTE_ID]
-        readings = api.update_route_name(route_id)
+        api.update_route_name(route_id, user_data.user_sub, name)
 
-        return success_response(readings)
+        return success_response(None)
 
     else:
         return error_response(f"Unrecognized event type {event_name}")

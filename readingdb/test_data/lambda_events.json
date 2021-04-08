@@ -1,0 +1,7 @@
+{
+    "GetReadings": {
+        "Type": "GetReadings",
+        "RouteID": "1617839705.6470242-61ZDT8KWSA41RQV",
+        "AccessToken": "INSERT_ACCESS_TOKEN"
+    }
+}
