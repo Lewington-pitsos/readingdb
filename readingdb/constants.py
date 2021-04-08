@@ -13,8 +13,9 @@ class ReadingKeys():
 
 class RouteKeys():
     USER_ID = "UserID"
-    NAME = 'Name'
+    NAME = 'RouteName'
     SAMPLE_DATA = "SampleData"
+    STATUS = 'RouteStatus'
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"
@@ -28,7 +29,7 @@ class ReadingTypes():
         IMAGE
     ]
 
-class PositionReading():
+class PositionReadingKeys():
     LATITUDE = "Latitude"
     LONGITUDE = "Longitude"
 
@@ -90,8 +91,6 @@ class PredictionReading(ImageReadingKeys):
 
     FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [TIMESTAMP, FILENAME]
     
-class ImageReading():
+class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
-
-class LambdaEvents():
-    ROUTE_ID = "RouteID"
+    URI = "S3Uri"

@@ -3,8 +3,8 @@
         {
             "type": "PredictionReading", 
             "format": "json_entries",
-            "path": "/home/lewington/code/readingsdb/readingdb/test_data/ftg_imgs.json",
-            "name": "Upper Frentree Gully"
+            "path": "/home/lewington/code/readingsdb/readingdb/test_data/ftg_imgs.json"
         }
-    ]
+    ],
+    "name": "Upper Frentree Gully"
 }

@@ -1,8 +1,11 @@
+from pprint import pprint
 import unittest
 import time
 
 from readingdb.db import DB
 from readingdb.constants import *
+from readingdb.reading import ImageReading, json_to_reading
+from readingdb.route import Route
 
 class TestDBOps(unittest.TestCase):
     def setUp(self):
@@ -18,19 +21,19 @@ class TestDBOps(unittest.TestCase):
 
         for i in range(21):
             self.db.put_reading(
-                "103",
-                i,
-                ReadingTypes.IMAGE,
-                {
-                    ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
-                },
-                reading_time
+                ImageReading(
+                    i,
+                    "xxxa",
+                    reading_time,
+                    ReadingTypes.IMAGE,
+                    "https://aws/s3/somebucket/file.jpg", 
+                )
             )
         
-        readings = self.db.all_route_readings("103")
+        readings = self.db.all_route_readings("xxxa")
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "103")
+        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "xxxa")
         self.assertEqual(first_reading[ReadingKeys.READING_ID], 0)
         self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
         self.assertEqual(first_reading[ReadingKeys.READING], {
@@ -43,51 +46,87 @@ class TestDBOps(unittest.TestCase):
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route("3", "103")
+        self.db.put_route(Route("3", "103"))
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
-
+        self.assertEqual(routes[0], {
+            "RouteID": "103",
+            "UserID": "3",
+            "RouteStatus": 1,
+        })
+    
     def test_creates_new_route_with_name(self):
         name = "someName"
         self.db.create_reading_db()
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route("3", "103", name=name)
+        self.db.put_route(Route("3", "103", name=name))
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
         self.assertEqual(routes[0][RouteKeys.NAME], name)
 
     def test_creates_new_route_with_sample_data(self):
-        sample_entry = {"PredictionReading": {
-            "Date": 1616116106935,
-            "Latitude": -37.8714232,
-            "Longitude": 145.2450816,
+        sample_entry = {
+            "ReadingID": 78,
+            "Type": "PredictionReading",
+            "Reading": {
+                "Latitude": -37.8714232,
+                "Longitude": 145.2450816,
+                "IsCrocodileCrackFault": False,
+                "LatCrackConfidence": 0.07661053,
+                "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                "LongCrackConfidence": 0.6557837,
+                "IsLongCrackFault": False,
+                "IsLatCrackFault": False,
+                "CrocodileCrackConfidence": 0.17722677,
+                "PotholeConfidence": 0.14074452,
+                "IsPotholeFault": False,
+                "LineblurConfidence": 0.09903459,
+                "IsLineblurFault": False
+            },
+            "RouteID": "45",
+            "Timestamp": 1616116106935,
             "MillisecondPrecision": True,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
             "Row": 30,
-            "LongCrackConfidence": 0.6557837,
-            "IsLongCrackFault": False,
-            "LatCrackConfidence": 0.07661053,
-            "IsLatCrackFault": False,
-            "CrocodileCrackConfidence": 0.17722677,
-            "IsCrocodileCrackFault": False,
-            "PotholeConfidence": 0.14074452,
-            "IsPotholeFault": False,
-            "LineblurConfidence": 0.09903459,
-            "IsLineblurFault": False
+        }
+   
+        expected_entry = {"PredictionReading": {
+            "ReadingID": 78,
+            "Type": "PredictionReading",
+            "Reading": {
+                "Latitude": -37.8714232,
+                "Longitude": 145.2450816,
+                "IsCrocodileCrackFault": False,
+                "LatCrackConfidence": 0.07661053,
+                "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                "LongCrackConfidence": 0.6557837,
+                "IsLongCrackFault": False,
+                "IsLatCrackFault": False,
+                "CrocodileCrackConfidence": 0.17722677,
+                "PotholeConfidence": 0.14074452,
+                "IsPotholeFault": False,
+                "LineblurConfidence": 0.09903459,
+                "IsLineblurFault": False
+            },
+            "RouteID": "45",
+            "Timestamp": 1616116106935,
         }}
 
         self.db.create_reading_db()
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route("3", "103", sample_data=sample_entry)
+        self.db.put_route(Route(
+            "3", 
+            "103", 
+            sample_data={"PredictionReading": json_to_reading("PredictionReading", sample_entry)}
+        ))
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0][RouteKeys.SAMPLE_DATA], sample_entry)
+        self.assertEqual(routes[0][RouteKeys.SAMPLE_DATA], expected_entry)
 
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()

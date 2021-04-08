@@ -1,12 +1,18 @@
-from pprint import pprint
 from random import sample
+from readingdb.routestatus import RouteStatus
+from typing import Any, Dict, List, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
+from readingdb.reading import AbstractReading, ddb_to_dict
+from readingdb.route import Route
+from readingdb.constants import *
 
 class DB():
+    ITEM_KEY = "Items"
+
     def __init__(self, url, resource_name='dynamodb', config=None):
         self.db = boto3.resource(
             resource_name, 
@@ -14,10 +20,10 @@ class DB():
             config=config,
         )
 
-    def all_tables(self):
+    def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
 
-    def create_reading_db(self, readCapacity=500, writeCapacity=500):
+    def create_reading_db(self, readCapacity=500, writeCapacity=500) -> Tuple[Any, Any]:
         reading_table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
@@ -78,48 +84,84 @@ class DB():
 
         return (reading_table, route_table)
 
-    def delete_table(self, table_name):
+    def delete_table(self, table_name) -> None:
         self.db.Table(table_name).delete()
 
-    def teardown_reading_db(self):
+    def teardown_reading_db(self) -> None:
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
 
-    def put_route(self, user_id, route_id, name=None, sample_data=None): 
+    def put_route(self, route: Route): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        route = encoded_route_item(user_id, route_id, name, sample_data)
+        return route_table.put_item(Item=route.item_data())
 
-        return route_table.put_item(Item=route)
-
-    def put_reading(
-        self, 
-        route_id, 
-        reading_id, 
-        reading_type, 
-        reading_value, 
-        timestamp,
-    ):
-        reading_value = encoded_value(reading_type, reading_value)
-
+    def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.put_item(
-            Item={
-                    ReadingKeys.READING_ID: reading_id,
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    ReadingKeys.TYPE: reading_type, 
-                    ReadingKeys.READING: reading_value, 
-                    ReadingKeys.TIMESTAMP: timestamp, 
-                }
-            )
-
+        response = table.put_item(Item=reading.item_data())
         return response
 
-    def all_route_readings(self, route_id):
+    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.query(KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id))
-        return [decode_item(i) for i in response['Items']]
+        response = table.query(
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)
+        )
 
-    def routes_for_user(self, user_id):
+        items = []
+        for item in response[self.ITEM_KEY]:
+            ddb_to_dict(item[ReadingKeys.TYPE], item)
+            items.append(item)
+
+        return items
+
+    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+        )
+
+        if len(response[self.ITEM_KEY]) < 1:
+            return None
+
+        item = response[self.ITEM_KEY][0]
+        Route.decode_item(item)
+
+        return item
+
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
-        return [decoded_route_item(i) for i in response['Items']]
+
+        items = []
+        for item in response[self.ITEM_KEY]:
+            Route.decode_item(item)
+            items.append(item)
+
+        return items
+
+    def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        
+        table.update_item(
+            Key={
+                ReadingRouteKeys.ROUTE_ID: route_id,
+                RouteKeys.USER_ID: user_id
+            },
+            UpdateExpression=f"set {RouteKeys.NAME} = :r",
+            ExpressionAttributeValues={
+                ':r': name,
+            },
+        )
+
+    def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
+        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        
+        table.update_item(
+            Key={
+                ReadingRouteKeys.ROUTE_ID: route_id,
+                RouteKeys.USER_ID: user_id
+            },
+            UpdateExpression=f"set {RouteKeys.STATUS} = :r",
+            ExpressionAttributeValues={
+                ':r': status,
+            },
+        )

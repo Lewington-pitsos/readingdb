@@ -1,10 +1,15 @@
+from readingdb.readingdb import ReadingDB
+from readingdb.routestatus import RouteStatus
+from typing import Any, Dict, List
+from readingdb.s3uri import S3Uri
+from readingdb.route import Route
+from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
+from readingdb.routespec import RouteSpec
 import boto3
-import copy
-import json
 import time
 import random
 import string
-import tqdm
+from tqdm import tqdm
 
 from boto3.dynamodb.conditions import Key
 
@@ -12,35 +17,7 @@ from readingdb.db import DB
 from readingdb.normalize import *
 from readingdb.constants import *
 
-def load_json_entries(path_key, reading):
-    with open(reading[path_key], "r") as f:
-        entries = json.load(f)
-    
-    return entries
-
-
-
-class API(DB):
-    ROUTE_NAME_KEY = "route"
-    ROUTE_READINGS_KEY = "readings"
-    READING_TYPE_KEY = "type"
-    READING_FORMAT_KEY = "format"
-    READING_PATH_KEY = "path"
-
-    JSON_ENTRIES_FORMAT = "json_entries"
-
-    RECOGNIZED_READING_TYPES = {
-        ReadingTypes.IMAGE:{
-            JSON_ENTRIES_FORMAT: load_json_entries
-        },
-        ReadingTypes.POSITIONAL:{
-            JSON_ENTRIES_FORMAT: load_json_entries
-        },
-        ReadingTypes.PREDICTION:{
-            JSON_ENTRIES_FORMAT: load_json_entries
-        }
-    }
-    
+class API(DB, ReadingDB):
     def __init__(
         self, 
         url, 
@@ -53,106 +30,88 @@ class API(DB):
 
         self.s3_client = boto3.client('s3', config=config)
 
+    def upload(self, route_spec: RouteSpec, user_id: str) -> Route:
+        route_key = self.__generate_route_id()
+        route_id = str(time.time()) + "-" + route_key
+
+        print(f"uploading route {route_spec} as {route_id}")
+
+        initial_entries = {}
+
+        for reading_spec in route_spec.reading_specs:
+            print(f"starting upload for reading {reading_spec}")
+
+            entries = reading_spec.load_readings()   
+
+            if len(entries) > 0:
+                finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
+                initial_entries[reading_spec.reading_type] = finalized_entries[0]
+
+                print("Finished saving all readings to FDS database")
+            else:
+                print(f"No entries found for reading specification {reading_spec}")
+
+        route = Route(
+            user_id,
+            route_id,
+            route_spec.name if route_spec.name else route_key,
+            initial_entries
+        )
+
+        self.put_route(route)
+        print(f"Finished uploading route {route_id} for user {user_id}")
+
+        return route
+
+    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
+        self.__save_entries(route_id, ReadingTypes.PREDICTION, readings)
+
+        self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+
+    def set_as_predicting(self, route_id: str, user_id: str) -> None:
+        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
+
     def __upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
         response = self.s3_client.upload_file(file_name, bucket, object_name)
 
         return response, object_name
 
-    # def routes_for_user(user_id):
-        
+    def __save_entry(self, entry: Reading) -> AbstractReading:
+        if entry.readingType in ReadingTypes.IMAGE_TYPES:
+            return self.__save_img_entry(entry)
 
-    def save_entry(self, entry_type, route_id, reading_id, entry):
-        if entry_type in ReadingTypes.IMAGE_TYPES:
-            return self.save_img_entry(entry_type, route_id, reading_id, entry)
+        self.put_reading(entry)
+        return entry
 
-        return self.save_primitive_entry(entry_type, route_id, reading_id, entry)
+    def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
+        if not entry.has_uri():
+            _, object_name = self.__upload_file(
+                entry.route_id, 
+                entry.url, 
+                self.bucket
+            )
 
-    def save_primitive_entry(self, entry_type, route_id, reading_id, entry):
-        ts = entry[EntryKeys.TIMESTAMP]
+            entry.set_uri(S3Uri(
+                self.bucket,
+                object_name,
+            ))
 
-        if isinstance(ts, float):
-            ts = int(ts)
-
-        self.put_reading(
-            route_id,
-            reading_id,
-            entry_type,
-            entry,
-            ts
-        )
+        self.put_reading(entry)
 
         return entry
 
-    def save_img_entry(self, entry_type, route_id, reading_id, entry):
-        if ImageReadingKeys.FILENAME not in entry:
-                raise ValueError(f"Expected reading entry to have key {ImageReadingKeys.FILENAME}, no such keyw as found: {entry}")
-
-        _, object_name = self.__upload_file(route_id, entry[ImageReadingKeys.FILENAME], self.bucket)
-
-        clone = copy.deepcopy(entry)
-        clone[ImageReadingKeys.FILENAME] = {
-            S3Path.BUCKET: self.bucket,
-            S3Path.KEY: object_name
-        }
-        self.save_primitive_entry(entry_type, route_id, reading_id, clone)
-
-        return clone
-
-    def upload(self, route):
-        route_key = self.generate_route_id()
-        route_id = str(time.time()) + "-" + route_key
-
-        print(f"uploading route {route} as {route_id}")
-
-        initial_entries = {}
-
-        for reading in route[self.ROUTE_READINGS_KEY]:
-            print(f"starting upload for reading {reading}")
-
-            entries = self.load_reading(reading)    
-
-            if len(entries) > 0:
-                saved_entries = self.save_entries(route_id, reading[self.READING_TYPE_KEY], entries)
-                initial_entries[reading[self.READING_TYPE_KEY]] = saved_entries[0]
-                print("Finished saving all readings to FDS database")
-            else:
-                print("No entries found for reading specification")
-
-        route_name = route[self.ROUTE_NAME_KEY] if self.ROUTE_NAME_KEY in route else route_key
-
-        self.put_route(self.usr_sub, route_id, route_name, sample_data=initial_entries)
-        print(f"Finished uploading route {route_id} for user {self.uname}")
-
-    def load_reading(self, reading):
-        reading_type = reading[self.READING_TYPE_KEY] 
-
-        if reading_type not in self.RECOGNIZED_READING_TYPES:
-            raise ValueError(f"Unrecognize reading type {reading_type} in reading specification {reading}")
-
-        format_type = reading[self.READING_FORMAT_KEY] 
-
-        if format_type not in self.RECOGNIZED_READING_TYPES[reading_type]:
-            raise ValueError(f"Unrecognize format {format_type} for reading of type {reading_type} in reading specification {reading[self.READING_TYPE_KEY]} in reading {reading}")
-
-        return self.RECOGNIZED_READING_TYPES[reading_type][format_type](self.READING_PATH_KEY, reading)
-
-    def generate_route_id(self):
+    def __generate_route_id(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
-    def save_entries(self, route_id, entry_type, entries):
-        saved_entries = []        
-
+    def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
         print("uploading entries")
+        finalized: List[AbstractReading] = []
         for i, e in enumerate(tqdm(entries)):
-            e = normalize(entry_type, e) 
-            saved_entry = self.save_entry(
-                entry_type,
-                route_id,
-                i+1,
-                e 
-            )
+            e[ReadingKeys.READING_ID] = i
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            e = json_to_reading(entry_type, e)
+            e = self.__save_entry(e)
+            finalized.append(e)
 
-            saved_entries.append(saved_entry)
-
-        return saved_entries
+        return finalized
