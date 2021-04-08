@@ -42,6 +42,7 @@ class PositionReadingKeys():
 
 class EntryKeys():
     TIMESTAMP = "Date"
+    
 class ImageReadingKeys():
     FILENAME = "ImageFileName"
 
@@ -94,3 +95,4 @@ class PredictionReading(ImageReadingKeys):
 class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
     URI = "S3Uri"
+    PRESIGNED_URL = "PresignedURL"

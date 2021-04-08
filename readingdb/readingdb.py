@@ -7,12 +7,6 @@ from readingdb.readingspec import ReadingSpec
 
 class ReadingDB(abc.ABC):
     @abc.abstractmethod
-    def get_route(route_id: str, user_id: str) -> Dict[str, Any]:
-        """Loads and returns all the specified route
-        """
-        raise NotImplementedError("not implemented")
-
-    @abc.abstractmethod
     def set_as_predicting(route_id: str, user_id: str) -> None:
         """Updates the status of the specified route to predicting (indicating
         that a prediction process is under way).
@@ -33,7 +27,7 @@ class ReadingDB(abc.ABC):
         """
         raise NotImplementedError("all_route_readings is not implemented")
 
-    # Other Saving Methods
+   # -------------- Writing Methods -------------- 
 
     @abc.abstractmethod
     def upload(reading_spec: ReadingSpec, user_id: str) -> Route:
@@ -57,7 +51,7 @@ class ReadingDB(abc.ABC):
     #     """
     #     raise NotImplementedError("not implemented")
     
-    # Other Loading Methods
+    # -------------- Reading Methods -------------- 
 
     @abc.abstractmethod
     def all_route_readings(route_id: str, user_id: str) -> List[Dict[str, Any]]:
@@ -72,3 +66,8 @@ class ReadingDB(abc.ABC):
         """
         raise NotImplementedError("not implemented")
 
+    @abc.abstractmethod
+    def get_route(route_id: str, user_id: str) -> Dict[str, Any]:
+        """Loads and returns all the specified route
+        """
+        raise NotImplementedError("not implemented")

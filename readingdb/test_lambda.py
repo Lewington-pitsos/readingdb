@@ -1,11 +1,7 @@
-import json
 import os
 from pprint import pprint
 from typing import Tuple
 import unittest
-import time
-
-import boto3
 
 from readingdb.lamb import handler
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
@@ -106,7 +102,10 @@ class TestLambda(unittest.TestCase):
             "RouteID": "1617839705.6470242-61ZDT8KWSA41RQV",
             "AccessToken": self.access_token,
         }, None)
-    
+
+        self.assertIn("PresignedURL", resp["Body"]["SampleData"]["PredictionReading"]["Reading"])
+        del resp["Body"]["SampleData"]["PredictionReading"]["Reading"]["PresignedURL"]
+
         self.assertEqual({
             'Status': 'Success', 
             'Body': {

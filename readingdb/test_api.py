@@ -31,7 +31,7 @@ def _upload_fixtures(bucket: str, fixtures_dir: str) -> None:
         client.upload_file(Filename=path, Bucket=bucket, Key=key)
 
 @mock_s3
-class TestDownloadJsonFiles(unittest.TestCase):
+class TestAPI(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
@@ -111,7 +111,6 @@ class TestDownloadJsonFiles(unittest.TestCase):
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.NAME], "Belgrave")
 
-
     def test_update_route_status(self):
         user_id = "aghsghavgas"
         api = API(self.ddb_url, bucket=TEST_BUCKET)
@@ -131,6 +130,7 @@ class TestDownloadJsonFiles(unittest.TestCase):
             'Reading': {
                 'CrocodileCrackConfidence': 0.17722677,
                 'ImageFileName': "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                'PresignedURL': "INVALID_URL",
                 'S3Uri': {
                     "Bucket": TEST_BUCKET,
                     "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
@@ -156,13 +156,13 @@ class TestDownloadJsonFiles(unittest.TestCase):
 
         api.save_predictions(preds, route.id, user_id)
 
+
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
 
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
-
         api = API(self.ddb_url, bucket=TEST_BUCKET)
 
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
@@ -182,11 +182,11 @@ class TestDownloadJsonFiles(unittest.TestCase):
                 'PredictionReading': {
                 'Reading': {
                     "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-                    'CrocodileCrackConfidence': 0.17722677,
                     'S3Uri': {
                         "Bucket": TEST_BUCKET,
                         "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                     },
+                    'CrocodileCrackConfidence': 0.17722677,
                     'IsCrocodileCrackFault': False,
                     'IsLatCrackFault': False,
                     'IsLineblurFault': False,
@@ -209,6 +209,8 @@ class TestDownloadJsonFiles(unittest.TestCase):
             'RouteName': route.name,
         }
 
+        self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
+        del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
         self.assertEqual(user_routes[0], expected_sample_data)
 
         s3 = boto3.resource(

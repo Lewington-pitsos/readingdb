@@ -71,6 +71,56 @@ class API(DB, ReadingDB):
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
+    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+        readings = super().all_route_readings(route_id)
+
+        self.__inject_presigned_urls(readings)
+
+        return readings
+
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        routes = super().routes_for_user(user_id)
+
+        for r in routes:
+            self.__inject_samples_with_presigned_urls(r)
+        
+        return routes
+
+    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
+        r = super().get_route(route_id, user_id)
+
+        if not r:
+            return r
+
+        self.__inject_samples_with_presigned_urls(r)
+
+        return r
+    
+    def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
+        if RouteKeys.SAMPLE_DATA in route:
+            for _, sample in route[RouteKeys.SAMPLE_DATA].items():
+                self.__inject_presigned_url(sample)
+
+    def __inject_presigned_urls(self, readings: List[Dict[str, Any]]) -> None:
+        for r in readings:
+            self.__inject_presigned_url(r)
+    
+    def __inject_presigned_url(self, r: Dict[str, Any]) -> None:    
+        if ImageReadingKeys.URI in r[ReadingKeys.READING]:
+            uri = r[ReadingKeys.READING][ImageReadingKeys.URI]
+
+            r[ReadingKeys.READING][ImageReadingKeys.PRESIGNED_URL] = self.__presigned_url(
+                uri[S3Path.BUCKET],
+                uri[S3Path.KEY],
+            )
+
+    def __presigned_url(self, bucket: str, object: str) -> str:
+        return self.s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket,'Key': object},
+            ExpiresIn=259200
+        )
+
     def __upload_file(self, route_id, file_name, bucket):
         object_name = route_id + file_name        
         response = self.s3_client.upload_file(file_name, bucket, object_name)
