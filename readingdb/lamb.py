@@ -10,17 +10,23 @@ from typing import Dict, Any
 logger = logging.getLogger("main")
 logger.setLevel(logging.INFO)
 
+# Generic Event Keys
 EVENT_TYPE = "Type"
-EVENT_GET_ROUTE = "GetRoute"
-EVENT_GET_READINGS = "GetReadings"
 EVENT_ACCESS_TOKEN = "AccessToken"
 
+# Event Types
+EVENT_GET_ROUTE = "GetRoute"
+EVENT_GET_READINGS = "GetReadings"
+
+# Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
 RESPONSE_BODY_KEY = "Body"
 
+# Response Statuses
 RESPONSE_ERROR = "Error"
 RESPONSE_SUCCESS = "Success"
 
+# MISC constants
 REGION_NAME = "ap-southeast-2"
 
 def key_missing_error_response(key):
@@ -61,6 +67,8 @@ def handler(event: Dict[str, Any], context):
     api = API("https://dynamodb.ap-southeast-2.amazonaws.com", config=Config(
         region_name=REGION_NAME,
     ))
+
+    #  ------------ Per-Event-Type handling -------------
 
     if event_name == EVENT_GET_ROUTE:
         if not ReadingRouteKeys.ROUTE_ID in event:
