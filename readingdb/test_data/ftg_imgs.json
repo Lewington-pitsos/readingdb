@@ -9,17 +9,34 @@
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
-            "LongCrackConfidence": 0.6557837,
-            "LatCrackConfidence": 0.07661053,
-            "CrocodileCrackConfidence": 0.17722677,
-            "PotholeConfidence": 0.14074452,
-            "LineblurConfidence": 0.09903459,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6557837,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07661053,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17722677,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14074452,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09903459,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -32,17 +49,34 @@
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
-            "LongCrackConfidence": 0.6557837,
-            "LatCrackConfidence": 0.07661053,
-            "CrocodileCrackConfidence": 0.17722677,
-            "PotholeConfidence": 0.14074452,
-            "LineblurConfidence": 0.09903459,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6557837,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07661053,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17722677,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14074452,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09903459,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -54,17 +88,34 @@
         "Reading": {
             "Latitude": -37.871398593720286,
             "Longitude": 145.24268514520602,
-            "LongCrackConfidence": 0.65007895,
-            "LatCrackConfidence": 0.07613063,
-            "CrocodileCrackConfidence": 0.17736913,
-            "PotholeConfidence": 0.14306208,
-            "LineblurConfidence": 0.10005592,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.65007895,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07613063,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17736913,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14306208,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.10005592,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -76,17 +127,34 @@
         "Reading": {
             "Latitude": -37.871399178110146,
             "Longitude": 145.24274206010298,
-            "LongCrackConfidence": 0.65217894,
-            "LatCrackConfidence": 0.07479121,
-            "CrocodileCrackConfidence": 0.17948037,
-            "PotholeConfidence": 0.14234863,
-            "LineblurConfidence": 0.10190034,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_330.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.65217894,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07479121,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17948037,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14234863,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.10190034,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -98,17 +166,34 @@
         "Reading": {
             "Latitude": -37.871401136806654,
             "Longitude": 145.24293282147386,
-            "LongCrackConfidence": 0.65255547,
-            "LatCrackConfidence": 0.07674796,
-            "CrocodileCrackConfidence": 0.17842996,
-            "PotholeConfidence": 0.14620733,
-            "LineblurConfidence": 0.102140464,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_121.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.65255547,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07674796,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17842996,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14620733,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.102140464,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -120,17 +205,34 @@
         "Reading": {
             "Latitude": -37.871401206141044,
             "Longitude": 145.24293957408872,
-            "LongCrackConfidence": 0.66028917,
-            "LatCrackConfidence": 0.08519038,
-            "CrocodileCrackConfidence": 0.16753063,
-            "PotholeConfidence": 0.13884619,
-            "LineblurConfidence": 0.10169439,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_149.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.66028917,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.08519038,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.16753063,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.13884619,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.10169439,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -142,17 +244,34 @@
         "Reading": {
             "Latitude": -37.871401805388274,
             "Longitude": 145.2429979359746,
-            "LongCrackConfidence": 0.6375496,
-            "LatCrackConfidence": 0.078718916,
-            "CrocodileCrackConfidence": 0.1710234,
-            "PotholeConfidence": 0.14881165,
-            "LineblurConfidence": 0.10301988,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_391.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6375496,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.078718916,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.1710234,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14881165,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.10301988,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -164,17 +283,34 @@
         "Reading": {
             "Latitude": -37.871402367492074,
             "Longitude": 145.24305268038825,
-            "LongCrackConfidence": 0.70023,
-            "LatCrackConfidence": 0.084934786,
-            "CrocodileCrackConfidence": 0.17796963,
-            "PotholeConfidence": 0.10474302,
-            "LineblurConfidence": 0.09530464,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_618.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.70023,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.084934786,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17796963,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.10474302,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09530464,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -186,17 +322,34 @@
         "Reading": {
             "Latitude": -37.871403932468304,
             "Longitude": 145.24320509655308,
-            "LongCrackConfidence": 0.46941105,
-            "LatCrackConfidence": 0.12966216,
-            "CrocodileCrackConfidence": 0.26116350000000005,
-            "PotholeConfidence": 0.1434623,
-            "LineblurConfidence": 0.094540745,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_250.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.46941105,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.12966216,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.26116350000000005,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.1434623,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.094540745,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -208,17 +361,34 @@
         "Reading": {
             "Latitude": -37.8714040290412,
             "Longitude": 145.24321450198096,
-            "LongCrackConfidence": 0.47600946,
-            "LatCrackConfidence": 0.13366297,
-            "CrocodileCrackConfidence": 0.14710815,
-            "PotholeConfidence": 0.23580006,
-            "LineblurConfidence": 0.09057349,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_289.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.47600946,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.13366297,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.14710815,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.23580006,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09057349,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -230,17 +400,34 @@
         "Reading": {
             "Latitude": -37.87140692127575,
             "Longitude": 145.24349618248812,
-            "LongCrackConfidence": 0.8833476999999998,
-            "LatCrackConfidence": 0.07532121,
-            "CrocodileCrackConfidence": 0.05274157,
-            "PotholeConfidence": 0.115579806,
-            "LineblurConfidence": 0.050509106,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_30_457.jpg",
-            "IsLongCrackFault": true,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.8833476999999998,
+                    "Present": true
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07532121,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.05274157,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.115579806,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.050509106,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -252,17 +439,34 @@
         "Reading": {
             "Latitude": -37.8714096376981,
             "Longitude": 145.24376074029317,
-            "LongCrackConfidence": 0.82943356,
-            "LatCrackConfidence": 0.06788392,
-            "CrocodileCrackConfidence": 0.06301044,
-            "PotholeConfidence": 0.28788513,
-            "LineblurConfidence": 0.05218329,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_554.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.82943356,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.06788392,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.06301044,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.28788513,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.05218329,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -274,17 +478,34 @@
         "Reading": {
             "Latitude": -37.871409759033284,
             "Longitude": 145.24377255736925,
-            "LongCrackConfidence": 0.8585578000000001,
-            "LatCrackConfidence": 0.081758425,
-            "CrocodileCrackConfidence": 0.11126804,
-            "PotholeConfidence": 0.08765051,
-            "LineblurConfidence": 0.06435756,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_603.jpg",
-            "IsLongCrackFault": true,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.8585578000000001,
+                    "Present": true
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.081758425,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.11126804,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.08765051,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.06435756,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -296,17 +517,34 @@
         "Reading": {
             "Latitude": -37.871411893541996,
             "Longitude": 145.24398044144215,
-            "LongCrackConfidence": 0.5270206999999999,
-            "LatCrackConfidence": 0.15382591,
-            "CrocodileCrackConfidence": 0.18102536,
-            "PotholeConfidence": 0.11934994,
-            "LineblurConfidence": 0.1521121,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_465.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.5270206999999999,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.15382591,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.18102536,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.11934994,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.1521121,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -318,17 +556,34 @@
         "Reading": {
             "Latitude": -37.87141237145404,
             "Longitude": 145.24402698625198,
-            "LongCrackConfidence": 0.7831244,
-            "LatCrackConfidence": 0.11477907,
-            "CrocodileCrackConfidence": 0.075496994,
-            "PotholeConfidence": 0.13049641,
-            "LineblurConfidence": 0.11238841,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_658.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.7831244,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.11477907,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.075496994,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.13049641,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.11238841,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -340,17 +595,34 @@
         "Reading": {
             "Latitude": -37.87141437472267,
             "Longitude": 145.24422208858954,
-            "LongCrackConfidence": 0.60245144,
-            "LatCrackConfidence": 0.14587441,
-            "CrocodileCrackConfidence": 0.20053005,
-            "PotholeConfidence": 0.10522008,
-            "LineblurConfidence": 0.13818488,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_467.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.60245144,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.14587441,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.20053005,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.10522008,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.13818488,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -362,17 +634,34 @@
         "Reading": {
             "Latitude": -37.87141462482171,
             "Longitude": 145.2442464462361,
-            "LongCrackConfidence": 0.85661954,
-            "LatCrackConfidence": 0.07022237,
-            "CrocodileCrackConfidence": 0.0572533,
-            "PotholeConfidence": 0.28303862,
-            "LineblurConfidence": 0.045582615,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_568.jpg",
-            "IsLongCrackFault": true,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.85661954,
+                    "Present": true
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07022237,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.0572533,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.28303862,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.045582615,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -384,17 +673,34 @@
         "Reading": {
             "Latitude": -37.87141774239303,
             "Longitude": 145.24455007274167,
-            "LongCrackConfidence": 0.90945566,
-            "LatCrackConfidence": 0.09915767,
-            "CrocodileCrackConfidence": 0.069721915,
-            "PotholeConfidence": 0.11077089999999998,
-            "LineblurConfidence": 0.07479828,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_34_827.jpg",
-            "IsLongCrackFault": true,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.90945566,
+                    "Present": true
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.09915767,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.069721915,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.11077089999999998,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.07479828,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -406,17 +712,34 @@
         "Reading": {
             "Latitude": -37.87142033005151,
             "Longitude": 145.24480208997625,
-            "LongCrackConfidence": 0.51624525,
-            "LatCrackConfidence": 0.11046767,
-            "CrocodileCrackConfidence": 0.079572305,
-            "PotholeConfidence": 0.2799472,
-            "LineblurConfidence": 0.14037755,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_35_872.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.51624525,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.11046767,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.079572305,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.2799472,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.14037755,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -428,17 +751,34 @@
         "Reading": {
             "Latitude": -37.87142219465135,
             "Longitude": 145.244983687084,
-            "LongCrackConfidence": 0.7360409000000001,
-            "LatCrackConfidence": 0.06978742,
-            "CrocodileCrackConfidence": 0.048368704000000005,
-            "PotholeConfidence": 0.26368874,
-            "LineblurConfidence": 0.05369454,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_625.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.7360409000000001,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.06978742,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.048368704000000005,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.26368874,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.05369454,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -450,17 +790,34 @@
         "Reading": {
             "Latitude": -37.871422224366086,
             "Longitude": 145.2449865810618,
-            "LongCrackConfidence": 0.7818376,
-            "LatCrackConfidence": 0.084309265,
-            "CrocodileCrackConfidence": 0.047906517999999995,
-            "PotholeConfidence": 0.15486436,
-            "LineblurConfidence": 0.06394637,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_637.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.7818376,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.084309265,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.047906517999999995,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.15486436,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.06394637,
+                    "Present": false
+                }
+            ]
         }
     },
     {
@@ -472,17 +829,34 @@
         "Reading": {
             "Latitude": -37.87142256360935,
             "Longitude": 145.24501962064184,
-            "LongCrackConfidence": 0.6831619000000001,
-            "LatCrackConfidence": 0.11652048,
-            "CrocodileCrackConfidence": 0.04023347,
-            "PotholeConfidence": 0.16871063,
-            "LineblurConfidence": 0.056058805,
             "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_774.jpg",
-            "IsLongCrackFault": false,
-            "IsLatCrackFault": false,
-            "IsCrocodileCrackFault": false,
-            "IsPotholeFault": false,
-            "IsLineblurFault": false
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6831619000000001,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.11652048,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.04023347,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.16871063,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.056058805,
+                    "Present": false
+                }
+            ]
         }
     }
 ]

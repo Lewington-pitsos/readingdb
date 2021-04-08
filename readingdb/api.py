@@ -14,7 +14,6 @@ from tqdm import tqdm
 from boto3.dynamodb.conditions import Key
 
 from readingdb.db import DB
-from readingdb.normalize import *
 from readingdb.constants import *
 
 class API(DB, ReadingDB):

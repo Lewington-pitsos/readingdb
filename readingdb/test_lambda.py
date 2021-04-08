@@ -87,7 +87,7 @@ class TestLambda(unittest.TestCase):
     def test_gets_readings(self):
         resp = handler({
             "Type": "GetReadings",
-            "RouteID": "1617839705.6470242-61ZDT8KWSA41RQV",
+            "RouteID": "1617880492.8395514-C88AL4ZBB464RLR",
             "AccessToken": self.access_token,
         }, None)
 
@@ -99,13 +99,14 @@ class TestLambda(unittest.TestCase):
     def test_gets_route(self):
         resp = handler({
             "Type": "GetRoute",
-            "RouteID": "1617839705.6470242-61ZDT8KWSA41RQV",
+            "RouteID": "1617880492.8395514-C88AL4ZBB464RLR",
             "AccessToken": self.access_token,
         }, None)
 
         self.assertIn("PresignedURL", resp["Body"]["SampleData"]["PredictionReading"]["Reading"])
         del resp["Body"]["SampleData"]["PredictionReading"]["Reading"]["PresignedURL"]
 
+        self.maxDiff = None
         self.assertEqual({
             'Status': 'Success', 
             'Body': {
@@ -116,29 +117,37 @@ class TestLambda(unittest.TestCase):
                         'ReadingID': 0, 
                         'Type': 'PredictionReading', 
                         'Reading': {
-                            'IsCrocodileCrackFault': False, 
                             'S3Uri': {
                                 'Bucket': 'mobileappsessions172800-main', 
-                                'Key': '1617839705.6470242-61ZDT8KWSA41RQV/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg'
+                                'Key': '1617880492.8395514-C88AL4ZBB464RLR/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg'
                             }, 
-                            'LatCrackConfidence': 0.07661053, 
-                            'IsLatCrackFault': False, 
-                            'Latitude': -37.8714232, 
-                            'LongCrackConfidence': 0.6557837, 
-                            'PotholeConfidence': 0.14074452, 
-                            'LineblurConfidence': 0.09903459, 
                             'Longitude': 145.2450816, 
-                            'IsLineblurFault': False, 
+                            'Latitude': -37.8714232, 
                             'ImageFileName': '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg', 
-                            'IsPotholeFault': False, 
-                            'IsLongCrackFault': False, 
-                            'CrocodileCrackConfidence': 0.17722677
+                            "Entities": [
+                                {'Confidence': 0.6557837,
+                                    'Name': 'LongCrack',
+                                    'Present': False},
+                                {'Confidence': 0.07661053,
+                                    'Name': 'LatCrack',
+                                    'Present': False},
+                                {'Confidence': 0.17722677,
+                                    'Name': 'CrocodileCrack',
+                                    'Present': False},
+                                {'Confidence': 0.14074452,
+                                    'Name': 'Pothole',
+                                    'Present': False},
+                                {'Confidence': 0.09903459,
+                                    'Name': 'Lineblur',
+                                    'Present': False},
+
+                            ],
                         }, 
-                        'RouteID': '1617839705.6470242-61ZDT8KWSA41RQV', 
+                        'RouteID': '1617880492.8395514-C88AL4ZBB464RLR', 
                         'Timestamp': 1616116106935
                     }
                 }, 
-                'RouteID': '1617839705.6470242-61ZDT8KWSA41RQV', 
-                'RouteName': '61ZDT8KWSA41RQV'
+                'RouteID': '1617880492.8395514-C88AL4ZBB464RLR', 
+                'RouteName': 'C88AL4ZBB464RLR'
             }
         }, resp)

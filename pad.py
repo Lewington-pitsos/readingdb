@@ -1,34 +1,35 @@
-# import os
 # import json
 
-# with open("readingdb/test_data/ftg_imgs.json", "r") as f:
+# file_name = "readingdb/test_data/tst_imgs.json"
+
+# with open(file_name, "r") as f:
 #     entries = json.load(f)
 
 # keys = [
-#     "Latitude",
-#     "Longitude",
-#     "LongCrackConfidence",
-#     "LatCrackConfidence",
-#     "CrocodileCrackConfidence",
-#     "PotholeConfidence",
-#     "LineblurConfidence",
-#     "ImageFileName",
-#     "IsLongCrackFault",
-#     "IsLatCrackFault",
-#     "IsCrocodileCrackFault",
-#     "IsPotholeFault",
-#     "IsLineblurFault",
+#     "LongCrack",
+#     "LatCrack",
+#     "CrocodileCrack",
+#     "Pothole",
+#     "Lineblur",
 # ]
 
 # for e in entries:
-#     e["Reading"] = {}
-    
+#     entities = []
 #     for k in keys:
-#         e["Reading"][k] = e[k]
-#         del e[k]    
+#         entities.append({
+#             "Name": k,
+#             "Confidence": e["Reading"][k + "Confidence"],
+#             "Present": e["Reading"]["Is" + k + "Fault"]
+#         })
+#         del e["Reading"][k + "Confidence"]
+#         del e["Reading"]["Is" + k + "Fault"]
 
-# with open("readingdb/test_data/ftg_imgs.json", "w") as f:
+#     e['Reading']["Entities"] = entities
+
+# with open(file_name, "w") as f:
 #     json.dump(entries, f, indent="    ")
+
+# -----------------------------------------------------------------------------
 
 # from readingdb.db import DB
 # import time
@@ -36,18 +37,10 @@
 # db = DB("https://dynamodb.ap-southeast-2.amazonaws.com")
 
 # db.teardown_reading_db()
-
-
 # time.sleep(10)
-
-
 # db.create_reading_db()
 
-from readingdb.auth import Auth
-
-a = Auth()
-
-a.get_user()
+# -----------------------------------------------------------------------------
 
 # from readingdb.api import API
 # from readingdb.routespec import RouteSpec

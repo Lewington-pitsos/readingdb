@@ -50,7 +50,12 @@ class S3Path():
     BUCKET = "Bucket"
     KEY = 'Key'
 
-class PredictionReading(ImageReadingKeys):
+class EntityKeys():
+    NAME = "Name"
+    CONFIDENCE = "Confidence"
+    PRESENT = "Present"
+
+class PredictionReadingKeys(ImageReadingKeys):
     TIMESTAMP = EntryKeys.TIMESTAMP
     FILENAME = ImageReadingKeys.FILENAME
 
@@ -70,28 +75,9 @@ class PredictionReading(ImageReadingKeys):
     IS_POTHOLE = "IsPotholeFault"
     IS_LINEBLUR = "IsLineblurFault"
     IS_GOOD_CONDITION = "IsGoodCondition"
-
-    FLOAT_FIELDS = [
-        LATCRACK_CONFIDENCE,
-        LONGCRACK_CONFIDENCE,
-        CROCODILECRACK_CONFIDENCE,
-        POTHOLE_CONFIDENCE,
-        LINEBLUR_CONFIDENCE,
-        GOOD_CONDITION_CONFIDENCE,
-        LATITUDE,
-        LONGITUDE
-    ]
-
-    BOOL_FIELDS = [
-        IS_LATCRACK,
-        IS_LONGCRACK,
-        IS_CROCODILECRACK,
-        IS_POTHOLE,
-        IS_LINEBLUR
-    ]
-
-    FIELDS = FLOAT_FIELDS + BOOL_FIELDS + [TIMESTAMP, FILENAME]
     
+    ENTITIES = "Entities"
+
 class ImageReadingKeys():
     FILENAME = ImageReadingKeys.FILENAME
     URI = "S3Uri"

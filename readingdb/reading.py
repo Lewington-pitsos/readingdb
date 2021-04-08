@@ -1,7 +1,8 @@
 import abc
 from os import read
+from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from readingdb.constants import *
 from readingdb.conditions import *
@@ -108,39 +109,33 @@ class PredictionReading(ImageReading, PositionReading):
         lat: int, 
         long: int,
         url: str,
-        predictionBinaries: Dict[str, bool],
-        predictionConfidences: Dict[str, float],
+        entities: List[Entity],
         uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
 
         self.url = url
         self.uri = uri
-        self.predictionBinaries: Dict[str, bool] = predictionBinaries
-        self.predictionConfidences: Dict[str, bool] = predictionConfidences
+        self.entites: List[Entity] = entities
     
     @classmethod
     def decode(cls, item: Dict[str, Any]):
         PositionReading.decode(item)
 
-        for k, v in item[ReadingKeys.READING].items():
-            if k in CONDITION_BIARIES:
-                item[ReadingKeys.READING][k] = decode_bool(v)
-            if k in CONDITION_CONFS:
-                item[ReadingKeys.READING][k] = decode_float(v)
+        for e in item[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]:
+            e[EntityKeys.CONFIDENCE] = decode_float(e[EntityKeys.CONFIDENCE])
+            e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
 
 
     def item_data(self):
         data = PositionReading.item_data(self)
 
-
         self.add_file_data(data[ReadingKeys.READING])
 
-        for k, v in self.predictionBinaries.items():
-            data[ReadingKeys.READING][k] = encode_bool(v)
-
-        for k, v in self.predictionConfidences.items():
-            data[ReadingKeys.READING][k] = encode_float(v)
+        encoded_entities = []
+        for e in self.entites:
+            encoded_entities.append(e.encode())
+        data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
 
         return data
 
@@ -185,11 +180,14 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReadi
                 binaries[key] = reading_data[key]
 
  
-        confidences: Dict[str, float] = {}
+        entities = []
 
-        for key in CONDITION_CONFS:
-            if key in reading_data:
-                confidences[key] = reading_data[key]
+        for e in reading_data[PredictionReadingKeys.ENTITIES]:
+            entities.append(Entity(
+                e[EntityKeys.NAME],
+                e[EntityKeys.CONFIDENCE], 
+                e[EntityKeys.PRESENT]
+            ))
 
         return PredictionReading(
             reading[ReadingKeys.READING_ID],
@@ -199,8 +197,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReadi
             reading_data[PositionReadingKeys.LATITUDE],
             reading_data[PositionReadingKeys.LONGITUDE],
             reading_data[ImageReadingKeys.FILENAME],
-            binaries,
-            confidences,
+            entities,
             get_uri(reading_data)
         )
     else:

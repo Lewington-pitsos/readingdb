@@ -135,17 +135,35 @@ class TestAPI(unittest.TestCase):
                     "Bucket": TEST_BUCKET,
                     "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                 },
-                'IsCrocodileCrackFault': False,
-                'IsLatCrackFault': False,
-                'IsLineblurFault': False,
-                'IsLongCrackFault': False,
-                'IsPotholeFault': False,
-                'LatCrackConfidence': 0.07661053,
-                'Latitude': -37.8714232,
-                'LineblurConfidence': 0.09903459,
-                'LongCrackConfidence': 0.6557837,
+                "Entities": [
+                    {
+                        "Name": "CrocodileCrack",
+                        "Confidence": 0.17722677,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LatCrack", 
+                        "Confidence": 0.07661053,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LongCrack", 
+                        "Confidence": 0.6557837,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Pothole",
+                        "Confidence": 0.14074452,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Lineblur",
+                        "Confidence": 0.09903459,
+                        "Present": False,
+                    }
+                ],
                 'Longitude': 145.2450816,
-                'PotholeConfidence': 0.14074452,
+                'Latitude': -37.8714232,
             },
             'ReadingID': 0,
             'Type': 'PredictionReading',
@@ -186,18 +204,25 @@ class TestAPI(unittest.TestCase):
                         "Bucket": TEST_BUCKET,
                         "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                     },
-                    'CrocodileCrackConfidence': 0.17722677,
-                    'IsCrocodileCrackFault': False,
-                    'IsLatCrackFault': False,
-                    'IsLineblurFault': False,
-                    'IsLongCrackFault': False,
-                    'IsPotholeFault': False,
-                    'LatCrackConfidence': 0.07661053,
-                    'Latitude': -37.8714232,
-                    'LineblurConfidence': 0.09903459,
-                    'LongCrackConfidence': 0.6557837,
+                    "Entities": [
+                        {'Confidence': 0.6557837,
+                        'Name': 'LongCrack',
+                        'Present': False},
+                        {'Confidence': 0.07661053,
+                        'Name': 'LatCrack',
+                        'Present': False},
+                        {'Confidence': 0.17722677,
+                        'Name': 'CrocodileCrack',
+                        'Present': False},
+                        {'Confidence': 0.14074452,
+                        'Name': 'Pothole',
+                        'Present': False},
+                        {'Confidence': 0.09903459,
+                        'Name': 'Lineblur',
+                        'Present': False}
+                    ],
                     'Longitude': 145.2450816,
-                    'PotholeConfidence': 0.14074452,
+                    'Latitude': -37.8714232,
                 },
                 'ReadingID': 0,
                 'Type': 'PredictionReading',
@@ -211,6 +236,7 @@ class TestAPI(unittest.TestCase):
 
         self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
         del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
+        self.maxDiff = None
         self.assertEqual(user_routes[0], expected_sample_data)
 
         s3 = boto3.resource(

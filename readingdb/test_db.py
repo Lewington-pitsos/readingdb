@@ -72,19 +72,36 @@ class TestDBOps(unittest.TestCase):
             "ReadingID": 78,
             "Type": "PredictionReading",
             "Reading": {
+                "Entities": [
+                    {
+                        "Name": "CrocodileCrack",
+                        "Confidence": 0.17722677,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LatCrack", 
+                        "Confidence": 0.07661053,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LongCrack", 
+                        "Confidence": 0.6557837,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Pothole",
+                        "Confidence": 0.14074452,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Lineblur",
+                        "Confidence": 0.09903459,
+                        "Present": False,
+                    }
+                ],
                 "Latitude": -37.8714232,
                 "Longitude": 145.2450816,
-                "IsCrocodileCrackFault": False,
-                "LatCrackConfidence": 0.07661053,
                 "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-                "LongCrackConfidence": 0.6557837,
-                "IsLongCrackFault": False,
-                "IsLatCrackFault": False,
-                "CrocodileCrackConfidence": 0.17722677,
-                "PotholeConfidence": 0.14074452,
-                "IsPotholeFault": False,
-                "LineblurConfidence": 0.09903459,
-                "IsLineblurFault": False
             },
             "RouteID": "45",
             "Timestamp": 1616116106935,
@@ -96,19 +113,36 @@ class TestDBOps(unittest.TestCase):
             "ReadingID": 78,
             "Type": "PredictionReading",
             "Reading": {
+                "Entities": [
+                    {
+                        "Name": "CrocodileCrack",
+                        "Confidence": 0.17722677,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LatCrack", 
+                        "Confidence": 0.07661053,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "LongCrack", 
+                        "Confidence": 0.6557837,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Pothole",
+                        "Confidence": 0.14074452,
+                        "Present": False,
+                    },
+                    {
+                        "Name": "Lineblur",
+                        "Confidence": 0.09903459,
+                        "Present": False,
+                    }
+                ],
                 "Latitude": -37.8714232,
                 "Longitude": 145.2450816,
-                "IsCrocodileCrackFault": False,
-                "LatCrackConfidence": 0.07661053,
                 "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-                "LongCrackConfidence": 0.6557837,
-                "IsLongCrackFault": False,
-                "IsLatCrackFault": False,
-                "CrocodileCrackConfidence": 0.17722677,
-                "PotholeConfidence": 0.14074452,
-                "IsPotholeFault": False,
-                "LineblurConfidence": 0.09903459,
-                "IsLineblurFault": False
             },
             "RouteID": "45",
             "Timestamp": 1616116106935,
