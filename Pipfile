@@ -10,6 +10,7 @@ jupyter = "*"
 notebook = "*"
 tqdm = "*"
 moto = "*"
+botocore = "==1.19.52"
 
 [dev-packages]
 

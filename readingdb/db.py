@@ -11,6 +11,8 @@ from readingdb.route import Route
 from readingdb.constants import *
 
 class DB():
+    ITEM_KEY = "Items"
+
     def __init__(self, url, resource_name='dynamodb', config=None):
         self.db = boto3.resource(
             resource_name, 
@@ -105,7 +107,7 @@ class DB():
         )
 
         items = []
-        for item in response["Items"]:
+        for item in response[self.ITEM_KEY]:
             ddb_to_dict(item[ReadingKeys.TYPE], item)
             items.append(item)
 
@@ -117,7 +119,10 @@ class DB():
             KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
         )
 
-        item = response["Items"][0]
+        if len(response[self.ITEM_KEY]) < 1:
+            return None
+
+        item = response[self.ITEM_KEY][0]
         Route.decode_item(item)
 
         return item
@@ -127,7 +132,7 @@ class DB():
         response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
 
         items = []
-        for item in response["Items"]:
+        for item in response[self.ITEM_KEY]:
             Route.decode_item(item)
             items.append(item)
 

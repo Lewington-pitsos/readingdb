@@ -1,4 +1,5 @@
 import logging
+from readingdb.authresponse import AuthResponse
 
 from readingdb.api import API
 from readingdb.constants import *
@@ -11,12 +12,19 @@ logger.setLevel(logging.INFO)
 
 EVENT_TYPE = "Type"
 EVENT_GET_ROUTE = "GetRoute"
+EVENT_GET_READINGS = "GetReadings"
+EVENT_ACCESS_TOKEN = "AccessToken"
 
 RESPONSE_STATUS_KEY = "Status"
-RESPONSE_BODY_KEY = "Status"
+RESPONSE_BODY_KEY = "Body"
 
 RESPONSE_ERROR = "Error"
 RESPONSE_SUCCESS = "Success"
+
+REGION_NAME = "ap-southeast-2"
+
+def key_missing_error_response(key):
+    return error_response(f"Bad Format Error: key {key} missing from event")
 
 def error_response(body: Any) -> Dict[str, Any]:
     return response(body, False)
@@ -36,17 +44,42 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
 def handler(event: Dict[str, Any], context):
     logger.info('Event: %s', event)
 
+    if not EVENT_TYPE in event:
+        return error_response("Invalid Event Syntax")
+
     event_name = event[EVENT_TYPE]
 
+    if not EVENT_ACCESS_TOKEN in event:
+        return error_response("Unauthenticated request, no Access Token Provided")
+
+    auth: Auth = Auth(region_name=REGION_NAME)
+    
+    user_data: AuthResponse = auth.get_user(event[EVENT_ACCESS_TOKEN])
+    if not user_data.is_authenticated():
+        return error_response(f"Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}")
+
     api = API("https://dynamodb.ap-southeast-2.amazonaws.com", config=Config(
-        region_name="ap-southeast-2",
+        region_name=REGION_NAME,
     ))
 
     if event_name == EVENT_GET_ROUTE:
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
-        route = api.get_route(route_id)
+        if not ReadingRouteKeys.ROUTE_ID in event:
+            return key_missing_error_response(ReadingRouteKeys.ROUTE_ID)
 
+        route_id = event[ReadingRouteKeys.ROUTE_ID]
+        user_id = user_data.user_sub
+        route = api.get_route(route_id, user_id)
         return success_response(route)
+
+    elif event_name == EVENT_GET_READINGS:
+        if not ReadingRouteKeys.ROUTE_ID in event:
+            return key_missing_error_response(ReadingRouteKeys.ROUTE_ID) 
+
+        route_id = event[ReadingRouteKeys.ROUTE_ID]
+        readings = api.all_route_readings(route_id)
+
+        return success_response(readings)
+
     else:
         return error_response(f"Unrecognized event type {event_name}")
     

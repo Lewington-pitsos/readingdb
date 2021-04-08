@@ -14,7 +14,7 @@ class Auth():
     def __init__(self, region_name="ap-southeast-2",) -> AuthResponse:
         self.cclient = boto3.client('cognito-idp', region_name=region_name)
 
-    def get_user(self, accessToken: str) -> Dict[str, Any]:
+    def get_user(self, accessToken: str) -> AuthResponse:
         try:
             resp = self.cclient.get_user(AccessToken=accessToken)
 
