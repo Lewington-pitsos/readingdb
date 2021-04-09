@@ -46,7 +46,7 @@ class TestDBOps(unittest.TestCase):
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route("3", "103"))
+        self.db.put_route(Route("3", "103", 123617823))
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
@@ -54,6 +54,7 @@ class TestDBOps(unittest.TestCase):
             "RouteID": "103",
             "UserID": "3",
             "RouteStatus": 1,
+            "Timestamp": 123617823
         })
     
     def test_creates_new_route_with_name(self):
@@ -62,7 +63,7 @@ class TestDBOps(unittest.TestCase):
         routes = self.db.routes_for_user("103")
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route("3", "103", name=name))
+        self.db.put_route(Route("3", "103", 123617823, name=name))
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
         self.assertEqual(routes[0][RouteKeys.NAME], name)
@@ -155,6 +156,7 @@ class TestDBOps(unittest.TestCase):
         self.db.put_route(Route(
             "3", 
             "103", 
+            123617823,
             sample_data={"PredictionReading": json_to_reading("PredictionReading", sample_entry)}
         ))
         

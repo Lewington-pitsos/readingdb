@@ -16,6 +16,7 @@ class RouteKeys():
     NAME = 'RouteName'
     SAMPLE_DATA = "SampleData"
     STATUS = 'RouteStatus'
+    TIMESTAMP = "Timestamp"
 
 class ReadingTypes():
     POSITIONAL = "PositionalReading"

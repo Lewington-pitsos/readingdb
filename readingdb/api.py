@@ -1,3 +1,4 @@
+from botocore.utils import parse_timestamp
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List
@@ -36,6 +37,7 @@ class API(DB, ReadingDB):
         print(f"uploading route {route_spec} as {route_id}")
 
         initial_entries = {}
+        timestamp = 0
 
         for reading_spec in route_spec.reading_specs:
             print(f"starting upload for reading {reading_spec}")
@@ -44,7 +46,11 @@ class API(DB, ReadingDB):
 
             if len(entries) > 0:
                 finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
-                initial_entries[reading_spec.reading_type] = finalized_entries[0]
+                first_entry: Reading = finalized_entries[0]
+                initial_entries[reading_spec.reading_type] = first_entry
+
+                if timestamp == 0:
+                    timestamp = first_entry.date
 
                 print("Finished saving all readings to FDS database")
             else:
@@ -53,6 +59,7 @@ class API(DB, ReadingDB):
         route = Route(
             user_id,
             route_id,
+            timestamp,
             route_spec.name if route_spec.name else route_key,
             initial_entries
         )

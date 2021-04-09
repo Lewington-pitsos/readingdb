@@ -7,7 +7,7 @@ from readingdb.constants import *
 from readingdb.reading import AbstractReading, ddb_to_dict, json_to_reading
 
 class Route():
-    def __init__(self, user_id: str, id: str, name: str=None, sample_data: Dict[str, AbstractReading]=None) -> None:
+    def __init__(self, user_id: str, id: str, timestamp: int, name: str=None, sample_data: Dict[str, AbstractReading]=None) -> None:
         """sample_data contains a small collection of readings that belong to
         this route. Allows users to get an idea of what kind of data the route
         contains without loading all of it.
@@ -18,6 +18,7 @@ class Route():
         self.name: str = name
         self.sample_data: Dict[str, AbstractReading] = copy.deepcopy(sample_data)  
         self.status = RouteStatus.UPLOADED
+        self.timestamp: int = timestamp
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
@@ -27,12 +28,14 @@ class Route():
                 item[RouteKeys.SAMPLE_DATA][k] = v
                 
         item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
+        item[RouteKeys.TIMESTAMP] = int(item[RouteKeys.TIMESTAMP])
 
     def item_data(self) ->  Dict[str, Any]:
         data = {
             RouteKeys.USER_ID: self.user_id,
             ReadingRouteKeys.ROUTE_ID: self.id,
-            RouteKeys.STATUS: int(self.status)
+            RouteKeys.STATUS: int(self.status),
+            RouteKeys.TIMESTAMP: self.timestamp
         }
 
         if self.name:

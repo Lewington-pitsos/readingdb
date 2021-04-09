@@ -4,7 +4,6 @@ from pprint import pprint
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import ReadingRouteKeys, RouteKeys
 from typing import List
-from readingdb.route import Route
 from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
@@ -166,7 +165,6 @@ class TestAPI(unittest.TestCase):
             },
             'ReadingID': 0,
             'Type': 'PredictionReading',
-
             'RouteID': route.id,
             'Timestamp': 1616116106935,
         }]
@@ -194,6 +192,7 @@ class TestAPI(unittest.TestCase):
         expected_sample_data = {
             'RouteStatus': 1,
             'RouteID': route.id,
+            'Timestamp': 1616116106935,
             'UserID': 'asdy7asdh',
             'SampleData': {
                 'PredictionReading': {
@@ -225,9 +224,8 @@ class TestAPI(unittest.TestCase):
                 },
                 'ReadingID': 0,
                 'Type': 'PredictionReading',
-
                 'RouteID': route.id,
-                'Timestamp': 1616116106935,
+                'Timestamp': 1616116106935
                 }
             },
             'RouteName': route.name,
@@ -236,7 +234,7 @@ class TestAPI(unittest.TestCase):
         self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
         del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
         self.maxDiff = None
-        self.assertEqual(user_routes[0], expected_sample_data)
+        self.assertEqual(expected_sample_data, user_routes[0])
 
         s3 = boto3.resource(
             "s3",
