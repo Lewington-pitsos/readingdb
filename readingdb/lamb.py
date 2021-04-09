@@ -16,6 +16,7 @@ EVENT_ACCESS_TOKEN = "AccessToken"
 
 # Event Types
 EVENT_GET_ROUTE = "GetRoute"
+EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 
@@ -88,6 +89,10 @@ def handler(event: Dict[str, Any], context):
 
         route = api.get_route(route_id, user_data.user_sub)
         return success_response(route)
+
+    if event_name == EVENT_GET_USER_ROUTES:
+        routes = api.routes_for_user(user_data.user_sub)
+        return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)

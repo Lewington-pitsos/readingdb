@@ -96,6 +96,16 @@ class TestLambda(unittest.TestCase):
         self.assertEqual(len(resp["Body"]), 22)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_routes_for_user(self):
+        resp = handler({
+            "Type": "GetUserRoutes",
+            "AccessToken": self.access_token,
+        }, None)
+
+        self.assertEqual(len(resp["Body"]), 2)
+        self.assertTrue(resp["Body"][0]["RouteID"] in ["1617880492.8395514-C88AL4ZBB464RLR", "1617880492.8395514-C88AL4ZBB464RLR"])
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
         resp = handler({
             "Type": "GetRoute",

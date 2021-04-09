@@ -42,14 +42,14 @@
 
 # -----------------------------------------------------------------------------
 
-# from readingdb.api import API
-# from readingdb.routespec import RouteSpec
-# import json
+from readingdb.api import API
+from readingdb.routespec import RouteSpec
+import json
 
 
-# api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
+api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 
-# with open("readingdb/test_data/ftg_20_route.json") as f:
-#     route_json = json.load(f) 
+with open("readingdb/test_data/ftg_route.json") as f:
+    route_json = json.load(f) 
 
-# api.upload(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
+api.upload(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
