@@ -84,9 +84,12 @@ class API(DB, ReadingDB):
 
         return readings
 
+    def save_predictions(self, readings: List[Reading]) -> None:
+        for r in readings:
+            self.db.put_reading(r)
+
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         routes = super().routes_for_user(user_id)
-
         for r in routes:
             self.__inject_samples_with_presigned_urls(r)
         
@@ -94,7 +97,6 @@ class API(DB, ReadingDB):
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
         r = super().get_route(route_id, user_id)
-
         if not r:
             return r
 
