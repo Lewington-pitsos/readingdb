@@ -30,7 +30,7 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError("upload is not implemented")
 
     @abc.abstractmethod
-    def save_predictions(readings: List[Reading]) -> None:
+    def save_predictions(readings: List[Reading], route_id: int, user_id: str) -> None:
         """Saves the prediction readings to the given route and sets the status
         of that route to 'complete'.
         """
