@@ -128,7 +128,6 @@ class TestAPI(unittest.TestCase):
 
         preds = [{
             'Reading': {
-                'CrocodileCrackConfidence': 0.17722677,
                 'ImageFileName': "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
                 'PresignedURL': "INVALID_URL",
                 'S3Uri': {
