@@ -15,3 +15,8 @@ Then you can start running scripts, e.g.:
 ## API
 
 The API can be found at `readingdb/readingdb.py`
+
+
+## Pipenv Guide
+
+https://pipenv-fork.readthedocs.io/en/latest/
