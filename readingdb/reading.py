@@ -5,7 +5,7 @@ from readingdb.s3uri import S3Uri
 from typing import Any, Dict, List
 
 from readingdb.constants import *
-from readingdb.conditions import *
+from readingdb.entities import *
 from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
 
 
@@ -175,7 +175,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         binaries: Dict[str, bool] = {}
         reading_data = reading[ReadingKeys.READING]
 
-        for key in CONDITION_BIARIES:
+        for key in ENTITY_BIARIES:
             if key in reading_data:
                 binaries[key] = reading_data[key]
 

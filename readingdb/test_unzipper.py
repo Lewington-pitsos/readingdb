@@ -18,7 +18,7 @@ from readingdb.unzipper import Unzipper
 from readingdb.tutils import *
 
 @mock_s3
-class TestAPI(unittest.TestCase):
+class TestUnzipper(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
@@ -57,3 +57,8 @@ class TestAPI(unittest.TestCase):
             result = os.listdir(mock_folder_local_path)
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
+
+    def test_unzipper_uploads(self):
+        z = Unzipper(self.ddb_url, bucket=self.bucket_name)
+
+        z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
