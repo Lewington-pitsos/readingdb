@@ -24,7 +24,7 @@ class ReadingDB(abc.ABC):
    # -------------- Writing Methods -------------- 
 
     @abc.abstractmethod
-    def upload(reading_spec: ReadingSpec, user_id: str) -> Route:
+    def save_route(reading_spec: ReadingSpec, user_id: str) -> Route:
         """Uploads all readings listed within reading_spec as a single route.
         Returns the ID of the newly created route.
         """
@@ -43,15 +43,6 @@ class ReadingDB(abc.ABC):
         """
         raise NotImplementedError("not implemented")
 
-    @abc.abstractmethod
-    def save_route(routeSpec: RouteSpec, user_id: str) -> str:
-        """Uploads all readings that exist within the se_uri (which 
-        will be a zipped file) as a new route.
-
-        Returns the id of the newly created route.
-        """
-        raise NotImplementedError("not implemented")
-    
     # -------------- Reading Methods -------------- 
 
     @abc.abstractmethod

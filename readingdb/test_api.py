@@ -101,7 +101,7 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.upload(route_spec, user_id)
+        route = api.save_route(route_spec, user_id)
 
         self.assertEqual(route.name, route.id.split("-")[-1])
 
@@ -117,7 +117,7 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.upload(route_spec, user_id)
+        route = api.save_route(route_spec, user_id)
 
         self.assertEqual(RouteStatus.UPLOADED, route.status)
         api.set_as_predicting(route.id, user_id)
@@ -214,7 +214,7 @@ class TestAPI(unittest.TestCase):
             route_spec_data = json.load(j)
 
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.upload(route_spec, user_id)
+        route = api.save_route(route_spec, user_id)
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
