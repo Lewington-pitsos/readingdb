@@ -14,21 +14,7 @@ from moto import mock_s3
 
 from readingdb.download_json import download_json_files
 from readingdb.api import API
-
-TEST_BUCKET = "my_bucket"
-TEST_PREFIX = "mocks"
-
-def _upload_fixtures(bucket: str, fixtures_dir: str) -> None:
-    client = boto3.client("s3")
-    fixtures_paths = [
-        os.path.join(path,  filename)
-        for path, _, files in os.walk(fixtures_dir)
-        for filename in files
-    ]
-
-    for path in fixtures_paths:
-        key = os.path.relpath(path, fixtures_dir)
-        client.upload_file(Filename=path, Bucket=bucket, Key=key)
+from readingdb.tutils import *
 
 @mock_s3
 class TestAPI(unittest.TestCase):
@@ -36,60 +22,36 @@ class TestAPI(unittest.TestCase):
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
     ddb_url = "http://localhost:8000"
+    bucket_name = "my_bucket"
+    test_prefix = "mocks"
 
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
-        client = boto3.client(
-            "s3",
-            region_name=self.region_name,
-            aws_access_key_id=self.access_key,
-            aws_secret_access_key=self.secret_key,
-            )
-        try:
-            s3 = boto3.resource(
-                "s3",
-                region_name=self.region_name,
-                aws_access_key_id=self.access_key,
-                aws_secret_access_key=self.secret_key,
-                )
-            s3.meta.client.head_bucket(Bucket=TEST_BUCKET)
-        except botocore.exceptions.ClientError:
-            pass
-        else:
-            err = "{bucket} should not exist.".format(bucket=TEST_BUCKET)
-            raise EnvironmentError(err)        
-        
-        client.create_bucket(
-            Bucket=TEST_BUCKET,  
-            CreateBucketConfiguration={
-                'LocationConstraint': self.region_name
-            }
+        create_bucket(
+            self.current_dir, 
+            self.region_name, 
+            self.access_key, 
+            self.secret_key, 
+            self.bucket_name,
         )
-        fixtures_dir = os.path.join(self.current_dir, "test_data/s3_fixtures")
-        _upload_fixtures(TEST_BUCKET, fixtures_dir)   
 
         self.api = API(self.ddb_url) 
-
         self.api.create_reading_db()
     
     def tearDown(self):
-        s3 = boto3.resource(
-            "s3",
-            region_name=self.region_name,
-            aws_access_key_id=self.access_key,
-            aws_secret_access_key=self.secret_key
+        teardown_s3_bucket(
+            self.region_name,
+            self.access_key,
+            self.secret_key,
+            self.bucket_name
         )
-        bucket = s3.Bucket(TEST_BUCKET)
-        for key in bucket.objects.all():
-            key.delete()
-        bucket.delete()
 
         self.api.teardown_reading_db()
     
     def test_mocking_works(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            download_json_files(TEST_BUCKET, TEST_PREFIX, tmpdir)
-            mock_folder_local_path = os.path.join(tmpdir, TEST_PREFIX)
+            download_json_files(self.bucket_name, self.test_prefix, tmpdir)
+            mock_folder_local_path = os.path.join(tmpdir, self.test_prefix)
             self.assertTrue(os.path.isdir(mock_folder_local_path))
             result = os.listdir(mock_folder_local_path)
             desired_result = ["file.json", "apple.json"]
@@ -97,7 +59,7 @@ class TestAPI(unittest.TestCase):
     
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
-        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        api = API(self.ddb_url, bucket=self.bucket_name)
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
@@ -113,7 +75,7 @@ class TestAPI(unittest.TestCase):
 
     def test_update_route_status(self):
         user_id = "aghsghavgas"
-        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        api = API(self.ddb_url, bucket=self.bucket_name)
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
@@ -131,7 +93,7 @@ class TestAPI(unittest.TestCase):
                 'ImageFileName': "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
                 'PresignedURL': "INVALID_URL",
                 'S3Uri': {
-                    "Bucket": TEST_BUCKET,
+                    "Bucket": self.bucket_name,
                     "Key": route.id + "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                 },
                 "Entities": [
@@ -179,7 +141,7 @@ class TestAPI(unittest.TestCase):
     def test_saves_readings_to_existing_route(self):
         user_id = "asdy7asdh"
         route_id = "asdasdasdasd"
-        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        api = API(self.ddb_url, bucket=self.bucket_name)
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
@@ -208,7 +170,7 @@ class TestAPI(unittest.TestCase):
 
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
-        api = API(self.ddb_url, bucket=TEST_BUCKET)
+        api = API(self.ddb_url, bucket=self.bucket_name)
 
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
@@ -229,7 +191,7 @@ class TestAPI(unittest.TestCase):
                 'Reading': {
                     "ImageFileName": 'readingdb/test_data/images/road1.jpg',
                     'S3Uri': {
-                        "Bucket": TEST_BUCKET,
+                        "Bucket": self.bucket_name,
                         "Key": route.id + 'readingdb/test_data/images/road1.jpg'
                     },
                     "Entities": [
@@ -273,7 +235,7 @@ class TestAPI(unittest.TestCase):
             aws_secret_access_key=self.secret_key
         )
 
-        bucket = s3.Bucket(TEST_BUCKET)
+        bucket = s3.Bucket(self.bucket_name)
 
         bucket_objects = []
 
@@ -283,6 +245,6 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(set(bucket_objects), set([
             "mocks/apple.json", 
             "mocks/file.json",
-            route.id + 'readingdb/test_data/images/road1.jpg'
-,
+            route.id + 'readingdb/test_data/images/road1.jpg',
+            'mocks/route_2021_04_07_17_14_36_709.zip',
         ]))
