@@ -30,7 +30,7 @@ class API(DB, ReadingDB):
 
         self.s3_client = boto3.client('s3', config=config)
 
-    def upload(self, route_spec: RouteSpec, user_id: str) -> Route:
+    def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_key = self.__generate_route_id()
         route_id = str(time.time()) + "-" + route_key
 

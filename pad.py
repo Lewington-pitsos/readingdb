@@ -52,9 +52,9 @@ api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 with open("readingdb/test_data/ftg_route.json") as f:
     route_json = json.load(f) 
 
-api.upload(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
+api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
 
 with open("readingdb/test_data/ftg_20_route.json") as f:
     route_json = json.load(f) 
 
-api.upload(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
+api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")

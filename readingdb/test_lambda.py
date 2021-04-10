@@ -159,6 +159,6 @@ class TestLambda(unittest.TestCase):
                     }
                 }, 
                 'RouteID': '1617948115.1693873-5BFQ11NQNIQC8BP', 
-                'RouteName': '5BFQ11NQNIQC8BP'
+                'RouteName': 'Upper Frentree Gully'
             }
         }, resp)

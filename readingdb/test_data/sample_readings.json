@@ -15,7 +15,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.12874809,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_126.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116330126
@@ -36,7 +36,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.05772375,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_084.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349084
@@ -57,7 +57,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07401253,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_11_714.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116331714
@@ -78,7 +78,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.055573326,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_915.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116315915
@@ -99,7 +99,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06463462,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_293.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336293
@@ -120,7 +120,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.26552084,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_966.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317966
@@ -141,7 +141,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.14793935,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_410.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322410
@@ -162,7 +162,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.17381409,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_679.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335679
@@ -183,7 +183,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.05562075,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_019.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347019
@@ -204,7 +204,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0623008,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_830.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335830
@@ -225,7 +225,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.123848215,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_033.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116351033
@@ -246,7 +246,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10508976,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_176.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349176
@@ -267,7 +267,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09354786,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_208.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116337208
@@ -309,7 +309,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.24853715,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_904.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318904
@@ -330,7 +330,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08895807,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_574.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320574
@@ -351,7 +351,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06576594,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_55_817.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116315817
@@ -372,7 +372,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0728531,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_489.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336489
@@ -393,7 +393,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08850670599999999,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_776.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334776
@@ -414,7 +414,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07801659400000001,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_04_584.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116324584
@@ -435,7 +435,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.097075686,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_12_098.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116332098
@@ -456,7 +456,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06837662,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_147.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116339147
@@ -498,7 +498,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06602093,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_436.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316436
@@ -519,7 +519,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.05797871,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_408.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317408
@@ -540,7 +540,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09340905,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_19_624.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116339624
@@ -561,7 +561,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.057640683,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_148.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318148
@@ -582,7 +582,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0972441,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_332.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327332
@@ -603,7 +603,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.095883206,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_17_489.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116337489
@@ -624,7 +624,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11744273,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_046.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116328046
@@ -645,7 +645,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06273585599999999,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_234.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116342234
@@ -666,7 +666,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.064414024,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_57_190.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116317190
@@ -708,7 +708,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.13889818,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_387.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333387
@@ -729,7 +729,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10444152,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_026.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326026
@@ -750,7 +750,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.13885255,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_254.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116346254
@@ -771,7 +771,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.100605406,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_16_714.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116336714
@@ -792,7 +792,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10496529,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_818.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345818
@@ -813,7 +813,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.36052346,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_58_289.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116318289
@@ -834,7 +834,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.15883419,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_271.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322271
@@ -855,7 +855,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.12035413,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_883.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322883
@@ -876,7 +876,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06376736,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_372.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321372
@@ -897,7 +897,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07270138,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_657.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333657
@@ -918,7 +918,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07162763,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_195.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116329195
@@ -939,7 +939,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.049546562,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_698.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116350698
@@ -960,7 +960,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.118417904,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_31_637.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116351637
@@ -981,7 +981,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07097623,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_047.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327047
@@ -1002,7 +1002,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.39582366,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_486.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320486
@@ -1023,7 +1023,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07317341,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_810.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347810
@@ -1044,7 +1044,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.054019354000000006,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_13_481.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116333481
@@ -1065,7 +1065,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06855531,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_739.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116338739
@@ -1086,7 +1086,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06610913,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_54_877.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116314877
@@ -1107,7 +1107,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08237660000000001,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_957.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323957
@@ -1128,7 +1128,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.051769115,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_858.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320858
@@ -1149,7 +1149,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09288807,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_685.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323685
@@ -1170,7 +1170,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11382635,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_26_744.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116346744
@@ -1191,7 +1191,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11765845,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_03_338.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116323338
@@ -1212,7 +1212,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10274824,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_08_223.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116328223
@@ -1233,7 +1233,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10425679,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_18_998.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116338998
@@ -1254,7 +1254,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.056078315,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_217.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321217
@@ -1275,7 +1275,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.058378915999999996,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_534.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335534
@@ -1296,7 +1296,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10028581,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_964.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345964
@@ -1317,7 +1317,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.05763455,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_15_352.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116335352
@@ -1338,7 +1338,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.101327635,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_720.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116344720
@@ -1359,7 +1359,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.079008415,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_245.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345245
@@ -1380,7 +1380,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09428660000000001,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_547.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326547
@@ -1401,7 +1401,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09704818,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_839.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327839
@@ -1422,7 +1422,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09109863,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_258.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326258
@@ -1443,7 +1443,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06361837,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_441.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327441
@@ -1464,7 +1464,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.089394554,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_27_633.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116347633
@@ -1485,7 +1485,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06471455,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_09_340.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116329340
@@ -1506,7 +1506,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11085112400000001,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_250.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334250
@@ -1527,7 +1527,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.102972254,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_477.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345477
@@ -1548,7 +1548,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10140459,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_22_597.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116342597
@@ -1569,7 +1569,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09898299,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_23_682.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116343682
@@ -1590,7 +1590,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.12982678,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_24_295.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116344295
@@ -1611,7 +1611,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.068233505,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_278.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116348278
@@ -1632,7 +1632,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09652634,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_561.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116340561
@@ -1653,7 +1653,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08899598,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_28_760.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116348760
@@ -1674,7 +1674,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06728618,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_59_907.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116319907
@@ -1695,7 +1695,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.20780599,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_02_112.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116322112
@@ -1716,7 +1716,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11500833,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_00_758.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116320758
@@ -1737,7 +1737,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0811214,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_145.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334145
@@ -1758,7 +1758,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09100793,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_694.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349694
@@ -1779,7 +1779,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08118389999999999,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_20_420.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116340420
@@ -1800,7 +1800,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.055591499999999995,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_25_337.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116345337
@@ -1821,7 +1821,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.11004369,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_10_379.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116330379
@@ -1842,7 +1842,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.05864659,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_461.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349461
@@ -1863,7 +1863,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.09415048,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_649.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316649
@@ -1884,7 +1884,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08612621599999999,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_01_025.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116321025
@@ -1905,7 +1905,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.10113442,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_30_437.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116350437
@@ -1926,7 +1926,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0797192,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_913.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334913
@@ -1947,7 +1947,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.07047864,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_29_361.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116349361
@@ -1968,7 +1968,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.08395402,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_32_267.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116352267
@@ -1989,7 +1989,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.089351915,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_21_607.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116341607
@@ -2031,7 +2031,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.077531494,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_06_751.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116326751
@@ -2052,7 +2052,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.06787465,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_14_554.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116334554
@@ -2073,7 +2073,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.32629663,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_12_07_714.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116327714
@@ -2094,7 +2094,7 @@
             "IsPotholeFault": false,
             "IsLongCrackFault": false,
             "CrocodileCrackConfidence": 0.0684142,
-            "ImageFileName": "data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_11_56_041.jpg"
+            "ImageFileName": "readingdb/test_data/images/road1.jpg"
         },
         "RouteID": 45,
         "Timestamp": 1616116316041
