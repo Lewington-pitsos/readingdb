@@ -9,7 +9,7 @@
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -49,7 +49,7 @@
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -88,7 +88,7 @@
         "Reading": {
             "Latitude": -37.871398593720286,
             "Longitude": 145.24268514520602,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -127,7 +127,7 @@
         "Reading": {
             "Latitude": -37.871399178110146,
             "Longitude": 145.24274206010298,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_330.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -166,7 +166,7 @@
         "Reading": {
             "Latitude": -37.871401136806654,
             "Longitude": 145.24293282147386,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_121.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -205,7 +205,7 @@
         "Reading": {
             "Latitude": -37.871401206141044,
             "Longitude": 145.24293957408872,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_149.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -244,7 +244,7 @@
         "Reading": {
             "Latitude": -37.871401805388274,
             "Longitude": 145.2429979359746,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_391.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -283,7 +283,7 @@
         "Reading": {
             "Latitude": -37.871402367492074,
             "Longitude": 145.24305268038825,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_618.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -322,7 +322,7 @@
         "Reading": {
             "Latitude": -37.871403932468304,
             "Longitude": 145.24320509655308,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_250.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -361,7 +361,7 @@
         "Reading": {
             "Latitude": -37.8714040290412,
             "Longitude": 145.24321450198096,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_289.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -400,7 +400,7 @@
         "Reading": {
             "Latitude": -37.87140692127575,
             "Longitude": 145.24349618248812,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_30_457.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -439,7 +439,7 @@
         "Reading": {
             "Latitude": -37.8714096376981,
             "Longitude": 145.24376074029317,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_554.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -478,7 +478,7 @@
         "Reading": {
             "Latitude": -37.871409759033284,
             "Longitude": 145.24377255736925,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_603.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -517,7 +517,7 @@
         "Reading": {
             "Latitude": -37.871411893541996,
             "Longitude": 145.24398044144215,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_465.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -556,7 +556,7 @@
         "Reading": {
             "Latitude": -37.87141237145404,
             "Longitude": 145.24402698625198,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_658.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -595,7 +595,7 @@
         "Reading": {
             "Latitude": -37.87141437472267,
             "Longitude": 145.24422208858954,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_467.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -634,7 +634,7 @@
         "Reading": {
             "Latitude": -37.87141462482171,
             "Longitude": 145.2442464462361,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_568.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -673,7 +673,7 @@
         "Reading": {
             "Latitude": -37.87141774239303,
             "Longitude": 145.24455007274167,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_34_827.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -712,7 +712,7 @@
         "Reading": {
             "Latitude": -37.87142033005151,
             "Longitude": 145.24480208997625,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_35_872.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -751,7 +751,7 @@
         "Reading": {
             "Latitude": -37.87142219465135,
             "Longitude": 145.244983687084,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_625.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -790,7 +790,7 @@
         "Reading": {
             "Latitude": -37.871422224366086,
             "Longitude": 145.2449865810618,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_637.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",
@@ -829,7 +829,7 @@
         "Reading": {
             "Latitude": -37.87142256360935,
             "Longitude": 145.24501962064184,
-            "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_774.jpg",
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
             "Entities": [
                 {
                     "Name": "LongCrack",

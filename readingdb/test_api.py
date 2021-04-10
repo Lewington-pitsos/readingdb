@@ -128,11 +128,11 @@ class TestAPI(unittest.TestCase):
 
         preds = [{
             'Reading': {
-                'ImageFileName': "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                'ImageFileName': "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
                 'PresignedURL': "INVALID_URL",
                 'S3Uri': {
                     "Bucket": TEST_BUCKET,
-                    "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
+                    "Key": route.id + "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
                 },
                 "Entities": [
                     {
@@ -227,10 +227,10 @@ class TestAPI(unittest.TestCase):
             'SampleData': {
                 'PredictionReading': {
                 'Reading': {
-                    "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+                    "ImageFileName": 'readingdb/test_data/images/road1.jpg',
                     'S3Uri': {
                         "Bucket": TEST_BUCKET,
-                        "Key": route.id + "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
+                        "Key": route.id + 'readingdb/test_data/images/road1.jpg'
                     },
                     "Entities": [
                         {'Confidence': 0.6557837,
@@ -283,6 +283,6 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(set(bucket_objects), set([
             "mocks/apple.json", 
             "mocks/file.json",
-            route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
-            route.id + '/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg'
+            route.id + 'readingdb/test_data/images/road1.jpg'
+,
         ]))
