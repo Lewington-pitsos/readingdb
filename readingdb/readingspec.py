@@ -9,6 +9,8 @@ def load_json_entries(reading_spec) -> List[Dict[str, Any]]:
     return entries
 class ReadingSpec():
     JSON_ENTRIES_FORMAT = "json_entries"
+    S3_FILES_FORMAT = "s3_files_format"
+
 
     RECOGNIZED_READING_TYPES = {
         ReadingTypes.IMAGE:{
