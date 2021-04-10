@@ -108,7 +108,7 @@ def handler(event: Dict[str, Any], context):
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
         if err_resp:
             return err_resp 
-        name, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        name, err_resp = get_key(event, RouteKeys.NAME)
         if err_resp:
             return err_resp 
 

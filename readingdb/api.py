@@ -86,7 +86,6 @@ class API(DB, ReadingDB):
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         routes = super().routes_for_user(user_id)
-
         for r in routes:
             self.__inject_samples_with_presigned_urls(r)
         
@@ -94,7 +93,6 @@ class API(DB, ReadingDB):
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
         r = super().get_route(route_id, user_id)
-
         if not r:
             return r
 
@@ -140,18 +138,22 @@ class API(DB, ReadingDB):
         self.put_reading(entry)
         return entry
 
-    def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
-        if not entry.has_uri():
-            _, object_name = self.__upload_file(
+    def __upload_entry_file(self, entry) -> S3Uri:
+        _, object_name = self.__upload_file(
                 entry.route_id, 
                 entry.url, 
                 self.bucket
             )
 
-            entry.set_uri(S3Uri(
-                self.bucket,
-                object_name,
-            ))
+        return S3Uri(
+            self.bucket,
+            object_name,
+        )
+
+    def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
+        if not entry.has_uri():
+            uri: S3Uri = self.__upload_entry_file(entry)
+            entry.set_uri(uri)
 
         self.put_reading(entry)
 
@@ -160,13 +162,15 @@ class API(DB, ReadingDB):
     def __generate_route_id(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
+    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: int, route_id: str) -> Reading:
+        e[ReadingKeys.READING_ID] = reading_id
+        e[ReadingRouteKeys.ROUTE_ID] = route_id
+        return json_to_reading(entry_type, e)
+
     def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
-        print("uploading entries")
         finalized: List[AbstractReading] = []
         for i, e in enumerate(tqdm(entries)):
-            e[ReadingKeys.READING_ID] = i
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
-            e = json_to_reading(entry_type, e)
+            e = self.__json_to_entry(e, entry_type, i, route_id)
             e = self.__save_entry(e)
             finalized.append(e)
 

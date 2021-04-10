@@ -1,6 +1,7 @@
 import json
 import os
 from pprint import pprint
+from readingdb.route import Route
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import ReadingRouteKeys, RouteKeys
 from typing import List
@@ -171,10 +172,39 @@ class TestAPI(unittest.TestCase):
 
         api.save_predictions(preds, route.id, user_id)
 
-
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
+
+    def test_saves_readings_to_existing_route(self):
+        user_id = "asdy7asdh"
+        route_id = "asdasdasdasd"
+        api = API(self.ddb_url, bucket=TEST_BUCKET)
+
+        user_routes = api.routes_for_user(user_id)
+        self.assertEqual(len(user_routes), 0)
+
+        api.put_route(Route(
+            user_id,
+            route_id,
+            0
+        ))
+
+        user_routes = api.routes_for_user(user_id)
+        self.assertEqual(len(user_routes), 1)
+        self.assertNotIn("SampleData", user_routes[0])
+
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 0)
+        print(user_routes)
+
+        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+            route_spec_data = json.load(j)
+
+        api.save_predictions(route_spec_data, route_id, user_id)
+
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 22)
 
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"

@@ -14,13 +14,6 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError("set_as_predicting is not implemented") 
 
     @abc.abstractmethod
-    def save_predictions(readings: List[Reading], route_id: int, user_id: str) -> None:
-        """Saves the prediction readings to the given route and sets the status
-        of that route to 'complete'.
-        """
-        raise NotImplementedError("save_predictions is not implemented")
-
-    @abc.abstractmethod
     def all_route_readings(route_id: int, user_id: str) -> List[Dict[str, Any]]:
         """Returns all readings (e.g. gps readings, accelerometer readings, 
         camera image readings, prior predictions) associated with that route.
@@ -35,6 +28,13 @@ class ReadingDB(abc.ABC):
         Returns the ID of the newly created route.
         """
         raise NotImplementedError("upload is not implemented")
+
+    @abc.abstractmethod
+    def save_predictions(readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
+        """Saves the prediction readings to the given route and sets the status
+        of that route to 'complete'.
+        """
+        raise NotImplementedError("save_predictions is not implemented")
 
     @abc.abstractmethod
     def update_route_name(route_id: str, user_id: str, name: str) -> None:

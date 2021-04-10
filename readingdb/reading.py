@@ -152,7 +152,7 @@ def ddb_to_dict(reading_type, reading) -> None:
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
 
-def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> AbstractReading:
+def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
             reading[ReadingKeys.READING_ID],

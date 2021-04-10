@@ -87,7 +87,7 @@ class TestLambda(unittest.TestCase):
     def test_gets_readings(self):
         resp = handler({
             "Type": "GetReadings",
-            "RouteID": "1617880492.8395514-C88AL4ZBB464RLR",
+            "RouteID": "1617948115.1693873-5BFQ11NQNIQC8BP",
             "AccessToken": self.access_token,
         }, None)
 
@@ -103,13 +103,13 @@ class TestLambda(unittest.TestCase):
         }, None)
 
         self.assertEqual(len(resp["Body"]), 2)
-        self.assertTrue(resp["Body"][0]["RouteID"] in ["1617880492.8395514-C88AL4ZBB464RLR", "1617880492.8395514-C88AL4ZBB464RLR"])
+        self.assertTrue(resp["Body"][0]["RouteID"] in ["1617948113.264883-JU9HB2L8QH3B5WH", "1617948115.1693873-5BFQ11NQNIQC8BP"])
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
         resp = handler({
             "Type": "GetRoute",
-            "RouteID": "1617880492.8395514-C88AL4ZBB464RLR",
+            "RouteID": "1617948115.1693873-5BFQ11NQNIQC8BP",
             "AccessToken": self.access_token,
         }, None)
 
@@ -121,6 +121,7 @@ class TestLambda(unittest.TestCase):
             'Status': 'Success', 
             'Body': {
                 'RouteStatus': 1, 
+                'Timestamp': 1616116106935,
                 'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 
                 'SampleData': {
                     'PredictionReading': {
@@ -129,7 +130,7 @@ class TestLambda(unittest.TestCase):
                         'Reading': {
                             'S3Uri': {
                                 'Bucket': 'mobileappsessions172800-main', 
-                                'Key': '1617880492.8395514-C88AL4ZBB464RLR/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg'
+                                'Key': '1617948115.1693873-5BFQ11NQNIQC8BP/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg'
                             }, 
                             'Longitude': 145.2450816, 
                             'Latitude': -37.8714232, 
@@ -153,11 +154,11 @@ class TestLambda(unittest.TestCase):
 
                             ],
                         }, 
-                        'RouteID': '1617880492.8395514-C88AL4ZBB464RLR', 
+                        'RouteID': '1617948115.1693873-5BFQ11NQNIQC8BP', 
                         'Timestamp': 1616116106935
                     }
                 }, 
-                'RouteID': '1617880492.8395514-C88AL4ZBB464RLR', 
-                'RouteName': 'C88AL4ZBB464RLR'
+                'RouteID': '1617948115.1693873-5BFQ11NQNIQC8BP', 
+                'RouteName': '5BFQ11NQNIQC8BP'
             }
         }, resp)
