@@ -1,4 +1,5 @@
 import abc
+from readingdb.routespec import RouteSpec
 from typing import Any, Dict, List, Tuple
 
 from readingdb.route import Route
@@ -42,14 +43,14 @@ class ReadingDB(abc.ABC):
         """
         raise NotImplementedError("not implemented")
 
-    # @abc.abstractmethod
-    # def process_upload(s3_uri: str, user_id: str) -> str:
-    #     """Uploads all readings that exist within the se_uri (which 
-    #     will be a zipped file) as a new route.
+    @abc.abstractmethod
+    def save_route(routeSpec: RouteSpec, user_id: str) -> str:
+        """Uploads all readings that exist within the se_uri (which 
+        will be a zipped file) as a new route.
 
-    #     Returns the id of the newly created route.
-    #     """
-    #     raise NotImplementedError("not implemented")
+        Returns the id of the newly created route.
+        """
+        raise NotImplementedError("not implemented")
     
     # -------------- Reading Methods -------------- 
 
