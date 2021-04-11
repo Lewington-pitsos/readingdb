@@ -1,0 +1,611 @@
+[
+    {
+        "Timestamp": 1617815688109,
+        "Reading": {
+            "Latitude": -37.841723200000004,
+            "Longitude": 145.2511816
+        }
+    },
+    {
+        "Timestamp": 1617815688264,
+        "Reading": {
+            "Latitude": -37.80412320000001,
+            "Longitude": 145.2724816
+        }
+    },
+    {
+        "Timestamp": 1617815687904,
+        "Reading": {
+            "Latitude": -37.79542320000001,
+            "Longitude": 145.2791816
+        }
+    },
+    {
+        "Timestamp": 1617815689724,
+        "Reading": {
+            "Latitude": -37.776723200000006,
+            "Longitude": 145.29778159999998
+        }
+    },
+    {
+        "Timestamp": 1617815689767,
+        "Reading": {
+            "Latitude": -37.770223200000004,
+            "Longitude": 145.33188159999997
+        }
+    },
+    {
+        "Timestamp": 1617815689652,
+        "Reading": {
+            "Latitude": -37.73692320000001,
+            "Longitude": 145.35498159999997
+        }
+    },
+    {
+        "Timestamp": 1617815689553,
+        "Reading": {
+            "Latitude": -37.71252320000001,
+            "Longitude": 145.38978159999996
+        }
+    },
+    {
+        "Timestamp": 1617815689650,
+        "Reading": {
+            "Latitude": -37.679923200000005,
+            "Longitude": 145.40968159999997
+        }
+    },
+    {
+        "Timestamp": 1617815690028,
+        "Reading": {
+            "Latitude": -37.64492320000001,
+            "Longitude": 145.42698159999998
+        }
+    },
+    {
+        "Timestamp": 1617815694127,
+        "Reading": {
+            "Latitude": -37.63062320000001,
+            "Longitude": 145.4376816
+        }
+    },
+    {
+        "Timestamp": 1617815694256,
+        "Reading": {
+            "Latitude": -37.60922320000001,
+            "Longitude": 145.4731816
+        }
+    },
+    {
+        "Timestamp": 1617815694107,
+        "Reading": {
+            "Latitude": -37.57152320000001,
+            "Longitude": 145.5045816
+        }
+    },
+    {
+        "Timestamp": 1617815685536,
+        "Reading": {
+            "Latitude": -37.54152320000001,
+            "Longitude": 145.5372816
+        }
+    },
+    {
+        "Timestamp": 1617815685206,
+        "Reading": {
+            "Latitude": -37.52832320000001,
+            "Longitude": 145.5688816
+        }
+    },
+    {
+        "Timestamp": 1617815685633,
+        "Reading": {
+            "Latitude": -37.51492320000001,
+            "Longitude": 145.5695816
+        }
+    },
+    {
+        "Timestamp": 1617815688239,
+        "Reading": {
+            "Latitude": -37.49602320000001,
+            "Longitude": 145.5995816
+        }
+    },
+    {
+        "Timestamp": 1617815688564,
+        "Reading": {
+            "Latitude": -37.47012320000001,
+            "Longitude": 145.6336816
+        }
+    },
+    {
+        "Timestamp": 1617815688075,
+        "Reading": {
+            "Latitude": -37.46412320000001,
+            "Longitude": 145.6354816
+        }
+    },
+    {
+        "Timestamp": 1617815693300,
+        "Reading": {
+            "Latitude": -37.42872320000001,
+            "Longitude": 145.6604816
+        }
+    },
+    {
+        "Timestamp": 1617815693182,
+        "Reading": {
+            "Latitude": -37.42282320000001,
+            "Longitude": 145.6662816
+        }
+    },
+    {
+        "Timestamp": 1617815693440,
+        "Reading": {
+            "Latitude": -37.39832320000001,
+            "Longitude": 145.67798159999998
+        }
+    },
+    {
+        "Timestamp": 1617815686759,
+        "Reading": {
+            "Latitude": -37.37442320000001,
+            "Longitude": 145.7091816
+        }
+    },
+    {
+        "Timestamp": 1617815686672,
+        "Reading": {
+            "Latitude": -37.34602320000001,
+            "Longitude": 145.7171816
+        }
+    },
+    {
+        "Timestamp": 1617815687062,
+        "Reading": {
+            "Latitude": -37.316123200000014,
+            "Longitude": 145.7285816
+        }
+    },
+    {
+        "Timestamp": 1617815688812,
+        "Reading": {
+            "Latitude": -37.30882320000001,
+            "Longitude": 145.75618160000002
+        }
+    },
+    {
+        "Timestamp": 1617815689338,
+        "Reading": {
+            "Latitude": -37.29632320000001,
+            "Longitude": 145.7703816
+        }
+    },
+    {
+        "Timestamp": 1617815689115,
+        "Reading": {
+            "Latitude": -37.291923200000014,
+            "Longitude": 145.8070816
+        }
+    },
+    {
+        "Timestamp": 1617815686968,
+        "Reading": {
+            "Latitude": -37.26212320000001,
+            "Longitude": 145.83998160000002
+        }
+    },
+    {
+        "Timestamp": 1617815687038,
+        "Reading": {
+            "Latitude": -37.24412320000001,
+            "Longitude": 145.84718160000003
+        }
+    },
+    {
+        "Timestamp": 1617815687214,
+        "Reading": {
+            "Latitude": -37.23682320000001,
+            "Longitude": 145.87598160000002
+        }
+    },
+    {
+        "Timestamp": 1617815690794,
+        "Reading": {
+            "Latitude": -37.21392320000001,
+            "Longitude": 145.88048160000002
+        }
+    },
+    {
+        "Timestamp": 1617815691176,
+        "Reading": {
+            "Latitude": -37.18002320000001,
+            "Longitude": 145.88068160000003
+        }
+    },
+    {
+        "Timestamp": 1617815691360,
+        "Reading": {
+            "Latitude": -37.16232320000001,
+            "Longitude": 145.90018160000002
+        }
+    },
+    {
+        "Timestamp": 1617815694921,
+        "Reading": {
+            "Latitude": -37.14732320000001,
+            "Longitude": 145.91208160000002
+        }
+    },
+    {
+        "Timestamp": 1617815694794,
+        "Reading": {
+            "Latitude": -37.12492320000001,
+            "Longitude": 145.92898160000001
+        }
+    },
+    {
+        "Timestamp": 1617815695313,
+        "Reading": {
+            "Latitude": -37.11372320000001,
+            "Longitude": 145.9519816
+        }
+    },
+    {
+        "Timestamp": 1617815694372,
+        "Reading": {
+            "Latitude": -37.07692320000001,
+            "Longitude": 145.9575816
+        }
+    },
+    {
+        "Timestamp": 1617815694976,
+        "Reading": {
+            "Latitude": -37.06272320000001,
+            "Longitude": 145.9698816
+        }
+    },
+    {
+        "Timestamp": 1617815694609,
+        "Reading": {
+            "Latitude": -37.036123200000006,
+            "Longitude": 145.9894816
+        }
+    },
+    {
+        "Timestamp": 1617815686800,
+        "Reading": {
+            "Latitude": -37.0131232,
+            "Longitude": 146.01548160000002
+        }
+    },
+    {
+        "Timestamp": 1617815686817,
+        "Reading": {
+            "Latitude": -36.9807232,
+            "Longitude": 146.0162816
+        }
+    },
+    {
+        "Timestamp": 1617815686208,
+        "Reading": {
+            "Latitude": -36.9665232,
+            "Longitude": 146.02838160000002
+        }
+    },
+    {
+        "Timestamp": 1617815690859,
+        "Reading": {
+            "Latitude": -36.942723199999996,
+            "Longitude": 146.04658160000002
+        }
+    },
+    {
+        "Timestamp": 1617815690650,
+        "Reading": {
+            "Latitude": -36.940523199999994,
+            "Longitude": 146.06288160000003
+        }
+    },
+    {
+        "Timestamp": 1617815690563,
+        "Reading": {
+            "Latitude": -36.9207232,
+            "Longitude": 146.07768160000003
+        }
+    },
+    {
+        "Timestamp": 1617815693946,
+        "Reading": {
+            "Latitude": -36.9178232,
+            "Longitude": 146.09928160000004
+        }
+    },
+    {
+        "Timestamp": 1617815693929,
+        "Reading": {
+            "Latitude": -36.8782232,
+            "Longitude": 146.12628160000003
+        }
+    },
+    {
+        "Timestamp": 1617815694539,
+        "Reading": {
+            "Latitude": -36.8518232,
+            "Longitude": 146.14488160000002
+        }
+    },
+    {
+        "Timestamp": 1617815689680,
+        "Reading": {
+            "Latitude": -36.8123232,
+            "Longitude": 146.15788160000002
+        }
+    },
+    {
+        "Timestamp": 1617815689861,
+        "Reading": {
+            "Latitude": -36.8106232,
+            "Longitude": 146.18498160000001
+        }
+    },
+    {
+        "Timestamp": 1617815689691,
+        "Reading": {
+            "Latitude": -36.8058232,
+            "Longitude": 146.21268160000002
+        }
+    },
+    {
+        "Timestamp": 1617815686532,
+        "Reading": {
+            "Latitude": -36.7679232,
+            "Longitude": 146.25158160000004
+        }
+    },
+    {
+        "Timestamp": 1617815686226,
+        "Reading": {
+            "Latitude": -36.7577232,
+            "Longitude": 146.27578160000004
+        }
+    },
+    {
+        "Timestamp": 1617815686611,
+        "Reading": {
+            "Latitude": -36.7316232,
+            "Longitude": 146.27978160000004
+        }
+    },
+    {
+        "Timestamp": 1617815695035,
+        "Reading": {
+            "Latitude": -36.6926232,
+            "Longitude": 146.31318160000004
+        }
+    },
+    {
+        "Timestamp": 1617815695667,
+        "Reading": {
+            "Latitude": -36.6641232,
+            "Longitude": 146.34268160000005
+        }
+    },
+    {
+        "Timestamp": 1617815695243,
+        "Reading": {
+            "Latitude": -36.642623199999996,
+            "Longitude": 146.34758160000004
+        }
+    },
+    {
+        "Timestamp": 1617815688778,
+        "Reading": {
+            "Latitude": -36.6061232,
+            "Longitude": 146.36898160000004
+        }
+    },
+    {
+        "Timestamp": 1617815688658,
+        "Reading": {
+            "Latitude": -36.5783232,
+            "Longitude": 146.38298160000005
+        }
+    },
+    {
+        "Timestamp": 1617815688567,
+        "Reading": {
+            "Latitude": -36.5487232,
+            "Longitude": 146.42298160000004
+        }
+    },
+    {
+        "Timestamp": 1617815693118,
+        "Reading": {
+            "Latitude": -36.5107232,
+            "Longitude": 146.43248160000005
+        }
+    },
+    {
+        "Timestamp": 1617815692756,
+        "Reading": {
+            "Latitude": -36.4983232,
+            "Longitude": 146.46168160000005
+        }
+    },
+    {
+        "Timestamp": 1617815693297,
+        "Reading": {
+            "Latitude": -36.492623200000004,
+            "Longitude": 146.47348160000004
+        }
+    },
+    {
+        "Timestamp": 1617815691606,
+        "Reading": {
+            "Latitude": -36.49162320000001,
+            "Longitude": 146.51188160000004
+        }
+    },
+    {
+        "Timestamp": 1617815691506,
+        "Reading": {
+            "Latitude": -36.490723200000005,
+            "Longitude": 146.51388160000005
+        }
+    },
+    {
+        "Timestamp": 1617815691796,
+        "Reading": {
+            "Latitude": -36.48782320000001,
+            "Longitude": 146.51758160000006
+        }
+    },
+    {
+        "Timestamp": 1617815685882,
+        "Reading": {
+            "Latitude": -36.47182320000001,
+            "Longitude": 146.51768160000006
+        }
+    },
+    {
+        "Timestamp": 1617815685502,
+        "Reading": {
+            "Latitude": -36.46052320000001,
+            "Longitude": 146.54788160000007
+        }
+    },
+    {
+        "Timestamp": 1617815685775,
+        "Reading": {
+            "Latitude": -36.43902320000001,
+            "Longitude": 146.55778160000006
+        }
+    },
+    {
+        "Timestamp": 1617815692751,
+        "Reading": {
+            "Latitude": -36.40092320000001,
+            "Longitude": 146.58598160000005
+        }
+    },
+    {
+        "Timestamp": 1617815692274,
+        "Reading": {
+            "Latitude": -36.36652320000001,
+            "Longitude": 146.59298160000006
+        }
+    },
+    {
+        "Timestamp": 1617815692280,
+        "Reading": {
+            "Latitude": -36.34632320000001,
+            "Longitude": 146.60488160000006
+        }
+    },
+    {
+        "Timestamp": 1617815693201,
+        "Reading": {
+            "Latitude": -36.32642320000001,
+            "Longitude": 146.62048160000006
+        }
+    },
+    {
+        "Timestamp": 1617815693564,
+        "Reading": {
+            "Latitude": -36.32622320000001,
+            "Longitude": 146.62048160000006
+        }
+    },
+    {
+        "Timestamp": 1617815693637,
+        "Reading": {
+            "Latitude": -36.30992320000001,
+            "Longitude": 146.63848160000006
+        }
+    },
+    {
+        "Timestamp": 1617815692053,
+        "Reading": {
+            "Latitude": -36.29092320000001,
+            "Longitude": 146.64848160000005
+        }
+    },
+    {
+        "Timestamp": 1617815692176,
+        "Reading": {
+            "Latitude": -36.25712320000001,
+            "Longitude": 146.68448160000005
+        }
+    },
+    {
+        "Timestamp": 1617815691951,
+        "Reading": {
+            "Latitude": -36.224923200000006,
+            "Longitude": 146.70968160000007
+        }
+    },
+    {
+        "Timestamp": 1617815690659,
+        "Reading": {
+            "Latitude": -36.19632320000001,
+            "Longitude": 146.74638160000006
+        }
+    },
+    {
+        "Timestamp": 1617815690319,
+        "Reading": {
+            "Latitude": -36.171623200000006,
+            "Longitude": 146.76858160000006
+        }
+    },
+    {
+        "Timestamp": 1617815690113,
+        "Reading": {
+            "Latitude": -36.15602320000001,
+            "Longitude": 146.78528160000005
+        }
+    },
+    {
+        "Timestamp": 1617815687522,
+        "Reading": {
+            "Latitude": -36.15002320000001,
+            "Longitude": 146.79948160000004
+        }
+    },
+    {
+        "Timestamp": 1617815687610,
+        "Reading": {
+            "Latitude": -36.143123200000005,
+            "Longitude": 146.80808160000004
+        }
+    },
+    {
+        "Timestamp": 1617815687329,
+        "Reading": {
+            "Latitude": -36.13402320000001,
+            "Longitude": 146.81158160000004
+        }
+    },
+    {
+        "Timestamp": 1617815692585,
+        "Reading": {
+            "Latitude": -36.09572320000001,
+            "Longitude": 146.83088160000003
+        }
+    },
+    {
+        "Timestamp": 1617815691855,
+        "Reading": {
+            "Latitude": -36.07712320000001,
+            "Longitude": 146.85548160000002
+        }
+    },
+    {
+        "Timestamp": 1617815692455,
+        "Reading": {
+            "Latitude": -36.07202320000001,
+            "Longitude": 146.8935816
+        }
+    }
+]

@@ -2,10 +2,10 @@ import abc
 from os import read
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from readingdb.constants import *
-from readingdb.conditions import *
+from readingdb.entities import *
 from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
 
 
@@ -40,8 +40,11 @@ class Reading(AbstractReading):
 
 
 class ImageReading(Reading):
-    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str, uri: str = None) -> None:
+    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str = None, uri: str = None) -> None:
         super().__init__(id, route_id, date, readingType)
+
+        if not url and not uri:
+            raise ValueError("at least one of url or uri must be supplied when initializing an ImageReading")
 
         self.url: str = url
         self.uri = uri
@@ -140,7 +143,7 @@ class PredictionReading(ImageReading, PositionReading):
         return data
 
 READING_TYPE_MAP: Dict[str, AbstractReading] = {
-    ReadingTypes.POSITIONAL: PositionReadingKeys,
+    ReadingTypes.POSITIONAL: PositionReading,
     ReadingTypes.IMAGE: ImageReading,
     ReadingTypes.PREDICTION: PredictionReading,
     ReadingTypes.ANNOTATION: PredictionReading,
@@ -151,6 +154,11 @@ def ddb_to_dict(reading_type, reading) -> None:
 
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
+
+def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
+    return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
+
+
 
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
@@ -163,19 +171,21 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE],
         )
     elif reading_type == ReadingTypes.IMAGE:
+
+
         return ImageReading(
             reading[ReadingKeys.READING_ID],
             reading[ReadingRouteKeys.ROUTE_ID],
             reading[ReadingKeys.TIMESTAMP],
             reading_type,
-            reading[ReadingKeys.READING][ImageReadingKeys.FILENAME],
+            get_filename(reading[ReadingKeys.READING]),
             get_uri(reading[ReadingKeys.READING])
         )
     elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
         binaries: Dict[str, bool] = {}
         reading_data = reading[ReadingKeys.READING]
 
-        for key in CONDITION_BIARIES:
+        for key in ENTITY_BIARIES:
             if key in reading_data:
                 binaries[key] = reading_data[key]
 

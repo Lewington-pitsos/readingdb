@@ -1,0 +1,176 @@
+[
+    {
+        "Timestamp": 1617815687928,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_47_928-21.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815689386,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_49_386-25.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815689773,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_49_773-26.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815694006,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_006-38.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815685467,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_45_467-14.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815688308,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_48_308-22.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815693244,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_53_244-36.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815686922,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_922-18.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815689037,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_49_037-24.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815687234,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_47_234-19.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815691150,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_51_150-30.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815694981,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_981-41.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815694702,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_702-40.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815686544,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_544-17.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815690798,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_50_798-29.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815694284,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_284-39.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815690055,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_50_055-27.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815686230,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_230-16.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815695404,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_55_404-42.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815688689,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_48_689-23.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815692899,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_899-35.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815691500,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_51_500-31.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815685848,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_45_848-15.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815692547,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_547-34.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815693587,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_53_587-37.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815691849,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_51_849-32.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815690469,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_50_469-28.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815687617,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_47_617-20.jpg"
+        }
+    },
+    {
+        "Timestamp": 1617815692198,
+        "Reading": {
+            "ImageFileName": "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_198-33.jpg"
+        }
+    }
+]
