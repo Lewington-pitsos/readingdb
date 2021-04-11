@@ -14,6 +14,7 @@ from moto import mock_s3
 
 from readingdb.download_json import download_json_files
 from readingdb.api import API
+from readingdb.endpoints import *
 from readingdb.unzipper import Unzipper
 from readingdb.tutils import *
 
@@ -22,7 +23,6 @@ class TestUnzipper(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
-    ddb_url = "http://localhost:8000"
     bucket_name = "my_bucket"
     test_prefix = "mocks"
 
@@ -36,7 +36,7 @@ class TestUnzipper(unittest.TestCase):
             self.bucket_name
         )
 
-        self.api = API(self.ddb_url) 
+        self.api = API(TEST_DYNAMO_ENDPOINT) 
         self.api.create_reading_db()
     
     def tearDown(self):
@@ -59,9 +59,8 @@ class TestUnzipper(unittest.TestCase):
             self.assertCountEqual(result, desired_result)
 
 
-    @unittest.skip("demonstrating skipping")
     def test_unzipper_uploads(self):
-        z = Unzipper(self.ddb_url, bucket=self.bucket_name)
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
         route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
 
