@@ -102,7 +102,7 @@ class TestLambda(unittest.TestCase):
             "AccessToken": self.access_token,
         }, None)
 
-        self.assertEqual(len(resp["Body"]), 2)
+        self.assertEqual(len(resp["Body"]), 3)
         self.assertTrue(resp["Body"][0]["RouteID"] in ["1617948113.264883-JU9HB2L8QH3B5WH", "1617948115.1693873-5BFQ11NQNIQC8BP"])
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)

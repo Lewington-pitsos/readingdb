@@ -2,28 +2,108 @@
     {
         "Timestamp": 1616116106935,
         "Reading": {
-            "ImageFileName": "readingdb/test_data/images/road1.jpg"
+            "Latitude": -37.8714232,
+            "Longitude": 145.2450816,
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6557837,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07661053,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17722677,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14074452,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09903459,
+                    "Present": false
+                }
+            ]
         }
     },
     {
         "Timestamp": 1616116106935,
         "Reading": {
             "Latitude": -37.8714232,
-            "Longitude": 145.2450816
-        }
+            "Longitude": 145.2450816,
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.6557837,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07661053,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17722677,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14074452,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.09903459,
+                    "Present": false
+                }
+            ]
+        },
+        "Row": 30,
+        "MillisecondPrecision": true
     },
     {
         "Timestamp": 1616117106935,
         "Reading": {
-            "Latitude": -37.8744232,
-            "Longitude": 145.2350816
-        }
-    },
-    {
-        "Timestamp": 1616117106935,
-        "Reading": {
-            "Latitude": -37.8744232,
-            "Longitude": 145.2350816
+            "Latitude": -37.871398593720286,
+            "Longitude": 145.24268514520602,
+            "ImageFileName": "readingdb/test_data/images/road1.jpg",
+            "Entities": [
+                {
+                    "Name": "LongCrack",
+                    "Confidence": 0.65007895,
+                    "Present": false
+                },
+                {
+                    "Name": "LatCrack",
+                    "Confidence": 0.07613063,
+                    "Present": false
+                },
+                {
+                    "Name": "CrocodileCrack",
+                    "Confidence": 0.17736913,
+                    "Present": false
+                },
+                {
+                    "Name": "Pothole",
+                    "Confidence": 0.14306208,
+                    "Present": false
+                },
+                {
+                    "Name": "Lineblur",
+                    "Confidence": 0.10005592,
+                    "Present": false
+                }
+            ]
         }
     }
 ]
