@@ -1,3 +1,4 @@
+from readingdb.route import Route
 import boto3
 import zipfile
 from io import BytesIO
@@ -18,7 +19,7 @@ class Unzipper():
         self.s3_resource = boto3.resource('s3')
         self.api: API = API(url, *args, **kwargs)
 
-    def process(self, bucket: str, key: str) -> None:
+    def process(self, bucket: str, key: str) -> Route:
         reading_types = {}
         img_readings = []
  
@@ -74,28 +75,4 @@ class Unzipper():
 
         routeSpec = RouteSpec(list(reading_types.values()))
 
-        self.api.save_route(routeSpec, user_id)
-
-    def __file_type(filename):
-        extension = filename.split(".")[-1]
-
-
-
-    def __reading_spec(self, bucket: str, filename: str) -> ReadingSpec:
-        extension = filename.split(".")[-1]
-
-        if extension == "jpg":
-            return ReadingSpec(
-                ReadingTypes.IMAGE, 
-                ReadingSpec.S3_FILES_FORMAT, 
-                S3Uri(bucket, filename)
-            )
-        elif extension == self.TXT_EXT:
-            return ReadingSpec(
-                ReadingTypes.POSITIONAL, 
-                ReadingSpec.S3_FILES_FORMAT, 
-                S3Uri(bucket, filename)
-            )
-        else:
-            raise ValueError("unrecognized reading file type: ", filename)
-        
+        return self.api.save_route(routeSpec, user_id)

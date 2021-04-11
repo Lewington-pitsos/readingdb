@@ -1,10 +1,6 @@
 import abc
 
-
-
 class SQSQueue(abc.ABC):
-
-
     @abc.abstractmethod
     def add_message_to_queue(queue_url: str, route_id: str) -> None:
         """Adds message to designated queue. Requires queue_url && route_id.

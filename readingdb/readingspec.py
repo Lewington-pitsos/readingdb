@@ -22,7 +22,7 @@ class ReadingSpec():
         },
         ReadingTypes.POSITIONAL:{
             JSON_ENTRIES_FORMAT: load_json_entries,
-            GPS_FILE_FORMAT: get_entries
+            S3_FILES_FORMAT: get_entries
         },
         ReadingTypes.PREDICTION:{
             JSON_ENTRIES_FORMAT: load_json_entries

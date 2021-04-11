@@ -58,8 +58,18 @@ class TestUnzipper(unittest.TestCase):
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
 
-    def test_unzipper_uploads(self):
-        pass        
-        # z = Unzipper(self.ddb_url, bucket=self.bucket_name)
 
-        # z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
+    @unittest.skip("demonstrating skipping")
+    def test_unzipper_uploads(self):
+        z = Unzipper(self.ddb_url, bucket=self.bucket_name)
+
+        route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
+
+        readings = self.api.all_route_readings(route.id)
+
+        for r in readings:
+            print("readings", r)
+
+        self.assertEqual(len(readings), 39)
+
+        

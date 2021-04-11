@@ -29,11 +29,8 @@ def txt_to_points(lines):
     points = []
 
     for line in lines:
-        print(line)
-        if line != "\n" and line != "":
+        if len(line) > 10:
             segments = [s.strip("\n").strip("\r") for s in line.split(" ") if s != ""]    
-            print(segments)            
-            print(segments[0].split(":"))
             point = {
                 ReadingKeys.TIMESTAMP: int(segments[0].split(":")[-1]),
                 ReadingKeys.READING: {
