@@ -2,7 +2,7 @@ import abc
 from os import read
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from readingdb.constants import *
 from readingdb.entities import *
@@ -40,8 +40,11 @@ class Reading(AbstractReading):
 
 
 class ImageReading(Reading):
-    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str, uri: str = None) -> None:
+    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str = None, uri: str = None) -> None:
         super().__init__(id, route_id, date, readingType)
+
+        if not url and not uri:
+            raise ValueError("at least one of url or uri must be supplied when initializing an ImageReading")
 
         self.url: str = url
         self.uri = uri
@@ -152,6 +155,11 @@ def ddb_to_dict(reading_type, reading) -> None:
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
 
+def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
+    return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
+
+
+
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
@@ -163,12 +171,14 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE],
         )
     elif reading_type == ReadingTypes.IMAGE:
+
+
         return ImageReading(
             reading[ReadingKeys.READING_ID],
             reading[ReadingRouteKeys.ROUTE_ID],
             reading[ReadingKeys.TIMESTAMP],
             reading_type,
-            reading[ReadingKeys.READING][ImageReadingKeys.FILENAME],
+            get_filename(reading[ReadingKeys.READING]),
             get_uri(reading[ReadingKeys.READING])
         )
     elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
