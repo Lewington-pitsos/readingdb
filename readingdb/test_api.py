@@ -1,6 +1,7 @@
 import json
 import os
 from pprint import pprint
+from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import ReadingRouteKeys, RouteKeys
@@ -21,7 +22,6 @@ class TestAPI(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
-    ddb_url = "http://localhost:8000"
     bucket_name = "my_bucket"
     test_prefix = "mocks"
 
@@ -35,7 +35,7 @@ class TestAPI(unittest.TestCase):
             self.bucket_name,
         )
 
-        self.api = API(self.ddb_url) 
+        self.api = API(TEST_DYNAMO_ENDPOINT) 
         self.api.create_reading_db()
     
     def tearDown(self):
@@ -59,7 +59,7 @@ class TestAPI(unittest.TestCase):
     
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
-        api = API(self.ddb_url, bucket=self.bucket_name)
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
@@ -75,7 +75,7 @@ class TestAPI(unittest.TestCase):
 
     def test_update_route_status(self):
         user_id = "aghsghavgas"
-        api = API(self.ddb_url, bucket=self.bucket_name)
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
@@ -141,7 +141,7 @@ class TestAPI(unittest.TestCase):
     def test_saves_readings_to_existing_route(self):
         user_id = "asdy7asdh"
         route_id = "asdasdasdasd"
-        api = API(self.ddb_url, bucket=self.bucket_name)
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
@@ -170,7 +170,7 @@ class TestAPI(unittest.TestCase):
 
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
-        api = API(self.ddb_url, bucket=self.bucket_name)
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
         with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
             route_spec_data = json.load(j)

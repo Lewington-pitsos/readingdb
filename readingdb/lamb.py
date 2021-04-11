@@ -1,11 +1,13 @@
 import logging
-from readingdb.authresponse import AuthResponse
+from typing import Dict, Any
+
+from botocore.config import Config
 
 from readingdb.api import API
 from readingdb.constants import *
 from readingdb.auth import Auth
-from botocore.config import Config
-from typing import Dict, Any
+from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+from readingdb.authresponse import AuthResponse
 
 logger = logging.getLogger("main")
 logger.setLevel(logging.INFO)
@@ -74,14 +76,18 @@ def handler(event: Dict[str, Any], context):
     if not user_data.is_authenticated():
         return error_response(f"Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}")
 
-    api = API("https://dynamodb.ap-southeast-2.amazonaws.com", config=Config(
+
+    if context == "TEST_STUB":
+        endpoint = TEST_DYNAMO_ENDPOINT
+    else:
+        endpoint = DYNAMO_ENDPOINT
+
+    api = API(endpoint, config=Config(
         region_name=REGION_NAME,
     ))
 
     #  ------------ Per-Event-Type handling -------------
-
-    resp = {}
-
+    
     if event_name == EVENT_GET_ROUTE:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
         if err_resp:

@@ -31,23 +31,24 @@
 
 # -----------------------------------------------------------------------------
 
-# from readingdb.db import DB
-# import time
+from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
+from readingdb.db import DB
+import time
 
-# db = DB("https://dynamodb.ap-southeast-2.amazonaws.com")
+db = DB(TEST_DYNAMO_ENDPOINT)
 
-# db.teardown_reading_db()
+db.teardown_reading_db()
 # time.sleep(10)
 # db.create_reading_db()
 
 # -----------------------------------------------------------------------------
 
-from readingdb.api import API
-from readingdb.routespec import RouteSpec
-import json
+# from readingdb.api import API
+# from readingdb.routespec import RouteSpec
+# import json
 
 
-api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
+# api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 
 # with open("readingdb/test_data/gps_img_route.json") as f:
 #     route_json = json.load(f) 
@@ -59,4 +60,4 @@ api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 
 # api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
 
-print(api.all_route_readings("1618122099.7517877-EXKQWLZ8CF4XTIM"))
+# print(api.all_route_readings("1618122099.7517877-EXKQWLZ8CF4XTIM"))
