@@ -11,6 +11,7 @@ import time
 import random
 import string
 from tqdm import tqdm
+import uuid
 
 from boto3.dynamodb.conditions import Key
 
@@ -31,8 +32,7 @@ class API(DB, ReadingDB):
         self.s3_client = boto3.client('s3', config=config)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
-        route_key = self.__generate_route_id()
-        route_id = str(time.time()) + "-" + route_key
+        route_id = str(uuid.uuid1())
 
         print(f"uploading route {route_spec} as {route_id}")
 
@@ -60,7 +60,7 @@ class API(DB, ReadingDB):
             user_id,
             route_id,
             timestamp,
-            route_spec.name if route_spec.name else route_key,
+            route_spec.name if route_spec.name else None,
             initial_entries
         )
 
@@ -162,15 +162,15 @@ class API(DB, ReadingDB):
     def __generate_route_id(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
-    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: int, route_id: str) -> Reading:
+    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
         e[ReadingKeys.READING_ID] = reading_id
         e[ReadingRouteKeys.ROUTE_ID] = route_id
         return json_to_reading(entry_type, e)
 
     def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
-        for i, e in enumerate(tqdm(entries)):
-            e = self.__json_to_entry(e, entry_type, i, route_id)
+        for e in tqdm(entries):
+            e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
             e = self.__save_entry(e)
             finalized.append(e)
 

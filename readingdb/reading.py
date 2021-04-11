@@ -19,8 +19,8 @@ class AbstractReading(abc.ABC):
         raise NotImplementedError("not implemented")
 
 class Reading(AbstractReading):
-    def __init__(self, id: int, route_id: str, date: int, readingType: str) -> None:
-        self.id: int = id
+    def __init__(self, id: str, route_id: str, date: int, readingType: str) -> None:
+        self.id: str = id
         self.route_id: str = route_id
         self.date: int = int(date) if isinstance(date, float) else date
         self.readingType: str = readingType
@@ -35,7 +35,6 @@ class Reading(AbstractReading):
 
     @classmethod
     def decode(cls, item: Dict[str, Any]):
-        item[ReadingKeys.READING_ID] = int(item[ReadingKeys.READING_ID])
         item[ReadingKeys.TIMESTAMP] = int(item[ReadingKeys.TIMESTAMP])
 
 

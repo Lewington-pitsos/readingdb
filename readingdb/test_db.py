@@ -22,7 +22,7 @@ class TestDBOps(unittest.TestCase):
         for i in range(21):
             self.db.put_reading(
                 ImageReading(
-                    i,
+                    "sdasdasd-" + str(i),
                     "xxxa",
                     reading_time,
                     ReadingTypes.IMAGE,
@@ -34,8 +34,8 @@ class TestDBOps(unittest.TestCase):
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "xxxa")
-        self.assertEqual(first_reading[ReadingKeys.READING_ID], 0)
         self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
+        self.assertEqual(first_reading[ReadingKeys.READING_ID], "sdasdasd-0")
         self.assertEqual(first_reading[ReadingKeys.READING], {
                 ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
         })
@@ -52,6 +52,7 @@ class TestDBOps(unittest.TestCase):
         self.assertEqual(len(routes), 1)
         self.assertEqual(routes[0], {
             "RouteID": "103",
+            "RouteName": "103",
             "UserID": "3",
             "RouteStatus": 1,
             "Timestamp": 123617823

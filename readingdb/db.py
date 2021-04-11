@@ -43,7 +43,7 @@ class DB():
                 },
                 {
                     'AttributeName': ReadingKeys.READING_ID,
-                    'AttributeType': 'N'
+                    'AttributeType': 'S'
                 },
 
             ],

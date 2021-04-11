@@ -7,6 +7,8 @@ from readingdb.constants import *
 from readingdb.reading import AbstractReading, ddb_to_dict, json_to_reading
 
 class Route():
+    MAX_NAME_LENGTH = 21
+
     def __init__(self, user_id: str, id: str, timestamp: int, name: str=None, sample_data: Dict[str, AbstractReading]=None) -> None:
         """sample_data contains a small collection of readings that belong to
         this route. Allows users to get an idea of what kind of data the route
@@ -15,7 +17,7 @@ class Route():
 
         self.user_id: str = user_id
         self.id: str = id
-        self.name: str = name
+        self.name: str = name if name else id[:self.MAX_NAME_LENGTH]
         self.sample_data: Dict[str, AbstractReading] = copy.deepcopy(sample_data)  
         self.status = RouteStatus.UPLOADED
         self.timestamp: int = timestamp

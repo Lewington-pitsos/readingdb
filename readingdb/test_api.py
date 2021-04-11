@@ -10,7 +10,6 @@ from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
 import boto3
-import botocore
 from moto import mock_s3
 
 from readingdb.download_json import download_json_files
@@ -65,7 +64,7 @@ class TestAPI(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
 
-        self.assertEqual(route.name, route.id.split("-")[-1])
+        self.assertEqual(route.name, route.id[:Route.MAX_NAME_LENGTH])
 
         api.update_route_name(route.id, user_id, "Belgrave")
 
@@ -181,6 +180,9 @@ class TestAPI(unittest.TestCase):
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
 
+        self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
+        del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
+        self.maxDiff = None
         expected_sample_data = {
             'RouteStatus': 1,
             'RouteID': route.id,
@@ -214,7 +216,7 @@ class TestAPI(unittest.TestCase):
                     'Longitude': 145.2450816,
                     'Latitude': -37.8714232,
                 },
-                'ReadingID': 0,
+                'ReadingID': user_routes[0]['SampleData']['PredictionReading']['ReadingID'],
                 'Type': 'PredictionReading',
                 'RouteID': route.id,
                 'Timestamp': 1616116106935
@@ -222,10 +224,7 @@ class TestAPI(unittest.TestCase):
             },
             'RouteName': route.name,
         }
-
-        self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
-        del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
-        self.maxDiff = None
+        
         self.assertEqual(expected_sample_data, user_routes[0])
 
         s3 = boto3.resource(
