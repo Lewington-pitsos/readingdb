@@ -16,7 +16,6 @@ def upload_fixtures(bucket: str, fixtures_dir: str, metadata_file: str) -> None:
 
     for path in fixtures_paths:
         key = os.path.relpath(path, fixtures_dir)
-        print(key)
         client.upload_file(
             Filename=path, 
             Bucket=bucket, 

@@ -12,7 +12,6 @@ from readingdb.api import API
 class Unzipper():
     IMG_EXT = "jpg"
     TXT_EXT = "txt"
-
     OBJ_BODY_KEY = "Body"
 
     def __init__(self, url, *args, **kwargs) -> None:
@@ -53,11 +52,16 @@ class Unzipper():
             elif extension == self.TXT_EXT:
                 if self.TXT_EXT in reading_types:
                     raise ValueError(f"found two .txt files when unzipping {key} of bucket {bucket}, this should never happen")
-                
+
+                with z.open(filename) as f:
+                    lines = [b.decode('unicode_escape') for b in f.readlines()]
+
+                points = txt_to_points(lines)
+
                 reading_types[self.TXT_EXT] = ReadingSpec(
                     ReadingTypes.POSITIONAL, 
                     ReadingSpec.S3_FILES_FORMAT, 
-                    S3Uri(bucket, s3_filename)
+                    points
                 )
             else:
                 raise ValueError("unrecognized reading file type: ", s3_filename)

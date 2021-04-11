@@ -10,30 +10,6 @@ def load_json_entries(reading_spec) -> List[Dict[str, Any]]:
 
 def get_entries(reading_spec) -> List[Dict[str, Any]]:
     return reading_spec.data
-
-def txt_to_points(txt_file):
-    points = []
-
-    with open(txt_file) as f:
-        lines = f.readlines()
-
-        for line in lines:
-            if line != "\n":
-                segments = [s.strip("\n") for s in line.split(" ") if s != ""]    
-                print(segments)            
-
-                point = {
-                    ReadingKeys.TIMESTAMP: int(segments[0].split(":")[-1]),
-                    ReadingKeys.READING: {
-                        PositionReadingKeys.LATITUDE: float(segments[1].split(":")[-1]),
-                        PositionReadingKeys.LONGITUDE: float(segments[2].split(":")[-1])
-                    },
-                }
-
-                points.append(point)
-
-    return points
-
 class ReadingSpec():
     JSON_ENTRIES_FORMAT = "json_entries"
     S3_FILES_FORMAT = "s3_files_format"
@@ -45,8 +21,8 @@ class ReadingSpec():
             S3_FILES_FORMAT: get_entries
         },
         ReadingTypes.POSITIONAL:{
-            JSON_ENTRIES_FORMAT: load_json_entries
-            GPS_FILE_FORMAT: decode_gps,
+            JSON_ENTRIES_FORMAT: load_json_entries,
+            GPS_FILE_FORMAT: get_entries
         },
         ReadingTypes.PREDICTION:{
             JSON_ENTRIES_FORMAT: load_json_entries

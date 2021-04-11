@@ -1,0 +1,14 @@
+{
+    "readings": [
+        {
+            "type": "ImageReading", 
+            "format": "json_entries",
+            "path": "readingdb/test_data/img.json"
+        },
+        {
+            "type": "PositionalReading", 
+            "format": "json_entries",
+            "path": "readingdb/test_data/gps.json"
+        }
+    ]
+}

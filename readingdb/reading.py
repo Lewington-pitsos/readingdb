@@ -143,7 +143,7 @@ class PredictionReading(ImageReading, PositionReading):
         return data
 
 READING_TYPE_MAP: Dict[str, AbstractReading] = {
-    ReadingTypes.POSITIONAL: PositionReadingKeys,
+    ReadingTypes.POSITIONAL: PositionReading,
     ReadingTypes.IMAGE: ImageReading,
     ReadingTypes.PREDICTION: PredictionReading,
     ReadingTypes.ANNOTATION: PredictionReading,
