@@ -22,7 +22,7 @@ EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
-S3_EVENT_KEY = 'Records'
+EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -62,33 +62,7 @@ def get_key(event, key):
     if not key in event:
         err = key_missing_error_response(key)
 
-    return event[key], err
-
-def decode_s3_event(event):
-    records = event["Records"]
-
-    if len(records) != 1:
-        raise ValueError(f"expecetd only one record, got {records}")
-
-    try:
-        record = records[0]["s3"]
-
-        bucket = record["bucket"]["name"]
-
-        return bucket, record["object"]["key"]
-    except Exception as e:
-        raise ValueError(f"exception {e} encountered while parsing event {event}")
-
-
-def process_new_upload(event, api):
-    try:
-        bucket, key = decode_s3_event(event)
-    except Exception as e:
-        return error_response(str(e))
-
-    ecs_resp = api.save_new_route(bucket, key)
-    
-    return success_response(ecs_resp)
+    return None, err
     
 def handler(event: Dict[str, Any], context):
     if context == "TEST_STUB":
@@ -102,9 +76,7 @@ def handler(event: Dict[str, Any], context):
 
     logger.info('Event: %s', event)
     
-    if S3_EVENT_KEY in event:
-        return process_new_upload(event, api)
-    elif EVENT_TYPE in event:
+    if EVENT_TYPE in event:
         event_name = event[EVENT_TYPE]
     else:
         return error_response("Invalid Event Syntax")
@@ -139,6 +111,18 @@ def handler(event: Dict[str, Any], context):
 
         route_id = event[ReadingRouteKeys.ROUTE_ID]
         readings = api.all_route_readings(route_id)
+
+        return success_response(readings)
+
+    elif event_name == EVENT_UPLOAD_NEW_ROUTE:
+        bucket, err_resp = get_key(event, EVENT_BUCKET)
+        if err_resp:
+            return err_resp
+        key, err_resp = get_key(event, EVENT_OBJECT_KEY)
+        if err_resp:
+            return err_resp
+
+        readings = api.save_new_route(bucket, key)
 
         return success_response(readings)
 

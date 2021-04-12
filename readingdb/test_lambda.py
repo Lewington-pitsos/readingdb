@@ -1,38 +1,19 @@
 import os
 import json
-from pprint import pprint
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
 from readingdb.tutils import create_bucket, teardown_s3_bucket
 from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
-from typing import Tuple
 import unittest
 from moto import mock_s3
 
-from readingdb.lamb import handler, decode_s3_event
+from readingdb.lamb import handler
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f"no credentials file located at {CREDENTIALS_FILE}"
 
 def credentials_present():
     return os.path.isfile(CREDENTIALS_FILE)
-class TestUtils(unittest.TestCase):
-    def setUp(self) -> None:
-        self.current_dir = os.path.dirname(__file__)
-
-    def test_parses_s3_event(self):
-        with open(self.current_dir + "/test_data/s3_event.json") as j:
-            event = json.load(j)
-
-        bucket, key = decode_s3_event(event)
-
-        self.assertEqual(bucket, "bucket-name")
-        self.assertEqual(key, "object-key")
-
-        with open(self.current_dir + "/test_data/s3_event_malformed.json") as j:
-            event2 = json.load(j)
-
-        self.assertRaises(ValueError, decode_s3_event, event2)
 
 @mock_s3
 class TestLambda(unittest.TestCase): 
@@ -110,11 +91,42 @@ class TestLambda(unittest.TestCase):
             "Records": []
         }, self.TEST_CONTEXT)
 
-        print(resp)
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Invalid Event Syntax"
+        }, resp)
+
+    def test_correct_error_on_unauthenticated_upload_event(self):
+        resp = handler({
+             "Type": "NotifyUploadComplete"
+        }, self.TEST_CONTEXT)
 
         self.assertEqual({
             "Status": "Error",
-            "Body": 'expecetd only one record, got []'
+            "Body": 'Unauthenticated request, no Access Token Provided'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_correct_error_on_malformed_upload_event(self):
+        resp = handler({
+             "Type": "NotifyUploadComplete",
+             "AccessToken": self.access_token,
+        }, self.TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key Bucket missing from event'
+        }, resp)
+
+        resp = handler({
+             "Type": "NotifyUploadComplete",
+             "AccessToken": self.access_token,
+             "Bucket": "somebucket"
+        }, self.TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key Key missing from event'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
