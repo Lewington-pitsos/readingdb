@@ -13,9 +13,10 @@ from readingdb.constants import *
 class DB():
     ITEM_KEY = "Items"
 
-    def __init__(self, url, resource_name='dynamodb', config=None):
+    def __init__(self, url, resource_name='dynamodb', region_name="ap-southeast-2", config=None):
         self.db = boto3.resource(
             resource_name, 
+            region_name=region_name,
             endpoint_url=url, 
             config=config,
         )

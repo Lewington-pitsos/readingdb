@@ -1,10 +1,11 @@
 {
     "family": "unzipper-fargate", 
     "networkMode": "awsvpc", 
+    "executionRoleArn": "arn:aws:iam::950765595897:role/ecsInstanceRole",
     "containerDefinitions": [
         {
             "name": "unzipper", 
-            "image": "httpd:2.4", 
+            "image": "950765595897.dkr.ecr.ap-southeast-2.amazonaws.com/unzipper", 
             "portMappings": [
                 {
                     "containerPort": 80, 
@@ -17,13 +18,14 @@
                 "options": {
                     "awslogs-group": "unzipper-logging",
                     "awslogs-region": "ap-southeast-2",
-                    "awslogs-stream-prefix": "unzipper-fargate"
+                    "awslogs-stream-prefix": "unzipper-fargate",
+                    "awslogs-create-group": "true"
                 }
             },
             "essential": true, 
-            "entryPoint": ["sh","-c"], 
+            "entryPoint": [], 
             "command": [
-                "/bin/sh -c \"echo '<html> <head> <title>Amazon ECS Sample App</title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now running on a container in Amazon ECS.</p> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""
+                "python farg.py"
             ]
         }
     ], 
@@ -31,5 +33,5 @@
         "FARGATE"
     ], 
     "cpu": "256", 
-    "memory": "512"
+    "memory": "1024"
 }

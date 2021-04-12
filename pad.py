@@ -82,12 +82,12 @@ resp = client.run_task(
     },
     launchType="FARGATE",
     cluster="arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster",
-    taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:1",
+    taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:6",
     overrides={
         "containerOverrides": [
             {
                 "name": "unzipper", 
-                "command":  ["python", "farg.py"]
+                "command":  ["python", "farg.py", "mobileappsessions172800-main", "public/route_2021_04_08_15_14_46_792.zip", "ap-southeast-2"]
             }
         ]
     }

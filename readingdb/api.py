@@ -24,12 +24,13 @@ class API(DB, ReadingDB):
         url, 
         resource_name='dynamodb', 
         bucket="mobileappsessions172800-main",
+        region_name="ap-southeast-2",
         config=None
     ):
-        super().__init__(url=url, resource_name=resource_name, config=config)
+        super().__init__(url=url, resource_name=resource_name, region_name=region_name, config=config)
         self.bucket = bucket
 
-        self.s3_client = boto3.client('s3', config=config)
+        self.s3_client = boto3.client('s3', region_name=region_name, config=config)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())

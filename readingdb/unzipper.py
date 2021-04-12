@@ -24,14 +24,14 @@ class Unzipper():
         img_readings = []
  
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
-        print(zip_obj.metadata)
+        print("metadata", zip_obj.metadata)
         buffer = BytesIO(zip_obj.get()[self.OBJ_BODY_KEY].read())
         z = zipfile.ZipFile(buffer)
         
         for filename in z.namelist():
             print(filename)
             s3_filename = f'{key.split(".")[0]}/{filename}'
-            print("creating new file:", s3_filename)
+            print("extracting file:", s3_filename)
 
             self.s3_resource.meta.client.upload_fileobj(
                 z.open(filename),
