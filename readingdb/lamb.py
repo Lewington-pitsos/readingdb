@@ -60,9 +60,9 @@ def get_key(event, key):
     err = None
 
     if not key in event:
-        err = key_missing_error_response(key)
+        return None, key_missing_error_response(key)
 
-    return None, err
+    return event[key], None
     
 def handler(event: Dict[str, Any], context):
     if context == "TEST_STUB":
