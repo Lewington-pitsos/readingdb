@@ -31,13 +31,13 @@
 
 # -----------------------------------------------------------------------------
 
-from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
-from readingdb.db import DB
-import time
+# from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+# from readingdb.db import DB
+# import time
 
-db = DB(TEST_DYNAMO_ENDPOINT)
+# db = DB(DYNAMO_ENDPOINT)
 
-db.teardown_reading_db()
+# db.teardown_reading_db()
 # time.sleep(10)
 # db.create_reading_db()
 
@@ -47,8 +47,11 @@ db.teardown_reading_db()
 # from readingdb.routespec import RouteSpec
 # import json
 
-
 # api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
+
+# with open("readingdb/test_data/ftg_route.json") as f:
+#     route_json = json.load(f) 
+# api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
 
 # with open("readingdb/test_data/gps_img_route.json") as f:
 #     route_json = json.load(f) 
@@ -60,4 +63,34 @@ db.teardown_reading_db()
 
 # api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
 
-# print(api.all_route_readings("1618122099.7517877-EXKQWLZ8CF4XTIM"))
+
+# -----------------------------------------------------------------------------
+
+import boto3
+
+# Probably won't need a public IP
+
+client = boto3.client('ecs')
+
+resp = client.run_task(
+    networkConfiguration={
+        'awsvpcConfiguration': {
+            'subnets': ['subnet-0567cac0229946232'],
+            'securityGroups': ['sg-fe12c9b7'],
+            'assignPublicIp': 'ENABLED'
+        },
+    },
+    launchType="FARGATE",
+    cluster="arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster",
+    taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:1",
+    overrides={
+        "containerOverrides": [
+            {
+                "name": "unzipper", 
+                "command":  ["python", "farg.py"]
+            }
+        ]
+    }
+)
+     
+print(resp)
