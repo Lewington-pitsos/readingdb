@@ -22,7 +22,6 @@ EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
-SAVE_NEW_ROUTE = "SaveNewRoute"
 S3_EVENT_KEY = 'Records'
 
 # Generic Response Keys
@@ -41,9 +40,11 @@ def key_missing_error_response(key):
     return error_response(f"Bad Format Error: key {key} missing from event")
 
 def error_response(body: Any) -> Dict[str, Any]:
+    logger.info('Error response: %s', body)
     return response(body, False)
 
 def success_response(body: Any) -> Dict[str, Any]:
+    logger.info('Success response: %s', body)
     return response(body, True)
 
 def response(body: Any, success: bool) -> Dict[str, Any]:
@@ -79,13 +80,32 @@ def decode_s3_event(event):
         raise ValueError(f"exception {e} encountered while parsing event {event}")
 
 
+def process_new_upload(event, api):
+    try:
+        bucket, key = decode_s3_event(event)
+    except Exception as e:
+        return error_response(str(e))
+
+    ecs_resp = api.save_new_route(bucket, key)
+    
+    return success_response(ecs_resp)
+    
 def handler(event: Dict[str, Any], context):
+    if context == "TEST_STUB":
+        endpoint = TEST_DYNAMO_ENDPOINT
+    else:
+        endpoint = DYNAMO_ENDPOINT
+
+    api = API(endpoint, config=Config(
+        region_name=REGION_NAME,
+    ))
+
     logger.info('Event: %s', event)
     
-    if EVENT_TYPE in event:
+    if S3_EVENT_KEY in event:
+        return process_new_upload(event, api)
+    elif EVENT_TYPE in event:
         event_name = event[EVENT_TYPE]
-    elif S3_EVENT_KEY in event:
-        event_name = SAVE_NEW_ROUTE
     else:
         return error_response("Invalid Event Syntax")
 
@@ -97,16 +117,6 @@ def handler(event: Dict[str, Any], context):
     user_data: AuthResponse = auth.get_user(event[EVENT_ACCESS_TOKEN])
     if not user_data.is_authenticated():
         return error_response(f"Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}")
-
-
-    if context == "TEST_STUB":
-        endpoint = TEST_DYNAMO_ENDPOINT
-    else:
-        endpoint = DYNAMO_ENDPOINT
-
-    api = API(endpoint, config=Config(
-        region_name=REGION_NAME,
-    ))
 
     #  ------------ Per-Event-Type handling -------------
     
@@ -144,15 +154,6 @@ def handler(event: Dict[str, Any], context):
         api.update_route_name(route_id, user_data.user_sub, name)
 
         return success_response(None)
-
-    elif event_name == SAVE_NEW_ROUTE:
-        try:
-            bucket, key = decode_s3_event(event)
-        except Exception as e:
-            return error_response(e)
-
-        ecs_resp = api.save_new_route(bucket, key)
-        return success_response(ecs_resp)
 
     else:
         return error_response(f"Unrecognized event type {event_name}")

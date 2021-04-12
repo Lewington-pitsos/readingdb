@@ -110,9 +110,11 @@ class TestLambda(unittest.TestCase):
             "Records": []
         }, self.TEST_CONTEXT)
 
+        print(resp)
+
         self.assertEqual({
             "Status": "Error",
-            "Body": 'Unauthenticated request, no Access Token Provided'
+            "Body": 'expecetd only one record, got []'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
