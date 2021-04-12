@@ -61,7 +61,7 @@ class API(DB, ReadingDB):
 
         print("unzipping execution begun:", resp)
 
-        return resp
+        return str(resp)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())

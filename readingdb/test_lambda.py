@@ -150,7 +150,7 @@ class TestLambda(unittest.TestCase):
             "Body": 'Bad Format Error: key Key missing from event'
         }, resp)
 
-    @unittest.skip()
+    @unittest.skip("This make an actual call to fargate")
     def test_correct_upload_event_handling(self):
         handler({
              "Type": "NotifyUploadComplete",
