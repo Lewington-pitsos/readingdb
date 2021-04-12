@@ -75,4 +75,11 @@ class Unzipper():
 
         routeSpec = RouteSpec(list(reading_types.values()))
 
-        return self.api.save_route(routeSpec, user_id)
+        print("saving readings to route database")
+        route = self.api.save_route(routeSpec, user_id)
+
+        print("deleting zipped route: ", key)
+
+        self.s3_resource.Object(bucket, key).delete()
+
+        return route
