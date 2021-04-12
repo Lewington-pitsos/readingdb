@@ -21,6 +21,7 @@ EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
+SAVE_NEW_ROUTE = "SaveNewRoute"
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -30,8 +31,9 @@ RESPONSE_BODY_KEY = "Body"
 RESPONSE_ERROR = "Error"
 RESPONSE_SUCCESS = "Success"
 
-# MISC constants
-REGION_NAME = "ap-southeast-2"
+# Event Keys
+EVENT_BUCKET = "Bucket"
+EVENT_OBJECT_KEY = "Key"
 
 def key_missing_error_response(key):
     return error_response(f"Bad Format Error: key {key} missing from event")
@@ -122,6 +124,17 @@ def handler(event: Dict[str, Any], context):
         api.update_route_name(route_id, user_data.user_sub, name)
 
         return success_response(None)
+
+    elif event_name == SAVE_NEW_ROUTE:
+        bucket, err_resp = get_key(event, EVENT_BUCKET)
+        if err_resp:
+            return err_resp 
+        key, err_resp = get_key(event, EVENT_OBJECT_KEY)
+        if err_resp:
+            return err_resp 
+
+        ecs_resp = api.save_new_route(bucket, str)
+        return success_response(ecs_resp)
 
     else:
         return error_response(f"Unrecognized event type {event_name}")

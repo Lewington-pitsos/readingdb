@@ -1,3 +1,6 @@
+REGION_NAME = "ap-southeast-2"
+
+
 class Database():
     READING_TABLE_NAME = "Readings"
     ROUTE_TABLE_NAME = "Routes"

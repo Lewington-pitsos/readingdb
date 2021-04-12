@@ -34,13 +34,13 @@ class API(DB, ReadingDB):
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
 
-    def unzip_route(self, bucket: str, key: str) -> None:
+    def save_new_route(self, bucket: str, key: str) -> None:
         resp = self.ecs.run_task(
             networkConfiguration={
                 'awsvpcConfiguration': {
                     'subnets': ['subnet-0567cac0229946232'],
                     'securityGroups': ['sg-fe12c9b7'],
-                    'assignPublicIp': 'ENABLED'
+                    'assignPublicIp': 'ENABLED' # TODO: check if this is needed
                 },
             },
             launchType="FARGATE",
@@ -59,7 +59,9 @@ class API(DB, ReadingDB):
         if len(resp[self.ECS_TASKS_KEY]) < 1:
             raise ValueError(f"Unable to run any tasks, ecs returned the following response:", resp)
 
-        print("task execution begun:", resp)
+        print("unzipping execution begun:", resp)
+
+        return resp
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())
