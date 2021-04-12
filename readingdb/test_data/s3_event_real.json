@@ -1,0 +1,38 @@
+{
+  "Records": [
+    {
+      "eventVersion": 2.1,
+      "eventSource": "aws:s3",
+      "awsRegion": "ap-southeast-2",
+      "eventTime": "2021-04-12T08:36:47.504Z",
+      "eventName": "ObjectCreated:CompleteMultipartUpload",
+      "userIdentity": {
+        "principalId": "A3M53FURXBXYC5"
+      },
+      "requestParameters": {
+        "sourceIPAddress": "1.136.108.5"
+      },
+      "responseElements": {
+        "x-amz-request-id": "G74E2NYZTNT2TVFT",
+        "x-amz-id-2": "A1VQ/uHQDupAO1I4Jd4S5Yc5m/ynq1ZkggdWfxvl2ENYVEPjbLm0lbHBAYFS0FXzj55z+Bm96ai1EaK1NRbcUUB9BxvLZ8zO"
+      },
+      "s3": {
+        "s3SchemaVersion": 1,
+        "configurationId": "route-zip-upload",
+        "bucket": {
+          "name": "mobileappsessions172800-main",
+          "ownerIdentity": {
+            "principalId": "A3M53FURXBXYC5"
+          },
+          "arn": "arn:aws:s3:::mobileappsessions172800-main"
+        },
+        "object": {
+          "key": "route_2021_04_08_11_11_11_111.zip",
+          "size": 37282126,
+          "eTag": "55d98792964f002cca3af6972371f194-3",
+          "sequencer": "00607406916A52F505"
+        }
+      }
+    }
+  ]
+}
