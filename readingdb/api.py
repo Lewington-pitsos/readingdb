@@ -7,10 +7,8 @@ from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
-import time
 import random
 import string
-from tqdm import tqdm
 import uuid
 
 from boto3.dynamodb.conditions import Key
@@ -19,6 +17,8 @@ from readingdb.db import DB
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
+    ECS_TASKS_KEY = "tasks"
+
     def __init__(
         self, 
         url, 
@@ -29,8 +29,37 @@ class API(DB, ReadingDB):
     ):
         super().__init__(url=url, resource_name=resource_name, region_name=region_name, config=config)
         self.bucket = bucket
+        self.region_name = region_name
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
+        self.ecs = boto3.client('ecs', region_name=region_name, config=config)
+
+    def unzip_route(self, bucket: str, key: str) -> None:
+        resp = self.ecs.run_task(
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': ['subnet-0567cac0229946232'],
+                    'securityGroups': ['sg-fe12c9b7'],
+                    'assignPublicIp': 'ENABLED'
+                },
+            },
+            launchType="FARGATE",
+            cluster="arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster",
+            taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:6",
+            overrides={
+                "containerOverrides": [
+                    {
+                        "name": "unzipper", 
+                        "command":  ["python", "farg.py", bucket, key, self.region_name]
+                    }
+                ]
+            }
+        )
+
+        if len(resp[self.ECS_TASKS_KEY]) < 1:
+            raise ValueError(f"Unable to run any tasks, ecs returned the following response:", resp)
+
+        print("task execution begun:", resp)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())
@@ -170,7 +199,7 @@ class API(DB, ReadingDB):
 
     def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
-        for e in tqdm(entries):
+        for e in entries:
             e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
             e = self.__save_entry(e)
             finalized.append(e)

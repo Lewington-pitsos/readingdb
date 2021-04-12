@@ -92,5 +92,3 @@ resp = client.run_task(
         ]
     }
 )
-     
-print(resp)
