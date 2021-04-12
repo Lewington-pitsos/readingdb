@@ -9,13 +9,30 @@ from typing import Tuple
 import unittest
 from moto import mock_s3
 
-from readingdb.lamb import handler
+from readingdb.lamb import handler, decode_s3_event
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f"no credentials file located at {CREDENTIALS_FILE}"
 
 def credentials_present():
     return os.path.isfile(CREDENTIALS_FILE)
+class TestUtils(unittest.TestCase):
+    def setUp(self) -> None:
+        self.current_dir = os.path.dirname(__file__)
+
+    def test_parses_s3_event(self):
+        with open(self.current_dir + "/test_data/s3_event.json") as j:
+            event = json.load(j)
+
+        bucket, key = decode_s3_event(event)
+
+        self.assertEqual(bucket, "bucket-name")
+        self.assertEqual(key, "object-key")
+
+        with open(self.current_dir + "/test_data/s3_event_malformed.json") as j:
+            event2 = json.load(j)
+
+        self.assertRaises(ValueError, decode_s3_event, event2)
 
 @mock_s3
 class TestLambda(unittest.TestCase): 
@@ -72,7 +89,7 @@ class TestLambda(unittest.TestCase):
         )
 
         self.api.teardown_reading_db()
-
+        
     def test_error_response_on_bad_input(self):
         resp = handler({}, self.TEST_CONTEXT)
 
@@ -86,6 +103,16 @@ class TestLambda(unittest.TestCase):
         self.assertEqual({
             "Status": "Error",
             "Body": "Invalid Event Syntax"
+        }, resp)
+
+    def test_correct_error_on_malformed_s3_event(self):
+        resp = handler({
+            "Records": []
+        }, self.TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Unauthenticated request, no Access Token Provided'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)

@@ -1,15 +1,7 @@
-import json
 import os
-from pprint import pprint
 from readingdb.route import Route
-from readingdb.routestatus import RouteStatus
-from readingdb.constants import ReadingRouteKeys, RouteKeys
-from typing import List
-from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
-import boto3
-import botocore
 from moto import mock_s3
 
 from readingdb.download_json import download_json_files
@@ -58,16 +50,10 @@ class TestUnzipper(unittest.TestCase):
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
 
-
     def test_unzipper_uploads(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-
         route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
-
         readings = self.api.all_route_readings(route.id)
-
-        for r in readings:
-            print("readings", r)
 
         self.assertEqual(len(readings), 39)
 

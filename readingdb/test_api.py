@@ -55,7 +55,7 @@ class TestAPI(unittest.TestCase):
             result = os.listdir(mock_folder_local_path)
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
-    
+
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)

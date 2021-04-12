@@ -38,8 +38,8 @@
 # db = DB(DYNAMO_ENDPOINT)
 
 # db.teardown_reading_db()
-# time.sleep(10)
-# db.create_reading_db()
+# # time.sleep(10)
+# # db.create_reading_db()
 
 # -----------------------------------------------------------------------------
 
@@ -65,30 +65,3 @@
 
 
 # -----------------------------------------------------------------------------
-
-import boto3
-
-# Probably won't need a public IP
-
-client = boto3.client('ecs')
-
-resp = client.run_task(
-    networkConfiguration={
-        'awsvpcConfiguration': {
-            'subnets': ['subnet-0567cac0229946232'],
-            'securityGroups': ['sg-fe12c9b7'],
-            'assignPublicIp': 'ENABLED'
-        },
-    },
-    launchType="FARGATE",
-    cluster="arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster",
-    taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:6",
-    overrides={
-        "containerOverrides": [
-            {
-                "name": "unzipper", 
-                "command":  ["python", "farg.py", "mobileappsessions172800-main", "public/route_2021_04_08_15_14_46_792.zip", "ap-southeast-2"]
-            }
-        ]
-    }
-)

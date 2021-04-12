@@ -1,4 +1,5 @@
 import logging
+from readingdb.clean import encode_bool
 from typing import Dict, Any
 
 from botocore.config import Config
@@ -22,6 +23,7 @@ EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 SAVE_NEW_ROUTE = "SaveNewRoute"
+S3_EVENT_KEY = 'Records'
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -61,13 +63,31 @@ def get_key(event, key):
 
     return event[key], err
 
+def decode_s3_event(event):
+    records = event["Records"]
+
+    if len(records) != 1:
+        raise ValueError(f"expecetd only one record, got {records}")
+
+    try:
+        record = records[0]["s3"]
+
+        bucket = record["bucket"]["name"]
+
+        return bucket, record["object"]["key"]
+    except Exception as e:
+        raise ValueError(f"exception {e} encountered while parsing event {event}")
+
+
 def handler(event: Dict[str, Any], context):
     logger.info('Event: %s', event)
-
-    if not EVENT_TYPE in event:
+    
+    if EVENT_TYPE in event:
+        event_name = event[EVENT_TYPE]
+    elif S3_EVENT_KEY in event:
+        event_name = SAVE_NEW_ROUTE
+    else:
         return error_response("Invalid Event Syntax")
-
-    event_name = event[EVENT_TYPE]
 
     if not EVENT_ACCESS_TOKEN in event:
         return error_response("Unauthenticated request, no Access Token Provided")
@@ -126,14 +146,12 @@ def handler(event: Dict[str, Any], context):
         return success_response(None)
 
     elif event_name == SAVE_NEW_ROUTE:
-        bucket, err_resp = get_key(event, EVENT_BUCKET)
-        if err_resp:
-            return err_resp 
-        key, err_resp = get_key(event, EVENT_OBJECT_KEY)
-        if err_resp:
-            return err_resp 
+        try:
+            bucket, key = decode_s3_event(event)
+        except Exception as e:
+            return error_response(e)
 
-        ecs_resp = api.save_new_route(bucket, str)
+        ecs_resp = api.save_new_route(bucket, key)
         return success_response(ecs_resp)
 
     else:
