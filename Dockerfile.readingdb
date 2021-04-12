@@ -1,16 +1,15 @@
 FROM public.ecr.aws/lambda/python:3.8
 
-# Copy function code and package.json
-ADD readingdb ./readingdb
-
-COPY readingdb/lamb.py ./
 COPY requirements.txt ./
-COPY aws/credentials ./
-
-# Install NPM dependencies for function
 RUN pip install -r requirements.txt
 
 ENV AWS_SHARED_CREDENTIALS_FILE=credentials
 
-# Set the CMD to your handler
+COPY readingdb/lamb.py ./
+
+# This (and later layers) cannot be cached because we're
+# copying an entire directory
+ADD readingdb ./readingdb 
+COPY aws/credentials ./
+
 CMD [ "lamb.handler" ]
