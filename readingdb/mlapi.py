@@ -12,14 +12,8 @@ class MLAPI(SQSQueue):
         response = sqs.send_message(
             QueueUrl = queue_url,
             DelaySeconds = 10,
-            MessageAttributes={
-                'RouteID': {
-                    'DataType': 'String',
-                    'StringValue': route_id
-                }
-            },
             MessageBody=(
-                datetime.now()
+                route_id
             ) 
         )
         return response['MessageId']
