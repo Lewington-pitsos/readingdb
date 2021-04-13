@@ -20,6 +20,8 @@ class Unzipper():
         self.api: API = API(url, *args, **kwargs)
 
     def process(self, bucket: str, key: str) -> Route:
+        print("bucket", bucket)
+        print("key", key)
         reading_types = {}
         img_readings = []
  
