@@ -5,7 +5,7 @@ from typing import Tuple
 import boto3
 
 CURRENT_DIR = os.path.dirname(__file__)
-CREDENTIALS_FILE = CURRENT_DIR + "/test_data/fdsadmin.json"
+CREDENTIALS_FILE = CURRENT_DIR + "/test_data/fdsguest.json"
 
 USERNAME_KEY = "username"
 PASSWORD_KEY = "password"

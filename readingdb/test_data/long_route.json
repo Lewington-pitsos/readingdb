@@ -1,0 +1,9 @@
+{
+    "readings": [
+        {
+            "type": "PredictionReading", 
+            "format": "json_entries",
+            "path": "readingdb/test_data/ftg_filtered_entries.json"
+        }
+    ]
+}
