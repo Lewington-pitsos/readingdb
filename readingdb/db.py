@@ -21,6 +21,11 @@ class DB():
             config=config,
         )
 
+        # DynamoDB only returns 1MB of data in a single query
+        # use paginator on queries that stand a chance of returning
+        # > 1MB of data.
+        self.paginator = self.db.meta.client.get_paginator('query')
+
     def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
 
@@ -102,15 +107,17 @@ class DB():
         return response
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.query(
+        pg = self.paginator.paginate(
+            TableName=Database.READING_TABLE_NAME,
             KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)
         )
 
         items = []
-        for item in response[self.ITEM_KEY]:
-            ddb_to_dict(item[ReadingKeys.TYPE], item)
-            items.append(item)
+
+        for page in pg:
+            for item in page[self.ITEM_KEY]:
+                ddb_to_dict(item[ReadingKeys.TYPE], item)
+                items.append(item)
 
         return items
 

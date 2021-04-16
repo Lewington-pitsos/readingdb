@@ -201,7 +201,11 @@ class API(DB, ReadingDB):
 
     def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
-        for e in entries:
+        n_entries = len(entries)
+        for i, e in enumerate(entries):
+            if i % 10 == 0:
+                print(f"uploading entry {i} of {n_entries}")
+
             e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
             e = self.__save_entry(e)
             finalized.append(e)

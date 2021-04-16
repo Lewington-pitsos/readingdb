@@ -1,15 +1,20 @@
 from pprint import pprint
 import unittest
 import time
+import os
+import json
+import uuid
+
+from botocore.utils import ensure_boolean
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import ImageReading, json_to_reading
+from readingdb.reading import AbstractReading, ImageReading, json_to_reading
 from readingdb.route import Route
 
-class TestDBOps(unittest.TestCase):
+class TestDB(unittest.TestCase):
     def setUp(self):
-        # We assume that a dynamodb server is running on that endpoint already
+        self.current_dir = os.path.dirname(__file__)
         self.db = DB("http://localhost:8000")
     
     def test_saves_readings(self):
@@ -57,7 +62,28 @@ class TestDBOps(unittest.TestCase):
             "RouteStatus": 1,
             "Timestamp": 123617823
         })
+
+    def test_loads_large_dataset(self):
+        self.db.create_reading_db()
+        routes = self.db.routes_for_user("103")
+        self.assertEqual(len(routes), 0)
+
+        self.db.put_route(Route("3", "103", 123617823))
+        
+        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+            entities = json.load(f)
+
+        route_id = "103"
+        for e in entities:
+            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            r: AbstractReading = json_to_reading("PredictionReading", e)
+            self.db.put_reading(r)
+
+        readings = self.db.all_route_readings(route_id)
     
+        self.assertEqual(3383, len(readings))
+
     def test_creates_new_route_with_name(self):
         name = "someName"
         self.db.create_reading_db()
