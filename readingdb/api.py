@@ -1,3 +1,5 @@
+import json
+import sys
 from botocore.utils import parse_timestamp
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
@@ -23,13 +25,17 @@ class API(DB, ReadingDB):
         self, 
         url, 
         resource_name='dynamodb', 
+        tmp_bucket="mobileappsessions172800-main-tmpbucket",
         bucket="mobileappsessions172800-main",
         region_name="ap-southeast-2",
-        config=None
+        config=None,
+        size_limit=6000000
     ):
         super().__init__(url=url, resource_name=resource_name, region_name=region_name, config=config)
         self.bucket = bucket
+        self.tmp_bucket = tmp_bucket
         self.region_name = region_name
+        self.size_limit = size_limit
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
@@ -111,8 +117,20 @@ class API(DB, ReadingDB):
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
-
         self.__inject_presigned_urls(readings)
+        
+        # Lambda cannot send responses that are larger than
+        # 6 mb in size. The JSON for the readins will often
+        # be larger than 6mb.
+        if sys.getsizeof(readings) > self.size_limit:
+            key = str(uuid.uuid1()) + ".json"
+            self.s3_client.put_object(
+                Body=str(json.dumps(readings)),
+                Bucket = self.tmp_bucket,
+                Key=key
+            )
+
+            return S3Uri(self.tmp_bucket, key)
 
         return readings
 
@@ -132,6 +150,8 @@ class API(DB, ReadingDB):
 
         return r
     
+    
+
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in route:
             for _, sample in route[RouteKeys.SAMPLE_DATA].items():

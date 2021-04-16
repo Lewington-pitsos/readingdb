@@ -1,11 +1,8 @@
-from pprint import pprint
 import unittest
 import time
 import os
 import json
 import uuid
-
-from botocore.utils import ensure_boolean
 
 from readingdb.db import DB
 from readingdb.constants import *
@@ -64,16 +61,16 @@ class TestDB(unittest.TestCase):
         })
 
     def test_loads_large_dataset(self):
+        route_id = "103"
         self.db.create_reading_db()
-        routes = self.db.routes_for_user("103")
+        routes = self.db.routes_for_user(route_id)
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route("3", "103", 123617823))
+        self.db.put_route(Route("3", route_id, 123617823))
         
         with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
             entities = json.load(f)
 
-        route_id = "103"
         for e in entities:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id

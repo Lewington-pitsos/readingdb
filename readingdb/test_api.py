@@ -1,11 +1,14 @@
 import json
 import os
 from pprint import pprint
+from readingdb.s3uri import S3Uri
+from readingdb.reading import AbstractReading, json_to_reading
+import uuid
 from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
+from readingdb.constants import *
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import ReadingRouteKeys, RouteKeys
-from typing import List
 from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
@@ -23,6 +26,7 @@ class TestAPI(unittest.TestCase):
     secret_key = "fake_secret_key"
     bucket_name = "my_bucket"
     test_prefix = "mocks"
+    tmp_bucket ="tmp"
 
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
@@ -33,8 +37,19 @@ class TestAPI(unittest.TestCase):
             self.secret_key, 
             self.bucket_name,
         )
+        create_bucket(
+            self.current_dir, 
+            self.region_name, 
+            self.access_key, 
+            self.secret_key, 
+            self.tmp_bucket,
+        )
 
-        self.api = API(TEST_DYNAMO_ENDPOINT) 
+        self.api = API(
+            TEST_DYNAMO_ENDPOINT,  
+            bucket=self.bucket_name,
+            tmp_bucket=self.tmp_bucket
+        ) 
         self.api.create_reading_db()
     
     def tearDown(self):
@@ -43,6 +58,12 @@ class TestAPI(unittest.TestCase):
             self.access_key,
             self.secret_key,
             self.bucket_name
+        )
+        teardown_s3_bucket(
+            self.region_name,
+            self.access_key,
+            self.secret_key,
+            self.tmp_bucket
         )
 
         self.api.teardown_reading_db()
@@ -55,6 +76,31 @@ class TestAPI(unittest.TestCase):
             result = os.listdir(mock_folder_local_path)
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
+
+    def test_handles_large_queries_correctly(self):
+        route_id = "103"
+        self.api.put_route(Route("3", route_id, 123617823))
+        
+        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+            entities = json.load(f)
+
+        for e in entities[:60]:
+            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            r: AbstractReading = json_to_reading("PredictionReading", e)
+            self.api.put_reading(r)
+
+        readings =  self.api.all_route_readings(route_id)
+        self.assertIsInstance(readings, list)
+        self.assertEqual(60, len(readings))
+        
+        self.api.size_limit = 400
+        uri: S3Uri = self.api.all_route_readings(route_id)
+        
+        self.assertIsInstance(uri, S3Uri)
+        self.assertEqual(uri.bucket, self.tmp_bucket)
+
+
 
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
