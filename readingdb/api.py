@@ -25,7 +25,7 @@ class API(DB, ReadingDB):
         self, 
         url, 
         resource_name='dynamodb', 
-        tmp_bucket="mobileappsessions172800-main-tmpbucket",
+        tmp_bucket="mobileappsessions172800-main",
         bucket="mobileappsessions172800-main",
         region_name="ap-southeast-2",
         config=None,

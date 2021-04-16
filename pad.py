@@ -45,13 +45,13 @@
 
 # -----------------------------------------------------------------------------
 
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
-from readingdb.db import DB
-import time
+# from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+# from readingdb.db import DB
+# import time
 
-db = DB(TEST_DYNAMO_ENDPOINT)
+# db = DB(TEST_DYNAMO_ENDPOINT)
 
-db.teardown_reading_db()
+# db.teardown_reading_db()
 # time.sleep(10)
 # db.create_reading_db()
 
@@ -62,6 +62,11 @@ db.teardown_reading_db()
 # import json
 
 # api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
+# api.size_limit = 300
+
+# r = api.all_route_readings("954758fa-9e71-11eb-a793-04d9f584cf20")
+
+# print(r)
 
 # with open("readingdb/test_data/long_route.json") as f:
 #     route_json = json.load(f) 
