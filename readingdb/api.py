@@ -130,7 +130,7 @@ class API(DB, ReadingDB):
                 Key=key
             )
 
-            return S3Uri(self.tmp_bucket, key)
+            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: key}
 
         return readings
 
@@ -149,8 +149,6 @@ class API(DB, ReadingDB):
         self.__inject_samples_with_presigned_urls(r)
 
         return r
-    
-    
 
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in route:

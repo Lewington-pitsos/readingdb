@@ -45,21 +45,21 @@
 
 # -----------------------------------------------------------------------------
 
-# from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
-# from readingdb.db import DB
-# import time
+from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+from readingdb.db import DB
+import time
 
-# db = DB(DYNAMO_ENDPOINT)
+db = DB(TEST_DYNAMO_ENDPOINT)
 
-# db.teardown_reading_db()
+db.teardown_reading_db()
 # time.sleep(10)
 # db.create_reading_db()
 
 # -----------------------------------------------------------------------------
 
-from readingdb.api import API
-from readingdb.routespec import RouteSpec
-import json
+# from readingdb.api import API
+# from readingdb.routespec import RouteSpec
+# import json
 
 # api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 
@@ -82,10 +82,10 @@ import json
 
 # api.save_route(RouteSpec.from_json(route_json), "e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04")
 
-with open("readingdb/test_data/sydney_route.json") as f:
-    route_json = json.load(f) 
+# with open("readingdb/test_data/sydney_route.json") as f:
+#     route_json = json.load(f) 
 
-api.save_route(RouteSpec.from_json(route_json), "e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04")
+# api.save_route(RouteSpec.from_json(route_json), "e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04")
 
 
 # -----------------------------------------------------------------------------

@@ -95,12 +95,10 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(60, len(readings))
         
         self.api.size_limit = 400
-        uri: S3Uri = self.api.all_route_readings(route_id)
+        uri = self.api.all_route_readings(route_id)
         
-        self.assertIsInstance(uri, S3Uri)
-        self.assertEqual(uri.bucket, self.tmp_bucket)
-
-
+        self.assertIsInstance(uri, dict)
+        self.assertEqual(uri['Bucket'], self.tmp_bucket)
 
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
