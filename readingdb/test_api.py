@@ -1,6 +1,5 @@
 import json
 import os
-from pprint import pprint
 from readingdb.s3uri import S3Uri
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
@@ -201,7 +200,6 @@ class TestAPI(unittest.TestCase):
 
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 0)
-        print(user_routes)
 
         with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
             route_spec_data = json.load(j)

@@ -1,6 +1,4 @@
 import copy
-from pprint import pprint
-
 from typing import Any, Dict
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
