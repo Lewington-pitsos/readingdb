@@ -8,7 +8,6 @@ from readingdb.constants import *
 from readingdb.entities import *
 from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
 
-
 class AbstractReading(abc.ABC):
     @abc.abstractmethod
     def item_data(self) -> Dict[str, Any]:
@@ -36,7 +35,6 @@ class Reading(AbstractReading):
     @classmethod
     def decode(cls, item: Dict[str, Any]):
         item[ReadingKeys.TIMESTAMP] = int(item[ReadingKeys.TIMESTAMP])
-
 
 class ImageReading(Reading):
     def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str = None, uri: str = None) -> None:
@@ -127,7 +125,6 @@ class PredictionReading(ImageReading, PositionReading):
         for e in item[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]:
             e[EntityKeys.CONFIDENCE] = decode_float(e[EntityKeys.CONFIDENCE])
             e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
-
 
     def item_data(self):
         data = PositionReading.item_data(self)

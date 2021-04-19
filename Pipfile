@@ -10,10 +10,10 @@ jupyter = "*"
 notebook = "*"
 tqdm = "*"
 moto = "*"
-botocore = "==1.19.52"
 pylint = "*"
+botocore = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.6"
