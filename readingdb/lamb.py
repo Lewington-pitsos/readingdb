@@ -72,6 +72,8 @@ def handler(event: Dict[str, Any], context):
 
     api = API(endpoint, config=Config(
         region_name=REGION_NAME,
+        size_limit=640000 # in bytes, this is ~ 5.12 MB.
+        # the maximum size of a response returned by a lambda is 6mb
     ))
 
     logger.info('Event: %s', event)

@@ -29,7 +29,7 @@ class API(DB, ReadingDB):
         bucket="mobileappsessions172800-main",
         region_name="ap-southeast-2",
         config=None,
-        size_limit=1200
+        size_limit=999999999999999
     ):
         super().__init__(url=url, resource_name=resource_name, region_name=region_name, config=config)
         self.bucket = bucket
