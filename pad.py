@@ -48,8 +48,8 @@
 # from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
 # from readingdb.db import DB
 # import time
-
 # db = DB(TEST_DYNAMO_ENDPOINT)
+
 
 # db.teardown_reading_db()
 # time.sleep(10)
@@ -64,14 +64,14 @@ import json
 api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 api.size_limit = 300
 
-r = api.all_route_readings("954758fa-9e71-11eb-a793-04d9f584cf20")
+# r = api.all_route_readings("954758fa-9e71-11eb-a793-04d9f584cf20")
 
-print(r)
+# print(r)
 
-# with open("readingdb/test_data/sydney_route_filtered.json") as f:
-#     route_json = json.load(f) 
+with open("readingdb/test_data/gps_img_route.json") as f:
+    route_json = json.load(f) 
 
-# api.save_route(RouteSpec.from_json(route_json), "e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04")
+api.save_route(RouteSpec.from_json(route_json), "62af2bda-a15f-43b7-a84a-55f9908351c7")
 
 
 # -----------------------------------------------------------------------------

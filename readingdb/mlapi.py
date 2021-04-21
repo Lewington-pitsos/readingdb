@@ -1,6 +1,4 @@
 import boto3
-from datetime import datetime
-
 from readingdb.sqsqueue import SQSQueue
 
 class MLAPI(SQSQueue):
@@ -18,10 +16,6 @@ class MLAPI(SQSQueue):
         )
         return response['MessageId']
 
-
-
-
-
     def receive_message_from_queue(queue_url: str, ) -> str:
         response = sqs.receive_message(
             QueueUrl = queue_url,
@@ -36,8 +30,6 @@ class MLAPI(SQSQueue):
             WaitTimeSeconds=0
         )
         return response['Messages'][0]
-
-
 
     def delete_message_from_queue(queue_url: str, message: str) -> None:
         sqs.delete_message(

@@ -13,15 +13,15 @@ CLIENT_ID = "client_id"
 ACCESS_TOKEN_KEY = 'AccessToken'
 AUTH_RESULT_KEY = 'AuthenticationResult'
 
-def get_credentials() -> Tuple[str, str, str]:
-    with open(CREDENTIALS_FILE, "r") as f:
+def get_credentials(cred_file: str=CREDENTIALS_FILE) -> Tuple[str, str, str]:
+    with open(cred_file, "r") as f:
         creds = json.load(f)
     
     return creds[USERNAME_KEY], creds[PASSWORD_KEY], creds[CLIENT_ID]
 
-def get_access_token() -> str:
+def get_access_token(cred_file: str=CREDENTIALS_FILE) -> str:
     cclient = boto3.client('cognito-idp', region_name="ap-southeast-2")
-    uname, pwd, cid = get_credentials()
+    uname, pwd, cid = get_credentials(cred_file)
 
     auth_resp = cclient.initiate_auth(
         AuthFlow='USER_PASSWORD_AUTH',

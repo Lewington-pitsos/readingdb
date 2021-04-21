@@ -3,9 +3,12 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+version_file = open('VERSION')
+version = version_file.read().strip()
+
 setuptools.setup(
     name="readingdb",
-    version="0.0.1",
+    version=version,
     author="lewington",
     author_email="lewingtonpitsos@gmail.com",
     description="Backend and database interface for Frontline Data Systems' Magpeye app",
