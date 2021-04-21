@@ -22,7 +22,7 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def begin_prediction(route_id: str, user_id: str) -> None:
+    def begin_prediction(user_id: str, route_id: str) -> None:
         """Sends a message to the prediction queue that requests
         predictions be made for the given route and user.
 

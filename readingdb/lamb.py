@@ -70,10 +70,8 @@ def handler(event: Dict[str, Any], context):
     else:
         endpoint = DYNAMO_ENDPOINT
 
-    api = API(endpoint, config=Config(
+    api = API(endpoint, size_limit=640000, config=Config(
         region_name=REGION_NAME,
-        size_limit=640000 # in bytes, this is ~ 5.12 MB.
-        # the maximum size of a response returned by a lambda is 6mb
     ))
 
     logger.info('Event: %s', event)

@@ -16,6 +16,8 @@ import uuid
 from boto3.dynamodb.conditions import Key
 
 from readingdb.db import DB
+from readingdb.mlapi import MLAPI
+from readingdb.endpoints import SQS_URL
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
@@ -28,6 +30,7 @@ class API(DB, ReadingDB):
         tmp_bucket="mobileappsessions172800-main",
         bucket="mobileappsessions172800-main",
         region_name="ap-southeast-2",
+        sqs_url=SQS_URL,
         config=None,
         size_limit=999999999999999
     ):
@@ -36,6 +39,7 @@ class API(DB, ReadingDB):
         self.tmp_bucket = tmp_bucket
         self.region_name = region_name
         self.size_limit = size_limit
+        self.mlapi = MLAPI(sqs_url)
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
@@ -69,18 +73,8 @@ class API(DB, ReadingDB):
 
         return str(resp)
 
-    def begin_prediction(route_id: str, user_id: str) -> None:
-        """Sends a message to the prediction queue that requests
-        predictions be made for the given route and user.
-
-        Args:
-            route_id (str): [description]
-            user_id (str): [description]
-
-        Raises:
-            NotImplementedError: [description]
-        """
-        raise NotImplementedError()
+    def begin_prediction(self, user_id: str, route_id: str, ) -> None:
+        self.mlapi.add_message_to_queue(user_id, route_id)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())

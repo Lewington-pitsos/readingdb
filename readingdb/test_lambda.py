@@ -5,33 +5,126 @@ from readingdb.api import API
 from readingdb.tutils import create_bucket, teardown_s3_bucket
 from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
 import unittest
-from moto import mock_s3
+from moto import mock_s3, mock_sqs
 
 from readingdb.lamb import handler
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f"no credentials file located at {CREDENTIALS_FILE}"
+TEST_CONTEXT = "TEST_STUB"
+
 
 def credentials_present():
     return os.path.isfile(CREDENTIALS_FILE)
 
-@mock_s3
 class TestLambda(unittest.TestCase): 
-    TEST_CONTEXT = "TEST_STUB"
-
-    region_name = "ap-southeast-2"
-    access_key = "fake_access_key"
-    secret_key = "fake_secret_key"
-    bucket_name = "my_bucket"
-    user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
-
-    # Helper Code
     @classmethod
     def setUpClass(cls):
         if credentials_present():
             cls.access_token = get_access_token()
         else:
             cls.access_token = ""
+
+class TestSimpleLambdaResponses(TestLambda):
+    def test_error_response_on_bad_input(self):
+        resp = handler({}, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Invalid Event Syntax"
+        }, resp)
+
+        resp = handler({"InvalidKey": 9}, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Invalid Event Syntax"
+        }, resp)
+
+    def test_correct_error_on_malformed_s3_event(self):
+        resp = handler({
+            "Records": []
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Invalid Event Syntax"
+        }, resp)
+
+    def test_correct_error_on_unauthenticated_upload_event(self):
+        resp = handler({
+             "Type": "NotifyUploadComplete"
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Unauthenticated request, no Access Token Provided'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_correct_error_on_malformed_upload_event(self):
+        resp = handler({
+             "Type": "NotifyUploadComplete",
+             "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key Bucket missing from event'
+        }, resp)
+
+        resp = handler({
+             "Type": "NotifyUploadComplete",
+             "AccessToken": self.access_token,
+             "Bucket": "somebucket"
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key Key missing from event'
+        }, resp)
+
+    def test_error_response_on_unauthenticated_event(self):
+        resp = handler({
+            "Type": "GetRoute",
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Unauthenticated request, no Access Token Provided"
+        }, resp)
+
+        resp = handler({
+            "Type": "GetRoute",
+            "AccessToken": "bad_access_token",
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Unauthenticated request, unrecognized Access Token bad_access_token"
+        }, resp)
+
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_nonexistant_type(self):
+        resp = handler({
+            "Type": "foo",
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": "Unrecognized event type foo"
+        }, resp)
+
+
+@mock_s3
+class TestDataLambdaResponses(TestLambda): 
+    region_name = "ap-southeast-2"
+    access_key = "fake_access_key"
+    secret_key = "fake_secret_key"
+    bucket_name = "my_bucket"
+    user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
 
     def setUp(self) -> None:
         self.current_dir = os.path.dirname(__file__)
@@ -70,85 +163,6 @@ class TestLambda(unittest.TestCase):
         )
 
         self.api.teardown_reading_db()
-        
-    def test_error_response_on_bad_input(self):
-        resp = handler({}, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Invalid Event Syntax"
-        }, resp)
-
-        resp = handler({"InvalidKey": 9}, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Invalid Event Syntax"
-        }, resp)
-
-    def test_correct_error_on_malformed_s3_event(self):
-        resp = handler({
-            "Records": []
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Invalid Event Syntax"
-        }, resp)
-
-    def test_correct_error_on_unauthenticated_upload_event(self):
-        resp = handler({
-             "Type": "NotifyUploadComplete"
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": 'Unauthenticated request, no Access Token Provided'
-        }, resp)
-
-
-    def test_error_response_on_unauthenticated_event(self):
-        resp = handler({
-            "Type": "GetRoute",
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Unauthenticated request, no Access Token Provided"
-        }, resp)
-
-        resp = handler({
-            "Type": "GetRoute",
-            "AccessToken": "bad_access_token",
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Unauthenticated request, unrecognized Access Token bad_access_token"
-        }, resp)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_correct_error_on_malformed_upload_event(self):
-        resp = handler({
-             "Type": "NotifyUploadComplete",
-             "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": 'Bad Format Error: key Bucket missing from event'
-        }, resp)
-
-        resp = handler({
-             "Type": "NotifyUploadComplete",
-             "AccessToken": self.access_token,
-             "Bucket": "somebucket"
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": 'Bad Format Error: key Key missing from event'
-        }, resp)
 
     @unittest.skip("This make an actual call to fargate")
     def test_correct_upload_event_handling(self):
@@ -157,19 +171,7 @@ class TestLambda(unittest.TestCase):
              "AccessToken": "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6IjljYjMyZjRjLWFhMDktNDk4Yi1hYjkzLTk5ODE3ZjdmNGQxYyIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTgyNjc5MzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MTgyNzE1MzEsImlhdCI6MTYxODI2NzkzMSwianRpIjoiNmRkNGZiNWMtMTZhZS00N2JjLTg4OTEtODRkYjUzNjg0NmMwIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.EgNiuZYENTdIF7t7Zs0LC0UEPaMSc1M66fxfi4OpoLcKvCXdLax6r4wa0gdeL96N6x2PzpBmdxEoeZfSnIFq2NNtcLPXYpmONGgbmP4bxdQW1FcplE6dlvkfo6UnQQdmjTd6r6rTq6CHlHBskFWfi7YRcdbtFf8Ic9nIB2G8J8EkjN1cwGrUUrQ3CqaOuLNjUqxtP6fYgrqEk6lseWVp4P33HK8zOwPUxUuqjwtWfJK_Mchy0QL_K-HpnyUoXU5cv63_PY_OI63QYz5FHFtloTwj1iWqGdE43_tH8AdT3UJpmFNHwHijqVVpsFVmTowRuw1QskdZP-yHK4p7Ea8Y7Q",
              "Bucket": "mobileappsessions172800-main",
              "Key": "public/route_2021_04_12_20_59_16_782.zip"
-        }, self.TEST_CONTEXT)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_error_response_on_nonexistant_type(self):
-        resp = handler({
-            "Type": "foo",
-            "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Error",
-            "Body": "Unrecognized event type foo"
-        }, resp)
+        }, TEST_CONTEXT)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_non_existant_route(self):
@@ -177,7 +179,7 @@ class TestLambda(unittest.TestCase):
             "Type": "GetRoute",
             "RouteID": "route-that-doesnt-exist",
             "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
+        }, TEST_CONTEXT)
 
         self.assertEqual({
             "Status": "Success",
@@ -190,7 +192,7 @@ class TestLambda(unittest.TestCase):
             "Type": "GetReadings",
             "RouteID": self.twenty_route.id,
             "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
+        }, TEST_CONTEXT)
 
         self.assertEqual(resp["Status"], "Success")
         self.assertTrue(isinstance(resp["Body"], list))
@@ -201,7 +203,7 @@ class TestLambda(unittest.TestCase):
         resp = handler({
             "Type": "GetUserRoutes",
             "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
+        }, TEST_CONTEXT)
 
         self.assertEqual(len(resp["Body"]), 3)
         self.assertTrue(resp["Body"][0]["RouteID"] in [
@@ -216,7 +218,7 @@ class TestLambda(unittest.TestCase):
             "Type": "GetRoute",
             "RouteID": self.twenty_route.id,
             "AccessToken": self.access_token,
-        }, self.TEST_CONTEXT)
+        }, TEST_CONTEXT)
 
         self.assertIn("PresignedURL", resp["Body"]["SampleData"]["PredictionReading"]["Reading"])
         del resp["Body"]["SampleData"]["PredictionReading"]["Reading"]["PresignedURL"]
