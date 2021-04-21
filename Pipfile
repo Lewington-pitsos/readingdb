@@ -8,7 +8,7 @@ boto3 = "*"
 jupyter = "*"
 notebook = "*"
 tqdm = "*"
-moto = "*"
+moto = {extras = ["sqs"], version = "*"}
 pylint = "*"
 botocore = "*"
 

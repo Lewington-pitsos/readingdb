@@ -1,7 +1,5 @@
-import json
 import os
 import boto3
-from botocore.credentials import _local_now
 
 def download_json_files(bucket: str, prefix: str, local_dir: str) -> None:
     bucket = boto3.resource("s3").Bucket(bucket)

@@ -11,5 +11,4 @@ docker push 950765595897.dkr.ecr.ap-southeast-2.amazonaws.com/readingdb:latest
 
 # then create a new lambda with the "from image" option
 # ensure to give the lambda proper permissions
-
 # to update the imagem rebuild, retag, push and then select the newer image from the lambda console

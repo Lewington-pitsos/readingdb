@@ -2,27 +2,25 @@ import boto3
 from readingdb.sqsqueue import SQSQueue
 
 class MLAPI(SQSQueue):
+    def __init__(self, queue_url: str) -> None:
+        super().__init__()
+        self.queue_url = queue_url
+        self.sqs = boto3.client('sqs')
 
-    sqs = boto3.client('sqs')
-
-
-    def add_message_to_queue(queue_url: str, route_id: str) -> str:
-        response = sqs.send_message(
-            QueueUrl = queue_url,
-            DelaySeconds = 10,
-            MessageBody=(
-                route_id
-            ) 
+    def add_message_to_queue(self, user_id: str, route_id: str) -> str:
+        response = self.sqs.send_message(
+            QueueUrl = self.queue_url,
+            MessageBody=(f"{user_id},{route_id}") 
         )
         return response['MessageId']
 
-    def receive_message_from_queue(queue_url: str, ) -> str:
-        response = sqs.receive_message(
-            QueueUrl = queue_url,
+    def receive_message_from_queue(self) -> str:
+        response = self.sqs.receive_message(
+            QueueUrl = self.queue_url,
             AttributeNames=[
                 'SentTimestamp'
             ],
-            MaxNumberOfMEssages=1,
+            MaxNumberOfMessages=1,
             MessageAttributeNames=[
                 'All'
             ],
@@ -31,9 +29,9 @@ class MLAPI(SQSQueue):
         )
         return response['Messages'][0]
 
-    def delete_message_from_queue(queue_url: str, message: str) -> None:
-        sqs.delete_message(
-            QueueUrl = queue_url,
+    def delete_message_from_queue(self, message: str) -> None:
+        self.sqs.delete_message(
+            QueueUrl = self.queue_url,
             ReceiptHandle = message['ReceiptHandle']
         )
 

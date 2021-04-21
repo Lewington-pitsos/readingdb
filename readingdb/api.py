@@ -69,6 +69,19 @@ class API(DB, ReadingDB):
 
         return str(resp)
 
+    def begin_prediction(route_id: str, user_id: str) -> None:
+        """Sends a message to the prediction queue that requests
+        predictions be made for the given route and user.
+
+        Args:
+            route_id (str): [description]
+            user_id (str): [description]
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError()
+
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())
 
