@@ -30,7 +30,6 @@ class API(DB, ReadingDB):
         tmp_bucket="mobileappsessions172800-main",
         bucket="mobileappsessions172800-main",
         region_name="ap-southeast-2",
-        sqs_url=SQS_URL,
         config=None,
         size_limit=999999999999999
     ):
@@ -39,7 +38,6 @@ class API(DB, ReadingDB):
         self.tmp_bucket = tmp_bucket
         self.region_name = region_name
         self.size_limit = size_limit
-        self.mlapi = MLAPI(sqs_url)
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)

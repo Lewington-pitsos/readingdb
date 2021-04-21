@@ -2,7 +2,8 @@ import os
 from readingdb.route import Route
 import tempfile
 import unittest
-from moto import mock_s3
+from moto import mock_s3, mock_sqs
+import uuid
 
 from readingdb.download_json import download_json_files
 from readingdb.api import API
@@ -11,6 +12,7 @@ from readingdb.unzipper import Unzipper
 from readingdb.tutils import *
 
 @mock_s3
+@mock_sqs
 class TestUnzipper(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
@@ -30,6 +32,12 @@ class TestUnzipper(unittest.TestCase):
 
         self.api = API(TEST_DYNAMO_ENDPOINT) 
         self.api.create_reading_db()
+
+        self.sqs = boto3.client('sqs')
+        self.queue_name = str(uuid.uuid1())
+        self.sqs_url = self.sqs.create_queue(
+            QueueName=self.queue_name
+        )['QueueUrl']
     
     def tearDown(self):
         teardown_s3_bucket(
@@ -40,6 +48,7 @@ class TestUnzipper(unittest.TestCase):
         )
 
         self.api.teardown_reading_db()
+        self.sqs.delete_queue(QueueUrl=self.sqs_url)
 
     def test_mocking_works(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -50,8 +59,28 @@ class TestUnzipper(unittest.TestCase):
             desired_result = ["file.json", "apple.json"]
             self.assertCountEqual(result, desired_result)
 
+    def test_unzipper_adds_to_queue(self):
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
+        readings = self.api.all_route_readings(route.id)
+
+        self.assertEqual(len(readings), 39)
+
+        msg = self.sqs.receive_message(
+            QueueUrl=self.sqs_url,
+            MaxNumberOfMessages=1,
+            MessageAttributeNames=[
+                'All'
+            ],
+            VisibilityTimeout=0,
+            WaitTimeSeconds=0
+        )['Messages'][0]
+
+        # washiwashi is the userid in the metadata of mocks/route_2021_04_07_17_14_36_709.zip
+        self.assertEqual(f"washiwashi,{route.id}", msg["Body"])
+
     def test_unzipper_uploads(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
         readings = self.api.all_route_readings(route.id)
 

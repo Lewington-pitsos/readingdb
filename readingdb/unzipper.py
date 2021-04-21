@@ -1,3 +1,5 @@
+from readingdb.mlapi import MLAPI
+from readingdb.endpoints import SQS_URL
 from readingdb.route import Route
 import boto3
 import zipfile
@@ -15,9 +17,10 @@ class Unzipper():
     TXT_EXT = "txt"
     OBJ_BODY_KEY = "Body"
 
-    def __init__(self, url, *args, **kwargs) -> None:
+    def __init__(self, url:str, sqs_url: str=SQS_URL, *args, **kwargs) -> None:
         self.s3_resource = boto3.resource('s3')
         self.api: API = API(url, *args, **kwargs)
+        self.mlapi = MLAPI(sqs_url)
 
     def process(self, bucket: str, key: str) -> Route:
         print("bucket", bucket)
@@ -83,5 +86,7 @@ class Unzipper():
         print("deleting zipped route: ", key)
 
         self.s3_resource.Object(bucket, key).delete()
+
+        self.mlapi.add_message_to_queue(user_id, route.id)
 
         return route
