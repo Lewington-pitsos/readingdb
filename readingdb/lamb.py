@@ -70,7 +70,7 @@ def handler(event: Dict[str, Any], context):
     else:
         endpoint = DYNAMO_ENDPOINT
 
-    api = API(endpoint, size_limit=640000, config=Config(
+    api = API(endpoint, size_limit=6400, config=Config(
         region_name=REGION_NAME,
     ))
 

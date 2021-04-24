@@ -8,7 +8,6 @@ from io import BytesIO
 from readingdb.readingspec import ReadingSpec
 from readingdb.routespec import RouteSpec
 from readingdb.constants import *
-from readingdb.s3uri import S3Uri
 from readingdb.format import *
 from readingdb.api import API
 
