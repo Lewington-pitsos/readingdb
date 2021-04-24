@@ -9,7 +9,7 @@ COPY readingdb/lamb.py ./
 
 # This (and later layers) cannot be cached because we're
 # copying an entire directory
-ADD readingdb ./readingdb 
 COPY aws/credentials ./
+ADD readingdb ./readingdb 
 
 CMD [ "lamb.handler" ]
