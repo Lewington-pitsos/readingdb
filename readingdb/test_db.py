@@ -1,8 +1,11 @@
+from readingdb.tutils import Increment
+from readingdb.routestatus import RouteStatus
 import unittest
 import time
 import os
 import json
 import uuid
+from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
@@ -59,6 +62,55 @@ class TestDB(unittest.TestCase):
             "RouteStatus": 1,
             "Timestamp": 123617823
         })
+
+    def test_saves_route_written_date(self):
+        self.db.create_reading_db()
+        routes = self.db.routes_for_user("103")
+        self.assertEqual(len(routes), 0)
+
+        r = Route("3", "103", 123617823)
+        last_update_timestamp = r.update_timestamp 
+        self.db.put_route(r)
+
+        routes = self.db.routes_for_user("3")
+        self.assertEqual(routes[0]["LastUpdated"], last_update_timestamp)
+
+
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_updates_route_written_date_on_update(self):
+        self.db.create_reading_db()
+        routes = self.db.routes_for_user("103")
+        self.assertEqual(len(routes), 0)
+        route_id = "103"
+        user_id = "3"
+
+        r = Route(user_id, route_id, 123617823)
+        original_update_timestamp = r.update_timestamp 
+        self.db.put_route(r)
+
+        routes = self.db.routes_for_user(user_id)
+        self.assertEqual(routes[0]["LastUpdated"], original_update_timestamp)
+
+        self.db.update_route_name(route_id, user_id, "new_name")
+        routes = self.db.routes_for_user(user_id)
+        name_timestamp = routes[0]["LastUpdated"]
+        self.assertGreater(name_timestamp, original_update_timestamp)
+
+        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        routes = self.db.routes_for_user(user_id)
+        status_timestamp = routes[0]["LastUpdated"]
+        self.assertGreater(status_timestamp, name_timestamp)
+
+        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        routes = self.db.routes_for_user(user_id)
+        second_status_timestamp = routes[0]["LastUpdated"]
+        self.assertEqual(second_status_timestamp, status_timestamp)
+
+
+        self.db.update_route_name(route_id, user_id, "new_name")
+        routes = self.db.routes_for_user(user_id)
+        second_name_timestamp = routes[0]["LastUpdated"]
+        self.assertEqual(second_name_timestamp, second_status_timestamp)
 
     def test_loads_large_dataset(self):
         route_id = "103"
