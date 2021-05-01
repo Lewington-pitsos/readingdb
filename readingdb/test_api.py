@@ -1,5 +1,6 @@
 import json
 import os
+from unittest import mock
 from readingdb.s3uri import S3Uri
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
@@ -180,6 +181,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
 
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_saves_readings_to_existing_route(self):
         user_id = "asdy7asdh"
         route_id = "asdasdasdasd"
@@ -188,14 +190,17 @@ class TestAPI(unittest.TestCase):
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
 
-        api.put_route(Route(
+        r = Route(
             user_id,
             route_id,
             0
-        ))
+        )
+        updated_time = r.update_timestamp
+        api.put_route(r)
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
+        self.assertEqual(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
         self.assertNotIn("SampleData", user_routes[0])
 
         readings = api.all_route_readings(route_id)
@@ -205,6 +210,8 @@ class TestAPI(unittest.TestCase):
             route_spec_data = json.load(j)
 
         api.save_predictions(route_spec_data, route_id, user_id)
+        user_routes = api.routes_for_user(user_id)
+        self.assertGreater(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
 
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)

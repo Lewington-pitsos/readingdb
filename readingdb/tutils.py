@@ -3,6 +3,15 @@ import boto3
 import os
 import json
 
+
+class Increment:
+  def __init__(self,a):
+    self.a = a
+  def __iter__(self):
+    while True:
+      yield self.a
+      self.a += 1
+
 def upload_fixtures(bucket: str, fixtures_dir: str, metadata_file: str) -> None:
     with open(metadata_file, "r") as f:
         metadata_json = json.load(f)

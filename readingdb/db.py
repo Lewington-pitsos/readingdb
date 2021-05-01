@@ -1,4 +1,5 @@
 from random import sample
+import time
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 
@@ -148,28 +149,36 @@ class DB():
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        
-        table.update_item(
-            Key={
-                ReadingRouteKeys.ROUTE_ID: route_id,
-                RouteKeys.USER_ID: user_id
-            },
-            UpdateExpression=f"set {RouteKeys.NAME} = :r",
-            ExpressionAttributeValues={
-                ':r': name,
-            },
-        )
+
+        r: Dict[str, Any] = self.get_route(route_id, user_id)
+
+        if r[RouteKeys.NAME] != name:        
+            table.update_item(
+                Key={
+                    ReadingRouteKeys.ROUTE_ID: route_id,
+                    RouteKeys.USER_ID: user_id
+                },
+                UpdateExpression=f"set {RouteKeys.NAME} = :r, {RouteKeys.LAST_UPDATED} = :l",
+                ExpressionAttributeValues={
+                    ':r': name,
+                    ':l': int(time.time())
+                },
+            )
 
     def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
         
-        table.update_item(
-            Key={
-                ReadingRouteKeys.ROUTE_ID: route_id,
-                RouteKeys.USER_ID: user_id
-            },
-            UpdateExpression=f"set {RouteKeys.STATUS} = :r",
-            ExpressionAttributeValues={
-                ':r': status,
-            },
-        )
+        r: Dict[str, Any] = self.get_route(route_id, user_id)
+
+        if r[RouteKeys.STATUS] != status:
+            table.update_item(
+                Key={
+                    ReadingRouteKeys.ROUTE_ID: route_id,
+                    RouteKeys.USER_ID: user_id
+                },
+                UpdateExpression=f"set {RouteKeys.STATUS} = :r, {RouteKeys.LAST_UPDATED} = :l",
+                ExpressionAttributeValues={
+                    ':r': status,
+                    ':l': int(time.time())
+                },
+            )
