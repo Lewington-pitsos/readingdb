@@ -24,6 +24,7 @@ EVENT_GET_READINGS = "GetReadings"
 EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+EVENT_BUCKET_KEY = "BucketKey"
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -58,8 +59,6 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
     return resp
 
 def get_key(event, key):
-    err = None
-
     if not key in event:
         return None, key_missing_error_response(key)
 
@@ -118,8 +117,13 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
+        if EVENT_BUCKET_KEY in event:
+            key = event[EVENT_BUCKET_KEY]
+        else:
+            key = None
+
         route_id = event[ReadingRouteKeys.ROUTE_ID]
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, key)
 
         return success_response(readings)
 

@@ -130,7 +130,6 @@ class TestLambdaRW(TestLambda):
     user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
     tmp_bucket = TEST_BUCKET
 
-    # @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
         self.current_dir = os.path.dirname(__file__)
         create_bucket(
@@ -152,12 +151,8 @@ class TestLambdaRW(TestLambda):
             self.secret_key,
             self.bucket_name
         )
-    
-
-# class TestDataLambda()
 
 class TestLambdaW(TestLambdaRW):
-
     @unittest.skip("This make an actual call to fargate")
     def test_correct_upload_event_handling(self):
         handler({
@@ -240,17 +235,17 @@ class TestLambdaR(TestLambdaRW):
         self.assertIsInstance(resp["Body"], dict)
         self.assertEqual(resp["Body"]['Bucket'], self.tmp_bucket)
 
-    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    # def test_gets_readings(self):
-    #     resp = handler({
-    #         "Type": "GetReadings",
-    #         "BucketKey": "rulerruler.json",
-    #         "RouteID": self.twenty_route.id,
-    #         "AccessToken": self.access_token,
-    #     }, TEST_CONTEXT)
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_readings_with_key(self):
+        resp = handler({
+            "Type": "GetReadings",
+            "BucketKey": "rulerruler.json",
+            "RouteID": self.twenty_route.id,
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
 
-    #     self.assertEqual(resp["Status"], "Success")
-    #     self.assertEqual(resp["Body"]['Key'], "rulerruler.json")
+        self.assertEqual(resp["Status"], "Success")
+        self.assertEqual(resp["Body"]['Key'], "rulerruler.json")
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
