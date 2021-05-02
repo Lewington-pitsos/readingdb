@@ -25,10 +25,12 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def all_route_readings_async(self, route_id: str) -> None:
+    def all_route_readings_async(self, route_id: str) -> str:
         """Calls a lambda that contains readingdb and gets THAT lambda
         to execute all_route_readings. That lambda will upload a file
         to s3 and a client can poll for that file. 
+
+        Returns the key of the file where the data will be uploaded to.
         """
         raise NotImplementedError()
     @abc.abstractmethod

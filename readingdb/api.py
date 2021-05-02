@@ -41,6 +41,8 @@ class API(DB, ReadingDB):
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
+        self.lambda_client = boto3.client("lambda")
+
 
     def save_new_route(self, bucket: str, key: str) -> None:
         resp = self.ecs.run_task(
@@ -120,8 +122,8 @@ class API(DB, ReadingDB):
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
-    def all_route_readings_async(self, route_id: str) -> None:
-        pass
+    def all_route_readings_async(self, route_id: str) -> str:
+        return ""
 
     def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)

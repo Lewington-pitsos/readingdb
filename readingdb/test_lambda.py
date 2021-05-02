@@ -1,11 +1,12 @@
 import os
 import json
+from readingdb.s3uri import S3Uri
 from unittest import mock
 from unittest.mock import Mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
 from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 import unittest
 from moto import mock_s3, mock_sqs
 
@@ -120,13 +121,17 @@ class TestSimpleLambdaResponses(TestLambda):
         }, resp)
 
 
+
+
+
 @mock_s3
 class TestDataLambdaResponses(TestLambda): 
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
-    bucket_name = "my_bucket"
+    bucket_name = TEST_BUCKET
     user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
+    tmp_bucket = TEST_BUCKET
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
@@ -139,7 +144,8 @@ class TestDataLambdaResponses(TestLambda):
             self.bucket_name,
         )
 
-        self.api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name) 
+
+        self.api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, tmp_bucket=self.tmp_bucket) 
         self.api.create_reading_db()
 
         with open("readingdb/test_data/gps_img_route.json") as f:
@@ -158,14 +164,13 @@ class TestDataLambdaResponses(TestLambda):
         self.twenty_route = r
 
     def tearDown(self):
+        self.api.teardown_reading_db()
         teardown_s3_bucket(
             self.region_name,
             self.access_key,
             self.secret_key,
             self.bucket_name
         )
-
-        self.api.teardown_reading_db()
     
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_accepts_async_readings_request(self):
@@ -212,8 +217,8 @@ class TestDataLambdaResponses(TestLambda):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp["Status"], "Success")
-        self.assertTrue(isinstance(resp["Body"], list))
-        self.assertEqual(len(resp["Body"]), 22)
+        self.assertIsInstance(resp["Body"], dict)
+        self.assertEqual(resp["Body"]['Bucket'], self.tmp_bucket)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
@@ -254,7 +259,7 @@ class TestDataLambdaResponses(TestLambda):
                         'Type': 'PredictionReading', 
                         'Reading': {
                             'S3Uri': {
-                                'Bucket': 'my_bucket', 
+                                'Bucket': TEST_BUCKET,
                                 'Key': self.twenty_route.id + 'readingdb/test_data/images/road1.jpg'
                             }, 
                             'Longitude': 145.2450816, 

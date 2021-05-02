@@ -56,7 +56,7 @@ def create_bucket(
     except botocore.exceptions.ClientError:
         pass
     else:
-        err = "{bucket} should not exist.".format(bucket=bucket_name)
+        err = "attempting to create bucket {bucket} but it already exists.".format(bucket=bucket_name)
         raise EnvironmentError(err)        
     
     client.create_bucket(

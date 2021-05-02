@@ -7,7 +7,7 @@ from botocore.config import Config
 from readingdb.api import API
 from readingdb.constants import *
 from readingdb.auth import Auth
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.authresponse import AuthResponse
 
 logger = logging.getLogger("main")
@@ -68,12 +68,20 @@ def get_key(event, key):
 def handler(event: Dict[str, Any], context):
     if context == "TEST_STUB":
         endpoint = TEST_DYNAMO_ENDPOINT
+        bucket = TEST_BUCKET
     else:
         endpoint = DYNAMO_ENDPOINT
+        bucket = BUCKET
 
-    api = API(endpoint, size_limit=1200, config=Config(
-        region_name=REGION_NAME,
-    ))
+    api = API(
+        endpoint, 
+        size_limit=0, 
+        bucket=bucket, 
+        tmp_bucket=bucket, 
+        config=Config(
+            region_name=REGION_NAME,
+        )
+    )
 
     logger.info('Event: %s', event)
     

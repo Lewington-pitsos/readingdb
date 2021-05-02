@@ -4,7 +4,7 @@ from unittest import mock
 from readingdb.s3uri import S3Uri
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
-from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
 from readingdb.constants import *
 from readingdb.routestatus import RouteStatus
@@ -24,7 +24,7 @@ class TestAPI(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
-    bucket_name = "my_bucket"
+    bucket_name = TEST_BUCKET
     test_prefix = "mocks"
     tmp_bucket ="tmp"
 
