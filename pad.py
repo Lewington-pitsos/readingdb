@@ -103,9 +103,17 @@
 # -----------------------------------------------------------------------------
 
 import json
+from readingdb.lamb import EVENT_ACCESS_TOKEN
+from readingdb.constants import REGION_NAME
+from readingdb.authresponse import AuthResponse
+from readingdb.auth import Auth
 import boto3
 
 client = boto3.client("lambda")
+
+auth: Auth = Auth(region_name=REGION_NAME)
+
+user_data: AuthResponse = auth.get_user()
 
 pl = {
     "Type": "GetReadings",

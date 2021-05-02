@@ -6,3 +6,4 @@ SQS_URL = "https://sqs.ap-southeast-2.amazonaws.com/950765595897/ml_queue_core.f
 TEST_BUCKET = "test_bucket"
 TEST_TMP_BUCKET = "test_bucket"
 BUCKET = "mobileappsessions172800-main"
+LAMBDA_ENDPOINT = "arn:aws:lambda:ap-southeast-2:950765595897:function:routesidplay-backend-lambda"

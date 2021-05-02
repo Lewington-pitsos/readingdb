@@ -17,7 +17,7 @@ from boto3.dynamodb.conditions import Key
 
 from readingdb.db import DB
 from readingdb.mlapi import MLAPI
-from readingdb.endpoints import SQS_URL
+from readingdb.endpoints import LAMBDA_ENDPOINT, SQS_URL
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
@@ -122,8 +122,22 @@ class API(DB, ReadingDB):
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
-    def all_route_readings_async(self, route_id: str) -> str:
-        return ""
+    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
+        bucket_key = str(uuid.uuid1())
+        pl = {
+            "Type": "GetReadings",
+            "BucketKey": bucket_key,
+            "RouteID": "f5c110a0-aad2-11eb-9dd3-0242c8762599",
+            "AccessToken": access_token,
+        }
+
+        self.lambda_client.invoke(
+            FunctionName=LAMBDA_ENDPOINT,
+            InvocationType='Event',
+            Payload=json.dumps(pl)
+        )
+
+        return bucket_key
 
     def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)

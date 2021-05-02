@@ -122,13 +122,17 @@ def handler(event: Dict[str, Any], context):
         else:
             key = None
 
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
         readings = api.all_route_readings(route_id, key)
 
         return success_response(readings)
 
     elif event_name == EVENT_GET_READINGS_ASYNC:
-        return success_response(None)
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+
+        bucket_key = api.all_route_readings_async(route_id)
+        return success_response(bucket_key)
 
     elif event_name == EVENT_UPLOAD_NEW_ROUTE:
         bucket, err_resp = get_key(event, EVENT_BUCKET)
@@ -139,7 +143,6 @@ def handler(event: Dict[str, Any], context):
             return err_resp
 
         readings = api.save_new_route(bucket, key)
-
         return success_response(readings)
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:
@@ -150,7 +153,6 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp 
 
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
         api.update_route_name(route_id, user_data.user_sub, name)
 
         return success_response(None)
