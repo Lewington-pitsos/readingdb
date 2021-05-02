@@ -137,7 +137,7 @@ class API(DB, ReadingDB):
             Payload=json.dumps(pl)
         )
 
-        return bucket_key
+        return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
 
     def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
