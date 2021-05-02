@@ -46,6 +46,7 @@ class TestDB(unittest.TestCase):
         })
         self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
 
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
         self.db.create_reading_db()
         routes = self.db.routes_for_user("103")
@@ -55,13 +56,14 @@ class TestDB(unittest.TestCase):
         
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0], {
+        self.assertEqual({
+            'LastUpdated': 1619496879,
             "RouteID": "103",
             "RouteName": "103",
             "UserID": "3",
             "RouteStatus": 1,
             "Timestamp": 123617823
-        })
+        }, routes[0])
 
     def test_saves_route_written_date(self):
         self.db.create_reading_db()

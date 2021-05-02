@@ -22,6 +22,13 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def all_route_readings_async(self, route_id: str) -> None:
+        """Calls a lambda that contains readingdb and gets THAT lambda
+        to execute all_route_readings. That lambda will upload a file
+        to s3 and a client can poll for that file. 
+        """
+        raise NotImplementedError()
+    @abc.abstractmethod
     def begin_prediction(user_id: str, route_id: str) -> None:
         """Sends a message to the prediction queue that requests
         predictions be made for the given route and user.

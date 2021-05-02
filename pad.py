@@ -1,6 +1,6 @@
 # import json
 
-# file_name = "readingdb/test_data/sydney_filtered.json"
+# file_name = "cruft/entries.json"
 
 # with open(file_name, "r") as f:
 #     entries = json.load(f)
@@ -19,9 +19,18 @@
 #     "Longitude"
 # ]
 
+# new_entries = []
+
 # for e in entries:
 #     e["Timestamp"] = e['Date']
 #     del e['Date']
+
+#     if e["ImageFileName"] != "AUS_3.jpg":
+#         e["ImageFileName"] = e["ImageFileName"].replace(
+#             "data/inference/sydney_fast/images/", 
+#             "/home/lewington/code/faultnet/data/inference/sydney_fast/images/"
+#         )
+#         new_entries.append(e)
 
 #     entities = []
 #     for k in fault_keys:
@@ -40,8 +49,10 @@
 #         e["Reading"][k] = e[k]
 #         del e[k]
 
-# with open(file_name, "w") as f:
-#     json.dump(entries, f, indent="    ")
+
+
+# with open(file_name.replace("entries", "revised_entries"), "w") as f:
+#     json.dump(new_entries, f, indent="    ")
 
 # -----------------------------------------------------------------------------
 
@@ -57,20 +68,20 @@
 
 # -----------------------------------------------------------------------------
 
-from readingdb.api import API
-from readingdb.routespec import RouteSpec
-import json
+# from readingdb.api import API
+# from readingdb.routespec import RouteSpec
+# import json
 
-api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
+# api = API("https://dynamodb.ap-southeast-2.amazonaws.com")
 
-r = api.all_route_readings("ea2f2ff0-a24a-11eb-a871-024235873144")
+# # r = api.all_route_readings("ea2f2ff0-a24a-11eb-a871-024235873144")
 
-print(r)
+# # print(r)
 
-# with open("readingdb/test_data/gps_img_route.json") as f:
+# with open("cruft/sydney_full.json") as f:
 #     route_json = json.load(f) 
 
-# api.save_route(RouteSpec.from_json(route_json), "62af2bda-a15f-43b7-a84a-55f9908351c7")
+# api.save_route(RouteSpec.from_json(route_json), "99bf4519-85d9-4726-9471-4c91a7677925")
 
 
 # -----------------------------------------------------------------------------
@@ -87,3 +98,31 @@ print(r)
 # api = API(TEST_DYNAMO_ENDPOINT)
 
 # api.save_new_route("mobileappsessions172800-main", "public/route_2021_04_12_20_59_16_782.zip")
+
+
+# -----------------------------------------------------------------------------
+
+import json
+import boto3
+
+client = boto3.client("lambda")
+
+pl = {
+    "Type": "GetReadings",
+    "RouteID": "f5c110a0-aad2-11eb-9dd3-0242c8762599",
+    "AccessToken": "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6IjFlNjQwMjEyLTAwODItNDlkMC1iODhjLWFmNTA2NTlkNGU2NCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTk5NDUzMjQsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MTk5NDg5MjQsImlhdCI6MTYxOTk0NTMyNCwianRpIjoiYzg1NDQ3MjUtZDdiNS00MzIzLTg3MWUtZGJhNGMwNDUzYjBiIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.SCAD3ZdUqTgdodAfe7BA48D-6r3tL3Jw4GFY0mQc9l0xyeeYdL5XyXMk_1gVTfYT4KiAj8xSMZ8AL_0HBgLLGvon-oq9n5CWwjaXXFvmhejEAAmTuV2ytc39N4Q1nlyFblruSulAFRNsIiZkCRLXyne6vng3ZdCvoVpZqCU9Vejw8o9ZCy5iEM9PgTPd2zmjlkEWeCm2v-A7Bdn5YIFmImRTtZWvjiDx3Kg4pxSopUjlPq0IQCUUzYYS9P6CSYBfG2OhPPiK7U_W5L9bZr4c8ulKcuF6wpDrt8kH-LdB92mtj9nRe-vVaL7OPs-IeK1Q4owLHTSzqyJ68GBQX6dtqg",
+}
+
+s=json.dumps(pl)
+
+print("waiting for response")
+
+resp = client.invoke(
+    FunctionName="arn:aws:lambda:ap-southeast-2:950765595897:function:routesidplay-backend-lambda",
+    InvocationType='RequestResponse',
+    Payload=s
+)
+
+data = resp['Payload'].read()
+
+print(data)

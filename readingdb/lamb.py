@@ -21,6 +21,7 @@ EVENT_ACCESS_TOKEN = "AccessToken"
 EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
+EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 

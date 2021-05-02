@@ -1,8 +1,10 @@
 import os
 import json
+from unittest import mock
+from unittest.mock import Mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
-from readingdb.tutils import create_bucket, teardown_s3_bucket
+from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
 from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
 import unittest
 from moto import mock_s3, mock_sqs
@@ -126,6 +128,7 @@ class TestDataLambdaResponses(TestLambda):
     bucket_name = "my_bucket"
     user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
 
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
         self.current_dir = os.path.dirname(__file__)
         create_bucket(
@@ -163,6 +166,20 @@ class TestDataLambdaResponses(TestLambda):
         )
 
         self.api.teardown_reading_db()
+    
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_accepts_async_readings_request(self):
+    #     resp = handler({
+    #         "Type": "GetReadingsAsync",
+    #         "RouteID": "route-that-doesnt-exist",
+    #         "AccessToken": self.access_token,
+    #     }, TEST_CONTEXT)
+
+    #     self.assertEqual({
+    #         "Status": "Success",
+    #         "Body": None
+    #     }, resp)
+
 
     @unittest.skip("This make an actual call to fargate")
     def test_correct_upload_event_handling(self):
@@ -227,6 +244,7 @@ class TestDataLambdaResponses(TestLambda):
         self.assertEqual({
             'Status': 'Success', 
             'Body': {
+                'LastUpdated': 1619496890,
                 'RouteStatus': 1, 
                 'Timestamp': 1616116106935,
                 'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 

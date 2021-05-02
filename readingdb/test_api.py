@@ -216,6 +216,7 @@ class TestAPI(unittest.TestCase):
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
@@ -233,6 +234,7 @@ class TestAPI(unittest.TestCase):
         del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
         self.maxDiff = None
         expected_sample_data = {
+            "LastUpdated": 1619496879,
             'RouteStatus': 1,
             'RouteID': route.id,
             'Timestamp': 1616116106935,

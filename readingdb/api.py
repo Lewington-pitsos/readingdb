@@ -120,6 +120,9 @@ class API(DB, ReadingDB):
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
+    def all_route_readings_async(self, route_id: str) -> None:
+        pass
+
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
         self.__inject_presigned_urls(readings)
