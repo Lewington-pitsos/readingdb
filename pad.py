@@ -98,39 +98,13 @@
 # api = API(TEST_DYNAMO_ENDPOINT)
 
 # api.save_new_route("mobileappsessions172800-main", "public/route_2021_04_12_20_59_16_782.zip")
-
-
 # -----------------------------------------------------------------------------
+from readingdb.endpoints import DYNAMO_ENDPOINT
+from readingdb.api import API
 
-import json
-from readingdb.lamb import EVENT_ACCESS_TOKEN
-from readingdb.constants import REGION_NAME
-from readingdb.authresponse import AuthResponse
-from readingdb.auth import Auth
-import boto3
+at = "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6Ijg4NjAyOTgzLWZhN2UtNDI2Ni05ODBhLWUyOTRmN2Y1Y2FkNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTk5ODA5MDEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MTk5ODQ1MDEsImlhdCI6MTYxOTk4MDkwMSwianRpIjoiNDc4ZjE1YjMtMThlNS00ZjhkLWJkMmUtNjVmZjcyMTZmOTg3IiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.gEv-4EbGsbpL_3xRbMHhYZ1GtBxZ9lM8lCX_AKLb4GaAPkycxMdth_WbO9MA7C2H-d6fnKMikyzUrpo9ZZ1xJuMmZ8j-J2UYP1JVpxIZKjtJxmqz_IYsNhx5C5vGowBWXq1rxWTOR2h14qMMUNNkgJ2v17WAkTdlH1bheFkuzNNljNSIJp2_g8RApX_G7QsyI6nMqrWLdzG-5e6tTBa6oRGvyRpLZiHaKpbxTTpytXsZMnJCLIEuVWA4XBJ5_C1hLa5gvjQPU2ReUyU3LO6GKfck4JunRRzvRZ3dg7xsZIOQmj4JUEo7lCGFGqvJPl_BMP6DoFXr36BJp5P8krn_YQ"
+api = API(DYNAMO_ENDPOINT)
 
-client = boto3.client("lambda")
+key = api.all_route_readings_async("99bf4519-85d9-4726-9471-4c91a7677925", at)
 
-auth: Auth = Auth(region_name=REGION_NAME)
-
-user_data: AuthResponse = auth.get_user()
-
-pl = {
-    "Type": "GetReadings",
-    "RouteID": "f5c110a0-aad2-11eb-9dd3-0242c8762599",
-    "AccessToken": "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6IjFlNjQwMjEyLTAwODItNDlkMC1iODhjLWFmNTA2NTlkNGU2NCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTk5NDUzMjQsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MTk5NDg5MjQsImlhdCI6MTYxOTk0NTMyNCwianRpIjoiYzg1NDQ3MjUtZDdiNS00MzIzLTg3MWUtZGJhNGMwNDUzYjBiIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.SCAD3ZdUqTgdodAfe7BA48D-6r3tL3Jw4GFY0mQc9l0xyeeYdL5XyXMk_1gVTfYT4KiAj8xSMZ8AL_0HBgLLGvon-oq9n5CWwjaXXFvmhejEAAmTuV2ytc39N4Q1nlyFblruSulAFRNsIiZkCRLXyne6vng3ZdCvoVpZqCU9Vejw8o9ZCy5iEM9PgTPd2zmjlkEWeCm2v-A7Bdn5YIFmImRTtZWvjiDx3Kg4pxSopUjlPq0IQCUUzYYS9P6CSYBfG2OhPPiK7U_W5L9bZr4c8ulKcuF6wpDrt8kH-LdB92mtj9nRe-vVaL7OPs-IeK1Q4owLHTSzqyJ68GBQX6dtqg",
-}
-
-s=json.dumps(pl)
-
-print("waiting for response")
-
-resp = client.invoke(
-    FunctionName="arn:aws:lambda:ap-southeast-2:950765595897:function:routesidplay-backend-lambda",
-    InvocationType='RequestResponse',
-    Payload=s
-)
-
-data = resp['Payload'].read()
-
-print(data)
+print(key)

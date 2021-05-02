@@ -123,11 +123,11 @@ class API(DB, ReadingDB):
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
     def all_route_readings_async(self, route_id: str, access_token: str) -> str:
-        bucket_key = str(uuid.uuid1())
+        bucket_key = str(uuid.uuid1()) + ".json"
         pl = {
             "Type": "GetReadings",
             "BucketKey": bucket_key,
-            "RouteID": "f5c110a0-aad2-11eb-9dd3-0242c8762599",
+            "RouteID": route_id,
             "AccessToken": access_token,
         }
 
