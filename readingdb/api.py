@@ -17,7 +17,7 @@ from boto3.dynamodb.conditions import Key
 
 from readingdb.db import DB
 from readingdb.mlapi import MLAPI
-from readingdb.endpoints import SQS_URL
+from readingdb.endpoints import LAMBDA_ENDPOINT, SQS_URL
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
@@ -41,6 +41,8 @@ class API(DB, ReadingDB):
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
+        self.lambda_client = boto3.client("lambda")
+
 
     def save_new_route(self, bucket: str, key: str) -> None:
         resp = self.ecs.run_task(
@@ -120,7 +122,24 @@ class API(DB, ReadingDB):
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
-    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
+        bucket_key = str(uuid.uuid1()) + ".json"
+        pl = {
+            "Type": "GetReadings",
+            "BucketKey": bucket_key,
+            "RouteID": route_id,
+            "AccessToken": access_token,
+        }
+
+        self.lambda_client.invoke(
+            FunctionName=LAMBDA_ENDPOINT,
+            InvocationType='Event',
+            Payload=json.dumps(pl)
+        )
+
+        return bucket_key
+
+    def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
         self.__inject_presigned_urls(readings)
         
@@ -128,14 +147,14 @@ class API(DB, ReadingDB):
         # 6 mb in size. The JSON for the readins will often
         # be larger than 6mb.
         if sys.getsizeof(readings) > self.size_limit:
-            key = str(uuid.uuid1()) + ".json"
+            s3_key = str(uuid.uuid1()) + ".json" if key is None else key
             self.s3_client.put_object(
                 Body=str(json.dumps(readings)),
                 Bucket = self.tmp_bucket,
-                Key=key
+                Key=s3_key
             )
 
-            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: key}
+            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key}
 
         return readings
 

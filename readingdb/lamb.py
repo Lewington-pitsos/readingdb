@@ -7,7 +7,7 @@ from botocore.config import Config
 from readingdb.api import API
 from readingdb.constants import *
 from readingdb.auth import Auth
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.authresponse import AuthResponse
 
 logger = logging.getLogger("main")
@@ -21,8 +21,10 @@ EVENT_ACCESS_TOKEN = "AccessToken"
 EVENT_GET_ROUTE = "GetRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
+EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+EVENT_BUCKET_KEY = "BucketKey"
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = "Status"
@@ -57,8 +59,6 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
     return resp
 
 def get_key(event, key):
-    err = None
-
     if not key in event:
         return None, key_missing_error_response(key)
 
@@ -67,12 +67,20 @@ def get_key(event, key):
 def handler(event: Dict[str, Any], context):
     if context == "TEST_STUB":
         endpoint = TEST_DYNAMO_ENDPOINT
+        bucket = TEST_BUCKET
     else:
         endpoint = DYNAMO_ENDPOINT
+        bucket = BUCKET
 
-    api = API(endpoint, size_limit=1200, config=Config(
-        region_name=REGION_NAME,
-    ))
+    api = API(
+        endpoint, 
+        size_limit=0, 
+        bucket=bucket, 
+        tmp_bucket=bucket, 
+        config=Config(
+            region_name=REGION_NAME,
+        )
+    )
 
     logger.info('Event: %s', event)
     
@@ -109,10 +117,22 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
-        readings = api.all_route_readings(route_id)
+        if EVENT_BUCKET_KEY in event:
+            key = event[EVENT_BUCKET_KEY]
+        else:
+            key = None
+
+        readings = api.all_route_readings(route_id, key)
 
         return success_response(readings)
+
+    elif event_name == EVENT_GET_READINGS_ASYNC:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+
+        bucket_key = api.all_route_readings_async(route_id)
+        return success_response(bucket_key)
 
     elif event_name == EVENT_UPLOAD_NEW_ROUTE:
         bucket, err_resp = get_key(event, EVENT_BUCKET)
@@ -123,7 +143,6 @@ def handler(event: Dict[str, Any], context):
             return err_resp
 
         readings = api.save_new_route(bucket, key)
-
         return success_response(readings)
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:
@@ -134,7 +153,6 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp 
 
-        route_id = event[ReadingRouteKeys.ROUTE_ID]
         api.update_route_name(route_id, user_data.user_sub, name)
 
         return success_response(None)

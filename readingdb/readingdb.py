@@ -15,12 +15,25 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError() 
 
     @abc.abstractmethod
-    def all_route_readings(route_id: int, user_id: str) -> List[Dict[str, Any]]:
+    def all_route_readings(route_id: int, user_id: str, key: str) -> List[Dict[str, Any]]:
         """Returns all readings (e.g. gps readings, accelerometer readings, 
         camera image readings, prior predictions) associated with that route.
+
+        The key tells the api what key to upload the reading data to s3 with if 
+        it needs to upload to s3 because there is too much data.
         """
         raise NotImplementedError()
 
+    @abc.abstractmethod
+    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
+        """Calls a lambda that contains readingdb and gets THAT lambda
+        to execute all_route_readings. That lambda will upload a file
+        to s3 and a client can poll for that file. An access token must be
+        provided so that an additional lambda call can be made.
+
+        Returns the key of the file where the data will be uploaded to. 
+        """
+        raise NotImplementedError()
     @abc.abstractmethod
     def begin_prediction(user_id: str, route_id: str) -> None:
         """Sends a message to the prediction queue that requests

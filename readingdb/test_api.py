@@ -4,7 +4,7 @@ from unittest import mock
 from readingdb.s3uri import S3Uri
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
-from readingdb.endpoints import TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
 from readingdb.constants import *
 from readingdb.routestatus import RouteStatus
@@ -24,7 +24,7 @@ class TestAPI(unittest.TestCase):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
-    bucket_name = "my_bucket"
+    bucket_name = TEST_BUCKET
     test_prefix = "mocks"
     tmp_bucket ="tmp"
 
@@ -99,6 +99,26 @@ class TestAPI(unittest.TestCase):
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
+
+    def test_can_upload_readings_with_given_key(self):
+        route_id = "103"
+        self.api.put_route(Route("3", route_id, 123617823))
+        
+        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+            entities = json.load(f)
+
+        for e in entities[:60]:
+            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            r: AbstractReading = json_to_reading("PredictionReading", e)
+            self.api.put_reading(r)
+
+        self.api.size_limit = 400
+        uri = self.api.all_route_readings(route_id, key="kingofkings.json")
+        
+        self.assertIsInstance(uri, dict)
+        self.assertEqual(uri['Bucket'], self.tmp_bucket)
+        self.assertEqual(uri['Key'], "kingofkings.json")
 
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
@@ -216,6 +236,7 @@ class TestAPI(unittest.TestCase):
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_small_route(self):
         user_id = "asdy7asdh"
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
@@ -233,6 +254,7 @@ class TestAPI(unittest.TestCase):
         del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
         self.maxDiff = None
         expected_sample_data = {
+            "LastUpdated": 1619496879,
             'RouteStatus': 1,
             'RouteID': route.id,
             'Timestamp': 1616116106935,
