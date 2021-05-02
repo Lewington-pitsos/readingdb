@@ -100,6 +100,26 @@ class TestAPI(unittest.TestCase):
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
 
+    def test_can_upload_readings_with_given_key(self):
+        route_id = "103"
+        self.api.put_route(Route("3", route_id, 123617823))
+        
+        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+            entities = json.load(f)
+
+        for e in entities[:60]:
+            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            r: AbstractReading = json_to_reading("PredictionReading", e)
+            self.api.put_reading(r)
+
+        self.api.size_limit = 400
+        uri = self.api.all_route_readings(route_id, key="kingofkings.json")
+        
+        self.assertIsInstance(uri, dict)
+        self.assertEqual(uri['Bucket'], self.tmp_bucket)
+        self.assertEqual(uri['Key'], "kingofkings.json")
+
     def test_updates_route_name(self):
         user_id = "aghsghavgas"
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)

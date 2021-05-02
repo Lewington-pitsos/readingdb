@@ -123,7 +123,7 @@ class API(DB, ReadingDB):
     def all_route_readings_async(self, route_id: str) -> None:
         pass
 
-    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+    def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
         self.__inject_presigned_urls(readings)
         
@@ -131,14 +131,14 @@ class API(DB, ReadingDB):
         # 6 mb in size. The JSON for the readins will often
         # be larger than 6mb.
         if sys.getsizeof(readings) > self.size_limit:
-            key = str(uuid.uuid1()) + ".json"
+            s3_key = str(uuid.uuid1()) + ".json" if key is None else key
             self.s3_client.put_object(
                 Body=str(json.dumps(readings)),
                 Bucket = self.tmp_bucket,
-                Key=key
+                Key=s3_key
             )
 
-            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: key}
+            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key}
 
         return readings
 

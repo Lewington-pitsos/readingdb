@@ -15,9 +15,12 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError() 
 
     @abc.abstractmethod
-    def all_route_readings(route_id: int, user_id: str) -> List[Dict[str, Any]]:
+    def all_route_readings(route_id: int, user_id: str, key: str) -> List[Dict[str, Any]]:
         """Returns all readings (e.g. gps readings, accelerometer readings, 
         camera image readings, prior predictions) associated with that route.
+
+        The key tells the api what key to upload the reading data to s3 with if 
+        it needs to upload to s3 because there is too much data.
         """
         raise NotImplementedError()
 
