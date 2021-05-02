@@ -37,7 +37,11 @@ class Route():
                 
         item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
         item[RouteKeys.TIMESTAMP] = int(item[RouteKeys.TIMESTAMP])
-        item[RouteKeys.LAST_UPDATED] = int(item[RouteKeys.LAST_UPDATED])
+
+        if RouteKeys.LAST_UPDATED in item:
+            item[RouteKeys.LAST_UPDATED] = int(item[RouteKeys.LAST_UPDATED])
+        else:
+            item[RouteKeys.LAST_UPDATED] = 0
 
     def item_data(self) ->  Dict[str, Any]:
         data = {

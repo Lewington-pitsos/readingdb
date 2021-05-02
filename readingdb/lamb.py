@@ -131,7 +131,11 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        s3_uri = api.all_route_readings_async(route_id)
+        access_token, err_resp = get_key(event, EVENT_ACCESS_TOKEN)
+        if err_resp:
+            return err_resp
+
+        s3_uri = api.all_route_readings_async(route_id, access_token)
         return success_response(s3_uri)
 
     elif event_name == EVENT_UPLOAD_NEW_ROUTE:
