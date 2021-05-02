@@ -122,10 +122,7 @@ class TestSimpleLambdaResponses(TestLambda):
 
 
 
-
-
-@mock_s3
-class TestDataLambdaResponses(TestLambda): 
+class TestDataLambda(TestLambda):
     region_name = "ap-southeast-2"
     access_key = "fake_access_key"
     secret_key = "fake_secret_key"
@@ -133,7 +130,7 @@ class TestDataLambdaResponses(TestLambda):
     user_id = "99bf4519-85d9-4726-9471-4c91a7677925"
     tmp_bucket = TEST_BUCKET
 
-    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    # @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
         self.current_dir = os.path.dirname(__file__)
         create_bucket(
@@ -143,10 +140,26 @@ class TestDataLambdaResponses(TestLambda):
             self.secret_key, 
             self.bucket_name,
         )
-
-
+        
         self.api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, tmp_bucket=self.tmp_bucket) 
         self.api.create_reading_db()
+
+    def tearDown(self):
+        self.api.teardown_reading_db()
+        teardown_s3_bucket(
+            self.region_name,
+            self.access_key,
+            self.secret_key,
+            self.bucket_name
+        )
+    
+
+@mock_s3
+class TestDataLambdaResponses(TestDataLambda): 
+
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def setUp(self) -> None:
+        super().setUp()
 
         with open("readingdb/test_data/gps_img_route.json") as f:
             route_json = json.load(f) 
@@ -163,15 +176,6 @@ class TestDataLambdaResponses(TestLambda):
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
         self.twenty_route = r
 
-    def tearDown(self):
-        self.api.teardown_reading_db()
-        teardown_s3_bucket(
-            self.region_name,
-            self.access_key,
-            self.secret_key,
-            self.bucket_name
-        )
-    
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_accepts_async_readings_request(self):
         resp = handler({
@@ -219,6 +223,18 @@ class TestDataLambdaResponses(TestLambda):
         self.assertEqual(resp["Status"], "Success")
         self.assertIsInstance(resp["Body"], dict)
         self.assertEqual(resp["Body"]['Bucket'], self.tmp_bucket)
+
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_gets_readings(self):
+    #     resp = handler({
+    #         "Type": "GetReadings",
+    #         "BucketKey": "rulerruler.json",
+    #         "RouteID": self.twenty_route.id,
+    #         "AccessToken": self.access_token,
+    #     }, TEST_CONTEXT)
+
+    #     self.assertEqual(resp["Status"], "Success")
+    #     self.assertEqual(resp["Body"]['Key'], "rulerruler.json")
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
