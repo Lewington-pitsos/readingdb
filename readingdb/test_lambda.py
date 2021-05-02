@@ -167,18 +167,18 @@ class TestDataLambdaResponses(TestLambda):
 
         self.api.teardown_reading_db()
     
-    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    # def test_accepts_async_readings_request(self):
-    #     resp = handler({
-    #         "Type": "GetReadingsAsync",
-    #         "RouteID": "route-that-doesnt-exist",
-    #         "AccessToken": self.access_token,
-    #     }, TEST_CONTEXT)
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_accepts_async_readings_request(self):
+        resp = handler({
+            "Type": "GetReadingsAsync",
+            "RouteID": "route-that-doesnt-exist",
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
 
-    #     self.assertEqual({
-    #         "Status": "Success",
-    #         "Body": None
-    #     }, resp)
+        self.assertEqual({
+            "Status": "Success",
+            "Body": None
+        }, resp)
 
 
     @unittest.skip("This make an actual call to fargate")

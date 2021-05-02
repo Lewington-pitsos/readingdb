@@ -115,6 +115,9 @@ def handler(event: Dict[str, Any], context):
 
         return success_response(readings)
 
+    elif event_name == EVENT_GET_READINGS_ASYNC:
+        return success_response(None)
+
     elif event_name == EVENT_UPLOAD_NEW_ROUTE:
         bucket, err_resp = get_key(event, EVENT_BUCKET)
         if err_resp:
