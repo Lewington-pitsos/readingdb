@@ -59,6 +59,7 @@ class EntityKeys():
     NAME = "Name"
     CONFIDENCE = "Confidence"
     PRESENT = "Present"
+    SEVERITY = "Severity"
 
 class PredictionReadingKeys(ImageReadingKeys):
     TIMESTAMP = EntryKeys.TIMESTAMP

@@ -163,19 +163,6 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_accepts_async_readings_request(self):
-        resp = handler({
-            "Type": "GetReadingsAsync",
-            "RouteID": "route-that-doesnt-exist",
-            "AccessToken": self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            "Status": "Success",
-            "Body": None
-        }, resp)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_non_existant_route(self):
         resp = handler({
             "Type": "GetRoute",
@@ -283,18 +270,23 @@ class TestLambdaR(TestLambdaRW):
                             "Entities": [
                                 {'Confidence': 0.6557837,
                                     'Name': 'LongCrack',
+                                    "Severity": 1.3,
                                     'Present': False},
                                 {'Confidence': 0.07661053,
                                     'Name': 'LatCrack',
+                                    "Severity": 1.03,
                                     'Present': False},
                                 {'Confidence': 0.17722677,
                                     'Name': 'CrocodileCrack',
+                                    "Severity": 1.34,
                                     'Present': False},
                                 {'Confidence': 0.14074452,
                                     'Name': 'Pothole',
+                                    "Severity": 1.12,
                                     'Present': False},
                                 {'Confidence': 0.09903459,
                                     'Name': 'Lineblur',
+                                    "Severity": 1.1,
                                     'Present': False},
 
                             ],

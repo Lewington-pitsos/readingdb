@@ -163,26 +163,31 @@ class TestAPI(unittest.TestCase):
                     {
                         "Name": "CrocodileCrack",
                         "Confidence": 0.17722677,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "LatCrack", 
                         "Confidence": 0.07661053,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "LongCrack", 
                         "Confidence": 0.6557837,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "Pothole",
                         "Confidence": 0.14074452,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "Lineblur",
                         "Confidence": 0.09903459,
+                        "Severity": 1.0,
                         "Present": False,
                     }
                 ],
@@ -200,6 +205,33 @@ class TestAPI(unittest.TestCase):
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
+
+    def test_saves_severity(self):
+        user_id = "aghsghavgas"
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.save_route(route_spec, user_id)
+
+        readings = api.all_route_readings(route.id)
+        self.assertEqual(3, len(readings))
+        first_reading = readings[0]
+
+        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], 1616116106935)
+        entites = first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]
+
+        longCrack = None
+        crockCrack = None
+
+        for e in entites:
+            if e["Name"] == "LongCrack":
+                longCrack = e
+            if e["Name"] == "CrocodileCrack":
+                crockCrack = e
+                
+        self.assertEqual(1.3, longCrack["Severity"])
+        self.assertEqual(1.34, crockCrack["Severity"])
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_saves_readings_to_existing_route(self):
@@ -270,18 +302,23 @@ class TestAPI(unittest.TestCase):
                     "Entities": [
                         {'Confidence': 0.6557837,
                         'Name': 'LongCrack',
+                        "Severity": 1.3,
                         'Present': False},
                         {'Confidence': 0.07661053,
                         'Name': 'LatCrack',
+                        "Severity": 1.03,
                         'Present': False},
                         {'Confidence': 0.17722677,
                         'Name': 'CrocodileCrack',
+                        "Severity": 1.34,
                         'Present': False},
                         {'Confidence': 0.14074452,
                         'Name': 'Pothole',
+                        "Severity": 1.12,
                         'Present': False},
                         {'Confidence': 0.09903459,
                         'Name': 'Lineblur',
+                        "Severity": 1.1,
                         'Present': False}
                     ],
                     'Longitude': 145.2450816,

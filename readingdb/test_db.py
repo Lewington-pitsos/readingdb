@@ -1,3 +1,4 @@
+from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
 import unittest
@@ -9,7 +10,7 @@ from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, ImageReading, json_to_reading
+from readingdb.reading import AbstractReading, ImageReading, PredictionReading, json_to_reading
 from readingdb.route import Route
 
 class TestDB(unittest.TestCase):
@@ -45,6 +46,49 @@ class TestDB(unittest.TestCase):
                 ImageReadingKeys.FILENAME: "https://aws/s3/somebucket/file.jpg" 
         })
         self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
+
+    def test_saves_readings_with_severity(self):
+        self.db.create_reading_db()
+        readings = self.db.routes_for_user("103")
+        self.assertEqual(len(readings), 0)
+
+        reading_time = int(time.time())
+
+        self.db.put_reading(
+            PredictionReading(
+                "sdasdasd-",
+                "xxxa",
+                reading_time,
+                ReadingTypes.PREDICTION,
+                -33.0089,
+                109.868887601,
+                "https://aws/s3/somebucket/file.jpg", 
+                entities=[
+                    Entity("Crocodile Cracks", 0.432, True, 1.876),
+                    Entity("Rutting", 0.432, True, 2.1),
+                    Entity("Ravelling", 0.432, True, 0.1),
+                ]
+            )
+        )
+    
+        readings = self.db.all_route_readings("xxxa")
+        self.assertEqual(len(readings), 1)
+        first_reading = readings[0]
+        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], "xxxa")
+        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.PREDICTION)
+        self.assertEqual(first_reading[ReadingKeys.READING_ID], "sdasdasd-")
+        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][0], {
+            "Name": "Crocodile Cracks",
+            "Confidence": 0.432,
+            "Severity": 1.876,
+            "Present": True
+        })
+        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][1], {
+            "Name": "Rutting",
+            "Confidence": 0.432,
+            "Severity": 2.1,
+            "Present": True
+        })
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
@@ -147,6 +191,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(routes[0][RouteKeys.NAME], name)
 
     def test_creates_new_route_with_sample_data(self):
+        self.maxDiff = None
         sample_entry = {
             "ReadingID": 78,
             "Type": "PredictionReading",
@@ -196,26 +241,31 @@ class TestDB(unittest.TestCase):
                     {
                         "Name": "CrocodileCrack",
                         "Confidence": 0.17722677,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "LatCrack", 
                         "Confidence": 0.07661053,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "LongCrack", 
                         "Confidence": 0.6557837,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "Pothole",
                         "Confidence": 0.14074452,
+                        "Severity": 1.0,
                         "Present": False,
                     },
                     {
                         "Name": "Lineblur",
                         "Confidence": 0.09903459,
+                        "Severity": 1.0,
                         "Present": False,
                     }
                 ],

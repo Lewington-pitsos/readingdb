@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 
 from readingdb.constants import *
 from readingdb.entities import *
-from readingdb.clean import encode_float, encode_bool, decode_bool, decode_float
+from readingdb.clean import encode_float, decode_bool, decode_float
 
 class AbstractReading(abc.ABC):
     @abc.abstractmethod
@@ -125,6 +125,7 @@ class PredictionReading(ImageReading, PositionReading):
         for e in item[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]:
             e[EntityKeys.CONFIDENCE] = decode_float(e[EntityKeys.CONFIDENCE])
             e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
+            e[EntityKeys.SEVERITY] = decode_float(e[EntityKeys.SEVERITY]) if EntityKeys.SEVERITY in e else 1.0
 
     def item_data(self):
         data = PositionReading.item_data(self)
@@ -192,7 +193,8 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             entities.append(Entity(
                 e[EntityKeys.NAME],
                 e[EntityKeys.CONFIDENCE], 
-                e[EntityKeys.PRESENT]
+                e[EntityKeys.PRESENT],
+                e[EntityKeys.SEVERITY] if EntityKeys.SEVERITY in e else 1.0
             ))
 
         return PredictionReading(
