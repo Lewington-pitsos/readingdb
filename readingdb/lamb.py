@@ -37,6 +37,7 @@ RESPONSE_SUCCESS = "Success"
 # Event Keys
 EVENT_BUCKET = "Bucket"
 EVENT_OBJECT_KEY = "Key"
+EVENT_ROUTE_NAME = "RouteName"
 
 def key_missing_error_response(key):
     return error_response(f"Bad Format Error: key {key} missing from event")
@@ -146,7 +147,9 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        readings = api.save_new_route(bucket, key)
+        routeName = event[EVENT_ROUTE_NAME] if EVENT_ROUTE_NAME in event else None
+
+        readings = api.save_new_route(bucket, key, routeName)
         return success_response(readings)
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:

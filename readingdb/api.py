@@ -43,8 +43,7 @@ class API(DB, ReadingDB):
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
         self.lambda_client = boto3.client("lambda")
 
-
-    def save_new_route(self, bucket: str, key: str) -> None:
+    def save_new_route(self, bucket: str, key: str, name: str = None) -> None:
         resp = self.ecs.run_task(
             networkConfiguration={
                 'awsvpcConfiguration': {
@@ -73,7 +72,7 @@ class API(DB, ReadingDB):
 
         return str(resp)
 
-    def begin_prediction(self, user_id: str, route_id: str, ) -> None:
+    def begin_prediction(self, user_id: str, route_id: str) -> None:
         self.mlapi.add_message_to_queue(user_id, route_id)
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
@@ -102,11 +101,11 @@ class API(DB, ReadingDB):
                 print(f"No entries found for reading specification {reading_spec}")
 
         route = Route(
-            user_id,
-            route_id,
-            timestamp,
-            route_spec.name if route_spec.name else None,
-            initial_entries
+            user_id=user_id,
+            id=route_id,
+            timestamp=timestamp,
+            name=route_spec.name if route_spec.name else None,
+            sample_data=initial_entries
         )
 
         self.put_route(route)

@@ -130,3 +130,12 @@ class TestUnzipper(unittest.TestCase):
         ]))
 
         
+    def test_unzipper_uploads_with_route_name(self):
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip", "bennet court")
+
+        readings = self.api.all_route_readings(route.id)
+        self.assertEqual(len(readings), 39)
+        self.assertEqual("bennet court", route.name)
+
+        

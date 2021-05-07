@@ -21,7 +21,7 @@ class Unzipper():
         self.api: API = API(url, *args, **kwargs)
         self.mlapi = MLAPI(sqs_url)
 
-    def process(self, bucket: str, key: str) -> Route:
+    def process(self, bucket: str, key: str, name: str = None) -> Route:
         print("bucket", bucket)
         print("key", key)
         reading_types = {}
@@ -77,7 +77,7 @@ class Unzipper():
         if self.IMG_EXT in reading_types:
             reading_types[self.IMG_EXT].data = img_readings
 
-        routeSpec = RouteSpec(list(reading_types.values()))
+        routeSpec = RouteSpec(list(reading_types.values()), name)
 
         print("saving readings to route database")
         route = self.api.save_route(routeSpec, user_id)

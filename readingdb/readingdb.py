@@ -59,6 +59,17 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def save_new_route(self, bucket: str, key: str):
+        """Adds a new route to the database that contains the readings in the 
+        specified zipped file.
+
+        Args:
+            bucket (str): the s3 bucket where the readings are kept.
+            key (str): the key in that bucket where the zipped file sits.
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def save_predictions(readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
         """Saves the prediction readings to the given route and sets the status
         of that route to 'complete'.
