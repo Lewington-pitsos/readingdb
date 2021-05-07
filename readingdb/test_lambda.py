@@ -87,6 +87,18 @@ class TestSimpleLambdaResponses(TestLambda):
             "Body": 'Bad Format Error: key Key missing from event'
         }, resp)
 
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_delete_event(self):
+        resp = handler({
+            "Type": "DeleteRoute",
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key RouteID missing from event'
+        }, resp)
+
     def test_error_response_on_unauthenticated_event(self):
         resp = handler({
             "Type": "GetRoute",
