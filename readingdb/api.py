@@ -59,7 +59,7 @@ class API(DB, ReadingDB):
                 "containerOverrides": [
                     {
                         "name": "unzipper", 
-                        "command":  ["python", "farg.py", bucket, key, self.region_name]
+                        "command":  ["python", "farg.py", bucket, key, self.region_name, name]
                     }
                 ]
             }
