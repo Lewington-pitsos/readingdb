@@ -73,7 +73,8 @@ class API(DB, ReadingDB):
         return str(resp)
 
     def begin_prediction(self, user_id: str, route_id: str) -> None:
-        self.mlapi.add_message_to_queue(user_id, route_id)
+        # self.mlapi.add_message_to_queue(user_id, route_id)
+        pass
 
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())
