@@ -250,6 +250,25 @@ class TestAPI(unittest.TestCase):
         updated_time = r.update_timestamp
         api.put_route(r)
 
+
+        s3 = boto3.resource(
+            "s3",
+            region_name=self.region_name,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key
+        )
+
+        bucket = s3.Bucket(self.bucket_name)
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(set(bucket_objects), set([
+            "mocks/apple.json", 
+            "mocks/file.json",
+            'mocks/route_2021_04_07_17_14_36_709.zip',
+        ]))
+
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
         self.assertEqual(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
@@ -267,6 +286,63 @@ class TestAPI(unittest.TestCase):
 
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
+
+        bucket_objects = []
+
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(set(bucket_objects), set([
+            "mocks/apple.json", 
+            "mocks/file.json",
+            route_id + 'readingdb/test_data/images/road1.jpg',
+            'mocks/route_2021_04_07_17_14_36_709.zip',
+        ]))
+    
+    def test_raises_while_saving_readings_to_existing_route_with_inknown_images(self):
+        user_id = "asdy7asdh"
+        route_id = "asdasdasdasd"
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        user_routes = api.routes_for_user(user_id)
+        self.assertEqual(len(user_routes), 0)
+        r = Route(
+            user_id,
+            route_id,
+            0
+        )
+        api.put_route(r)
+        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+            route_spec_data = json.load(j)
+        self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, user_id, False) 
+
+    def test_saves_readings_to_existing_route_with_unknown_images(self):
+        user_id = "asdy7asdh"
+        route_id = "asdasdasdasd"
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        user_routes = api.routes_for_user(user_id)
+        self.assertEqual(len(user_routes), 0)
+        r = Route(
+            user_id,
+            route_id,
+            0
+        )
+        api.put_route(r)
+        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+            route_spec_data = json.load(j)        
+        api.save_predictions(route_spec_data, route_id, user_id)
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 22)
+        api.save_predictions(route_spec_data, route_id, user_id, save_imgs=False)
+
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 44)
+
+        self.maxDiff = None
+        for r in readings:
+            self.assertEqual(
+                {'Bucket': 'test_bucket', 'Key': 'asdasdasdasdreadingdb/test_data/images/road1.jpg'}, 
+                r["Reading"]["S3Uri"]
+            )
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_small_route(self):

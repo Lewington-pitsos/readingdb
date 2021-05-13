@@ -50,7 +50,7 @@ class ReadingDB(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
+    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str, save_imgs: bool) -> None:
         """Saves the prediction readings to the given route and sets the status
         of that route to 'complete'.
         """
