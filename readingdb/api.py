@@ -114,9 +114,29 @@ class API(DB, ReadingDB):
 
         return route
 
-    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str) -> None:
-        self.__save_entries(route_id, ReadingTypes.PREDICTION, readings)
+    def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool: 
+        if ImageReadingKeys.FILENAME not in r1[ReadingKeys.READING]:
+            return False
+        
+        if ImageReadingKeys.FILENAME not in r2[ReadingKeys.READING]:
+            return False
+        
+        return r1[ReadingKeys.READING][ImageReadingKeys.FILENAME] == r2[ReadingKeys.READING][ImageReadingKeys.FILENAME]
 
+    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str, save_imgs: bool = True) -> None:
+        if not save_imgs:
+            existing_readings = self.all_route_readings(route_id)
+
+            for r in readings:
+                for er in existing_readings:
+                    if self.__same_image(r, er):
+                        r[ReadingKeys.READING][ImageReadingKeys.URI] = er[ReadingKeys.READING][ImageReadingKeys.URI]
+                        break
+                else:
+                    raise ValueError(f"could not find an existing reading with the same image as {r} and saving images has been disallowed")
+            
+        
+        self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
         self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
 
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
@@ -205,8 +225,8 @@ class API(DB, ReadingDB):
 
         return response, object_name
 
-    def __save_entry(self, entry: Reading) -> AbstractReading:
-        if entry.readingType in ReadingTypes.IMAGE_TYPES:
+    def __save_entry(self, entry: Reading, save_img=True) -> AbstractReading:
+        if entry.readingType in ReadingTypes.IMAGE_TYPES and save_img:
             return self.__save_img_entry(entry)
 
         self.put_reading(entry)
@@ -241,7 +261,7 @@ class API(DB, ReadingDB):
         e[ReadingRouteKeys.ROUTE_ID] = route_id
         return json_to_reading(entry_type, e)
 
-    def __save_entries(self, route_id, entry_type, entries) -> List[AbstractReading]:
+    def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
         n_entries = len(entries)
         for i, e in enumerate(entries):
@@ -249,7 +269,7 @@ class API(DB, ReadingDB):
                 print(f"uploading entry {i} of {n_entries}")
 
             e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
-            e = self.__save_entry(e)
+            e = self.__save_entry(e, save_img)
             finalized.append(e)
 
         return finalized
