@@ -114,14 +114,22 @@ class API(DB, ReadingDB):
 
         return route
 
-    def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool: 
-        if ImageReadingKeys.FILENAME not in r1[ReadingKeys.READING]:
-            return False
+    def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool:
+        r1 = r1[ReadingKeys.READING]
+        r2 = r2[ReadingKeys.READING]
+
+        if ImageReadingKeys.FILENAME in r1 and\
+            ImageReadingKeys.FILENAME in r2 and\
+            r2[ImageReadingKeys.FILENAME] == r1[ImageReadingKeys.FILENAME]:
+            return True
         
-        if ImageReadingKeys.FILENAME not in r2[ReadingKeys.READING]:
-            return False
+        if ImageReadingKeys.URI in r1 and\
+            ImageReadingKeys.URI in r2 and \
+            r1[ImageReadingKeys.URI][S3Path.BUCKET] == r2[ImageReadingKeys.URI][S3Path.BUCKET] and\
+            r1[ImageReadingKeys.URI][S3Path.KEY] == r2[ImageReadingKeys.URI][S3Path.KEY]:
+            return True
         
-        return r1[ReadingKeys.READING][ImageReadingKeys.FILENAME] == r2[ReadingKeys.READING][ImageReadingKeys.FILENAME]
+        return False
 
     def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str, save_imgs: bool = True) -> None:
         if not save_imgs:
