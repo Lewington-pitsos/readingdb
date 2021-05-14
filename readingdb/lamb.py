@@ -19,6 +19,7 @@ EVENT_ACCESS_TOKEN = "AccessToken"
 
 # Event Types
 EVENT_GET_ROUTE = "GetRoute"
+EVENT_DELETE_ROUTE = "DeleteRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
 EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
@@ -108,6 +109,14 @@ def handler(event: Dict[str, Any], context):
 
         route = api.get_route(route_id, user_data.user_sub)
         return success_response(route)
+
+    if event_name == EVENT_DELETE_ROUTE:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+
+        # route = api.delete_route(route_id, user_data.user_sub)
+        return success_response("")
 
     if event_name == EVENT_GET_USER_ROUTES:
         routes = api.routes_for_user(user_data.user_sub)
