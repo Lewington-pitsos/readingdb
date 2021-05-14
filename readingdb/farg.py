@@ -1,5 +1,3 @@
-import time
-
 import argparse
 
 from readingdb.unzipper import Unzipper

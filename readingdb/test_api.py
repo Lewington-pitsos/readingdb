@@ -201,7 +201,6 @@ class TestAPI(unittest.TestCase):
         }]
 
         api.save_predictions(preds, route.id, user_id)
-
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
