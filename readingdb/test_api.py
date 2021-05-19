@@ -266,6 +266,7 @@ class TestAPI(unittest.TestCase):
             "mocks/apple.json", 
             "mocks/file.json",
             'mocks/route_2021_04_07_17_14_36_709.zip',
+            'mocks/route_1621394080578.zip'
         ]))
 
         user_routes = api.routes_for_user(user_id)
@@ -296,6 +297,7 @@ class TestAPI(unittest.TestCase):
             "mocks/file.json",
             route_id + 'readingdb/test_data/images/road1.jpg',
             'mocks/route_2021_04_07_17_14_36_709.zip',
+            'mocks/route_1621394080578.zip'
         ]))
     
     def test_raises_while_saving_readings_to_existing_route_with_inknown_images(self):
@@ -429,4 +431,5 @@ class TestAPI(unittest.TestCase):
             "mocks/file.json",
             route.id + 'readingdb/test_data/images/road1.jpg',
             'mocks/route_2021_04_07_17_14_36_709.zip',
+            'mocks/route_1621394080578.zip'
         ]))

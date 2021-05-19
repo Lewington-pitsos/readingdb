@@ -46,11 +46,16 @@ class Unzipper():
 
             return lines
 
-        route = self.__process_names(upload, read, user_id, key, bucket, z.namelist(), name)
-
-
+        route = self.__process_names(
+            upload, 
+            read, 
+            user_id, 
+            key, 
+            bucket, 
+            z.namelist(), 
+            name
+        )
         self.s3_resource.Object(bucket, key).delete()
-
         self.mlapi.add_message_to_queue(user_id, route.id)
 
         return route
@@ -74,7 +79,16 @@ class Unzipper():
 
         return self.__process_names(upload, read, user_id, key, bucket, filenames, name)
 
-    def __process_names(self, upload, read, user_id: str, key: str, bucket: str, filenames: List[str], name: str = None):
+    def __process_names(
+        self, 
+        upload, 
+        read, 
+        user_id: str, 
+        key: str, 
+        bucket: str, 
+        filenames: List[str], 
+        name: str = None
+    ):
         reading_types = {}
         img_readings = []
 

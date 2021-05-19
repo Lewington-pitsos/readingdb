@@ -1,3 +1,5 @@
+from copy import Error
+from logging import error
 import os
 from readingdb.route import Route
 import tempfile
@@ -38,6 +40,7 @@ class TestUnzipper(unittest.TestCase):
         self.sqs_url = self.sqs.create_queue(
             QueueName=self.queue_name
         )['QueueUrl']
+        
     
     def tearDown(self):
         teardown_s3_bucket(
@@ -81,10 +84,10 @@ class TestUnzipper(unittest.TestCase):
 
     def test_unzipper_uploads_route_with_unix_timestamps(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = z.process(self.bucket_name, "mocks/route_XXX.zip")
+        route: Route = z.process(self.bucket_name, "mocks/route_1621394080578.zip")
         readings = self.api.all_route_readings(route.id)
 
-        self.assertEqual(len(readings), 39)
+        self.assertEqual(len(readings), 98)
 
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(self.bucket_name)
@@ -94,7 +97,83 @@ class TestUnzipper(unittest.TestCase):
         for my_bucket_object in bucket.objects.all():
             bucket_objects.append(my_bucket_object.key)
 
-        self.assertEqual(set(bucket_objects), set([]))
+        self.assertEqual(set(bucket_objects), set([
+            'mocks/route_1621394080578/img_1621394116949-64.jpg',
+            'mocks/route_1621394080578/img_1621394086919-10.jpg',
+            'mocks/route_1621394080578/img_1621394090196-16.jpg',
+            'mocks/route_1621394080578/img_1621394111922-55.jpg',
+            'mocks/route_1621394080578/img_1621394119101-68.jpg',
+            'mocks/route_1621394080578/img_1621394108064-48.jpg',
+            'mocks/route_1621394080578/img_1621394104677-42.jpg',
+            'mocks/route_1621394080578/img_1621394096866-28.jpg',
+            'mocks/route_1621394080578/img_1621394086301-9.jpg',
+            'mocks/route_1621394080578/img_1621394097997-30.jpg',
+            'mocks/route_1621394080578/img_1621394105186-43.jpg',
+            'mocks/route_1621394080578/img_1621394109696-51.jpg',
+            'mocks/route_1621394080578/img_1621394110825-53.jpg',
+            'mocks/route_1621394080578/img_1621394114692-60.jpg',
+            'mocks/route_1621394080578/img_1621394116329-63.jpg',
+            'mocks/route_1621394080578/img_1621394117970-66.jpg',
+            'mocks/route_1621394080578/img_1621394117460-65.jpg',
+            'mocks/route_1621394080578/img_1621394115818-62.jpg',
+            'mocks/route_1621394080578/img_1621394095844-26.jpg',
+            'mocks/route_1621394080578/img_1621394097486-29.jpg',
+            'mocks/file.json',
+            'mocks/route_1621394080578/img_1621394107443-47.jpg',
+            'mocks/route_1621394080578/img_1621394121877-73.jpg',
+            'mocks/route_1621394080578/img_1621394111335-54.jpg',
+            'mocks/route_1621394080578/img_1621394112431-56.jpg',
+            'mocks/route_1621394080578/img_1621394113560-58.jpg',
+            'mocks/route_1621394080578/img_1621394119718-69.jpg',
+            'mocks/route_1621394080578/img_1621394105805-44.jpg',
+            'mocks/route_1621394080578/img_1621394110206-52.jpg',
+            'mocks/route_1621394080578/img_1621394089685-15.jpg',
+            'mocks/route_1621394080578/img_1621394115202-61.jpg',
+            'mocks/route_1621394080578/img_1621394099126-32.jpg',
+            'mocks/route_1621394080578/img_1621394103031-39.jpg',
+            'mocks/route_1621394080578/img_1621394109081-50.jpg',
+            'mocks/route_1621394080578/img_1621394099746-33.jpg',
+            'mocks/route_1621394080578/img_1621394101902-37.jpg',
+            'mocks/route_1621394080578/img_1621394113050-57.jpg',
+            'mocks/route_1621394080578/img_1621394120230-70.jpg',
+            'mocks/route_1621394080578/img_1621394084047-5.jpg',
+            'mocks/route_1621394080578/img_1621394100771-35.jpg',
+            'mocks/route_1621394080578/img_1621394121366-72.jpg',
+            'mocks/route_1621394080578/img_1621394102412-38.jpg',
+            'mocks/route_1621394080578/img_1621394091942-19.jpg',
+            'mocks/route_1621394080578/img_1621394094089-23.jpg',
+            'mocks/route_1621394080578/img_1621394118589-67.jpg',
+            'mocks/route_1621394080578/img_1621394090813-17.jpg',
+            'mocks/route_1621394080578/img_1621394089068-14.jpg',
+            'mocks/route_1621394080578/img_1621394104166-41.jpg',
+            'mocks/route_1621394080578/img_1621394088049-12.jpg',
+            'mocks/route_1621394080578/img_1621394103542-40.jpg',
+            'mocks/route_1621394080578/img_1621394085792-8.jpg',
+            'mocks/route_1621394080578/GPS.txt',
+            'mocks/apple.json',
+            'mocks/route_1621394080578/img_1621394087430-11.jpg',
+            'mocks/route_1621394080578/img_1621394108573-49.jpg',
+            'mocks/route_1621394080578/img_1621394083537-4.jpg',
+            'mocks/route_1621394080578/img_1621394092962-21.jpg',
+            'mocks/route_1621394080578/img_1621394093580-22.jpg',
+            'mocks/route_1621394080578/img_1621394106316-45.jpg',
+            'mocks/route_1621394080578/img_1621394083027-3.jpg',
+            'mocks/route_1621394080578/img_1621394088560-13.jpg',
+            'mocks/route_2021_04_07_17_14_36_709.zip',
+            'mocks/route_1621394080578/img_1621394085174-7.jpg',
+            'mocks/route_1621394080578/img_1621394091322-18.jpg',
+            'mocks/route_1621394080578/img_1621394101390-36.jpg',
+            'mocks/route_1621394080578/img_1621394120852-71.jpg',
+            'mocks/route_1621394080578/img_1621394092452-20.jpg',
+            'mocks/route_1621394080578/img_1621394106935-46.jpg',
+            'mocks/route_1621394080578/img_1621394096354-27.jpg',
+            'mocks/route_1621394080578/img_1621394095228-25.jpg',
+            'mocks/route_1621394080578/img_1621394114070-59.jpg',
+            'mocks/route_1621394080578/img_1621394098616-31.jpg',
+            'mocks/route_1621394080578/img_1621394084664-6.jpg',
+            'mocks/route_1621394080578/img_1621394094712-24.jpg',
+            'mocks/route_1621394080578/img_1621394100257-34.jpg',
+        ]))
 
     def test_unzipper_uploads(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
@@ -114,6 +193,7 @@ class TestUnzipper(unittest.TestCase):
         self.assertEqual(set(bucket_objects), set([
             "mocks/apple.json", 
             "mocks/file.json",
+            "mocks/route_1621394080578.zip",
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_981-41.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_47_617-20.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_45_848-15.jpg',
