@@ -46,7 +46,7 @@ class Unzipper():
 
             return lines
 
-        route = self.process_names(upload, read, user_id, key, bucket, z.namelist(), name)
+        route = self.__process_names(upload, read, user_id, key, bucket, z.namelist(), name)
 
 
         self.s3_resource.Object(bucket, key).delete()
@@ -72,9 +72,9 @@ class Unzipper():
 
             return lines
 
-        return self.process_names(upload, read, user_id, key, bucket, filenames, name)
+        return self.__process_names(upload, read, user_id, key, bucket, filenames, name)
 
-    def process_names(self, upload, read, user_id: str, key: str, bucket: str, filenames: List[str], name: str = None):
+    def __process_names(self, upload, read, user_id: str, key: str, bucket: str, filenames: List[str], name: str = None):
         reading_types = {}
         img_readings = []
 

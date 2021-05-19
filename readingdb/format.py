@@ -10,6 +10,9 @@ def unix_time_millis(dt):
 
 def unix_from_key(key: str) -> int:
     ts_str = key.split("/")[-1].split("-")[0]
+    if "img_" in key:
+        return int(ts_str.split("_")[-1])
+
     dt = datetime.strptime(ts_str, '%Y_%m_%d_%H_%M_%S_%f')
 
     return unix_time_millis(dt)

@@ -79,6 +79,23 @@ class TestUnzipper(unittest.TestCase):
         # washiwashi is the userid in the metadata of mocks/route_2021_04_07_17_14_36_709.zip
         self.assertEqual(f"washiwashi,{route.id}", msg["Body"])
 
+    def test_unzipper_uploads_route_with_unix_timestamps(self):
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = z.process(self.bucket_name, "mocks/route_XXX.zip")
+        readings = self.api.all_route_readings(route.id)
+
+        self.assertEqual(len(readings), 39)
+
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(self.bucket_name)
+
+        bucket_objects = []
+
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(set(bucket_objects), set([]))
+
     def test_unzipper_uploads(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = z.process(self.bucket_name, "mocks/route_2021_04_07_17_14_36_709.zip")
