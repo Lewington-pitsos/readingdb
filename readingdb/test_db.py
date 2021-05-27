@@ -26,8 +26,9 @@ class TestDB(unittest.TestCase):
 
         reading_time = int(time.time())
 
+        finalized = []
         for i in range(21):
-            self.db.put_reading(
+            finalized.append(
                 ImageReading(
                     "sdasdasd-" + str(i),
                     "xxxa",
@@ -36,6 +37,7 @@ class TestDB(unittest.TestCase):
                     "https://aws/s3/somebucket/file.jpg", 
                 )
             )
+        self.db.put_readings(finalized)
         
         readings = self.db.all_route_readings("xxxa")
         self.assertEqual(len(readings), 21)

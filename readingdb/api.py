@@ -233,18 +233,16 @@ class API(DB, ReadingDB):
 
         return response, object_name
 
-    def __save_entry(self, entry: Reading, save_img=True) -> AbstractReading:
-        if entry.readingType in ReadingTypes.IMAGE_TYPES and save_img:
-            return self.__save_img_entry(entry)
-
-        self.put_reading(entry)
-        return entry
-
     def __save_entry_data(self, entry: Reading, save_img=True) -> AbstractReading:
         if entry.readingType in ReadingTypes.IMAGE_TYPES and save_img:
-            self.__save_img_entry(entry)
+            self.__save_img_data(entry)
 
         return entry
+
+    def __save_img_data(self, entry: ImageReading):
+        if not entry.has_uri():
+            uri: S3Uri = self.__upload_entry_file(entry)
+            entry.set_uri(uri)
 
     def __upload_entry_file(self, entry) -> S3Uri:
         _, object_name = self.__upload_file(
@@ -257,15 +255,6 @@ class API(DB, ReadingDB):
             self.bucket,
             object_name,
         )
-
-    def __save_img_entry(self, entry: ImageReading) -> AbstractReading:
-        if not entry.has_uri():
-            uri: S3Uri = self.__upload_entry_file(entry)
-            entry.set_uri(uri)
-
-        self.put_reading(entry)
-
-        return entry
 
     def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
         e[ReadingKeys.READING_ID] = reading_id
@@ -280,7 +269,9 @@ class API(DB, ReadingDB):
                 print(f"uploading entry {i} of {n_entries}")
 
             e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
-            e = self.__save_entry(e, save_img)
+            e = self.__save_entry_data(e, save_img)
             finalized.append(e)
+
+        self.put_readings(finalized)
 
         return finalized

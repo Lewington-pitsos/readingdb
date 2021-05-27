@@ -84,11 +84,13 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
             entities = json.load(f)
 
+        finalized = []
         for e in entities[:60]:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading("PredictionReading", e)
-            self.api.put_reading(r)
+            finalized.append(r)
+        self.api.put_readings(finalized)
 
         readings =  self.api.all_route_readings(route_id)
         self.assertIsInstance(readings, list)
@@ -107,11 +109,13 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
             entities = json.load(f)
 
+        finalized = []
         for e in entities[:60]:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading("PredictionReading", e)
-            self.api.put_reading(r)
+            finalized.append(r)
+        self.api.put_readings(finalized)
 
         self.api.size_limit = 400
         uri = self.api.all_route_readings(route_id, key="kingofkings.json")
