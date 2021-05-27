@@ -28,7 +28,7 @@ class TestLambda(unittest.TestCase):
         else:
             cls.access_token = ""
 
-class TestSimpleLambdaResponses(TestLambda):
+class TestBasic(TestLambda):
     def test_error_response_on_bad_input(self):
         resp = handler({}, TEST_CONTEXT)
 
@@ -91,6 +91,18 @@ class TestSimpleLambdaResponses(TestLambda):
     def test_error_response_on_delete_event(self):
         resp = handler({
             "Type": "DeleteRoute",
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Error",
+            "Body": 'Bad Format Error: key RouteID missing from event'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_paginated_readings_event(self):
+        resp = handler({
+            "Type": "GetPaginatedReadings",
             "AccessToken": self.access_token,
         }, TEST_CONTEXT)
 

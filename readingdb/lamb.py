@@ -22,6 +22,7 @@ EVENT_GET_ROUTE = "GetRoute"
 EVENT_DELETE_ROUTE = "DeleteRoute"
 EVENT_GET_USER_ROUTES = "GetUserRoutes"
 EVENT_GET_READINGS = "GetReadings"
+EVENT_GET_PAGINATED_READINGS = "GetPaginatedReadings"
 EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
 EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
@@ -123,6 +124,20 @@ def handler(event: Dict[str, Any], context):
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+
+        if EVENT_BUCKET_KEY in event:
+            key = event[EVENT_BUCKET_KEY]
+        else:
+            key = None
+
+        readings = api.all_route_readings(route_id, key)
+
+        return success_response(readings)
+
+    elif event_name == EVENT_GET_PAGINATED_READINGS:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
         if err_resp:
             return err_resp
