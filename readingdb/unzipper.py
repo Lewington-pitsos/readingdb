@@ -13,9 +13,9 @@ from readingdb.format import *
 from readingdb.api import API
 
 class Unzipper():
-    IMG_EXT = "jpg"
-    TXT_EXT = "txt"
-    OBJ_BODY_KEY = "Body"
+    IMG_EXT = 'jpg'
+    TXT_EXT = 'txt'
+    OBJ_BODY_KEY = 'Body'
 
     def __init__(self, url:str, sqs_url: str=SQS_URL, *args, **kwargs) -> None:
         self.s3_resource = boto3.resource('s3')
@@ -23,11 +23,11 @@ class Unzipper():
         self.mlapi = MLAPI(sqs_url)
 
     def process(self, bucket: str, key: str, name: str = None) -> Route:
-        print("bucket", bucket)
-        print("key", key)
+        print('bucket', bucket)
+        print('key', key)
  
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
-        print("metadata", zip_obj.metadata)
+        print('metadata', zip_obj.metadata)
         user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
         buffer = BytesIO(zip_obj.get()[self.OBJ_BODY_KEY].read())
         z = zipfile.ZipFile(buffer)
@@ -63,7 +63,7 @@ class Unzipper():
     def process_local(self, user_id, key, bucket, filenames, name = None):
 
         def upload(filename, bucket, s3_filename):
-            segs = s3_filename.split("/")
+            segs = s3_filename.split('/')
 
             self.s3_resource.meta.client.upload_file(
                 filename,
@@ -95,24 +95,24 @@ class Unzipper():
         for filename in filenames:
             print(filename)
             s3_filename = f'{key.split(".")[0]}/{filename}'
-            print("extracting file:", s3_filename)
+            print('extracting file:', s3_filename)
 
             upload(filename, bucket, s3_filename)
-            extension = s3_filename.split(".")[-1]
+            extension = s3_filename.split('.')[-1]
 
             if extension == self.IMG_EXT:
                 if self.IMG_EXT not in reading_types:
                     reading_types[self.IMG_EXT] = ReadingSpec(
                         ReadingTypes.IMAGE, 
                         ReadingSpec.S3_FILES_FORMAT, 
-                        ""
+                        ''
                     )
                 
                 img_readings.append(entry_from_file(bucket, s3_filename))
 
             elif extension == self.TXT_EXT:
                 if self.TXT_EXT in reading_types:
-                    raise ValueError(f"found two .txt files when unzipping {key} of bucket {bucket}, this should never happen")
+                    raise ValueError(f'found two .txt files when unzipping {key} of bucket {bucket}, this should never happen')
 
                 lines = read(filename)
 
@@ -124,7 +124,7 @@ class Unzipper():
                     points
                 )
             else:
-                raise ValueError("unrecognized reading file type: ", s3_filename)
+                raise ValueError('unrecognized reading file type: ', s3_filename)
 
         # sends a request to the RaedingDB lambda to upload that routespec
 
@@ -133,10 +133,10 @@ class Unzipper():
 
         routeSpec = RouteSpec(list(reading_types.values()), name)
 
-        print("saving readings to route database")
+        print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)
 
-        print("deleting zipped route: ", key)
+        print('deleting zipped route: ', key)
 
         return route
 

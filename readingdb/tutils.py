@@ -13,10 +13,10 @@ class Increment:
       self.a += 1
 
 def upload_fixtures(bucket: str, fixtures_dir: str, metadata_file: str) -> None:
-    with open(metadata_file, "r") as f:
+    with open(metadata_file, 'r') as f:
         metadata_json = json.load(f)
 
-    client = boto3.client("s3")
+    client = boto3.client('s3')
     fixtures_paths = [
         os.path.join(path,  filename)
         for path, _, files in os.walk(fixtures_dir)
@@ -40,14 +40,14 @@ def create_bucket(
     bucket_name: str,
 ):
     client = boto3.client(
-        "s3",
+        's3',
         region_name=region_name,
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
         )
     try:
         s3 = boto3.resource(
-            "s3",
+            's3',
             region_name=region_name,
             aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
@@ -56,7 +56,7 @@ def create_bucket(
     except botocore.exceptions.ClientError:
         pass
     else:
-        err = "attempting to create bucket {bucket} but it already exists.".format(bucket=bucket_name)
+        err = 'attempting to create bucket {bucket} but it already exists.'.format(bucket=bucket_name)
         raise EnvironmentError(err)        
     
     client.create_bucket(
@@ -65,8 +65,8 @@ def create_bucket(
             'LocationConstraint': region_name
         }
     )
-    fixtures_dir = os.path.join(current_dir, "test_data/s3_fixtures")
-    metadata_file = os.path.join(current_dir, "test_data/s3_metadata.json")
+    fixtures_dir = os.path.join(current_dir, 'test_data/s3_fixtures')
+    metadata_file = os.path.join(current_dir, 'test_data/s3_metadata.json')
     upload_fixtures(bucket_name, fixtures_dir, metadata_file)  
 
 def teardown_s3_bucket(
@@ -76,7 +76,7 @@ def teardown_s3_bucket(
     bucket_name: str
 ):
     s3 = boto3.resource(
-        "s3",
+        's3',
         region_name=region_name,
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key

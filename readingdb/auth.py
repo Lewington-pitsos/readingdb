@@ -8,10 +8,10 @@ from readingdb.authresponse import AuthResponse
 class AbstractAuth(abc.ABC):
     @abc.abstractmethod
     def get_user(accessToken: str) -> AuthResponse:
-        raise NotImplementedError("set_as_predicting is not implemented") 
+        raise NotImplementedError('set_as_predicting is not implemented') 
 
 class Auth():
-    def __init__(self, region_name="ap-southeast-2",) -> AuthResponse:
+    def __init__(self, region_name='ap-southeast-2',) -> AuthResponse:
         self.cclient = boto3.client('cognito-idp', region_name=region_name)
 
     def get_user(self, accessToken: str) -> AuthResponse:

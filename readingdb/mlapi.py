@@ -10,7 +10,7 @@ class MLAPI(SQSQueue):
     def add_message_to_queue(self, user_id: str, route_id: str) -> str:
         response = self.sqs.send_message(
             QueueUrl = self.queue_url,
-            MessageBody=(f"{user_id},{route_id}") 
+            MessageBody=(f'{user_id},{route_id}') 
         )
         return response['MessageId']
 

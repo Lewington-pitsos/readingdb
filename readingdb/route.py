@@ -15,10 +15,10 @@ class Route():
         name: str=None, 
         sample_data: Dict[str, AbstractReading]=None
     ) -> None:
-        """sample_data contains a small collection of readings that belong to
+        '''sample_data contains a small collection of readings that belong to
         this route. Allows users to get an idea of what kind of data the route
         contains without loading all of it.
-        """
+        '''
 
         self.user_id: str = user_id
         self.id: str = id
