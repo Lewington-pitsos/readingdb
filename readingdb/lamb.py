@@ -10,39 +10,39 @@ from readingdb.auth import Auth
 from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.authresponse import AuthResponse
 
-logger = logging.getLogger("main")
+logger = logging.getLogger('main')
 logger.setLevel(logging.INFO)
 
 # Generic Event Keys
-EVENT_TYPE = "Type"
-EVENT_ACCESS_TOKEN = "AccessToken"
+EVENT_TYPE = 'Type'
+EVENT_ACCESS_TOKEN = 'AccessToken'
 
 # Event Types
-EVENT_GET_ROUTE = "GetRoute"
-EVENT_DELETE_ROUTE = "DeleteRoute"
-EVENT_GET_USER_ROUTES = "GetUserRoutes"
-EVENT_GET_READINGS = "GetReadings"
-EVENT_GET_PAGINATED_READINGS = "GetPaginatedReadings"
-EVENT_GET_READINGS_ASYNC = "GetReadingsAsync"
-EVENT_UPDATE_ROUTE_NAME = "UpdateRouteName"
+EVENT_GET_ROUTE = 'GetRoute'
+EVENT_DELETE_ROUTE = 'DeleteRoute'
+EVENT_GET_USER_ROUTES = 'GetUserRoutes'
+EVENT_GET_READINGS = 'GetReadings'
+EVENT_GET_PAGINATED_READINGS = 'GetPaginatedReadings'
+EVENT_GET_READINGS_ASYNC = 'GetReadingsAsync'
+EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
-EVENT_BUCKET_KEY = "BucketKey"
+EVENT_BUCKET_KEY = 'BucketKey'
 
 # Generic Response Keys
-RESPONSE_STATUS_KEY = "Status"
-RESPONSE_BODY_KEY = "Body"
+RESPONSE_STATUS_KEY = 'Status'
+RESPONSE_BODY_KEY = 'Body'
 
 # Response Statuses
-RESPONSE_ERROR = "Error"
-RESPONSE_SUCCESS = "Success"
+RESPONSE_ERROR = 'Error'
+RESPONSE_SUCCESS = 'Success'
 
 # Event Keys
-EVENT_BUCKET = "Bucket"
-EVENT_OBJECT_KEY = "Key"
-EVENT_ROUTE_NAME = "RouteName"
+EVENT_BUCKET = 'Bucket'
+EVENT_OBJECT_KEY = 'Key'
+EVENT_ROUTE_NAME = 'RouteName'
 
 def key_missing_error_response(key):
-    return error_response(f"Bad Format Error: key {key} missing from event")
+    return error_response(f'Bad Format Error: key {key} missing from event')
 
 def error_response(body: Any) -> Dict[str, Any]:
     logger.info('Error response: %s', body)
@@ -68,7 +68,7 @@ def get_key(event, key):
     return event[key], None
     
 def handler(event: Dict[str, Any], context):
-    if context == "TEST_STUB":
+    if context == 'TEST_STUB':
         endpoint = TEST_DYNAMO_ENDPOINT
         bucket = TEST_BUCKET
     else:
@@ -90,16 +90,16 @@ def handler(event: Dict[str, Any], context):
     if EVENT_TYPE in event:
         event_name = event[EVENT_TYPE]
     else:
-        return error_response("Invalid Event Syntax")
+        return error_response('Invalid Event Syntax')
 
     if not EVENT_ACCESS_TOKEN in event:
-        return error_response("Unauthenticated request, no Access Token Provided")
+        return error_response('Unauthenticated request, no Access Token Provided')
 
     auth: Auth = Auth(region_name=REGION_NAME)
     
     user_data: AuthResponse = auth.get_user(event[EVENT_ACCESS_TOKEN])
     if not user_data.is_authenticated():
-        return error_response(f"Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}")
+        return error_response(f'Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}')
 
     #  ------------ Per-Event-Type handling -------------
     
@@ -117,7 +117,7 @@ def handler(event: Dict[str, Any], context):
             return err_resp
 
         api.delete_route(route_id, user_data.user_sub)
-        return success_response("")
+        return success_response('')
 
     if event_name == EVENT_GET_USER_ROUTES:
         routes = api.routes_for_user(user_data.user_sub)
@@ -192,5 +192,5 @@ def handler(event: Dict[str, Any], context):
         return success_response(None)
 
     else:
-        return error_response(f"Unrecognized event type {event_name}")
+        return error_response(f'Unrecognized event type {event_name}')
     

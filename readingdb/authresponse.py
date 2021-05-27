@@ -3,13 +3,13 @@ from typing import Dict, Any
 
 
 class AuthResponse():
-    AUTH_RESULT_KEY = "AuthenticationResult"
-    ACCESS_TOKEN_KEY = "AccessToken"
-    ID_TOKEN_KEY = "IdToken"
-    USER_ATTR_KEY = "UserAttributes"
-    ATTR_NAME_KEY = "Name"
-    ATTR_VALUE_KEY = "Value"
-    USERNAME_KEY = "Username"
+    AUTH_RESULT_KEY = 'AuthenticationResult'
+    ACCESS_TOKEN_KEY = 'AccessToken'
+    ID_TOKEN_KEY = 'IdToken'
+    USER_ATTR_KEY = 'UserAttributes'
+    ATTR_NAME_KEY = 'Name'
+    ATTR_VALUE_KEY = 'Value'
+    USERNAME_KEY = 'Username'
     USER_SUB = 'sub'
 
     def __init__(self, response_data: Dict[str, Any], error: Error =None) -> None:

@@ -3,11 +3,11 @@ from typing import Dict, List
 from readingdb.readingspec import ReadingSpec
 
 class RouteSpec():
-    ROUTE_NAME_KEY = "route"
-    ROUTE_READINGS_KEY = "readings"
-    READING_TYPE_KEY = "type"
-    READING_FORMAT_KEY = "format"
-    READING_PATH_KEY = "path"
+    ROUTE_NAME_KEY = 'route'
+    ROUTE_READINGS_KEY = 'readings'
+    READING_TYPE_KEY = 'type'
+    READING_FORMAT_KEY = 'format'
+    READING_PATH_KEY = 'path'
 
     @staticmethod
     def from_json(json_data: Dict[str, any]):

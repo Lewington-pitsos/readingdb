@@ -140,12 +140,12 @@ class DB():
         table = self.db.Table(Database.READING_TABLE_NAME)
 
         query_params = {
-            "KeyConditionExpression": Key("RouteID").eq(route_id),
-            "Limit": self.max_page_readings
+            'KeyConditionExpression': Key('RouteID').eq(route_id),
+            'Limit': self.max_page_readings
         }
 
         if last_key is not None:
-            query_params["ExclusiveStartKey"]= last_key
+            query_params['ExclusiveStartKey']= last_key
 
         resp = table.query(**query_params)
 
@@ -196,7 +196,7 @@ class DB():
                     ReadingRouteKeys.ROUTE_ID: route_id,
                     RouteKeys.USER_ID: user_id
                 },
-                UpdateExpression=f"set {RouteKeys.NAME} = :r, {RouteKeys.LAST_UPDATED} = :l",
+                UpdateExpression=f'set {RouteKeys.NAME} = :r, {RouteKeys.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': name,
                     ':l': int(time.time())
@@ -214,7 +214,7 @@ class DB():
                     ReadingRouteKeys.ROUTE_ID: route_id,
                     RouteKeys.USER_ID: user_id
                 },
-                UpdateExpression=f"set {RouteKeys.STATUS} = :r, {RouteKeys.LAST_UPDATED} = :l",
+                UpdateExpression=f'set {RouteKeys.STATUS} = :r, {RouteKeys.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': status,
                     ':l': int(time.time())

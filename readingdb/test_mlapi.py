@@ -24,16 +24,16 @@ class TestMLAPI(unittest.TestCase):
     def test_reads_msg(self):
         self.sqs.send_message(
             QueueUrl=self.sqs_url,
-            MessageBody="wakka wakka"
+            MessageBody='wakka wakka'
         )
         mlapi = MLAPI(self.sqs_url)
 
         resp = mlapi.receive_message_from_queue()
-        self.assertEqual("wakka wakka", resp["Body"])
+        self.assertEqual('wakka wakka', resp['Body'])
 
     def test_writes_then_reads_msg(self):
         mlapi = MLAPI(self.sqs_url)
-        mlapi.add_message_to_queue("user776", "routeabc")
+        mlapi.add_message_to_queue('user776', 'routeabc')
 
         resp = mlapi.receive_message_from_queue()
-        self.assertEqual("user776,routeabc", resp["Body"])
+        self.assertEqual('user776,routeabc', resp['Body'])

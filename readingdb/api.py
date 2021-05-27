@@ -17,15 +17,15 @@ from readingdb.endpoints import LAMBDA_ENDPOINT
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
-    ECS_TASKS_KEY = "tasks"
+    ECS_TASKS_KEY = 'tasks'
 
     def __init__(
         self, 
         url, 
         resource_name='dynamodb', 
-        tmp_bucket="mobileappsessions172800-main",
-        bucket="mobileappsessions172800-main",
-        region_name="ap-southeast-2",
+        tmp_bucket='mobileappsessions172800-main',
+        bucket='mobileappsessions172800-main',
+        region_name='ap-southeast-2',
         config=None,
         size_limit=999999999999999
     ):
@@ -37,7 +37,7 @@ class API(DB, ReadingDB):
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
-        self.lambda_client = boto3.client("lambda")
+        self.lambda_client = boto3.client('lambda')
 
     def save_new_route(self, bucket: str, key: str, name: str = None) -> None:
         resp = self.ecs.run_task(
@@ -48,23 +48,23 @@ class API(DB, ReadingDB):
                     'assignPublicIp': 'ENABLED' # TODO: check if this is needed
                 },
             },
-            launchType="FARGATE",
-            cluster="arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster",
-            taskDefinition="arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:7",
+            launchType='FARGATE',
+            cluster='arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster',
+            taskDefinition='arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:7',
             overrides={
-                "containerOverrides": [
+                'containerOverrides': [
                     {
-                        "name": "unzipper", 
-                        "command":  ["python", "farg.py", bucket, key, self.region_name, name]
+                        'name': 'unzipper', 
+                        'command':  ['python', 'farg.py', bucket, key, self.region_name, name]
                     }
                 ]
             }
         )
 
         if len(resp[self.ECS_TASKS_KEY]) < 1:
-            raise ValueError(f"Unable to run any tasks, ecs returned the following response:", resp)
+            raise ValueError(f'Unable to run any tasks, ecs returned the following response:', resp)
 
-        print("unzipping execution begun:", resp)
+        print('unzipping execution begun:', resp)
 
         return str(resp)
 
@@ -75,13 +75,13 @@ class API(DB, ReadingDB):
     def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
         route_id = str(uuid.uuid1())
 
-        print(f"uploading route {route_spec} as {route_id}")
+        print(f'uploading route {route_spec} as {route_id}')
 
         initial_entries = {}
         timestamp = 0
 
         for reading_spec in route_spec.reading_specs:
-            print(f"starting upload for reading {reading_spec}")
+            print(f'starting upload for reading {reading_spec}')
 
             entries = reading_spec.load_readings()   
 
@@ -93,9 +93,9 @@ class API(DB, ReadingDB):
                 if timestamp == 0:
                     timestamp = first_entry.date
 
-                print("Finished saving all readings to FDS database")
+                print('Finished saving all readings to FDS database')
             else:
-                print(f"No entries found for reading specification {reading_spec}")
+                print(f'No entries found for reading specification {reading_spec}')
 
         route = Route(
             user_id=user_id,
@@ -106,7 +106,7 @@ class API(DB, ReadingDB):
         )
 
         self.put_route(route)
-        print(f"Finished uploading route {route_id} for user {user_id}")
+        print(f'Finished uploading route {route_id} for user {user_id}')
 
         return route
 
@@ -137,7 +137,7 @@ class API(DB, ReadingDB):
                         r[ReadingKeys.READING][ImageReadingKeys.URI] = er[ReadingKeys.READING][ImageReadingKeys.URI]
                         break
                 else:
-                    raise ValueError(f"could not find an existing reading with the same image as {r} and saving images has been disallowed")
+                    raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
             
         
         self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
@@ -147,12 +147,12 @@ class API(DB, ReadingDB):
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
     def all_route_readings_async(self, route_id: str, access_token: str) -> str:
-        bucket_key = str(uuid.uuid1()) + ".json"
+        bucket_key = str(uuid.uuid1()) + '.json'
         pl = {
-            "Type": "GetReadings",
-            "BucketKey": bucket_key,
-            "RouteID": route_id,
-            "AccessToken": access_token,
+            'Type': 'GetReadings',
+            'BucketKey': bucket_key,
+            'RouteID': route_id,
+            'AccessToken': access_token,
         }
 
         self.lambda_client.invoke(
@@ -171,7 +171,7 @@ class API(DB, ReadingDB):
         # 6 mb in size. The JSON for the readins will often
         # be larger than 6mb.
         if sys.getsizeof(readings) > self.size_limit:
-            s3_key = str(uuid.uuid1()) + ".json" if key is None else key
+            s3_key = str(uuid.uuid1()) + '.json' if key is None else key
             self.s3_client.put_object(
                 Body=str(json.dumps(readings)),
                 Bucket = self.tmp_bucket,
@@ -266,7 +266,7 @@ class API(DB, ReadingDB):
         n_entries = len(entries)
         for i, e in enumerate(entries):
             if i % 10 == 0:
-                print(f"uploading entry {i} of {n_entries}")
+                print(f'uploading entry {i} of {n_entries}')
 
             e = self.__json_to_entry(e, entry_type, str(uuid.uuid1()), route_id)
             e = self.__save_entry_data(e, save_img)

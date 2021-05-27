@@ -9,9 +9,9 @@ def unix_time_millis(dt):
     return int((dt - epoch).total_seconds() * 1e3)
 
 def unix_from_key(key: str) -> int:
-    ts_str = key.split("/")[-1].split("-")[0]
-    if "img_" in key:
-        return int(ts_str.split("_")[-1])
+    ts_str = key.split('/')[-1].split('-')[0]
+    if 'img_' in key:
+        return int(ts_str.split('_')[-1])
 
     dt = datetime.strptime(ts_str, '%Y_%m_%d_%H_%M_%S_%f')
 
@@ -33,12 +33,12 @@ def txt_to_points(lines):
 
     for line in lines:
         if len(line) > 10:
-            segments = [s.strip("\n").strip("\r") for s in line.split(" ") if s != ""]    
+            segments = [s.strip('\n').strip('\r') for s in line.split(' ') if s != '']    
             point = {
-                ReadingKeys.TIMESTAMP: int(segments[0].split(":")[-1]),
+                ReadingKeys.TIMESTAMP: int(segments[0].split(':')[-1]),
                 ReadingKeys.READING: {
-                    PositionReadingKeys.LATITUDE: float(segments[1].split(":")[-1]),
-                    PositionReadingKeys.LONGITUDE: float(segments[2].split(":")[-1])
+                    PositionReadingKeys.LATITUDE: float(segments[1].split(':')[-1]),
+                    PositionReadingKeys.LONGITUDE: float(segments[2].split(':')[-1])
                 },
             }
 

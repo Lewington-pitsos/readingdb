@@ -11,11 +11,11 @@ from readingdb.clean import encode_float, decode_bool, decode_float
 class AbstractReading(abc.ABC):
     @abc.abstractmethod
     def item_data(self) -> Dict[str, Any]:
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError('not implemented')
 
     @abc.abstractclassmethod
     def decode(cls, item: Dict[str, Any]):
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError('not implemented')
 
 class Reading(AbstractReading):
     def __init__(self, id: str, route_id: str, date: int, readingType: str) -> None:
@@ -41,7 +41,7 @@ class ImageReading(Reading):
         super().__init__(id, route_id, date, readingType)
 
         if not url and not uri:
-            raise ValueError("at least one of url or uri must be supplied when initializing an ImageReading")
+            raise ValueError('at least one of url or uri must be supplied when initializing an ImageReading')
 
         self.url: str = url
         self.uri = uri
@@ -209,4 +209,4 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             get_uri(reading_data)
         )
     else:
-        raise ValueError(f"unrecognized reading type {reading_type} for reading {reading}")
+        raise ValueError(f'unrecognized reading type {reading_type} for reading {reading}')

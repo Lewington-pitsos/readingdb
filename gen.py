@@ -6,9 +6,9 @@ from readingdb.format import *
 
 def nxt_img(fname):
       return {
-        "Timestamp": unix_from_key(fname),
-        "Reading": {
-            "ImageFileName": fname
+        'Timestamp': unix_from_key(fname),
+        'Reading': {
+            'ImageFileName': fname
         }
     }
 
@@ -19,14 +19,14 @@ def nxt_ts(prv_ts, prv_lat, prv_long):
     long = prv_long + random.randint(0, 400) / 10000.0
 
     return {
-        "Timestamp": ts,
-        "Reading": {
-            "Latitude": lat,
-            "Longitude": long
+        'Timestamp': ts,
+        'Reading': {
+            'Latitude': lat,
+            'Longitude': long
         }
     }, lat, long
 
-pth = "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/"
+pth = 'readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/'
 fnames = [pth + f for f in os.listdir(pth)]
 
 entries = []
@@ -50,8 +50,8 @@ for f in fnames:
     gps_entries.append(e)
 
 
-with open("readingdb/test_data/img.json", "w") as f:
-    json.dump(entries, f, indent="    ")
+with open('readingdb/test_data/img.json', 'w') as f:
+    json.dump(entries, f, indent='    ')
 
-with open("readingdb/test_data/gps.json", "w") as f:
-    json.dump(gps_entries, f, indent="    ")
+with open('readingdb/test_data/gps.json', 'w') as f:
+    json.dump(gps_entries, f, indent='    ')

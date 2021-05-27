@@ -21,12 +21,12 @@ from readingdb.tutils import *
 
 @mock_s3
 class TestAPI(unittest.TestCase):
-    region_name = "ap-southeast-2"
-    access_key = "fake_access_key"
-    secret_key = "fake_secret_key"
+    region_name = 'ap-southeast-2'
+    access_key = 'fake_access_key'
+    secret_key = 'fake_secret_key'
     bucket_name = TEST_BUCKET
-    test_prefix = "mocks"
-    tmp_bucket ="tmp"
+    test_prefix = 'mocks'
+    tmp_bucket ='tmp'
 
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
@@ -74,21 +74,21 @@ class TestAPI(unittest.TestCase):
             mock_folder_local_path = os.path.join(tmpdir, self.test_prefix)
             self.assertTrue(os.path.isdir(mock_folder_local_path))
             result = os.listdir(mock_folder_local_path)
-            desired_result = ["file.json", "apple.json"]
+            desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
     def test_handles_large_queries_correctly(self):
-        route_id = "103"
-        self.api.put_route(Route("3", route_id, 123617823))
+        route_id = '103'
+        self.api.put_route(Route('3', route_id, 123617823))
         
-        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
         finalized = []
         for e in entities[:60]:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading("PredictionReading", e)
+            r: AbstractReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
         self.api.put_readings(finalized)
 
@@ -103,47 +103,47 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
 
     def test_can_upload_readings_with_given_key(self):
-        route_id = "103"
-        self.api.put_route(Route("3", route_id, 123617823))
+        route_id = '103'
+        self.api.put_route(Route('3', route_id, 123617823))
         
-        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
         finalized = []
         for e in entities[:60]:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading("PredictionReading", e)
+            r: AbstractReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
-        uri = self.api.all_route_readings(route_id, key="kingofkings.json")
+        uri = self.api.all_route_readings(route_id, key='kingofkings.json')
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
-        self.assertEqual(uri['Key'], "kingofkings.json")
+        self.assertEqual(uri['Key'], 'kingofkings.json')
 
     def test_updates_route_name(self):
-        user_id = "aghsghavgas"
+        user_id = 'aghsghavgas'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
 
         self.assertEqual(route.name, route.id[:Route.MAX_NAME_LENGTH])
 
-        api.update_route_name(route.id, user_id, "Belgrave")
+        api.update_route_name(route.id, user_id, 'Belgrave')
 
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.NAME], "Belgrave")
+        self.assertEqual(loaded_route[RouteKeys.NAME], 'Belgrave')
 
     def test_update_route_status(self):
-        user_id = "aghsghavgas"
+        user_id = 'aghsghavgas'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
@@ -157,42 +157,42 @@ class TestAPI(unittest.TestCase):
 
         preds = [{
             'Reading': {
-                'ImageFileName': "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
-                'PresignedURL': "INVALID_URL",
+                'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
+                'PresignedURL': 'INVALID_URL',
                 'S3Uri': {
-                    "Bucket": self.bucket_name,
-                    "Key": route.id + "route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg"
+                    'Bucket': self.bucket_name,
+                    'Key': route.id + 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg'
                 },
-                "Entities": [
+                'Entities': [
                     {
-                        "Name": "CrocodileCrack",
-                        "Confidence": 0.17722677,
-                        "Severity": 1.0,
-                        "Present": False,
+                        'Name': 'CrocodileCrack',
+                        'Confidence': 0.17722677,
+                        'Severity': 1.0,
+                        'Present': False,
                     },
                     {
-                        "Name": "LatCrack", 
-                        "Confidence": 0.07661053,
-                        "Severity": 1.0,
-                        "Present": False,
+                        'Name': 'LatCrack', 
+                        'Confidence': 0.07661053,
+                        'Severity': 1.0,
+                        'Present': False,
                     },
                     {
-                        "Name": "LongCrack", 
-                        "Confidence": 0.6557837,
-                        "Severity": 1.0,
-                        "Present": False,
+                        'Name': 'LongCrack', 
+                        'Confidence': 0.6557837,
+                        'Severity': 1.0,
+                        'Present': False,
                     },
                     {
-                        "Name": "Pothole",
-                        "Confidence": 0.14074452,
-                        "Severity": 1.0,
-                        "Present": False,
+                        'Name': 'Pothole',
+                        'Confidence': 0.14074452,
+                        'Severity': 1.0,
+                        'Present': False,
                     },
                     {
-                        "Name": "Lineblur",
-                        "Confidence": 0.09903459,
-                        "Severity": 1.0,
-                        "Present": False,
+                        'Name': 'Lineblur',
+                        'Confidence': 0.09903459,
+                        'Severity': 1.0,
+                        'Present': False,
                     }
                 ],
                 'Longitude': 145.2450816,
@@ -210,9 +210,9 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
 
     def test_saves_severity(self):
-        user_id = "aghsghavgas"
+        user_id = 'aghsghavgas'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
@@ -228,18 +228,18 @@ class TestAPI(unittest.TestCase):
         crockCrack = None
 
         for e in entites:
-            if e["Name"] == "LongCrack":
+            if e['Name'] == 'LongCrack':
                 longCrack = e
-            if e["Name"] == "CrocodileCrack":
+            if e['Name'] == 'CrocodileCrack':
                 crockCrack = e
                 
-        self.assertEqual(1.3, longCrack["Severity"])
-        self.assertEqual(1.34, crockCrack["Severity"])
+        self.assertEqual(1.3, longCrack['Severity'])
+        self.assertEqual(1.34, crockCrack['Severity'])
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_saves_readings_to_existing_route(self):
-        user_id = "asdy7asdh"
-        route_id = "asdasdasdasd"
+        user_id = 'asdy7asdh'
+        route_id = 'asdasdasdasd'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
         user_routes = api.routes_for_user(user_id)
@@ -255,7 +255,7 @@ class TestAPI(unittest.TestCase):
 
 
         s3 = boto3.resource(
-            "s3",
+            's3',
             region_name=self.region_name,
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key
@@ -267,8 +267,8 @@ class TestAPI(unittest.TestCase):
             bucket_objects.append(my_bucket_object.key)
 
         self.assertEqual(set(bucket_objects), set([
-            "mocks/apple.json", 
-            "mocks/file.json",
+            'mocks/apple.json', 
+            'mocks/file.json',
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
         ]))
@@ -276,12 +276,12 @@ class TestAPI(unittest.TestCase):
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
         self.assertEqual(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
-        self.assertNotIn("SampleData", user_routes[0])
+        self.assertNotIn('SampleData', user_routes[0])
 
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 0)
 
-        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
 
         api.save_predictions(route_spec_data, route_id, user_id)
@@ -297,16 +297,16 @@ class TestAPI(unittest.TestCase):
             bucket_objects.append(my_bucket_object.key)
 
         self.assertEqual(set(bucket_objects), set([
-            "mocks/apple.json", 
-            "mocks/file.json",
+            'mocks/apple.json', 
+            'mocks/file.json',
             route_id + 'readingdb/test_data/images/road1.jpg',
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
         ]))
     
     def test_raises_while_saving_readings_to_existing_route_with_inknown_images(self):
-        user_id = "asdy7asdh"
-        route_id = "asdasdasdasd"
+        user_id = 'asdy7asdh'
+        route_id = 'asdasdasdasd'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
@@ -316,13 +316,13 @@ class TestAPI(unittest.TestCase):
             0
         )
         api.put_route(r)
-        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
         self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, user_id, False) 
 
     def test_saves_readings_to_existing_route_with_unknown_images(self):
-        user_id = "asdy7asdh"
-        route_id = "asdasdasdasd"
+        user_id = 'asdy7asdh'
+        route_id = 'asdasdasdasd'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
@@ -332,7 +332,7 @@ class TestAPI(unittest.TestCase):
             0
         )
         api.put_route(r)
-        with open(self.current_dir + "/test_data/ftg_imgs.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)        
         api.save_predictions(route_spec_data, route_id, user_id)
         readings = api.all_route_readings(route_id)
@@ -346,15 +346,15 @@ class TestAPI(unittest.TestCase):
         for r in readings:
             self.assertEqual(
                 {'Bucket': 'test_bucket', 'Key': 'asdasdasdasdreadingdb/test_data/images/road1.jpg'}, 
-                r["Reading"]["S3Uri"]
+                r['Reading']['S3Uri']
             )
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_small_route(self):
-        user_id = "asdy7asdh"
+        user_id = 'asdy7asdh'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        with open(self.current_dir + "/test_data/ftg_route.json", "r") as j:
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
 
         route_spec = RouteSpec.from_json(route_spec_data)
@@ -363,11 +363,11 @@ class TestAPI(unittest.TestCase):
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
 
-        self.assertIn("PresignedURL", user_routes[0]["SampleData"]["PredictionReading"]['Reading'])
-        del user_routes[0]["SampleData"]["PredictionReading"]['Reading']['PresignedURL']
+        self.assertIn('PresignedURL', user_routes[0]['SampleData']['PredictionReading']['Reading'])
+        del user_routes[0]['SampleData']['PredictionReading']['Reading']['PresignedURL']
         self.maxDiff = None
         expected_sample_data = {
-            "LastUpdated": 1619496879,
+            'LastUpdated': 1619496879,
             'RouteStatus': 1,
             'RouteID': route.id,
             'Timestamp': 1616116106935,
@@ -375,31 +375,31 @@ class TestAPI(unittest.TestCase):
             'SampleData': {
                 'PredictionReading': {
                 'Reading': {
-                    "ImageFileName": 'readingdb/test_data/images/road1.jpg',
+                    'ImageFileName': 'readingdb/test_data/images/road1.jpg',
                     'S3Uri': {
-                        "Bucket": self.bucket_name,
-                        "Key": route.id + 'readingdb/test_data/images/road1.jpg'
+                        'Bucket': self.bucket_name,
+                        'Key': route.id + 'readingdb/test_data/images/road1.jpg'
                     },
-                    "Entities": [
+                    'Entities': [
                         {'Confidence': 0.6557837,
                         'Name': 'LongCrack',
-                        "Severity": 1.3,
+                        'Severity': 1.3,
                         'Present': False},
                         {'Confidence': 0.07661053,
                         'Name': 'LatCrack',
-                        "Severity": 1.03,
+                        'Severity': 1.03,
                         'Present': False},
                         {'Confidence': 0.17722677,
                         'Name': 'CrocodileCrack',
-                        "Severity": 1.34,
+                        'Severity': 1.34,
                         'Present': False},
                         {'Confidence': 0.14074452,
                         'Name': 'Pothole',
-                        "Severity": 1.12,
+                        'Severity': 1.12,
                         'Present': False},
                         {'Confidence': 0.09903459,
                         'Name': 'Lineblur',
-                        "Severity": 1.1,
+                        'Severity': 1.1,
                         'Present': False}
                     ],
                     'Longitude': 145.2450816,
@@ -417,7 +417,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(expected_sample_data, user_routes[0])
 
         s3 = boto3.resource(
-            "s3",
+            's3',
             region_name=self.region_name,
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key
@@ -431,8 +431,8 @@ class TestAPI(unittest.TestCase):
             bucket_objects.append(my_bucket_object.key)
 
         self.assertEqual(set(bucket_objects), set([
-            "mocks/apple.json", 
-            "mocks/file.json",
+            'mocks/apple.json', 
+            'mocks/file.json',
             route.id + 'readingdb/test_data/images/road1.jpg',
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
