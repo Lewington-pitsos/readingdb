@@ -21,7 +21,7 @@ class DB():
         resource_name='dynamodb',
         region_name='ap-southeast-2', 
         config=None,
-        max_page_readings=2000,
+        max_page_readings=1800,
     ):
         self.db = boto3.resource(
             resource_name, 

@@ -147,7 +147,12 @@ def handler(event: Dict[str, Any], context):
         if route is None:
             return success_response(None)
 
-        readings, pagination_key = api.paginated_route_readings(route_id)
+
+        pagination_key, missing = get_key(event, Database.PAGINATION_KEY_NAME)
+        if missing:
+            pagination_key = None
+
+        readings, pagination_key = api.paginated_route_readings(route_id, pagination_key)
 
         return success_response({
             Database.READING_TABLE_NAME: readings,

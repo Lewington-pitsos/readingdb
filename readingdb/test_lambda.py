@@ -1,5 +1,6 @@
 import os
 import json
+from typing import Type
 from readingdb.s3uri import S3Uri
 from unittest import mock
 from unittest.mock import Mock
@@ -244,6 +245,36 @@ class TestLambdaR(TestLambdaRW):
 
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 116)
+        self.assertIsNone(resp['Body']['PaginationKey'])
+        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_paginated_readings_with_start_key(self):
+        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'PositionalReading'][0]
+        key1 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
+        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'ImageReading'][0]
+        key2 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': self.gps_img_route.id,
+            'PaginationKey': key1,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 86)
+        self.assertIsNone(resp['Body']['PaginationKey'])
+        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': self.gps_img_route.id,
+            'PaginationKey': key2,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 115)
         self.assertIsNone(resp['Body']['PaginationKey'])
         self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
 

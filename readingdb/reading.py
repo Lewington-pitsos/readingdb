@@ -2,7 +2,7 @@ import abc
 from os import read
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from readingdb.constants import *
 from readingdb.entities import *
