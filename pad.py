@@ -97,14 +97,28 @@
 
 # api = API(TEST_DYNAMO_ENDPOINT)
 
-# api.save_new_route("mobileappsessions172800-main", "public/route_2021_04_12_20_59_16_782.zip")
+# api.save_new_route("mobileappsessions172800-main", "public/route_2021_05_10_09_35_56_475.zip")
+
 # -----------------------------------------------------------------------------
+# from readingdb.endpoints import DYNAMO_ENDPOINT
+# from readingdb.api import API
+
+# at = "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6ImY1MzQwNDVkLTliNzEtNDQxMS05OGFmLWMzOGFhOWIxZjA2NSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MjAwOTE1MDAsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MjAwOTUxMDAsImlhdCI6MTYyMDA5MTUwMCwianRpIjoiNDg0ZDQxMWItOWE2NC00ZWJkLWEwYWMtN2YwNjlkNDIxZDMzIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.PXRTduOBcDpRMWNaVuGODZ-8d_lK39WKwI1iOVDq4seJEABPdIfb6V3T7kcg9QRFD_BYxK4IU04S0Is8k0IiKK_id1CyhxQtY3cukKY-yCkfySdIGuBOKmHzIGtAaURnjd2fJ1Z2CRLxnV8jph2cmGTo2j280vGmLi4x7pdVtuppXfoCUSzfa_9P1n8ySd2m6-th36luHO_-867uTWy15h-91My0e15gMxvjy3QkYho6XeMqLGF3Yzf_LlUTQWXiux_U2oZIOmOuFyBv7JQDUOTNfC5au8OVI02g57rck0NLpQWWhQIwTpQcUIoJmxCmRKisgUxzUc44c4sGn4rXpQ"
+# api = API(DYNAMO_ENDPOINT)
+
+# key = api.all_route_readings("99bf4519-85d9-4726-9471-4c91a7677925", at)
+
+# print(key)
+
 from readingdb.endpoints import DYNAMO_ENDPOINT
 from readingdb.api import API
+import boto3
 
-at = "eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6ImY1MzQwNDVkLTliNzEtNDQxMS05OGFmLWMzOGFhOWIxZjA2NSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MjAwOTE1MDAsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MjAwOTUxMDAsImlhdCI6MTYyMDA5MTUwMCwianRpIjoiNDg0ZDQxMWItOWE2NC00ZWJkLWEwYWMtN2YwNjlkNDIxZDMzIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.PXRTduOBcDpRMWNaVuGODZ-8d_lK39WKwI1iOVDq4seJEABPdIfb6V3T7kcg9QRFD_BYxK4IU04S0Is8k0IiKK_id1CyhxQtY3cukKY-yCkfySdIGuBOKmHzIGtAaURnjd2fJ1Z2CRLxnV8jph2cmGTo2j280vGmLi4x7pdVtuppXfoCUSzfa_9P1n8ySd2m6-th36luHO_-867uTWy15h-91My0e15gMxvjy3QkYho6XeMqLGF3Yzf_LlUTQWXiux_U2oZIOmOuFyBv7JQDUOTNfC5au8OVI02g57rck0NLpQWWhQIwTpQcUIoJmxCmRKisgUxzUc44c4sGn4rXpQ"
+s3 = boto3.client('s3', region_name='ap-southeast-2')
+
+s3.upload_file('/home/lewington/Desktop/vicroads/route_2021_05_10_09_35_56_475.zip', 'mobileappsessions172800-main', 'public/route_2021_05_10_09_35_56_475.zip')
+
+
 api = API(DYNAMO_ENDPOINT)
 
-key = api.all_route_readings("99bf4519-85d9-4726-9471-4c91a7677925", at)
-
-print(key)
+api.save_new_route("mobileappsessions172800-main", "public/route_2021_05_10_09_35_56_475.zip")

@@ -1,3 +1,4 @@
+import datetime
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -169,11 +170,14 @@ class TestDB(unittest.TestCase):
         with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
             entities = json.load(f)
 
+        entity_readings = []
         for e in entities:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())
             e[ReadingRouteKeys.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading("PredictionReading", e)
-            self.db.put_reading(r)
+            entity_readings.append(r)
+
+        self.db.put_readings(entity_readings)
 
         readings = self.db.all_route_readings(route_id)
     
@@ -291,6 +295,51 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user("3")
         self.assertEqual(len(routes), 1)
         self.assertEqual(routes[0][RouteKeys.SAMPLE_DATA], expected_entry)
+
+    def test_returns_paginated_results_correctly(self):
+        route_id = "103"
+        self.db.create_reading_db()
+        self.db.max_page_readings = 100
+        self.db.put_route(Route("3", route_id, 123617823))
+        
+        with open(self.current_dir +  "/test_data/sydney_entries.json", "r") as f:
+            entities = json.load(f)
+
+
+        entity_readings = []
+        for e in entities[:250]:
+            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
+            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            r: AbstractReading = json_to_reading("PredictionReading", e)
+            entity_readings.append(r)
+        self.db.put_readings(entity_readings)
+
+        readings = self.db.all_route_readings(route_id)
+        self.assertEqual(250, len(readings))
+
+        page0, key0 = self.db.paginated_route_readings(route_id)
+        self.assertEqual(100, len(page0))
+
+        newReadings = set([r["ReadingID"] for r in page0]) - set([r["ReadingID"] for r in readings])
+        self.assertEqual(len(newReadings), 0)
+ 
+        page0_retry, _ = self.db.paginated_route_readings(route_id)
+        self.assertEqual(page0, page0_retry)
+
+        page1, key1 = self.db.paginated_route_readings(route_id, key0)
+        self.assertEqual(100, len(page1))
+
+        newReadings = set([r["ReadingID"] for r in page1]) - set([r["ReadingID"] for r in page0])
+        self.assertEqual(len(newReadings), 100)
+
+        page2, key2 = self.db.paginated_route_readings(route_id, key1)
+        self.assertIsNone(key2)
+        self.assertEqual(50, len(page2))
+        
+        newReadings = set([r["ReadingID"] for r in page2]) - set([r["ReadingID"] for r in page1]) - set([r["ReadingID"] for r in page0])
+        self.assertEqual(len(newReadings), 50)
+
+
 
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()

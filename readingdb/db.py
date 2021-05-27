@@ -12,9 +12,17 @@ from readingdb.route import Route
 from readingdb.constants import *
 
 class DB():
-    ITEM_KEY = "Items"
+    ITEM_KEY = 'Items'
+    LAST_EVAL_KEY = 'LastEvaluatedKey'
 
-    def __init__(self, url, resource_name='dynamodb', region_name="ap-southeast-2", config=None):
+    def __init__(
+        self, 
+        url, 
+        resource_name='dynamodb',
+        region_name='ap-southeast-2', 
+        config=None,
+        max_page_readings=2000,
+    ):
         self.db = boto3.resource(
             resource_name, 
             region_name=region_name,
@@ -26,6 +34,7 @@ class DB():
         # use paginator on queries that stand a chance of returning
         # > 1MB of data.
         self.paginator = self.db.meta.client.get_paginator('query')
+        self.max_page_readings = max_page_readings
 
     def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
@@ -81,7 +90,6 @@ class DB():
                     'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'AttributeType': 'S'
                 },
-
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 50,
@@ -102,6 +110,14 @@ class DB():
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
         return route_table.put_item(Item=route.item_data())
 
+    def put_readings(self, readings: List[AbstractReading]):
+        
+        table = self.db.Table(Database.READING_TABLE_NAME)
+        with table.batch_writer() as batch:
+            for r in readings:
+                response = batch.put_item(Item=r.item_data())
+        return response
+
     def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
@@ -112,15 +128,37 @@ class DB():
             TableName=Database.READING_TABLE_NAME,
             KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id)
         )
-
         items = []
-
         for page in pg:
             for item in page[self.ITEM_KEY]:
                 ddb_to_dict(item[ReadingKeys.TYPE], item)
                 items.append(item)
 
         return items
+
+    def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
+        table = self.db.Table(Database.READING_TABLE_NAME)
+
+        query_params = {
+            "KeyConditionExpression": Key("RouteID").eq(route_id),
+            "Limit": self.max_page_readings
+        }
+
+        if last_key is not None:
+            query_params["ExclusiveStartKey"]= last_key
+
+        resp = table.query(**query_params)
+
+        next_key = None
+        if self.LAST_EVAL_KEY in resp:
+            next_key = resp[self.LAST_EVAL_KEY]
+
+        items = []
+        for item in resp[self.ITEM_KEY]:
+            ddb_to_dict(item[ReadingKeys.TYPE], item)
+            items.append(item)
+
+        return items, next_key
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)

@@ -1,6 +1,5 @@
 import json
 import sys
-from botocore.utils import parse_timestamp
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List
@@ -13,11 +12,8 @@ import random
 import string
 import uuid
 
-from boto3.dynamodb.conditions import Key
-
 from readingdb.db import DB
-from readingdb.mlapi import MLAPI
-from readingdb.endpoints import LAMBDA_ENDPOINT, SQS_URL
+from readingdb.endpoints import LAMBDA_ENDPOINT
 from readingdb.constants import *
 
 class API(DB, ReadingDB):
