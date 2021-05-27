@@ -200,6 +200,19 @@ class TestLambdaW(TestLambdaRW):
             "Body": None
         }, resp)
 
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_success_on_paginated_readings_for_absent_route(self):
+        resp = handler({
+            "Type": "GetPaginatedReadings",
+            "RouteID": "INVALID_ID",
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            "Status": "Success",
+            "Body": None
+        }, resp)
+
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
@@ -220,6 +233,19 @@ class TestLambdaR(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
         self.twenty_route = r
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_paginated_routes_for_user(self):
+        resp = handler({
+            "Type": "GetPaginatedReadings",
+            "RouteID": self.gps_img_route.id,
+            "AccessToken": self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp["Status"], "Success")
+        self.assertEqual(len(resp["Body"]['Readings']), 116)
+        self.assertIsNone(resp["Body"]['PaginationKey'])
+        self.assertEqual(resp["Body"]['Readings'][0]["RouteID"], self.gps_img_route.id)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):

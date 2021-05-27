@@ -112,9 +112,6 @@ def handler(event: Dict[str, Any], context):
         return success_response(route)
 
     if event_name == EVENT_DELETE_ROUTE:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
-        if err_resp:
-            return err_resp
 
         # route = api.delete_route(route_id, user_data.user_sub)
         return success_response("")
@@ -142,14 +139,14 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        if EVENT_BUCKET_KEY in event:
-            key = event[EVENT_BUCKET_KEY]
-        else:
-            key = None
+        readings = None
 
-        readings = api.all_route_readings(route_id, key)
+        readings, pagination_key = api.paginated_route_readings(route_id)
 
-        return success_response(readings)
+        return success_response({
+            Database.READING_TABLE_NAME: readings,
+            Database.PAGINATION_KEY_NAME: pagination_key,
+        })
 
     elif event_name == EVENT_GET_READINGS_ASYNC:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
