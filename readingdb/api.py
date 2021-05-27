@@ -178,7 +178,7 @@ class API(DB, ReadingDB):
                 Key=s3_key
             )
 
-            return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key}
+            return { S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key }
 
         return readings
 
@@ -197,6 +197,10 @@ class API(DB, ReadingDB):
         self.__inject_samples_with_presigned_urls(r)
 
         return r
+
+
+    def delete_route(self, route_id: str, user_sub: str) -> None:
+        pass
 
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in route:
@@ -236,6 +240,12 @@ class API(DB, ReadingDB):
         self.put_reading(entry)
         return entry
 
+    def __save_entry_data(self, entry: Reading, save_img=True) -> AbstractReading:
+        if entry.readingType in ReadingTypes.IMAGE_TYPES and save_img:
+            self.__save_img_entry(entry)
+
+        return entry
+
     def __upload_entry_file(self, entry) -> S3Uri:
         _, object_name = self.__upload_file(
                 entry.route_id, 
@@ -256,9 +266,6 @@ class API(DB, ReadingDB):
         self.put_reading(entry)
 
         return entry
-
-    def __generate_route_id(self):
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
 
     def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
         e[ReadingKeys.READING_ID] = reading_id

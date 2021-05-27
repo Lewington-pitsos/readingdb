@@ -112,8 +112,11 @@ def handler(event: Dict[str, Any], context):
         return success_response(route)
 
     if event_name == EVENT_DELETE_ROUTE:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
 
-        # route = api.delete_route(route_id, user_data.user_sub)
+        api.delete_route(route_id, user_data.user_sub)
         return success_response("")
 
     if event_name == EVENT_GET_USER_ROUTES:
@@ -139,7 +142,10 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        readings = None
+        route = api.get_route(route_id, user_data.user_sub)
+
+        if route is None:
+            return success_response(None)
 
         readings, pagination_key = api.paginated_route_readings(route_id)
 
