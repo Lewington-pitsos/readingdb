@@ -1,5 +1,4 @@
 import logging
-from readingdb.clean import encode_bool
 from typing import Dict, Any
 
 from botocore.config import Config

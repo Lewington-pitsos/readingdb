@@ -307,7 +307,6 @@ class TestDB(unittest.TestCase):
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
-
         entity_readings = []
         for e in entities[:250]:
             e[ReadingKeys.READING_ID] = str(uuid.uuid1())

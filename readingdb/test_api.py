@@ -77,6 +77,18 @@ class TestAPI(unittest.TestCase):
             desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
+    def test_adds_presigned_urls_to_paginated_readings(self):
+        user_id = 'aghsghavgas'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.save_route(route_spec, user_id)
+
+        page0, _ = self.api.paginated_route_readings(route.id)
+        self.assertEqual(22, len(page0))
+        self.assertIn("PresignedURL", page0[0]["Reading"])
+
     def test_handles_large_queries_correctly(self):
         route_id = '103'
         self.api.put_route(Route('3', route_id, 123617823))

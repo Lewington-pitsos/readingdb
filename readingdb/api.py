@@ -2,7 +2,7 @@ import json
 import sys
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
@@ -198,6 +198,11 @@ class API(DB, ReadingDB):
 
         return r
 
+    def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
+        readings, next_key = super().paginated_route_readings(route_id, last_key)
+
+        self.__inject_presigned_urls(readings)
+        return readings, next_key
 
     def delete_route(self, route_id: str, user_sub: str) -> None:
         pass
