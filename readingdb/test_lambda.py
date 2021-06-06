@@ -1,9 +1,6 @@
 import os
 import json
-from typing import Type
-from readingdb.s3uri import S3Uri
 from unittest import mock
-from unittest.mock import Mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
 from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
@@ -339,8 +336,8 @@ class TestLambdaR(TestLambdaRW):
                 'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 
                 'SampleData': {
                     'PredictionReading': {
-                        'AnnotationTimestamp': 0,
-                        'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
+                        'AnnotationTimestamp': 2378910,
+                        'AnnotatorID': '99994519-85d9-4726-9471-4c91a7677925',
                         'ReadingID': resp['Body']['SampleData']['PredictionReading']['ReadingID'], 
                         'Type': 'PredictionReading', 
                         'Reading': {

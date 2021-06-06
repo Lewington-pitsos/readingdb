@@ -114,7 +114,7 @@ class PredictionReading(ImageReading, PositionReading):
         uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
-
+        
         self.url = url
         self.uri = uri
         self.entites: List[Entity] = entities
@@ -207,7 +207,8 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_data[PositionReadingKeys.LONGITUDE],
             reading_data[ImageReadingKeys.FILENAME],
             entities,
-            0,
+            annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] if PredictionReadingKeys.ANNOTATION_TIMESTAMP in reading else 0,
+            annotator_id=reading[AnnotatorKeys.ANNOTATOR_ID] if AnnotatorKeys.ANNOTATOR_ID in reading else DEFAULT_ANNOTATOR_ID,
             uri=get_uri(reading_data)
         )
     else:

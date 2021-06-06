@@ -125,7 +125,13 @@ class API(DB, ReadingDB):
         
         return False
 
-    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str, save_imgs: bool = True) -> None:
+    def save_predictions(
+        self, 
+        readings: List[Dict[str, Any]], 
+        route_id: int, 
+        user_id: str, 
+        save_imgs: bool = True
+    ) -> None:
         if not save_imgs:
             existing_readings = self.all_route_readings(route_id)
 
@@ -259,11 +265,6 @@ class API(DB, ReadingDB):
             object_name,
         )
 
-    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
-        e[ReadingKeys.READING_ID] = reading_id
-        e[ReadingRouteKeys.ROUTE_ID] = route_id
-        return json_to_reading(entry_type, e)
-
     def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
         n_entries = len(entries)
@@ -278,3 +279,8 @@ class API(DB, ReadingDB):
         self.put_readings(finalized)
 
         return finalized
+
+    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
+        e[ReadingKeys.READING_ID] = reading_id
+        e[ReadingRouteKeys.ROUTE_ID] = route_id
+        return json_to_reading(entry_type, e)

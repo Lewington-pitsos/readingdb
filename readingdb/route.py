@@ -3,7 +3,7 @@ import time
 from typing import Any, Dict
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, ddb_to_dict, json_to_reading
+from readingdb.reading import AbstractReading, ddb_to_dict
 
 class Route():
     MAX_NAME_LENGTH = 21
