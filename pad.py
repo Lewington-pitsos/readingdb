@@ -110,15 +110,47 @@
 
 # print(key)
 
-from readingdb.endpoints import DYNAMO_ENDPOINT
-from readingdb.api import API
-import boto3
+# from readingdb.endpoints import DYNAMO_ENDPOINT
+# from readingdb.api import API
+# import boto3
 
-s3 = boto3.client('s3', region_name='ap-southeast-2')
+# zip_name = "route_2021_04_29_14_15_34_999.zip"
+# uploaded_name = 'public/' + zip_name
+# # s3_resource = boto3.resource('s3')
+# # s3 = boto3.client('s3', region_name='ap-southeast-2')
 
-s3.upload_file('/home/lewington/Desktop/vicroads/route_2021_05_10_09_35_56_475.zip', 'mobileappsessions172800-main', 'public/route_2021_05_10_09_35_56_475.zip')
+# # s3.upload_file(
+# #     '/home/lewington/Desktop/alicia/uploaded/' + zip_name, 
+# #     'mobileappsessions172800-main', 
+# #     uploaded_name
+# # )
 
+# api = API(DYNAMO_ENDPOINT)
+# api.save_new_route(, uploaded_name, "roora_test_route")
 
-api = API(DYNAMO_ENDPOINT)
+import os
+from readingdb.unzipper import Unzipper
+from readingdb.endpoints import *
 
-api.save_new_route('mobileappsessions172800-main', 'public/route_2021_05_10_09_35_56_475.zip')
+root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
+
+subdirs = [root + r for r in  os.listdir(root)]
+
+files = []
+
+for s in subdirs:
+    if os.path.isdir(s):
+        subsubdirs = [s + '/' + r for r in os.listdir(s)]
+        for ss in subsubdirs:
+            files.append(ss)
+    else:
+        files.append(s)
+
+z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+z.process_local(
+    '8f647285-58a7-4d7f-af64-238db703e38e',
+    'route_2021_04_29_14_15_34_999', 
+    'mobileappsessions172800-main', 
+    files,
+    'roora_test_route'
+)

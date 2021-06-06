@@ -50,7 +50,7 @@ class API(DB, ReadingDB):
             },
             launchType='FARGATE',
             cluster='arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster',
-            taskDefinition='arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:7',
+            taskDefinition='arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:8',
             overrides={
                 'containerOverrides': [
                     {

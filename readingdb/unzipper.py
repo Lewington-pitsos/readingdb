@@ -31,7 +31,6 @@ class Unzipper():
         user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
         buffer = BytesIO(zip_obj.get()[self.OBJ_BODY_KEY].read())
         z = zipfile.ZipFile(buffer)
-        
 
         def upload(filename, bucket, s3_filename):
             self.s3_resource.meta.client.upload_fileobj(

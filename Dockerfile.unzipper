@@ -7,6 +7,6 @@ ENV AWS_SHARED_CREDENTIALS_FILE=credentials
 
 COPY aws/credentials ./
 ADD readingdb ./readingdb
-COPY readingdb/farg.py ./
+COPY farg.py ./
 
-CMD [ "echo", "rice" ]
+CMD [ "echo", "complete" ]
