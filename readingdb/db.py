@@ -1,4 +1,5 @@
 from random import sample
+from readingdb.annotator import Annotator
 import time
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
@@ -154,6 +155,11 @@ class DB():
     def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
+        return response
+
+    def put_annotator(self, annotator: Annotator):
+        table = self.db.Table(Database.ANNOTATOR_TABLE_NAME)
+        response = table.put_item(Item=annotator.item_data())
         return response
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:

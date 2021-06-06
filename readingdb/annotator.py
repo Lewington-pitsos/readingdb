@@ -4,6 +4,7 @@ class Annotator():
     def __init__(
         self,
         annotator_id: str,
+        name: str,
         annotator_group: str,
         annotator_type: str,
         user_id: str,
@@ -12,6 +13,7 @@ class Annotator():
         self.annotator_group = annotator_group
         self.user_id = user_id
         self.annotator_type = annotator_type,
+        self.name = name
 
     def item_data(self):
         return {
@@ -19,5 +21,6 @@ class Annotator():
             AnnotatorKeys.ANNOTATOR_TYPE: self.annotator_type,
             AnnotatorKeys.ANNOTATOR_GROUP: self.annotator_group,
             AnnotatorKeys.USER_ID: self.user_id,
+            AnnotatorKeys.NAME: self.name
         }
     

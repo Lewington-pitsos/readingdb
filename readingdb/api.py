@@ -8,8 +8,6 @@ from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
-import random
-import string
 import uuid
 
 from readingdb.db import DB

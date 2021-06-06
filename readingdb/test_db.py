@@ -1,4 +1,3 @@
-import datetime
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -23,7 +22,6 @@ class TestDB(unittest.TestCase):
         self.db.create_reading_db()
         readings = self.db.routes_for_user('103')
         self.assertEqual(len(readings), 0)
-
         reading_time = int(time.time())
 
         finalized = []
@@ -38,7 +36,6 @@ class TestDB(unittest.TestCase):
                 )
             )
         self.db.put_readings(finalized)
-        
         readings = self.db.all_route_readings('xxxa')
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
@@ -124,7 +121,6 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('3')
         self.assertEqual(routes[0]['LastUpdated'], last_update_timestamp)
 
-
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_updates_route_written_date_on_update(self):
         self.db.create_reading_db()
@@ -154,7 +150,6 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user(user_id)
         second_status_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_status_timestamp, status_timestamp)
-
 
         self.db.update_route_name(route_id, user_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
@@ -239,7 +234,8 @@ class TestDB(unittest.TestCase):
             'Row': 30,
         }
    
-        expected_entry = {'PredictionReading': {
+        expected_entry = {
+            'PredictionReading': {
             'ReadingID': 78,
             'Type': 'PredictionReading',
             'Reading': {
@@ -348,7 +344,6 @@ class TestDB(unittest.TestCase):
         self.db.teardown_reading_db()
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 0)
-        
 
     def tearDown(self):
         tables = self.db.all_tables()
