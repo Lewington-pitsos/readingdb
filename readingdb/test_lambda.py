@@ -339,6 +339,8 @@ class TestLambdaR(TestLambdaRW):
                 'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 
                 'SampleData': {
                     'PredictionReading': {
+                        'AnnotationTimestamp': 0,
+                        'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
                         'ReadingID': resp['Body']['SampleData']['PredictionReading']['ReadingID'], 
                         'Type': 'PredictionReading', 
                         'Reading': {

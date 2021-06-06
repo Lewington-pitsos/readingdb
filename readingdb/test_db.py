@@ -67,7 +67,8 @@ class TestDB(unittest.TestCase):
                     Entity('Crocodile Cracks', 0.432, True, 1.876),
                     Entity('Rutting', 0.432, True, 2.1),
                     Entity('Ravelling', 0.432, True, 0.1),
-                ]
+                ],
+                annotation_timestamp=1231238
             )
         )
     
@@ -236,45 +237,47 @@ class TestDB(unittest.TestCase):
    
         expected_entry = {
             'PredictionReading': {
-            'ReadingID': 78,
-            'Type': 'PredictionReading',
-            'Reading': {
-                'Entities': [
-                    {
-                        'Name': 'CrocodileCrack',
-                        'Confidence': 0.17722677,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LatCrack', 
-                        'Confidence': 0.07661053,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LongCrack', 
-                        'Confidence': 0.6557837,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Pothole',
-                        'Confidence': 0.14074452,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Lineblur',
-                        'Confidence': 0.09903459,
-                        'Severity': 1.0,
-                        'Present': False,
-                    }
-                ],
-                'Latitude': -37.8714232,
-                'Longitude': 145.2450816,
-                'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
-            },
+                'AnnotationTimestamp': 0,
+                'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
+                'ReadingID': 78,
+                'Type': 'PredictionReading',
+                'Reading': {
+                    'Entities': [
+                        {
+                            'Name': 'CrocodileCrack',
+                            'Confidence': 0.17722677,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'LatCrack', 
+                            'Confidence': 0.07661053,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'LongCrack', 
+                            'Confidence': 0.6557837,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'Pothole',
+                            'Confidence': 0.14074452,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'Lineblur',
+                            'Confidence': 0.09903459,
+                            'Severity': 1.0,
+                            'Present': False,
+                        }
+                    ],
+                    'Latitude': -37.8714232,
+                    'Longitude': 145.2450816,
+                    'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
+                },
             'RouteID': '45',
             'Timestamp': 1616116106935,
         }}

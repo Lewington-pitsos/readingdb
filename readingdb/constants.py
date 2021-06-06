@@ -81,6 +81,8 @@ class PredictionReadingKeys(ImageReadingKeys):
     IS_GOOD_CONDITION = 'IsGoodCondition'
     
     ENTITIES = 'Entities'
+    
+    ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
 
 DEFAULT_ANNOTATOR_NAME = "LoukaSean"
-ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"
+DEFAULT_ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"
