@@ -1,9 +1,8 @@
 import abc
 from os import read
+from typing import Any, Dict, List
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict, List
-
 from readingdb.constants import *
 from readingdb.entities import *
 from readingdb.clean import encode_float, decode_bool, decode_float
@@ -48,9 +47,7 @@ class ImageReading(Reading):
 
     def item_data(self):
         data = super().item_data()
-
         data[ReadingKeys.READING] = {}
-
         self.add_file_data(data[ReadingKeys.READING])
 
         return data
@@ -97,8 +94,12 @@ class PositionReading(Reading):
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
 
-        item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LATITUDE])
-        item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE])
+        item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(
+            item[ReadingKeys.READING][PositionReadingKeys.LATITUDE]
+        )
+        item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(
+            item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE]
+        )
 
 class PredictionReading(ImageReading, PositionReading):
     def __init__(
@@ -110,6 +111,8 @@ class PredictionReading(ImageReading, PositionReading):
         long: int,
         url: str,
         entities: List[Entity],
+        # annotator_id: str,
+        # annotation_date: int,
         uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
@@ -155,8 +158,6 @@ def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
 
-
-
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
@@ -168,8 +169,6 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE],
         )
     elif reading_type == ReadingTypes.IMAGE:
-
-
         return ImageReading(
             reading[ReadingKeys.READING_ID],
             reading[ReadingRouteKeys.ROUTE_ID],
@@ -185,10 +184,9 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         for key in ENTITY_BIARIES:
             if key in reading_data:
                 binaries[key] = reading_data[key]
-
- 
+        
         entities = []
-
+        
         for e in reading_data[PredictionReadingKeys.ENTITIES]:
             entities.append(Entity(
                 e[EntityKeys.NAME],

@@ -302,7 +302,7 @@ class TestDB(unittest.TestCase):
         route_id = '103'
         self.db.create_reading_db()
         self.db.max_page_readings = 100
-        self.db.put_route(Route('3', route_id, 123617823))
+        self.db.put_route(Route('3', route_id, 12, 3617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -340,16 +340,15 @@ class TestDB(unittest.TestCase):
         newReadings = set([r['ReadingID'] for r in page2]) - set([r['ReadingID'] for r in page1]) - set([r['ReadingID'] for r in page0])
         self.assertEqual(len(newReadings), 50)
 
-
-
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()
         tables = self.db.all_tables()
-        self.assertEqual(len(tables), 2)
+        self.assertEqual(len(tables), 3)
 
         self.db.teardown_reading_db()
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 0)
+        
 
     def tearDown(self):
         tables = self.db.all_tables()
