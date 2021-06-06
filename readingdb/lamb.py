@@ -15,6 +15,7 @@ logger.setLevel(logging.INFO)
 # Generic Event Keys
 EVENT_TYPE = 'Type'
 EVENT_ACCESS_TOKEN = 'AccessToken'
+EVENT_PREDICTIONS = "Predictions"
 
 # Event Types
 EVENT_GET_ROUTE = 'GetRoute'
@@ -25,6 +26,7 @@ EVENT_GET_PAGINATED_READINGS = 'GetPaginatedReadings'
 EVENT_GET_READINGS_ASYNC = 'GetReadingsAsync'
 EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+EVENT_SAVE_PREDICTIONS = 'SavePredictions'
 EVENT_BUCKET_KEY = 'BucketKey'
 
 # Generic Response Keys
@@ -181,6 +183,25 @@ def handler(event: Dict[str, Any], context):
         routeName = event[EVENT_ROUTE_NAME] if EVENT_ROUTE_NAME in event else None
 
         readings = api.save_new_route(bucket, key, routeName)
+        return success_response(readings)
+
+    elif event_name == EVENT_SAVE_PREDICTIONS:
+        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        if err_resp:
+            return err_resp
+        user_id, err_resp = get_key(event, RouteKeys.USER_ID)
+        if err_resp:
+            return err_resp
+        readings, err_resp = get_key(event, EVENT_PREDICTIONS)
+        if err_resp:
+            return err_resp
+
+        readings = api.save_predictions(
+            readings, 
+            route_id,
+            user_id,
+            save_imgs=False
+        )
         return success_response(readings)
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:

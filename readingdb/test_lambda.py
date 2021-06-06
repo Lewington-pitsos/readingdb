@@ -98,6 +98,41 @@ class TestBasic(TestLambda):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_save_predictions_event(self):
+        resp = handler({
+            'Type': 'SavePredictions',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key RouteID missing from event'
+        }, resp)
+
+        resp = handler({
+            'Type': 'SavePredictions',
+            'RouteID': "1721739812-1238123",
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key UserID missing from event'
+        }, resp)
+
+        resp = handler({
+            'Type': 'SavePredictions',
+            'RouteID': "1721739812-1238123",
+            'UserID': 'asbdasd-asdasvdy',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key Predictions missing from event'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_paginated_readings_event(self):
         resp = handler({
             'Type': 'GetPaginatedReadings',
@@ -210,6 +245,46 @@ class TestLambdaW(TestLambdaRW):
             'Status': 'Success',
             'Body': None
         }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_uploads_predictions(self):
+        with open('readingdb/test_data/gps_img_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 116)
+
+
+        with open('readingdb/test_data/ftg_imgs.json') as f:
+            pred_json = json.load(f)
+
+        for reading in pred_json:
+            reading['Reading']['ImageFileName'] = "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_49_386-25.jpg"
+
+        resp = handler({
+            'Type': 'SavePredictions',
+            'RouteID': r.id,
+            'UserID': self.user_id,
+            'Predictions': pred_json,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 138)
 
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
