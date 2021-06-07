@@ -8,8 +8,6 @@ from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
-import random
-import string
 import uuid
 
 from readingdb.db import DB
@@ -127,10 +125,16 @@ class API(DB, ReadingDB):
         
         return False
 
-    def save_predictions(self, readings: List[Dict[str, Any]], route_id: int, user_id: str, save_imgs: bool = True) -> None:
+    def save_predictions(
+        self, 
+        readings: List[Dict[str, Any]], 
+        route_id: int, 
+        user_id: str, 
+        save_imgs: bool = True
+    ) -> None:
         if not save_imgs:
-            existing_readings = self.all_route_readings(route_id)
-
+            existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
+            print(existing_readings)
             for r in readings:
                 for er in existing_readings:
                     if self.__same_image(r, er):
@@ -138,7 +142,6 @@ class API(DB, ReadingDB):
                         break
                 else:
                     raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
-            
         
         self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
         self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
@@ -163,14 +166,17 @@ class API(DB, ReadingDB):
 
         return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
 
-    def all_route_readings(self, route_id: str, key: str = None) -> List[Dict[str, Any]]:
+    def all_route_readings(self, route_id: str, key: str = None, size_limit = None) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
         self.__inject_presigned_urls(readings)
         
+        if size_limit is None:
+            size_limit = self.size_limit
+
         # Lambda cannot send responses that are larger than
         # 6 mb in size. The JSON for the readins will often
         # be larger than 6mb.
-        if sys.getsizeof(readings) > self.size_limit:
+        if sys.getsizeof(readings) > size_limit:
             s3_key = str(uuid.uuid1()) + '.json' if key is None else key
             self.s3_client.put_object(
                 Body=str(json.dumps(readings)),
@@ -261,11 +267,6 @@ class API(DB, ReadingDB):
             object_name,
         )
 
-    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
-        e[ReadingKeys.READING_ID] = reading_id
-        e[ReadingRouteKeys.ROUTE_ID] = route_id
-        return json_to_reading(entry_type, e)
-
     def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[AbstractReading]:
         finalized: List[AbstractReading] = []
         n_entries = len(entries)
@@ -280,3 +281,8 @@ class API(DB, ReadingDB):
         self.put_readings(finalized)
 
         return finalized
+
+    def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
+        e[ReadingKeys.READING_ID] = reading_id
+        e[ReadingRouteKeys.ROUTE_ID] = route_id
+        return json_to_reading(entry_type, e)

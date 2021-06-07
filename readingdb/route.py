@@ -3,7 +3,7 @@ import time
 from typing import Any, Dict
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, ddb_to_dict, json_to_reading
+from readingdb.reading import AbstractReading, ddb_to_dict
 
 class Route():
     MAX_NAME_LENGTH = 21
@@ -37,6 +37,8 @@ class Route():
                 
         item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
         item[RouteKeys.TIMESTAMP] = int(item[RouteKeys.TIMESTAMP])
+        if PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
+            item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
 
         if RouteKeys.LAST_UPDATED in item:
             item[RouteKeys.LAST_UPDATED] = int(item[RouteKeys.LAST_UPDATED])

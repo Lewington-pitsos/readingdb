@@ -128,29 +128,81 @@
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-import os
-from readingdb.unzipper import Unzipper
-from readingdb.endpoints import *
+# import os
+# from readingdb.unzipper import Unzipper
+# from readingdb.endpoints import *
 
-root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
+# root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
 
-subdirs = [root + r for r in  os.listdir(root)]
+# subdirs = [root + r for r in  os.listdir(root)]
 
-files = []
+# files = []
 
-for s in subdirs:
-    if os.path.isdir(s):
-        subsubdirs = [s + '/' + r for r in os.listdir(s)]
-        for ss in subsubdirs:
-            files.append(ss)
-    else:
-        files.append(s)
+# for s in subdirs:
+#     if os.path.isdir(s):
+#         subsubdirs = [s + '/' + r for r in os.listdir(s)]
+#         for ss in subsubdirs:
+#             files.append(ss)
+#     else:
+#         files.append(s)
 
-z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
-z.process_local(
-    '8f647285-58a7-4d7f-af64-238db703e38e',
-    'route_2021_04_29_14_15_34_999', 
-    'mobileappsessions172800-main', 
-    files,
-    'roora_test_route'
-)
+# z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+# z.process_local(
+#     '8f647285-58a7-4d7f-af64-238db703e38e',
+#     'route_2021_04_29_14_15_34_999', 
+#     'mobileappsessions172800-main', 
+#     files,
+#     'roora_test_route'
+# )
+
+# import uuid
+# from readingdb.annotator import Annotator
+# from readingdb.constants import AnnotatorKeys, Database, REGION_NAME
+# from botocore.config import Config
+# from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT
+# from readingdb.api import API
+# api = API(
+#     DYNAMO_ENDPOINT,
+#     size_limit=0,
+#     bucket=BUCKET,
+#     tmp_bucket=BUCKET,
+#     config=Config(
+#         region_name=REGION_NAME
+#     )
+# )
+
+# api.db.create_table(
+#     TableName=Database.ANNOTATOR_TABLE_NAME,
+#     KeySchema=[
+#         {
+#             'AttributeName':  AnnotatorKeys.ANNOTATOR_ID,
+#             'KeyType': 'HASH'  
+#         },
+#         {
+#             'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
+#             'KeyType': 'RANGE'  
+#         }
+#     ],
+#     AttributeDefinitions=[
+#         {
+#             'AttributeName': AnnotatorKeys.ANNOTATOR_ID,
+#             'AttributeType': 'S'
+#         },
+#         {
+#             'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
+#             'AttributeType': 'S'  
+#         }
+#     ],
+#     ProvisionedThroughput={
+#         'ReadCapacityUnits': 50,
+#         'WriteCapacityUnits': 50
+#     }
+# )
+
+# api.put_annotator(Annotator(
+#     str(uuid.uuid1()),
+#     "Louka and Sean",
+#     "FDS",
+#     "Human",
+#     "99bf4519-85d9-4726-9471-4c91a7677925"
+# ))

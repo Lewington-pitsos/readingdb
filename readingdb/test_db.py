@@ -1,4 +1,3 @@
-import datetime
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -23,7 +22,6 @@ class TestDB(unittest.TestCase):
         self.db.create_reading_db()
         readings = self.db.routes_for_user('103')
         self.assertEqual(len(readings), 0)
-
         reading_time = int(time.time())
 
         finalized = []
@@ -38,7 +36,6 @@ class TestDB(unittest.TestCase):
                 )
             )
         self.db.put_readings(finalized)
-        
         readings = self.db.all_route_readings('xxxa')
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
@@ -70,7 +67,8 @@ class TestDB(unittest.TestCase):
                     Entity('Crocodile Cracks', 0.432, True, 1.876),
                     Entity('Rutting', 0.432, True, 2.1),
                     Entity('Ravelling', 0.432, True, 0.1),
-                ]
+                ],
+                annotation_timestamp=1231238
             )
         )
     
@@ -124,7 +122,6 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('3')
         self.assertEqual(routes[0]['LastUpdated'], last_update_timestamp)
 
-
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_updates_route_written_date_on_update(self):
         self.db.create_reading_db()
@@ -154,7 +151,6 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user(user_id)
         second_status_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_status_timestamp, status_timestamp)
-
 
         self.db.update_route_name(route_id, user_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
@@ -239,46 +235,49 @@ class TestDB(unittest.TestCase):
             'Row': 30,
         }
    
-        expected_entry = {'PredictionReading': {
-            'ReadingID': 78,
-            'Type': 'PredictionReading',
-            'Reading': {
-                'Entities': [
-                    {
-                        'Name': 'CrocodileCrack',
-                        'Confidence': 0.17722677,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LatCrack', 
-                        'Confidence': 0.07661053,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LongCrack', 
-                        'Confidence': 0.6557837,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Pothole',
-                        'Confidence': 0.14074452,
-                        'Severity': 1.0,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Lineblur',
-                        'Confidence': 0.09903459,
-                        'Severity': 1.0,
-                        'Present': False,
-                    }
-                ],
-                'Latitude': -37.8714232,
-                'Longitude': 145.2450816,
-                'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
-            },
+        expected_entry = {
+            'PredictionReading': {
+                'AnnotationTimestamp': 0,
+                'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
+                'ReadingID': 78,
+                'Type': 'PredictionReading',
+                'Reading': {
+                    'Entities': [
+                        {
+                            'Name': 'CrocodileCrack',
+                            'Confidence': 0.17722677,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'LatCrack', 
+                            'Confidence': 0.07661053,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'LongCrack', 
+                            'Confidence': 0.6557837,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'Pothole',
+                            'Confidence': 0.14074452,
+                            'Severity': 1.0,
+                            'Present': False,
+                        },
+                        {
+                            'Name': 'Lineblur',
+                            'Confidence': 0.09903459,
+                            'Severity': 1.0,
+                            'Present': False,
+                        }
+                    ],
+                    'Latitude': -37.8714232,
+                    'Longitude': 145.2450816,
+                    'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
+                },
             'RouteID': '45',
             'Timestamp': 1616116106935,
         }}
@@ -302,7 +301,7 @@ class TestDB(unittest.TestCase):
         route_id = '103'
         self.db.create_reading_db()
         self.db.max_page_readings = 100
-        self.db.put_route(Route('3', route_id, 123617823))
+        self.db.put_route(Route('3', route_id, 12, 3617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -340,12 +339,10 @@ class TestDB(unittest.TestCase):
         newReadings = set([r['ReadingID'] for r in page2]) - set([r['ReadingID'] for r in page1]) - set([r['ReadingID'] for r in page0])
         self.assertEqual(len(newReadings), 50)
 
-
-
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()
         tables = self.db.all_tables()
-        self.assertEqual(len(tables), 2)
+        self.assertEqual(len(tables), 3)
 
         self.db.teardown_reading_db()
         tables = self.db.all_tables()

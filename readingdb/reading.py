@@ -1,12 +1,11 @@
 import abc
 from os import read
+from typing import Any, Dict, List
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
-from typing import Any, Dict, List
-
 from readingdb.constants import *
 from readingdb.entities import *
-from readingdb.clean import encode_float, decode_bool, decode_float
+from readingdb.clean import encode_as_float, decode_bool, decode_float
 
 class AbstractReading(abc.ABC):
     @abc.abstractmethod
@@ -23,7 +22,6 @@ class Reading(AbstractReading):
         self.route_id: str = route_id
         self.date: int = int(date) if isinstance(date, float) else date
         self.readingType: str = readingType
-
     def item_data(self):
         return {
             ReadingKeys.READING_ID: self.id,
@@ -31,7 +29,6 @@ class Reading(AbstractReading):
             ReadingKeys.TYPE: self.readingType,  
             ReadingKeys.TIMESTAMP: self.date, 
         }
-
     @classmethod
     def decode(cls, item: Dict[str, Any]):
         item[ReadingKeys.TIMESTAMP] = int(item[ReadingKeys.TIMESTAMP])
@@ -48,9 +45,7 @@ class ImageReading(Reading):
 
     def item_data(self):
         data = super().item_data()
-
         data[ReadingKeys.READING] = {}
-
         self.add_file_data(data[ReadingKeys.READING])
 
         return data
@@ -87,8 +82,8 @@ class PositionReading(Reading):
         data = super().item_data()
 
         data[ReadingKeys.READING] = {
-            PositionReadingKeys.LATITUDE: encode_float(self.lat),
-            PositionReadingKeys.LONGITUDE: encode_float(self.long)
+            PositionReadingKeys.LATITUDE: encode_as_float(self.lat),
+            PositionReadingKeys.LONGITUDE: encode_as_float(self.long)
         }
 
         return data
@@ -97,8 +92,12 @@ class PositionReading(Reading):
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
 
-        item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LATITUDE])
-        item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE])
+        item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(
+            item[ReadingKeys.READING][PositionReadingKeys.LATITUDE]
+        )
+        item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(
+            item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE]
+        )
 
 class PredictionReading(ImageReading, PositionReading):
     def __init__(
@@ -110,13 +109,17 @@ class PredictionReading(ImageReading, PositionReading):
         long: int,
         url: str,
         entities: List[Entity],
+        annotation_timestamp: int,
+        annotator_id: str = DEFAULT_ANNOTATOR_ID,
         uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
-
+        
         self.url = url
         self.uri = uri
         self.entites: List[Entity] = entities
+        self.annotator_id = annotator_id
+        self.annotation_timestamp = annotation_timestamp
     
     @classmethod
     def decode(cls, item: Dict[str, Any]):
@@ -127,15 +130,22 @@ class PredictionReading(ImageReading, PositionReading):
             e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
             e[EntityKeys.SEVERITY] = decode_float(e[EntityKeys.SEVERITY]) if EntityKeys.SEVERITY in e else 1.0
 
+        if not PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
+            item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = 0
+        else:
+            item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = decode_float(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
+            
     def item_data(self):
         data = PositionReading.item_data(self)
-
         self.add_file_data(data[ReadingKeys.READING])
 
         encoded_entities = []
         for e in self.entites:
             encoded_entities.append(e.encode())
         data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
+
+        data[AnnotatorKeys.ANNOTATOR_ID] = self.annotator_id
+        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = encode_as_float(self.annotation_timestamp)
 
         return data
 
@@ -145,18 +155,12 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
     ReadingTypes.PREDICTION: PredictionReading,
     ReadingTypes.ANNOTATION: PredictionReading,
 }
-
 def ddb_to_dict(reading_type, reading) -> None:
     READING_TYPE_MAP[reading_type].decode(reading)
-
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
-
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
-
-
-
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
@@ -168,8 +172,6 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE],
         )
     elif reading_type == ReadingTypes.IMAGE:
-
-
         return ImageReading(
             reading[ReadingKeys.READING_ID],
             reading[ReadingRouteKeys.ROUTE_ID],
@@ -185,10 +187,9 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         for key in ENTITY_BIARIES:
             if key in reading_data:
                 binaries[key] = reading_data[key]
-
- 
+        
         entities = []
-
+        
         for e in reading_data[PredictionReadingKeys.ENTITIES]:
             entities.append(Entity(
                 e[EntityKeys.NAME],
@@ -206,7 +207,9 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_data[PositionReadingKeys.LONGITUDE],
             reading_data[ImageReadingKeys.FILENAME],
             entities,
-            get_uri(reading_data)
+            annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] if PredictionReadingKeys.ANNOTATION_TIMESTAMP in reading else 0,
+            annotator_id=reading[AnnotatorKeys.ANNOTATOR_ID] if AnnotatorKeys.ANNOTATOR_ID in reading else DEFAULT_ANNOTATOR_ID,
+            uri=get_uri(reading_data)
         )
     else:
         raise ValueError(f'unrecognized reading type {reading_type} for reading {reading}')

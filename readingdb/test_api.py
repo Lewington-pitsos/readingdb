@@ -1,7 +1,6 @@
 import json
 import os
 from unittest import mock
-from readingdb.s3uri import S3Uri
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
@@ -87,7 +86,7 @@ class TestAPI(unittest.TestCase):
 
         page0, _ = self.api.paginated_route_readings(route.id)
         self.assertEqual(22, len(page0))
-        self.assertIn("PresignedURL", page0[0]["Reading"])
+        self.assertIn('PresignedURL', page0[0]['Reading'])
 
     def test_handles_large_queries_correctly(self):
         route_id = '103'
@@ -338,11 +337,7 @@ class TestAPI(unittest.TestCase):
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
-        r = Route(
-            user_id,
-            route_id,
-            0
-        )
+        r = Route(user_id, route_id, 0)
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)        
@@ -358,7 +353,15 @@ class TestAPI(unittest.TestCase):
         for r in readings:
             self.assertEqual(
                 {'Bucket': 'test_bucket', 'Key': 'asdasdasdasdreadingdb/test_data/images/road1.jpg'}, 
-                r['Reading']['S3Uri']
+                r['Reading']['S3Uri'],
+            )
+            self.assertEqual(   
+                r['AnnotationTimestamp'],
+                2378910
+            )
+            self.assertEqual(   
+                r['AnnotatorID'],
+                '99994519-85d9-4726-9471-4c91a7677925'
             )
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
@@ -386,37 +389,39 @@ class TestAPI(unittest.TestCase):
             'UserID': 'asdy7asdh',
             'SampleData': {
                 'PredictionReading': {
-                'Reading': {
-                    'ImageFileName': 'readingdb/test_data/images/road1.jpg',
-                    'S3Uri': {
-                        'Bucket': self.bucket_name,
-                        'Key': route.id + 'readingdb/test_data/images/road1.jpg'
+                    'AnnotationTimestamp': 0,
+                    'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
+                    'Reading': {
+                        'ImageFileName': 'readingdb/test_data/images/road1.jpg',
+                        'S3Uri': {
+                            'Bucket': self.bucket_name,
+                            'Key': route.id + 'readingdb/test_data/images/road1.jpg'
+                        },
+                        'Entities': [
+                            {'Confidence': 0.6557837,
+                            'Name': 'LongCrack',
+                            'Severity': 1.3,
+                            'Present': False},
+                            {'Confidence': 0.07661053,
+                            'Name': 'LatCrack',
+                            'Severity': 1.03,
+                            'Present': False},
+                            {'Confidence': 0.17722677,
+                            'Name': 'CrocodileCrack',
+                            'Severity': 1.34,
+                            'Present': False},
+                            {'Confidence': 0.14074452,
+                            'Name': 'Pothole',
+                            'Severity': 1.12,
+                            'Present': False},
+                            {'Confidence': 0.09903459,
+                            'Name': 'Lineblur',
+                            'Severity': 1.1,
+                            'Present': False}
+                        ],
+                        'Longitude': 145.2450816,
+                        'Latitude': -37.8714232,
                     },
-                    'Entities': [
-                        {'Confidence': 0.6557837,
-                        'Name': 'LongCrack',
-                        'Severity': 1.3,
-                        'Present': False},
-                        {'Confidence': 0.07661053,
-                        'Name': 'LatCrack',
-                        'Severity': 1.03,
-                        'Present': False},
-                        {'Confidence': 0.17722677,
-                        'Name': 'CrocodileCrack',
-                        'Severity': 1.34,
-                        'Present': False},
-                        {'Confidence': 0.14074452,
-                        'Name': 'Pothole',
-                        'Severity': 1.12,
-                        'Present': False},
-                        {'Confidence': 0.09903459,
-                        'Name': 'Lineblur',
-                        'Severity': 1.1,
-                        'Present': False}
-                    ],
-                    'Longitude': 145.2450816,
-                    'Latitude': -37.8714232,
-                },
                 'ReadingID': user_routes[0]['SampleData']['PredictionReading']['ReadingID'],
                 'Type': 'PredictionReading',
                 'RouteID': route.id,

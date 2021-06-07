@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-def encode_float(value: float) -> Decimal:
+def encode_as_float(value: float) -> Decimal:
     return Decimal(str(value))
 
 def encode_bool(value: bool) -> int:

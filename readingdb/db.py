@@ -1,4 +1,5 @@
 from random import sample
+from readingdb.annotator import Annotator
 import time
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
@@ -39,7 +40,11 @@ class DB():
     def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
 
-    def create_reading_db(self, readCapacity=500, writeCapacity=500) -> Tuple[Any, Any]:
+    def create_reading_db(
+        self, 
+        readCapacity=500, 
+        writeCapacity=500
+    ) -> Tuple[Any, Any]:
         reading_table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
@@ -96,8 +101,36 @@ class DB():
                 'WriteCapacityUnits': 50
             }
         )
+        
+        annotator_table = self.db.create_table(
+            TableName=Database.ANNOTATOR_TABLE_NAME,
+            KeySchema=[
+                {
+                    'AttributeName':  AnnotatorKeys.ANNOTATOR_ID,
+                    'KeyType': 'HASH'  
+                },
+                {
+                    'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
+                    'KeyType': 'RANGE'  
+                }
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': AnnotatorKeys.ANNOTATOR_ID,
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
+                    'AttributeType': 'S'  
+                }
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 50,
+                'WriteCapacityUnits': 50
+            }
+        )
 
-        return (reading_table, route_table)
+        return (reading_table, route_table, annotator_table)
 
     def delete_table(self, table_name) -> None:
         self.db.Table(table_name).delete()
@@ -105,6 +138,7 @@ class DB():
     def teardown_reading_db(self) -> None:
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
+        self.delete_table(Database.ANNOTATOR_TABLE_NAME)
 
     def put_route(self, route: Route): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
@@ -121,6 +155,11 @@ class DB():
     def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
+        return response
+
+    def put_annotator(self, annotator: Annotator):
+        table = self.db.Table(Database.ANNOTATOR_TABLE_NAME)
+        response = table.put_item(Item=annotator.item_data())
         return response
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
