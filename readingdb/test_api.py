@@ -210,6 +210,8 @@ class TestAPI(unittest.TestCase):
                 'Latitude': -37.8714232,
             },
             'ReadingID': 0,
+            'AnnotatorID': '3f01d5ec-c80b-11eb-acfa-02428ee80691',
+            'AnnotationTimestamp': 1623124571562,
             'Type': 'PredictionReading',
             'RouteID': route.id,
             'Timestamp': 1616116106935,
@@ -389,8 +391,8 @@ class TestAPI(unittest.TestCase):
             'UserID': 'asdy7asdh',
             'SampleData': {
                 'PredictionReading': {
-                    'AnnotationTimestamp': 0,
-                    'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
+                    'AnnotationTimestamp': 1623124150112,
+                    'AnnotatorID': '3f01d5ec-c80b-11eb-acfa-02428ee80691',
                     'Reading': {
                         'ImageFileName': 'readingdb/test_data/images/road1.jpg',
                         'S3Uri': {

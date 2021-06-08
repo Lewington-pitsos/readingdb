@@ -198,6 +198,8 @@ class TestDB(unittest.TestCase):
         sample_entry = {
             'ReadingID': 78,
             'Type': 'PredictionReading',
+            'AnnotationTimestamp': 2136789,
+            'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
             'Reading': {
                 'Entities': [
                     {
@@ -238,7 +240,7 @@ class TestDB(unittest.TestCase):
    
         expected_entry = {
             'PredictionReading': {
-                'AnnotationTimestamp': 0,
+                'AnnotationTimestamp': 2136789,
                 'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
                 'ReadingID': 78,
                 'Type': 'PredictionReading',

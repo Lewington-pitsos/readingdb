@@ -134,7 +134,6 @@ class API(DB, ReadingDB):
     ) -> None:
         if not save_imgs:
             existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
-            print(existing_readings)
             for r in readings:
                 for er in existing_readings:
                     if self.__same_image(r, er):

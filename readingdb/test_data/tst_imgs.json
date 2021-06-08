@@ -1,6 +1,8 @@
 [
     {
         "Timestamp": 1616116106935,
+        "AnnotatorID": "3f01d5ec-c80b-11eb-acfa-02428ee80691",
+        "AnnotationTimestamp": 1623124150112,
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
@@ -41,6 +43,8 @@
     },
     {
         "Timestamp": 1616116106935,
+        "AnnotatorID": "3f01d5ec-c80b-11eb-acfa-02428ee80691",
+        "AnnotationTimestamp": 1623124150912,
         "Reading": {
             "Latitude": -37.8714232,
             "Longitude": 145.2450816,
@@ -83,6 +87,8 @@
     },
     {
         "Timestamp": 1616117106935,
+        "AnnotatorID": "3f01d5ec-c80b-11eb-acfa-02428ee80691",
+        "AnnotationTimestamp": 1623124154912,
         "Reading": {
             "Latitude": -37.871398593720286,
             "Longitude": 145.24268514520602,
