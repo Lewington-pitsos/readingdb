@@ -1,5 +1,6 @@
 import json
 import sys
+from readingdb import s3uri
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
@@ -209,9 +210,39 @@ class API(DB, ReadingDB):
         self.__inject_presigned_urls(readings)
         return readings, next_key
 
-    def delete_route(self, route_id: str, user_sub: str) -> None:
-        pass
+    def delete_route(self, route_id: str, user_sub: str) -> Any:
+        deletedImgCount = 0
 
+        readings = self.all_route_readings(route_id)
+
+        for r in readings:
+            if r[ReadingKeys.TYPE] == ReadingTypes.PREDICTION or \
+                r[ReadingKeys.TYPE] == ReadingTypes.IMAGE:
+                reading = r[ReadingKeys.READING]
+                if ImageReadingKeys.URI in reading:
+                    uri = reading[ImageReadingKeys.URI]
+                    resp = self.s3_client.delete_object(
+                        Bucket=uri[S3Path.BUCKET],
+                        Key=uri[S3Path.KEY]
+                    )
+
+
+        deletedReadingCount = self.delete_reading_items(
+            route_id, 
+            [r[ReadingKeys.READING_ID] for r in readings]
+        )
+
+        table = self.db.Table('Routes')
+        
+        table.delete_item(
+            Key={
+                ReadingRouteKeys.ROUTE_ID: route_id,
+                RouteKeys.USER_ID: user_sub
+            }
+        )
+
+        return (deletedReadingCount, deletedImgCount)
+        
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in route:
             for _, sample in route[RouteKeys.SAMPLE_DATA].items():

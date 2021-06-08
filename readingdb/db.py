@@ -35,10 +35,20 @@ class DB():
         # use paginator on queries that stand a chance of returning
         # > 1MB of data.
         self.paginator = self.db.meta.client.get_paginator('query')
+        self.scan_paginator = self.db.meta.client.get_paginator('scan')
         self.max_page_readings = max_page_readings
 
     def all_tables(self) -> List[Any]:
         return list(self.db.tables.all())
+
+    def all_known_users(self) -> List[str]: 
+        user_ids = set()
+        pg = self.scan_paginator.paginate(TableName=Database.ROUTE_TABLE_NAME)
+        for page in pg:
+            for item in page[self.ITEM_KEY]:
+                user_ids.add(item[RouteKeys.USER_ID])
+
+        return list(user_ids)
 
     def create_reading_db(
         self, 
@@ -258,4 +268,15 @@ class DB():
                     ':r': status,
                     ':l': int(time.time())
                 },
+            )
+
+    def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
+        table = self.db.Table('Readings')
+        
+        for r in reading_ids:
+            table.delete_item(
+                Key={
+                    ReadingRouteKeys.ROUTE_ID: route_id,
+                    ReadingKeys.READING_ID: r
+                }
             )

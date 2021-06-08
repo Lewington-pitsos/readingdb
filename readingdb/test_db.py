@@ -47,6 +47,19 @@ class TestDB(unittest.TestCase):
         })
         self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
 
+    def test_gets_all_users(self):
+        self.db.create_reading_db()
+        self.assertEqual(0, len(self.db.all_known_users()))
+
+        self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
+        self.assertEqual(1, len(self.db.all_known_users()))
+        self.assertEqual('someuser_id', self.db.all_known_users()[0])
+
+        self.db.put_route(Route('one-armed-larry', '2123y1h`278', 123617823))
+        self.db.put_route(Route('one-armed-larry', '87218t238', 123617823))
+        self.db.put_route(Route('jonny-the-wrench', '929298227', 123617823))
+        self.assertEqual(3, len(self.db.all_known_users()))
+
     def test_saves_readings_with_severity(self):
         self.db.create_reading_db()
         readings = self.db.routes_for_user('103')

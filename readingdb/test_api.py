@@ -1,5 +1,7 @@
 import json
 import os
+import time
+from typing import List
 from unittest import mock
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
@@ -456,3 +458,69 @@ class TestAPI(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
         ]))
+
+    def test_deletes_route(self):
+        user_id = 'aghsghavgas'
+        s3 = boto3.resource(
+            's3',
+            region_name=self.region_name,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key
+        )
+        bucket = s3.Bucket(self.bucket_name)
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        
+        self.assertEqual(0, len(api.routes_for_user(user_id)))
+        self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
+
+        route = api.save_route(route_spec, user_id)
+        self.assertEqual(1, len(api.routes_for_user(user_id)))
+        self.assertEqual(22, len(api.all_route_readings(route.id)))
+        self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
+
+        api.delete_route(route.id, user_id)
+        self.assertEqual(0, len(api.routes_for_user(user_id)))
+        self.assertEqual(0, len(api.all_route_readings(route.id)))
+        self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
+        
+        route = api.save_route(route_spec, user_id)
+        self.assertEqual(1, len(api.routes_for_user(user_id)))
+        
+        user_id2 = "9a8a7ssa7s"
+        route2 = api.save_route(route_spec, user_id)
+        route3 = api.save_route(route_spec, user_id2)
+        self.assertEqual(2, len(api.routes_for_user(user_id)))
+        self.assertEqual(1, len(api.routes_for_user(user_id2)))
+        self.assertEqual(22, len(api.all_route_readings(route.id)))
+        self.assertEqual(22, len(api.all_route_readings(route2.id)))
+        self.assertEqual(22, len(api.all_route_readings(route3.id)))
+        self.assertEqual(7, len(self.__get_bucket_objects(bucket)))
+        
+        api.delete_route(route.id, user_id)
+        self.assertEqual(1, len(api.routes_for_user(user_id)))
+        self.assertEqual(1, len(api.routes_for_user(user_id2)))
+        self.assertEqual(6, len(self.__get_bucket_objects(bucket)))
+
+        api.delete_route(route2.id, user_id)
+        self.assertEqual(0, len(api.routes_for_user(user_id)))
+        self.assertEqual(1, len(api.routes_for_user(user_id2)))
+        self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
+        
+        api.delete_route(route3.id, user_id2)
+        self.assertEqual(0, len(api.routes_for_user(user_id)))
+        self.assertEqual(0, len(api.routes_for_user(user_id2)))
+        self.assertEqual(0, len(api.all_route_readings(route.id)))
+        self.assertEqual(0, len(api.all_route_readings(route2.id)))
+        self.assertEqual(0, len(api.all_route_readings(route3.id)))
+        self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
+
+
+    def __get_bucket_objects(self, bucket: str) -> List[str]:
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        return bucket_objects
