@@ -207,7 +207,8 @@ class TestLambdaRW(TestLambda):
             self.access_key,
             self.secret_key,
             self.bucket_name
-        )
+        )      
+
 
 class TestLambdaW(TestLambdaRW):
     @unittest.skip('This make an actual call to fargate')
@@ -262,7 +263,6 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 116)
 
-
         with open('readingdb/test_data/ftg_imgs.json') as f:
             pred_json = json.load(f)
 
@@ -285,6 +285,26 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 138)
+    
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_uploads_predictions(self):
+        with open('readingdb/test_data/sydney_route_short.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 713)
+        self.assertIsNone(resp['Body']['PaginationKey'])
 
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
@@ -308,7 +328,7 @@ class TestLambdaR(TestLambdaRW):
         self.twenty_route = r
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_paginated_readings_for_user(self):
+    def test_pagination_filters_non_prediction_readings(self):
         resp = handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
@@ -316,9 +336,21 @@ class TestLambdaR(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 116)
+        self.assertEqual(len(resp['Body']['Readings']), 0)
         self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_paginated_readings_for_user(self):
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': self.twenty_route.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 1)
+        self.assertIsNone(resp['Body']['PaginationKey'])
+        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.twenty_route.id)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_paginated_readings_with_start_key(self):
@@ -329,6 +361,7 @@ class TestLambdaR(TestLambdaRW):
         resp = handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
+            'PredictionOnly': False,
             'PaginationKey': key1,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -341,6 +374,7 @@ class TestLambdaR(TestLambdaRW):
         resp = handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
+            'PredictionOnly': False,
             'PaginationKey': key2,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)

@@ -15,7 +15,9 @@ logger.setLevel(logging.INFO)
 # Generic Event Keys
 EVENT_TYPE = 'Type'
 EVENT_ACCESS_TOKEN = 'AccessToken'
-EVENT_PREDICTIONS = "Predictions"
+EVENT_PREDICTIONS = 'Predictions'
+EVENT_ANNOTATOR_PREFERENCE = 'AnnotatorPreference'
+EVENT_PREDICTION_ONLY = 'PredictionOnly'
 
 # Event Types
 EVENT_GET_ROUTE = 'GetRoute'
@@ -148,12 +150,24 @@ def handler(event: Dict[str, Any], context):
         if route is None:
             return success_response(None)
 
-
         pagination_key, missing = get_key(event, Database.PAGINATION_KEY_NAME)
         if missing:
             pagination_key = None
 
-        readings, pagination_key = api.paginated_route_readings(route_id, pagination_key)
+        annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
+        if missing:
+            annotator_preference = [DEFAULT_ANNOTATOR_ID]
+
+        pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
+        if missing:
+            pred_only = True
+
+        readings, pagination_key = api.paginated_route_readings(
+            route_id,
+            last_key=pagination_key,
+            predictions_only=pred_only,
+            annotator_preference=annotator_preference, 
+        )
 
         return success_response({
             Database.READING_TABLE_NAME: readings,

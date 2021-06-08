@@ -577,7 +577,6 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(971, len(readings))
 
         preference = [
-            '3af9bfd2-c897-11eb-8b05-024221cba9cc',
             DEFAULT_ANNOTATOR_ID
         ]
         all_readings = []
@@ -608,5 +607,5 @@ class TestAPI(unittest.TestCase):
         self.assertIsNone(key)
         self.assertEqual(713, len(all_readings))
 
-        well_annotated = [r for r in all_readings if r['AnnotatorID'] == '3af9bfd2-c897-11eb-8b05-024221cba9cc']
+        well_annotated = [r for r in all_readings if r['AnnotatorID'] == DEFAULT_ANNOTATOR_ID]
         self.assertEqual(227, len(well_annotated))
