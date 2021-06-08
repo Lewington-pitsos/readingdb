@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import sys
 from readingdb import s3uri
@@ -166,15 +167,30 @@ class API(DB, ReadingDB):
 
         return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
 
-    def all_route_readings(self, route_id: str, key: str = None, size_limit = None) -> List[Dict[str, Any]]:
+    def all_route_readings(
+        self, 
+        route_id: str, 
+        key: str = None, 
+        size_limit = None,
+        predictions_only = False,
+        annotator_preference = None
+    ) -> List[Dict[str, Any]]:
         readings = super().all_route_readings(route_id)
+
+        if predictions_only:
+            readings = [r for r in readings if r['Type'] == ReadingTypes.PREDICTION]
+
+        if annotator_preference:
+            readings = self.__preferred_readings(annotator_preference, readings)
+
+
         self.__inject_presigned_urls(readings)
         
         if size_limit is None:
             size_limit = self.size_limit
 
         # Lambda cannot send responses that are larger than
-        # 6 mb in size. The JSON for the readins will often
+        # 6 mb in size. The JSON for the readings will often
         # be larger than 6mb.
         if sys.getsizeof(readings) > size_limit:
             s3_key = str(uuid.uuid1()) + '.json' if key is None else key
@@ -187,6 +203,15 @@ class API(DB, ReadingDB):
             return { S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key }
 
         return readings
+
+    def prediction_readings(self, route_id: str, key: str = None, size_limit: int = None)-> List[Dict[str, Any]]:
+        return self.all_route_readings(
+            route_id, 
+            key, 
+            size_limit,
+            predictions_only=True,
+            annotator_preference=[DEFAULT_ANNOTATOR_ID]
+        )
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         routes = super().routes_for_user(user_id)
@@ -243,6 +268,29 @@ class API(DB, ReadingDB):
 
         return (deletedReadingCount, deletedImgCount)
         
+    def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
+        reading_groups = defaultdict(lambda: [])
+
+        for r in readings:
+            print(r)
+            uri = r[ReadingKeys.READING][ImageReadingKeys.URI]
+            reading_groups[uri[S3Path.BUCKET] + '/' + uri[S3Path.KEY]].append(r)
+
+        final_readings = []
+        for g in reading_groups.values():
+            final_readings.append(sorted(
+                g,
+                key=lambda r: self.__annotator_precedence(preference, r[AnnotatorKeys.ANNOTATOR_ID])
+            )[0])
+            
+        return final_readings
+
+    def __annotator_precedence(self, annotators: List[str], annotator: str) -> int:
+        if not annotator in annotators:
+            return len(annotators)
+        
+        return annotators.index(annotator)
+
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in route:
             for _, sample in route[RouteKeys.SAMPLE_DATA].items():

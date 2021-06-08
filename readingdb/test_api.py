@@ -3,6 +3,7 @@ import os
 import time
 from typing import List
 from unittest import mock
+from readingdb import reading
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
@@ -517,10 +518,48 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(0, len(api.all_route_readings(route3.id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
 
-
     def __get_bucket_objects(self, bucket: str) -> List[str]:
         bucket_objects = []
         for my_bucket_object in bucket.objects.all():
             bucket_objects.append(my_bucket_object.key)
 
         return bucket_objects
+
+    def test_can_filter_moot_readings(self):
+        user_id = 'aghsghavgas'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        with open(self.current_dir + '/test_data/ann_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+
+        route = api.save_route(route_spec, user_id)
+        self.assertEqual(3, len(api.all_route_readings(route.id)))
+
+        readings = api.prediction_readings(route.id)
+        self.assertEqual(2, len(readings))
+
+        for r in readings:
+            if r['Reading']['ImageFileName'] == 'readingdb/test_data/images/road1.jpg':
+                self.assertEqual(r['AnnotatorID'], '99bf4519-85d9-4726-9471-4c91a7677925')
+            else:
+                self.assertEqual(r['AnnotatorID'], '3f01d5ec-c80b-11eb-acfa-02428ee80691')
+        
+
+    def test_can_filter_non_prediction_readings(self):
+        user_id = 'aghsghavgas'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+
+        route = api.save_route(route_spec, user_id)
+        self.assertEqual(116, len(api.all_route_readings(route.id)))
+        self.assertEqual(0, len(api.prediction_readings(route.id)))
+
+        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+
+        route = api.save_route(route_spec, user_id)
+        self.assertEqual(116, len(api.all_route_readings(route.id)))
+        self.assertEqual(0, len(api.prediction_readings(route.id)))
