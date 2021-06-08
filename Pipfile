@@ -11,6 +11,7 @@ tqdm = "*"
 moto = {extras = ["sqs"], version = "*"}
 pylint = "*"
 botocore = "*"
+googlemaps = "*"
 
 [dev-packages]
 

@@ -1,9 +1,8 @@
 import unittest
-import time
 
 from readingdb.format import *
 
-class TestFormatting(unittest.TestCase):
+class TestFormater(unittest.TestCase):
     def test_key_to_datetime(self):
         key = 'mocks/route45/2021_04_10_22_18_22_123-1.jpg'
         self.assertEqual(unix_from_key(key), 1618093102123)
