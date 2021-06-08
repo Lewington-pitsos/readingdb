@@ -68,7 +68,8 @@ class TestDB(unittest.TestCase):
                     Entity('Rutting', 0.432, True, 2.1),
                     Entity('Ravelling', 0.432, True, 0.1),
                 ],
-                annotation_timestamp=1231238
+                annotation_timestamp=1231238,
+                annotator_id="someid"
             )
         )
     

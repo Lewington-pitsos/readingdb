@@ -155,21 +155,21 @@
 #     'roora_test_route'
 # )
 
-# import uuid
-# from readingdb.annotator import Annotator
-# from readingdb.constants import AnnotatorKeys, Database, REGION_NAME
-# from botocore.config import Config
-# from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT
-# from readingdb.api import API
-# api = API(
-#     DYNAMO_ENDPOINT,
-#     size_limit=0,
-#     bucket=BUCKET,
-#     tmp_bucket=BUCKET,
-#     config=Config(
-#         region_name=REGION_NAME
-#     )
-# )
+import uuid
+from readingdb.annotator import Annotator
+from readingdb.constants import AnnotatorKeys, Database, REGION_NAME
+from botocore.config import Config
+from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT
+from readingdb.api import API
+api = API(
+    DYNAMO_ENDPOINT,
+    size_limit=0,
+    bucket=BUCKET,
+    tmp_bucket=BUCKET,
+    config=Config(
+        region_name=REGION_NAME
+    )
+)
 
 # api.db.create_table(
 #     TableName=Database.ANNOTATOR_TABLE_NAME,
@@ -199,10 +199,10 @@
 #     }
 # )
 
-# api.put_annotator(Annotator(
-#     str(uuid.uuid1()),
-#     "Louka and Sean",
-#     "FDS",
-#     "Human",
-#     "99bf4519-85d9-4726-9471-4c91a7677925"
-# ))
+api.put_annotator(Annotator(
+    str(uuid.uuid1()),
+    "Faux Annotator",
+    "FDS",
+    "AI",
+    "99bf4519-85d9-4726-9471-4c91a7677925"
+))

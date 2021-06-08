@@ -110,7 +110,7 @@ class PredictionReading(ImageReading, PositionReading):
         url: str,
         entities: List[Entity],
         annotation_timestamp: int,
-        annotator_id: str = DEFAULT_ANNOTATOR_ID,
+        annotator_id: str,
         uri: str = None,
     ):
         PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
@@ -208,7 +208,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_data[ImageReadingKeys.FILENAME],
             entities,
             annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] if PredictionReadingKeys.ANNOTATION_TIMESTAMP in reading else 0,
-            annotator_id=reading[AnnotatorKeys.ANNOTATOR_ID] if AnnotatorKeys.ANNOTATOR_ID in reading else DEFAULT_ANNOTATOR_ID,
+            annotator_id=reading[AnnotatorKeys.ANNOTATOR_ID] if AnnotatorKeys.ANNOTATOR_ID in reading else FAUX_ANNOTATOR_ID,
             uri=get_uri(reading_data)
         )
     else:
