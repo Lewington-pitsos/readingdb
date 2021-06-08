@@ -8,3 +8,11 @@ class TestGeolocator(unittest.TestCase):
         snapped_pos_readings = Geolocator.geolocate(pos_readings)
 
         self.assertEqual(len(pos_readings), len(snapped_pos_readings))
+
+    def test_prediction_generating(self):
+        pos_readings = []
+        img_readings = []
+
+        predictions = Geolocator.generate_predictions(pos_readings, img_readings)
+
+        self.assertEqual(len(img_readings), len(predictions))
