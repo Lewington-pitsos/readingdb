@@ -535,7 +535,7 @@ class TestAPI(unittest.TestCase):
         route = api.save_route(route_spec, user_id)
         self.assertEqual(3, len(api.all_route_readings(route.id)))
 
-        readings = api.prediction_readings(route.id)
+        readings = api.prediction_readings(route.id, [DEFAULT_ANNOTATOR_ID])
         self.assertEqual(2, len(readings))
 
         for r in readings:
@@ -563,3 +563,50 @@ class TestAPI(unittest.TestCase):
         route = api.save_route(route_spec, user_id)
         self.assertEqual(116, len(api.all_route_readings(route.id)))
         self.assertEqual(0, len(api.prediction_readings(route.id)))
+
+    def test_filters_paginated_readings_correctly(self):
+        user_id = 'aghsghavgas'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        api.max_page_readings = 300
+        with open(self.current_dir + '/test_data/sydney_route_short.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.save_route(route_spec, user_id)
+
+        readings = api.all_route_readings(route.id)
+        self.assertEqual(971, len(readings))
+
+        preference = [
+            '3af9bfd2-c897-11eb-8b05-024221cba9cc',
+            DEFAULT_ANNOTATOR_ID
+        ]
+        all_readings = []
+        pag, key = api.filtered_paginated_readings(
+            route.id, 
+            annotator_preference=preference
+        )
+        all_readings += pag
+        pag, key = api.filtered_paginated_readings(
+            route.id, 
+            annotator_preference=preference,
+            last_key=key,
+        )
+        all_readings += pag
+        pag, key = api.filtered_paginated_readings(
+            route.id, 
+            annotator_preference=preference,
+            last_key=key,
+        )
+        all_readings += pag
+
+        pag, key = api.filtered_paginated_readings(
+            route.id, 
+            annotator_preference=preference,
+            last_key=key,
+        )
+        all_readings += pag
+        self.assertIsNone(key)
+        self.assertEqual(713, len(all_readings))
+
+        well_annotated = [r for r in all_readings if r['AnnotatorID'] == '3af9bfd2-c897-11eb-8b05-024221cba9cc']
+        self.assertEqual(227, len(well_annotated))
