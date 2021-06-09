@@ -1,4 +1,5 @@
 import json
+from readingdb.rutils import RUtils
 from readingdb.geolocator import Geolocator
 import unittest
 from readingdb.format import *
@@ -13,11 +14,23 @@ class TestGeolocator(unittest.TestCase):
         cls.img_readings = [r for r in allReadings if r[ReadingKeys.TYPE] == ReadingTypes.IMAGE] 
 
     def test_snapping(self):
-        snapped_pos_readings = Geolocator.geolocate(self.pos_readings)
+        g = Geolocator()
+        snapped_pos_readings = g.geolocate(self.pos_readings[:80])
+        self.assertEqual(80, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
+        self.assertEqual(-37.7022301, RUtils.get_lat(snapped_pos_readings[-1]))
+        self.assertEqual(144.8019646,  RUtils.get_lng(snapped_pos_readings[-1]))
 
-        self.assertEqual(len(self.pos_readings), len(snapped_pos_readings))
+        lastTimestamp = 0
+        for s in snapped_pos_readings:
+            new_ts = s[ReadingKeys.TIMESTAMP]
+            self.assertGreater(new_ts, lastTimestamp)
+            lastTimestamp = new_ts
 
     def test_prediction_generating(self):
-        predictions = Geolocator.generate_predictions(self.pos_readings, self.img_readings)
+        g = Geolocator()
+        predictions = g.generate_predictions(self.pos_readings, self.img_readings)
 
         self.assertEqual(len(self.img_readings), len(predictions))
+    

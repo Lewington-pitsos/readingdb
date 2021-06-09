@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b4d01daf78e9e1a884c007fb7797cde9b2faa506b45534277d72ad5b4f9f49ad"
+            "sha256": "1f5ffbdf593a703503021d25d4c6bd367e781e49a70345cac57b341add01f503"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -224,6 +224,21 @@
             "markers": "python_version >= '2.7'",
             "version": "==0.3"
         },
+        "geographiclib": {
+            "hashes": [
+                "sha256:12bd46ee7ec25b291ea139b17aa991e7ef373e21abd053949b75c0e9ca55c632",
+                "sha256:51cfa698e7183792bce27d8fb63ac8e83689cd8170a730bf35e1a5c5bf8849b9"
+            ],
+            "version": "==1.50"
+        },
+        "geopy": {
+            "hashes": [
+                "sha256:4db8a2b79a2b3358a7d020ea195be639251a831a1b429c0d1b20c9f00c67c788",
+                "sha256:892b219413e7955587b029949af3a1949c6fbac9d5ad17b79d850718f6a9550f"
+            ],
+            "index": "pypi",
+            "version": "==2.1.0"
+        },
         "googlemaps": {
             "hashes": [
                 "sha256:a91945e4c7cf835a7837f413d54617d0901f02aa16fe382f1b223cacf19539f0"
@@ -282,7 +297,7 @@
                 "sha256:0a943902919f65c5684ac4e0154b1ad4fac6dcaa5d9f3426b732f1c8b5419be6",
                 "sha256:2bb1680aad211e3c9944dbce1d4ba09a989f04e238296c87fe2139faa26d655d"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4'",
+            "markers": "python_version >= '3.6' and python_version < '4.0'",
             "version": "==5.8.0"
         },
         "jedi": {
@@ -847,7 +862,7 @@
                 "sha256:753a0374df26658f99d826cfe40394a686d05985786d946fbe4165b5148f5a7c",
                 "sha256:a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
             "version": "==1.26.5"
         },
         "wcwidth": {
