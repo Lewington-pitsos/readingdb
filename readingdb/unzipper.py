@@ -103,7 +103,6 @@ class Unzipper():
         filename_map = {}
 
         for filename in filenames:
-            print(filename)
             s3_filename = f'{key.split(".")[0]}/{filename}'
             filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
@@ -115,8 +114,6 @@ class Unzipper():
                 points.extend(txt_to_points(read(filename)))
             else:
                 raise ValueError('unrecognized reading file type: ', s3_filename)
-
-        # sends a request to the RaedingDB lambda to upload that routespec
 
         g = Geolocator()
         pred_readings = g.interpolated(points, img_readings)
