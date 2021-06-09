@@ -6,7 +6,7 @@ from readingdb.rutils import RUtils
 
 import geopy.distance
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys
+from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
 import googlemaps
 from readingdb.reading import PositionReading
 from typing import Any, Dict, List, Tuple
@@ -98,19 +98,23 @@ class Geolocator():
         pos_readings: List[Dict[str, Any]], 
         img_readings: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
-        lr = LineRoute(pos_readings)
+        lr = LineRoute.from_readings(pos_readings)
 
+        pred_readings = []
         for r in img_readings:
             ts = RUtils.get_ts(r)
             if lr.contains(ts):
                 point = lr.point_at(ts)
+                pred_readings.append(self.__prediction_reading(r, point))
 
+        return pred_readings
 
-        return img_readings
-
-    def __prediction_reading(img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
+    def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
+        pred_reading[ReadingKeys.TYPE] = ReadingTypes.PREDICTION
         pred_reading[PredictionReadingKeys.ENTITIES] = []
         pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
         pred_reading[AnnotatorKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
-        pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE]
+        pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = point.lat
+        pred_reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = point.lng
+        return pred_reading

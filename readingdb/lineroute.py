@@ -1,5 +1,5 @@
 from readingdb.rutils import RUtils
-from typing import Any, Dict
+from typing import Any, Dict, List
 from readingdb.constants import PositionReadingKeys, ReadingKeys
 
 def interpolate_lat(p1, a1, p2, a2) -> float:
@@ -57,7 +57,11 @@ def linear_interp(prev: LinePoint, post: LinePoint, timestamp) -> LinePoint:
     )
 
 class LineRoute():
-    def __init__(self, points: LinePoint, interp_alg=linear_interp):
+    @classmethod
+    def from_readings(self, points: List[Dict[str, Any]], interp_alg=linear_interp):
+        return LineRoute([LinePoint.from_reading(p) for p in points], interp_alg)
+
+    def __init__(self, points: List[LinePoint], interp_alg=linear_interp):
         self.points = points
         self.interp_alg=interp_alg
 
