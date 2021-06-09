@@ -1,3 +1,4 @@
+from readingdb.rutils import RUtils
 from readingdb.geolocator import Geolocator
 from typing import List
 from readingdb.mlapi import MLAPI
@@ -99,12 +100,12 @@ class Unzipper():
         img_readings = []
         points = []
 
+        filename_map = {}
+
         for filename in filenames:
             print(filename)
             s3_filename = f'{key.split(".")[0]}/{filename}'
-            print('extracting file:', s3_filename)
-
-            upload(filename, bucket, s3_filename)
+            filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
 
             if extension == self.IMG_EXT:               
@@ -118,11 +119,11 @@ class Unzipper():
         # sends a request to the RaedingDB lambda to upload that routespec
 
         g = Geolocator()
-        print('points', points)
-        print('readings', img_readings)
         pred_readings = g.interpolated(points, img_readings)
 
-        print('preds', pred_readings)
+        for r in pred_readings:
+            uri = RUtils.get_uri(r)
+            upload(filename_map[uri[S3Path.KEY]], uri[S3Path.BUCKET], uri[S3Path.KEY])
 
         routeSpec = RouteSpec(
             [ReadingSpec(

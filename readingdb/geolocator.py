@@ -132,8 +132,10 @@ class Geolocator():
         pred_reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = point.lng
 
         if ImageReadingKeys.URI in img_reading[ReadingKeys.READING]:
-                pred_reading[ReadingKeys.READING][ImageReadingKeys.URI] = RUtils.get_uri(img_reading)
+            pred_reading[ReadingKeys.READING][ImageReadingKeys.URI] = RUtils.get_uri(img_reading)
         if ImageReadingKeys.FILENAME in img_reading[ReadingKeys.READING]:
-                pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = RUtils.get_filename(img_reading)
+            pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = RUtils.get_filename(img_reading)
+        else:
+            pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = ""
 
         return pred_reading
