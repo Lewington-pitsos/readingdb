@@ -59,7 +59,14 @@ class Unzipper():
 
         return route
 
-    def process_local(self, user_id, key, bucket, filenames, name = None):
+    def process_local(
+        self, 
+        user_id: str, 
+        key: str, 
+        bucket: str, 
+        filenames: List[str],
+        name: str = None
+    ):
 
         def upload(filename, bucket, s3_filename):
             segs = s3_filename.split('/')

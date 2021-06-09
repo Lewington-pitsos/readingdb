@@ -85,3 +85,11 @@ class TestGeolocator(unittest.TestCase):
         self.assertEqual('PredictionReading', RUtils.get_type(interp[0]))
         self.assertEqual(-37.69698717037037, RUtils.get_lat(interp[0]))
         self.assertEqual(144.802889819943,  RUtils.get_lng(interp[0]))
+
+    def test_interpolation_does_not_add_useless_img_readings(self):
+        g = Geolocator()
+        interp = g.interpolated(self.pos_readings[400:], self.img_readings)
+        self.assertEqual(806, len(interp))
+
+        interp = g.interpolated(self.pos_readings[:700], self.img_readings)
+        self.assertEqual(1263, len(interp))

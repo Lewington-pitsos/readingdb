@@ -1,6 +1,8 @@
 from copy import Error
 from logging import error
 import os
+
+from botocore.retries import bucket
 from readingdb.route import Route
 import tempfile
 import unittest
@@ -225,7 +227,6 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_53_587-37.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_899-35.jpg',
         ]))
-
         
     def test_unzipper_uploads_with_route_name(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
@@ -235,4 +236,26 @@ class TestUnzipper(unittest.TestCase):
         self.assertEqual(len(readings), 39)
         self.assertEqual('bennet court', route.name)
 
-        
+    def test_unzipper_uploads_local_files(self):
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+
+        pth = 'readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/'
+        files = [pth + f for f in os.listdir(pth)]
+
+        route = z.process_local(
+            'some_user_id',
+            'route_2021_04_29_14_15_34_999',
+            self.bucket_name,
+            files,
+            'test_route'
+        )
+
+        readings = self.api.all_route_readings(route.id)
+        self.assertEqual(len(readings), 39)
+
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(self.bucket_name)
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+        self.assertEqual(34, len(bucket_objects))
