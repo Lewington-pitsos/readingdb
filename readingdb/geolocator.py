@@ -105,6 +105,7 @@ class Geolocator():
     ) -> List[Dict[str, Any]]:
         snapped = self.geolocate(pos_readings)
         return self.interpolated(snapped, img_readings)
+
     def interpolated(
         self, 
         pos_readings: List[Dict[str, Any]], 
@@ -120,12 +121,19 @@ class Geolocator():
                 pred_readings.append(self.__prediction_reading(r, point))
 
         return pred_readings
+
     def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
         pred_reading[ReadingKeys.TYPE] = ReadingTypes.PREDICTION
-        pred_reading[PredictionReadingKeys.ENTITIES] = []
+        pred_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = []
         pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
         pred_reading[AnnotatorKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
         pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = point.lat
         pred_reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = point.lng
+
+        if ImageReadingKeys.URI in img_reading[ReadingKeys.READING]:
+                pred_reading[ReadingKeys.READING][ImageReadingKeys.URI] = RUtils.get_uri(img_reading)
+        if ImageReadingKeys.FILENAME in img_reading[ReadingKeys.READING]:
+                pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = RUtils.get_filename(img_reading)
+
         return pred_reading

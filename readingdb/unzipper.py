@@ -1,3 +1,4 @@
+from readingdb.geolocator import Geolocator
 from typing import List
 from readingdb.mlapi import MLAPI
 from readingdb.endpoints import SQS_URL
@@ -95,8 +96,8 @@ class Unzipper():
         filenames: List[str], 
         name: str = None
     ):
-        reading_types = {}
         img_readings = []
+        points = []
 
         for filename in filenames:
             print(filename)
@@ -106,38 +107,31 @@ class Unzipper():
             upload(filename, bucket, s3_filename)
             extension = s3_filename.split('.')[-1]
 
-            if extension == self.IMG_EXT:
-                if self.IMG_EXT not in reading_types:
-                    reading_types[self.IMG_EXT] = ReadingSpec(
-                        ReadingTypes.IMAGE, 
-                        ReadingSpec.S3_FILES_FORMAT, 
-                        ''
-                    )
-                
+            if extension == self.IMG_EXT:               
                 img_readings.append(entry_from_file(bucket, s3_filename))
 
             elif extension == self.TXT_EXT:
-                if self.TXT_EXT in reading_types:
-                    raise ValueError(f'found two .txt files when unzipping {key} of bucket {bucket}, this should never happen')
-
-                lines = read(filename)
-
-                points = txt_to_points(lines)
-
-                reading_types[self.TXT_EXT] = ReadingSpec(
-                    ReadingTypes.POSITIONAL, 
-                    ReadingSpec.S3_FILES_FORMAT, 
-                    points
-                )
+                points.extend(txt_to_points(read(filename)))
             else:
                 raise ValueError('unrecognized reading file type: ', s3_filename)
 
         # sends a request to the RaedingDB lambda to upload that routespec
 
-        if self.IMG_EXT in reading_types:
-            reading_types[self.IMG_EXT].data = img_readings
+        g = Geolocator()
+        print('points', points)
+        print('readings', img_readings)
+        pred_readings = g.interpolated(points, img_readings)
 
-        routeSpec = RouteSpec(list(reading_types.values()), name)
+        print('preds', pred_readings)
+
+        routeSpec = RouteSpec(
+            [ReadingSpec(
+                ReadingTypes.PREDICTION, 
+                ReadingSpec.S3_FILES_FORMAT,
+                pred_readings
+            )], 
+            name
+        )
 
         print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)

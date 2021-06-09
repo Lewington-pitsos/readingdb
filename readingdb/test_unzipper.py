@@ -251,7 +251,7 @@ class TestUnzipper(unittest.TestCase):
         )
 
         readings = self.api.all_route_readings(route.id)
-        self.assertEqual(len(readings), 39)
+        self.assertEqual(len(readings), 30)
 
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(self.bucket_name)

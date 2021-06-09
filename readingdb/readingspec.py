@@ -10,6 +10,7 @@ def load_json_entries(reading_spec) -> List[Dict[str, Any]]:
 
 def get_entries(reading_spec) -> List[Dict[str, Any]]:
     return reading_spec.data
+
 class ReadingSpec():
     JSON_ENTRIES_FORMAT = 'json_entries'
     S3_FILES_FORMAT = 's3_files_format'
@@ -25,10 +26,8 @@ class ReadingSpec():
             S3_FILES_FORMAT: get_entries
         },
         ReadingTypes.PREDICTION:{
-            JSON_ENTRIES_FORMAT: load_json_entries
-        },
-        ReadingTypes.ANNOTATION:{
-            JSON_ENTRIES_FORMAT: load_json_entries
+            JSON_ENTRIES_FORMAT: load_json_entries,
+            S3_FILES_FORMAT: get_entries
         }
     }
 

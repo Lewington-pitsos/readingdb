@@ -29,11 +29,9 @@ class ReadingTypes():
     POSITIONAL = 'PositionalReading'
     IMAGE = 'ImageReading'
     PREDICTION = 'PredictionReading'
-    ANNOTATION = 'Annotation'
 
     IMAGE_TYPES = [
         PREDICTION,
-        ANNOTATION,
         IMAGE
     ]
 class PositionReadingKeys():

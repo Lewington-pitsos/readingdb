@@ -152,7 +152,6 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
     ReadingTypes.POSITIONAL: PositionReading,
     ReadingTypes.IMAGE: ImageReading,
     ReadingTypes.PREDICTION: PredictionReading,
-    ReadingTypes.ANNOTATION: PredictionReading,
 }
 def ddb_to_dict(reading_type, reading) -> None:
     READING_TYPE_MAP[reading_type].decode(reading)
@@ -179,7 +178,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             get_filename(reading[ReadingKeys.READING]),
             get_uri(reading[ReadingKeys.READING])
         )
-    elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
+    elif reading_type in [ReadingTypes.PREDICTION]:
         binaries: Dict[str, bool] = {}
         reading_data = reading[ReadingKeys.READING]
 

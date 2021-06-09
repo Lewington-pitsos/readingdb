@@ -85,7 +85,7 @@ class API(DB, ReadingDB):
         for reading_spec in route_spec.reading_specs:
             print(f'starting upload for reading {reading_spec}')
 
-            entries = reading_spec.load_readings()   
+            entries = reading_spec.load_readings()
 
             if len(entries) > 0:
                 finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)

@@ -1,4 +1,4 @@
-from readingdb.constants import PositionReadingKeys, ReadingKeys
+from readingdb.constants import ImageReadingKeys, PositionReadingKeys, ReadingKeys
 from typing import Any, Dict
 
 
@@ -14,8 +14,14 @@ class RUtils():
     @classmethod
     def get_lat(cls, reading: Dict[str, Any]) -> float:
         return reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE]
-
-
     @classmethod
     def get_lng(cls, reading: Dict[str, Any]) -> float:
         return reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE]
+
+    @classmethod
+    def get_uri(cls, reading: Dict[str, Any]) -> float:
+        return reading[ReadingKeys.READING][ImageReadingKeys.URI]
+
+    @classmethod
+    def get_filename(cls, reading: Dict[str, Any]) -> float:
+        return reading[ReadingKeys.READING][ImageReadingKeys.FILENAME]
