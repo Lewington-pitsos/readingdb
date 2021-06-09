@@ -24,7 +24,13 @@ class Unzipper():
         self.api: API = API(url, *args, **kwargs)
         self.mlapi = MLAPI(sqs_url)
 
-    def process(self, bucket: str, key: str, name: str = None) -> Route:
+    def process(
+        self, 
+        bucket: str, 
+        key: str, 
+        name: str = None,
+        snap_to_roads=False
+    ) -> Route:
         print('bucket', bucket)
         print('key', key)
  
@@ -54,7 +60,8 @@ class Unzipper():
             key, 
             bucket, 
             z.namelist(), 
-            name
+            name,
+            snap_to_roads=snap_to_roads
         )
         self.s3_resource.Object(bucket, key).delete()
         self.mlapi.add_message_to_queue(user_id, route.id)
@@ -67,7 +74,8 @@ class Unzipper():
         key: str, 
         bucket: str, 
         filenames: List[str],
-        name: str = None
+        name: str = None,
+        snap_to_roads=False,
     ):
 
         def upload(filename, bucket, s3_filename):
@@ -85,7 +93,16 @@ class Unzipper():
 
             return lines
 
-        return self.__process_names(upload, read, user_id, key, bucket, filenames, name)
+        return self.__process_names(
+            upload, 
+            read, 
+            user_id, 
+            key, 
+            bucket, 
+            filenames, 
+            name,
+            snap_to_roads,
+        )
 
     def __process_names(
         self, 
@@ -95,7 +112,8 @@ class Unzipper():
         key: str, 
         bucket: str, 
         filenames: List[str], 
-        name: str = None
+        name: str = None,
+        snap_to_roads=False
     ):
         img_readings = []
         points = []
@@ -116,7 +134,11 @@ class Unzipper():
                 raise ValueError('unrecognized reading file type: ', s3_filename)
 
         g = Geolocator()
-        pred_readings = g.interpolated(points, img_readings)
+        if snap_to_roads:
+            pred_readings = g.geolocate(points, img_readings)
+        else:
+            pred_readings = g.interpolated(points, img_readings)
+
 
         for r in pred_readings:
             uri = RUtils.get_uri(r)

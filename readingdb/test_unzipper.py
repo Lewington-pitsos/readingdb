@@ -239,7 +239,8 @@ class TestUnzipper(unittest.TestCase):
             'route_2021_04_29_14_15_34_999',
             self.bucket_name,
             files,
-            'test_route'
+            'test_route',
+            snap_to_roads=False
         )
 
         readings = self.api.all_route_readings(route.id)
