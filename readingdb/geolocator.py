@@ -8,7 +8,6 @@ import geopy.distance
 from readingdb.roadpoint import RoadPoint
 from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
 import googlemaps
-from readingdb.reading import PositionReading
 from typing import Any, Dict, List, Tuple
 
 
@@ -18,6 +17,14 @@ class Geolocator():
             credentials = json.load(f)
 
         self.gmaps = googlemaps.Client(key=credentials['key'])
+
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------ SNAPPING --------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def geolocate(self, pos_readings: List[Dict[str, Any]]):
         if len(pos_readings) == 0:
@@ -52,7 +59,7 @@ class Geolocator():
         final_readings = sorted(final_readings, key=lambda r: RUtils.get_ts(r))
 
         return final_readings
-    
+
     def __closest_point(self, reading: Dict[str, Any], road_points: List[RoadPoint]) -> RoadPoint:
         smallestDistance = 99999999999
         closestPoint = road_points[0]
@@ -66,7 +73,6 @@ class Geolocator():
                 closestPoint = p
         return closestPoint
 
-
     def __repositioned(self, reading: Dict[str, Any], p: RoadPoint) -> None:
         repositioned = copy.deepcopy(reading)
         repositioned[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = p.lat
@@ -78,10 +84,19 @@ class Geolocator():
             [self.__to_latlng(p) for p in readings],
             interpolate=True
         )]
+
     def __to_latlng(self, reading: Dict[str, Any]) -> Tuple[float, float]:
         pos = reading[ReadingKeys.READING]
 
         return (pos[PositionReadingKeys.LATITUDE], pos[PositionReadingKeys.LONGITUDE])
+
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------ INTERPOLATING ---------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     def generate_predictions(
         self, 
@@ -90,7 +105,6 @@ class Geolocator():
     ) -> List[Dict[str, Any]]:
         snapped = self.geolocate(pos_readings)
         return self.interpolated(snapped, img_readings)
-
     def interpolated(
         self, 
         pos_readings: List[Dict[str, Any]], 
@@ -106,7 +120,6 @@ class Geolocator():
                 pred_readings.append(self.__prediction_reading(r, point))
 
         return pred_readings
-
     def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
         pred_reading[ReadingKeys.TYPE] = ReadingTypes.PREDICTION

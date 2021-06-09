@@ -1,8 +1,13 @@
 import json
+import os
 from readingdb.rutils import RUtils
 from readingdb.geolocator import Geolocator
 import unittest
 from readingdb.format import *
+
+roads_api_test = unittest.skipIf(
+    not os.environ.get('ROADS_API', False), 'Googls Maps Road API tests are skipped by default'
+)
 
 class TestGeolocator(unittest.TestCase):
     @classmethod
@@ -13,6 +18,7 @@ class TestGeolocator(unittest.TestCase):
         cls.pos_readings = [r for r in allReadings if r[ReadingKeys.TYPE] == ReadingTypes.POSITIONAL] 
         cls.img_readings = [r for r in allReadings if r[ReadingKeys.TYPE] == ReadingTypes.IMAGE] 
 
+    @roads_api_test
     def test_snapping(self):
         g = Geolocator()
         snapped_pos_readings = g.geolocate(self.pos_readings[:80])
@@ -27,7 +33,8 @@ class TestGeolocator(unittest.TestCase):
             new_ts = s[ReadingKeys.TIMESTAMP]
             self.assertGreater(new_ts, lastTimestamp)
             lastTimestamp = new_ts
-
+    
+    @roads_api_test
     def test_snapping_for_more_than_100_readings(self):
         g = Geolocator()
         snapped_pos_readings = g.geolocate(self.pos_readings[:240])
@@ -63,11 +70,11 @@ class TestGeolocator(unittest.TestCase):
             self.assertGreater(new_ts, lastTimestamp)
             lastTimestamp = new_ts
 
+    @roads_api_test
     def test_prediction_generating(self):
         g = Geolocator()
         cnt = 80
         predictions = g.generate_predictions(self.pos_readings[:cnt], self.img_readings[:cnt])
-
         self.assertEqual(cnt, len(predictions))
         self.assertEqual('PredictionReading', RUtils.get_type(predictions[0]))
 
