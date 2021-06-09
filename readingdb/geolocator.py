@@ -89,9 +89,7 @@ class Geolocator():
         img_readings: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         snapped = self.geolocate(pos_readings)
-
-
-        return img_readings
+        return self.interpolated(snapped, img_readings)
 
     def interpolated(
         self, 

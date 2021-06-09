@@ -76,3 +76,5 @@ class TestGeolocator(unittest.TestCase):
         interp = g.interpolated(self.pos_readings, self.img_readings)
         self.assertEqual(1529, len(interp))
         self.assertEqual('PredictionReading', RUtils.get_type(interp[0]))
+        self.assertEqual(-37.69698717037037, RUtils.get_lat(interp[0]))
+        self.assertEqual(144.802889819943,  RUtils.get_lng(interp[0]))
