@@ -128,33 +128,7 @@
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-import os
-from readingdb.unzipper import Unzipper
-from readingdb.endpoints import *
 
-root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
-
-subdirs = [root + r for r in  os.listdir(root)]
-
-files = []
-
-for s in subdirs:
-    if os.path.isdir(s):
-        subsubdirs = [s + '/' + r for r in os.listdir(s)]
-        for ss in subsubdirs:
-            files.append(ss)
-    else:
-        files.append(s)
-
-z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
-z.process_local(
-    '8f647285-58a7-4d7f-af64-238db703e38e',
-    'route_2021_04_29_14_15_34_999', 
-    'mobileappsessions172800-main', 
-    files,
-    'roora_test_route',
-    snap_to_roads=True,
-)
 
 # import uuid
 # from readingdb.annotator import Annotator
@@ -207,3 +181,29 @@ z.process_local(
 #     "AI",
 #     "99bf4519-85d9-4726-9471-4c91a7677925"
 # ))
+
+import os
+from readingdb.unzipper import Unzipper
+from readingdb.endpoints import *
+
+root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
+
+subdirs = [root + r for r in  os.listdir(root)]
+files = []
+for s in subdirs:
+    if os.path.isdir(s):
+        subsubdirs = [s + '/' + r for r in os.listdir(s)]
+        for ss in subsubdirs:
+            files.append(ss)
+    else:
+        files.append(s)
+
+z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+z.process_local(
+    '8f647285-58a7-4d7f-af64-238db703e38e',
+    'route_2021_04_29_14_15_34_999', 
+    'mobileappsessions172800-main', 
+    files,
+    'roora_test_route',
+    snap_to_roads=True,
+)

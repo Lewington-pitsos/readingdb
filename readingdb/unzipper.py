@@ -135,10 +135,10 @@ class Unzipper():
 
         g = Geolocator()
         if snap_to_roads:
-            pred_readings = g.geolocate(points, img_readings)
+            pred_readings = g.generate_predictions(points, img_readings)
         else:
             pred_readings = g.interpolated(points, img_readings)
-
+        print("finished generating prediction readings")
 
         for r in pred_readings:
             uri = RUtils.get_uri(r)
