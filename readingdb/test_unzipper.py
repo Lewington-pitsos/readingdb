@@ -85,7 +85,6 @@ class TestUnzipper(unittest.TestCase):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = z.process(self.bucket_name, 'mocks/route_1621394080578.zip')
         readings = self.api.all_route_readings(route.id)
-
         self.assertEqual(len(readings), 70)
 
         s3 = boto3.resource('s3')
