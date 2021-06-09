@@ -299,7 +299,6 @@ class API(DB, ReadingDB):
                         Key=uri[S3Path.KEY]
                     )
 
-
         deletedReadingCount = self.delete_reading_items(
             route_id, 
             [r[ReadingKeys.READING_ID] for r in readings]

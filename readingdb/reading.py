@@ -130,8 +130,6 @@ class PredictionReading(ImageReading, PositionReading):
             e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
             e[EntityKeys.SEVERITY] = decode_float(e[EntityKeys.SEVERITY]) if EntityKeys.SEVERITY in e else 1.0
         
-        # if PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
-        #     item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
         item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
             
     def item_data(self):
@@ -144,7 +142,7 @@ class PredictionReading(ImageReading, PositionReading):
         data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
 
         data[AnnotatorKeys.ANNOTATOR_ID] = self.annotator_id
-        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = encode_as_float(self.annotation_timestamp)
+        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
 
         return data
 

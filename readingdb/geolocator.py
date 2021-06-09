@@ -8,15 +8,18 @@ import geopy.distance
 from readingdb.roadpoint import RoadPoint
 from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
 import googlemaps
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, overload
 
 
 class Geolocator():
-    def __init__(self) -> None:
+    def __init__(self, overlap: int = 15) -> None:
         with open('google/credentials.json') as f:
             credentials = json.load(f)
 
         self.gmaps = googlemaps.Client(key=credentials['key'])
+        self.overlap = overlap
+        self.max_points = 100
+
 
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
@@ -35,8 +38,10 @@ class Geolocator():
 
         while len(all_final_readings) < required_cnt:
             snapped_cnt = len(all_final_readings)
-            next_readings = pos_readings[snapped_cnt:snapped_cnt+100]
-            all_final_readings.extend(self.__geolocate_subset(next_readings))
+            actual_overlap = min(snapped_cnt, self.overlap)
+            start_idx = snapped_cnt - actual_overlap
+            next_readings = pos_readings[start_idx:start_idx+self.max_points]
+            all_final_readings.extend(self.__geolocate_subset(next_readings)[actual_overlap:])
         
         return all_final_readings
 
@@ -51,10 +56,10 @@ class Geolocator():
                 final_readings.append(snapped)
                 snapped_ids.append(snapped[ReadingKeys.READING_ID])
 
-        to_snap = [r for r in pos_readings if r[ReadingKeys.READING_ID] not in snapped_ids]
-        for r in to_snap:
-            p = self.__closest_point(r, road_points)
-            final_readings.append(self.__repositioned(r, p))
+        # to_snap = [r for r in pos_readings if r[ReadingKeys.READING_ID] not in snapped_ids]
+        # for r in to_snap:
+        #     p = self.__closest_point(r, road_points)
+        #     final_readings.append(self.__repositioned(r, p))
 
         final_readings = sorted(final_readings, key=lambda r: RUtils.get_ts(r))
 
@@ -72,7 +77,7 @@ class Geolocator():
             if dist < smallestDistance:
                 closestPoint = p
         return closestPoint
-
+        
     def __repositioned(self, reading: Dict[str, Any], p: RoadPoint) -> None:
         repositioned = copy.deepcopy(reading)
         repositioned[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = p.lat
