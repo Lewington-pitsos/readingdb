@@ -1,10 +1,12 @@
+import time
 import json
 import copy
+from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
 
 import geopy.distance
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import ImageReadingKeys, PositionReadingKeys, ReadingKeys
+from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys
 import googlemaps
 from readingdb.reading import PositionReading
 from typing import Any, Dict, List, Tuple
@@ -18,6 +20,20 @@ class Geolocator():
         self.gmaps = googlemaps.Client(key=credentials['key'])
 
     def geolocate(self, pos_readings: List[Dict[str, Any]]):
+        if len(pos_readings) == 0:
+            return []
+
+        required_cnt = len(pos_readings)
+        all_final_readings = []
+
+        while len(all_final_readings) < required_cnt:
+            snapped_cnt = len(all_final_readings)
+            next_readings = pos_readings[snapped_cnt:snapped_cnt+100]
+            all_final_readings.extend(self.__geolocate_subset(next_readings))
+        
+        return all_final_readings
+
+    def __geolocate_subset(self, pos_readings: List[Dict[str, Any]]):
         road_points = self.__snapped_points(pos_readings)
 
         final_readings = []
@@ -66,14 +82,35 @@ class Geolocator():
         pos = reading[ReadingKeys.READING]
 
         return (pos[PositionReadingKeys.LATITUDE], pos[PositionReadingKeys.LONGITUDE])
-        
 
     def generate_predictions(
         self, 
         pos_readings: List[Dict[str, Any]], 
         img_readings: List[Dict[str, Any]]
-    ):
+    ) -> List[Dict[str, Any]]:
         snapped = self.geolocate(pos_readings)
 
 
         return img_readings
+
+    def interpolated(
+        self, 
+        pos_readings: List[Dict[str, Any]], 
+        img_readings: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        lr = LineRoute(pos_readings)
+
+        for r in img_readings:
+            ts = RUtils.get_ts(r)
+            if lr.contains(ts):
+                point = lr.point_at(ts)
+
+
+        return img_readings
+
+    def __prediction_reading(img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
+        pred_reading = copy.deepcopy(img_reading)
+        pred_reading[PredictionReadingKeys.ENTITIES] = []
+        pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
+        pred_reading[AnnotatorKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
+        pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE]

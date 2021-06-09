@@ -28,9 +28,51 @@ class TestGeolocator(unittest.TestCase):
             self.assertGreater(new_ts, lastTimestamp)
             lastTimestamp = new_ts
 
+    def test_snapping_for_more_than_100_readings(self):
+        g = Geolocator()
+        snapped_pos_readings = g.geolocate(self.pos_readings[:240])
+        self.assertEqual(240, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
+
+        lastTimestamp = 0
+        for s in snapped_pos_readings:
+            new_ts = s[ReadingKeys.TIMESTAMP]
+            self.assertGreater(new_ts, lastTimestamp)
+            lastTimestamp = new_ts
+
+        snapped_pos_readings = g.geolocate(self.pos_readings[:101])
+        self.assertEqual(101, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
+
+        lastTimestamp = 0
+        for s in snapped_pos_readings:
+            new_ts = s[ReadingKeys.TIMESTAMP]
+            self.assertGreater(new_ts, lastTimestamp)
+            lastTimestamp = new_ts
+
+        snapped_pos_readings = g.geolocate(self.pos_readings[:100])
+        self.assertEqual(100, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
+
+        lastTimestamp = 0
+        for s in snapped_pos_readings:
+            new_ts = s[ReadingKeys.TIMESTAMP]
+            self.assertGreater(new_ts, lastTimestamp)
+            lastTimestamp = new_ts
+
     def test_prediction_generating(self):
         g = Geolocator()
-        predictions = g.generate_predictions(self.pos_readings, self.img_readings)
+        cnt = 80
+        predictions = g.generate_predictions(self.pos_readings[:cnt], self.img_readings[:cnt])
 
-        self.assertEqual(len(self.img_readings), len(predictions))
-    
+        self.assertEqual(cnt, len(predictions))
+        self.assertEqual('PredictionReading', RUtils.get_type(predictions[0]))
+
+    def test_interpolation(self):
+        g = Geolocator()
+        interp = g.interpolated(self.pos_readings, self.img_readings)
+        self.assertEqual(1529, len(interp))
+        self.assertEqual('PredictionReading', RUtils.get_type(interp[0]))
