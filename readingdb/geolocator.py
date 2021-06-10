@@ -36,7 +36,9 @@ class Geolocator():
         required_cnt = len(pos_readings)
         all_final_readings = []
 
-        while len(all_final_readings) < required_cnt:
+        prev_cnt = -1
+        while len(all_final_readings) < required_cnt and len(all_final_readings) != prev_cnt:
+            prev_cnt = len(all_final_readings)
             snapped_cnt = len(all_final_readings)
             actual_overlap = min(snapped_cnt, self.overlap)
             start_idx = snapped_cnt - actual_overlap
