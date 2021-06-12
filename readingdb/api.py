@@ -328,7 +328,7 @@ class API(DB, ReadingDB):
         for g in reading_groups.values():
             final_readings.append(sorted(
                 g,
-                key=lambda r: self.__annotator_precedence(preference, r[AnnotatorKeys.ANNOTATOR_ID])
+                key=lambda r: self.__annotator_precedence(preference, r[PredictionReadingKeys.ANNOTATOR_ID])
             )[0])
             
         return final_readings

@@ -364,6 +364,51 @@ class TestDB(unittest.TestCase):
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 0)
 
+    def test_creates_new_user(self):
+        self.db.create_reading_db()
+        users = self.db.all_users()
+
+        self.assertEqual(0, len(users))
+
+        self.db.put_user(
+            "asd78asdgasiud-asd87agdasd7-asd78asd",
+        )
+        users = self.db.all_users()
+        self.assertEqual(1, len(users))
+        
+        self.db.put_user(
+            "asdasd7as7das7d",
+        )
+        users = self.db.all_users()
+        self.assertEqual(2, len(users))
+
+        self.db.put_user(
+            "akakakakakakak",
+        )
+        users = self.db.all_users()
+        self.assertEqual(3, len(users))
+
+    def test_creates_default_data_access_groups(self):
+        self.db.create_reading_db()
+        self.db.put_user(
+            "asdasd7as7das7d",
+        )
+        usr = self.db.all_users()[0]
+
+        self.assertEqual(usr['UserID'], 'asdasd7as7das7d')
+        self.assertEqual(usr['DataAccessGroups'], ['asdasd7as7das7d'])
+
+    def test_inserts_data_access_groups(self):
+        self.db.create_reading_db()
+        self.db.put_user(
+            "wendigo",
+            ['qqqq', 'bread']
+        )
+        usr = self.db.all_users()[0]
+
+        self.assertEqual(usr['UserID'], 'wendigo')
+        self.assertEqual(usr['DataAccessGroups'], ['qqqq', 'bread'])
+
     def tearDown(self):
         tables = self.db.all_tables()
         if len(tables) > 0:

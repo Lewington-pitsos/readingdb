@@ -5,7 +5,7 @@ from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
 
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import AnnotatorKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
+from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
 import googlemaps
 from typing import Any, Dict, List, Tuple, overload
 
@@ -108,7 +108,7 @@ class Geolocator():
         pred_reading[ReadingKeys.TYPE] = ReadingTypes.PREDICTION
         pred_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = []
         pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
-        pred_reading[AnnotatorKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
+        pred_reading[PredictionReadingKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
         pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = point.lat
         pred_reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = point.lng
 

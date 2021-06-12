@@ -141,7 +141,7 @@ class PredictionReading(ImageReading, PositionReading):
             encoded_entities.append(e.encode())
         data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
 
-        data[AnnotatorKeys.ANNOTATOR_ID] = self.annotator_id
+        data[PredictionReadingKeys.ANNOTATOR_ID] = self.annotator_id
         data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
 
         return data
@@ -151,12 +151,17 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
     ReadingTypes.IMAGE: ImageReading,
     ReadingTypes.PREDICTION: PredictionReading,
 }
-def ddb_to_dict(reading_type, reading) -> None:
+
+def ddb_to_dict(reading) -> None:
+    reading_type = reading[ReadingKeys.TYPE]
     READING_TYPE_MAP[reading_type].decode(reading)
+
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
+
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
+    
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type == ReadingTypes.POSITIONAL:
         return PositionReading(
@@ -204,7 +209,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_data[ImageReadingKeys.FILENAME],
             entities,
             annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP],
-            annotator_id=reading[AnnotatorKeys.ANNOTATOR_ID],
+            annotator_id=reading[PredictionReadingKeys.ANNOTATOR_ID],
             uri=get_uri(reading_data)
         )
     else:
