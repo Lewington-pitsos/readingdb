@@ -1,5 +1,6 @@
 import json
 import os
+from re import U
 import time
 from typing import List
 from unittest import mock
@@ -264,7 +265,7 @@ class TestAPI(unittest.TestCase):
         r = Route(
             user_id,
             route_id,
-            0
+            0,
         )
         updated_time = r.update_timestamp
         api.put_route(r)
@@ -329,7 +330,7 @@ class TestAPI(unittest.TestCase):
         r = Route(
             user_id,
             route_id,
-            0
+            0,
         )
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
@@ -609,3 +610,30 @@ class TestAPI(unittest.TestCase):
 
         well_annotated = [r for r in all_readings if r['AnnotatorID'] == DEFAULT_ANNOTATOR_ID]
         self.assertEqual(227, len(well_annotated))
+
+    def test_save_user(self):
+        usrs = self.api.all_users()
+        self.assertEqual(0, len(usrs))
+
+        success = self.api.save_user('some-user-id-that-is')
+        self.assertTrue(success)
+        usrs = self.api.all_users()
+        self.assertEqual(1, len(usrs))
+
+        success = self.api.save_user('some-user-id-that-is')
+        self.assertFalse(success)
+        usrs = self.api.all_users()
+        self.assertEqual(1, len(usrs))
+    
+    # def test_gets_accessible_routes(self):
+    #     uid = "ahsd78astdy87asdgha87s"
+
+    #     access_groups = self.api.save_user(uid)
+    #     routes = self.api.routes_for_user(uid)
+    #     self.assertEqual(0, len(routes))
+
+    #     rid = '17231-12312321'
+    #     self.api.put_route(Route('3', rid, 123617823, access_groups))
+    #     routes = self.api.routes_for_user(uid)
+    #     self.assertEqual(1, len(routes))
+        

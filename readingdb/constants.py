@@ -1,10 +1,13 @@
 REGION_NAME = 'ap-southeast-2'
 
+class UserKeys(): 
+    USER_ID = 'UserID'
+    DATA_ACCESS_GROUPS = 'DataAccessGroups'
 class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'
     PAGINATION_KEY_NAME = 'PaginationKey'
-    ANNOTATOR_TABLE_NAME = 'Annotators'
+    USER_TABLE_NAME = 'Annotators'
 class ReadingRouteKeys():
     ROUTE_ID = 'RouteID'
 class ReadingKeys():
@@ -19,12 +22,7 @@ class RouteKeys():
     STATUS = 'RouteStatus'
     TIMESTAMP = 'Timestamp'
     LAST_UPDATED = 'LastUpdated'
-class AnnotatorKeys():
-    ANNOTATOR_ID = 'AnnotatorID'
-    NAME = 'AnnotatorName'
-    ANNOTATOR_TYPE = 'AnnotatorType'
-    ANNOTATOR_GROUP = "AnnotatorGroup"
-    USER_ID = 'UserID'
+
 class ReadingTypes():
     POSITIONAL = 'PositionalReading'
     IMAGE = 'ImageReading'
@@ -80,7 +78,12 @@ class PredictionReadingKeys(ImageReadingKeys):
     
     ENTITIES = 'Entities'
     
+    ANNOTATOR_ID = 'AnnotatorID'
     ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
+
+class DataAccessGroupKeys():
+    GROUP_NAME = 'GroupName'
+    GROUP_ID = 'GroupID'
 
 DEFAULT_ANNOTATOR_NAME = "LoukaSean"
 DEFAULT_ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"

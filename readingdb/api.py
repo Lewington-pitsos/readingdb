@@ -74,7 +74,11 @@ class API(DB, ReadingDB):
         # self.mlapi.add_message_to_queue(user_id, route_id)
         pass
 
-    def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
+    def save_route(
+        self, 
+        route_spec: RouteSpec, 
+        user_id: str, 
+    ) -> Route:
         route_id = str(uuid.uuid1())
 
         print(f'uploading route {route_spec} as {route_id}')
@@ -222,13 +226,6 @@ class API(DB, ReadingDB):
             annotator_preference=annotator_preference,
         )
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
-        routes = super().routes_for_user(user_id)
-        for r in routes:
-            self.__inject_samples_with_presigned_urls(r)
-        
-        return routes
-
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
         r = super().get_route(route_id, user_id)
         if not r:
@@ -314,7 +311,7 @@ class API(DB, ReadingDB):
         )
 
         return (deletedReadingCount, deletedImgCount)
-        
+
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
         reading_groups = defaultdict(lambda: [])
         final_readings = []
@@ -328,7 +325,7 @@ class API(DB, ReadingDB):
         for g in reading_groups.values():
             final_readings.append(sorted(
                 g,
-                key=lambda r: self.__annotator_precedence(preference, r[AnnotatorKeys.ANNOTATOR_ID])
+                key=lambda r: self.__annotator_precedence(preference, r[PredictionReadingKeys.ANNOTATOR_ID])
             )[0])
             
         return final_readings
@@ -419,3 +416,39 @@ class API(DB, ReadingDB):
         e[ReadingKeys.READING_ID] = reading_id
         e[ReadingRouteKeys.ROUTE_ID] = route_id
         return json_to_reading(entry_type, e)
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- ROUTE --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        routes = super().routes_for_user(user_id)
+        for r in routes:
+            self.__inject_samples_with_presigned_urls(r)
+        
+        return routes
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- USER ---------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def save_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []) -> bool:
+        all_users = self.all_users()
+
+        for u in all_users:
+            if u[UserKeys.USER_ID] == uid:
+                return False
+        
+        return self.put_user(uid, data_access_groups)
+
+        

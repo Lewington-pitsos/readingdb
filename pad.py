@@ -128,60 +128,6 @@
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-
-
-# import uuid
-# from readingdb.annotator import Annotator
-# from readingdb.constants import AnnotatorKeys, Database, REGION_NAME
-# from botocore.config import Config
-# from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT
-# from readingdb.api import API
-# api = API(
-#     DYNAMO_ENDPOINT,
-#     size_limit=0,
-#     bucket=BUCKET,
-#     tmp_bucket=BUCKET,
-#     config=Config(
-#         region_name=REGION_NAME
-#     )
-# )
-
-# api.db.create_table(
-#     TableName=Database.ANNOTATOR_TABLE_NAME,
-#     KeySchema=[
-#         {
-#             'AttributeName':  AnnotatorKeys.ANNOTATOR_ID,
-#             'KeyType': 'HASH'  
-#         },
-#         {
-#             'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
-#             'KeyType': 'RANGE'  
-#         }
-#     ],
-#     AttributeDefinitions=[
-#         {
-#             'AttributeName': AnnotatorKeys.ANNOTATOR_ID,
-#             'AttributeType': 'S'
-#         },
-#         {
-#             'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
-#             'AttributeType': 'S'  
-#         }
-#     ],
-#     ProvisionedThroughput={
-#         'ReadCapacityUnits': 50,
-#         'WriteCapacityUnits': 50
-#     }
-# )
-
-# api.put_annotator(Annotator(
-#     str(uuid.uuid1()),
-#     "Faux Annotator",
-#     "FDS",
-#     "AI",
-#     "99bf4519-85d9-4726-9471-4c91a7677925"
-# ))
-
 import os
 from readingdb.unzipper import Unzipper
 from readingdb.endpoints import *

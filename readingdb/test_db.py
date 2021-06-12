@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -82,7 +83,7 @@ class TestDB(unittest.TestCase):
                     Entity('Ravelling', 0.432, True, 0.1),
                 ],
                 annotation_timestamp=1231238,
-                annotator_id="someid"
+                annotator_id='someid'
             )
         )
     
@@ -363,6 +364,66 @@ class TestDB(unittest.TestCase):
         self.db.teardown_reading_db()
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 0)
+
+    def test_creates_new_user(self):
+        self.db.create_reading_db()
+        users = self.db.all_users()
+
+        self.assertEqual(0, len(users))
+
+        self.db.put_user(
+            'asd78asdgasiud-asd87agdasd7-asd78asd',
+        )
+        users = self.db.all_users()
+        self.assertEqual(1, len(users))
+        
+        self.db.put_user(
+            'asdasd7as7das7d',
+        )
+        users = self.db.all_users()
+        self.assertEqual(2, len(users))
+
+        self.db.put_user('akakakakakakak')
+        users = self.db.all_users()
+        self.assertEqual(3, len(users))
+
+    def test_creates_default_data_access_groups(self):
+        self.db.create_reading_db()
+        self.db.put_user('asdasd7as7das7d')
+        usr = self.db.all_users()[0]
+        self.assertEqual(usr['UserID'], 'asdasd7as7das7d')
+        self.assertEqual(usr['DataAccessGroups'], [
+            {'GroupName': 'asdasd7as7das7d', 'GroupID': 'asdasd7as7das7d'}
+        ])
+
+    def test_inserts_data_access_groups(self):
+        self.db.create_reading_db()
+        self.assertRaises(AssertionError, self.db.put_user, 'wendigo', ['qqqq', 'bread'])
+        self.db.put_user( 'wendigo', [
+            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
+            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
+        ])
+        usr = self.db.all_users()[0]
+
+        self.assertEqual(usr['UserID'], 'wendigo')
+        self.assertEqual(usr['DataAccessGroups'], [
+            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
+            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
+        ])
+
+    def test_gets_user_data(self):
+        self.db.create_reading_db()
+        self.db.put_user( 'wendigo', [
+            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
+            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
+        ])
+
+        user_data = self.db.user_data('wendigo')
+        self.assertIn(UserKeys.DATA_ACCESS_GROUPS, user_data)
+        self.assertEqual(user_data['DataAccessGroups'], [
+            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
+            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
+        ])
 
     def tearDown(self):
         tables = self.db.all_tables()
