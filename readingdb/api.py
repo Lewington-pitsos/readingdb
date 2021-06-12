@@ -314,7 +314,7 @@ class API(DB, ReadingDB):
         )
 
         return (deletedReadingCount, deletedImgCount)
-        
+
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
         reading_groups = defaultdict(lambda: [])
         final_readings = []
@@ -419,3 +419,25 @@ class API(DB, ReadingDB):
         e[ReadingKeys.READING_ID] = reading_id
         e[ReadingRouteKeys.ROUTE_ID] = route_id
         return json_to_reading(entry_type, e)
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- USER ---------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def save_user(self, uid: str, data_access_groups: List[str] = []) -> bool:
+        all_users = self.all_users()
+
+        for u in all_users:
+            if u[UserKeys.USER_ID] == uid:
+                return False
+        
+        self.put_user(uid, data_access_groups)
+
+        return True
+
+        

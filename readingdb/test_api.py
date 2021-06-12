@@ -609,3 +609,18 @@ class TestAPI(unittest.TestCase):
 
         well_annotated = [r for r in all_readings if r['AnnotatorID'] == DEFAULT_ANNOTATOR_ID]
         self.assertEqual(227, len(well_annotated))
+
+    def test_save_user(self):
+        usrs = self.api.all_users()
+        self.assertEqual(0, len(usrs))
+
+        success = self.api.save_user('some-user-id-that-is')
+        self.assertTrue(success)
+        usrs = self.api.all_users()
+        self.assertEqual(1, len(usrs))
+
+        success = self.api.save_user('some-user-id-that-is')
+        self.assertFalse(success)
+        usrs = self.api.all_users()
+        self.assertEqual(1, len(usrs))
+        

@@ -267,6 +267,17 @@ class TestLambdaW(TestLambdaRW):
             'Status': 'Success',
             'Body': {'DataAccessGroups': ['too-shorta-sd-asdas-dasd-asd']}
         }, resp)
+  
+        resp = handler({
+            'Type': 'AddUser',
+            'UserID': 'too-shorta-sd-asdas-dasd-asd',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'User ID too-shorta-sd-asdas-dasd-asd has already been registered'
+        }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_success_on_paginated_readings_for_absent_route(self):

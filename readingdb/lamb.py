@@ -238,6 +238,12 @@ def handler(event: Dict[str, Any], context):
 
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
+        
+        success = api.save_user(user_id)
+
+        if not success:
+            return error_response(f'User ID {user_id} has already been registered')
+
         return success_response({
             UserKeys.DATA_ACCESS_GROUPS: [user_id]
         })
