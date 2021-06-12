@@ -235,6 +235,26 @@ class TestLambdaW(TestLambdaRW):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_saves_data_access_groups(self):
+        resp = handler({
+            'Type': 'AddUser',
+            'UserID': "a98s7das87dba0sa7gdas87",
+            'DataAccessGroups': [
+                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
+                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Success',
+            'Body': {'DataAccessGroups': [
+                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
+                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
+            ]}
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_handles_user_put_request_correctly(self):
         resp = handler({
             'Type': 'AddUser',
@@ -265,7 +285,9 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual({
             'Status': 'Success',
-            'Body': {'DataAccessGroups': ['too-shorta-sd-asdas-dasd-asd']}
+            'Body': {'DataAccessGroups': [
+                 {'GroupName': 'too-shorta-sd-asdas-dasd-asd', 'GroupID': 'too-shorta-sd-asdas-dasd-asd'}
+            ]}
         }, resp)
   
         resp = handler({

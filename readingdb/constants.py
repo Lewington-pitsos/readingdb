@@ -81,6 +81,10 @@ class PredictionReadingKeys(ImageReadingKeys):
     ANNOTATOR_ID = 'AnnotatorID'
     ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
 
+class DataAccessGroupKeys():
+    GROUP_NAME = 'GroupName'
+    GROUP_ID = 'GroupID'
+
 DEFAULT_ANNOTATOR_NAME = "LoukaSean"
 DEFAULT_ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"
 FAUX_ANNOTATOR_ID = "3f01d5ec-c80b-11eb-acfa-02428ee80691"

@@ -47,6 +47,22 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def __ddb_query(
+        self,
+        table_name: str,
+        query_key: str, 
+        query_value: str,
+        decode_fn: Callable[[Dict[str, Any]], Dict[str, Any]] = lambda item: item
+    ) -> List[Dict[str, Any]]:
+        table = self.db.Table(table_name)
+        response = table.query(KeyConditionExpression=Key(query_key).eq(query_value))
+
+        items = []
+        for item in response[self.ITEM_KEY]:
+            items.append(decode_fn(item))
+
+        return items
+
     def __paginate_table(
         self, 
         table_name: str,
@@ -130,15 +146,12 @@ class DB():
         return item
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        response = table.query(KeyConditionExpression=Key(RouteKeys.USER_ID).eq(user_id))
-
-        items = []
-        for item in response[self.ITEM_KEY]:
-            Route.decode_item(item)
-            items.append(item)
-
-        return items
+        return self.__ddb_query(
+            Database.ROUTE_TABLE_NAME,
+            RouteKeys.USER_ID,
+            user_id,
+            Route.decode_item
+        )
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
         table = self.db.Table(Database.ROUTE_TABLE_NAME)
@@ -248,7 +261,7 @@ class DB():
 
         items = []
         for item in resp[self.ITEM_KEY]:
-            ddb_to_dict(item[ReadingKeys.TYPE], item)
+            ddb_to_dict(item)
             items.append(item)
 
         return items, next_key
@@ -308,6 +321,13 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def user_data(self, uid: str)-> Dict[str, Any]:
+        return self.__ddb_query(
+            Database.USER_TABLE_NAME,
+            UserKeys.USER_ID,
+            uid,
+        )[0]
+
     def all_users(self) -> List[Dict[str, Any]]:
         return self.__paginate_table(
             Database.USER_TABLE_NAME,
@@ -316,14 +336,23 @@ class DB():
 
     def put_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []):
         if len(data_access_groups) == 0:
-            data_access_groups = [uid]
+            data_access_groups = [{
+                DataAccessGroupKeys.GROUP_NAME: uid,
+                DataAccessGroupKeys.GROUP_ID: uid
+            }]
+
+        for g in data_access_groups:
+            assert DataAccessGroupKeys.GROUP_NAME in g 
+            assert DataAccessGroupKeys.GROUP_ID in g 
 
         route_table = self.db.Table(Database.USER_TABLE_NAME)
-        return route_table.put_item(Item={
+        route_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
             UserKeys.USER_ID: uid,
             UserKeys.DATA_ACCESS_GROUPS: data_access_groups 
         })
+
+        return data_access_groups
 
     def __make_user_table(self):
         return self.db.create_table(

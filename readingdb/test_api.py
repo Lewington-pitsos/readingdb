@@ -1,5 +1,6 @@
 import json
 import os
+from re import U
 import time
 from typing import List
 from unittest import mock
@@ -623,4 +624,16 @@ class TestAPI(unittest.TestCase):
         self.assertFalse(success)
         usrs = self.api.all_users()
         self.assertEqual(1, len(usrs))
+    
+    def test_gets_accessible_routes(self):
+        uid = "ahsd78astdy87asdgha87s"
+
+        access_groups = self.api.save_user(uid)
+        routes = self.api.routes_for_user(uid)
+        self.assertEqual(0, len(routes))
+
+        rid = '17231-12312321'
+        self.api.put_route(Route('3', rid, 123617823, access_groups))
+        routes = self.api.routes_for_user(uid)
+        self.assertEqual(1, len(routes))
         

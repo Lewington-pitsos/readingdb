@@ -32,7 +32,7 @@ class Route():
     def decode_item(cls, item: Dict[str, Any]) -> None:
         if RouteKeys.SAMPLE_DATA in item:
             for k, v in item[RouteKeys.SAMPLE_DATA].items():
-                ddb_to_dict(k, v)
+                ddb_to_dict(v)
                 item[RouteKeys.SAMPLE_DATA][k] = v
                 
         item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
@@ -45,7 +45,9 @@ class Route():
         else:
             item[RouteKeys.LAST_UPDATED] = 0
 
-    def item_data(self) ->  Dict[str, Any]:
+        return item
+
+    def item_data(self) -> Dict[str, Any]:
         data = {
             RouteKeys.USER_ID: self.user_id,
             ReadingRouteKeys.ROUTE_ID: self.id,

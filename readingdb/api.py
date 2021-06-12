@@ -222,13 +222,6 @@ class API(DB, ReadingDB):
             annotator_preference=annotator_preference,
         )
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
-        routes = super().routes_for_user(user_id)
-        for r in routes:
-            self.__inject_samples_with_presigned_urls(r)
-        
-        return routes
-
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
         r = super().get_route(route_id, user_id)
         if not r:
@@ -423,21 +416,35 @@ class API(DB, ReadingDB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
+    # -------------------------- ROUTE --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        routes = super().routes_for_user(user_id)
+        for r in routes:
+            self.__inject_samples_with_presigned_urls(r)
+        
+        return routes
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
     # -------------------------- USER ---------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def save_user(self, uid: str, data_access_groups: List[str] = []) -> bool:
+    def save_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []) -> bool:
         all_users = self.all_users()
 
         for u in all_users:
             if u[UserKeys.USER_ID] == uid:
                 return False
         
-        self.put_user(uid, data_access_groups)
-
-        return True
+        return self.put_user(uid, data_access_groups)
 
         
