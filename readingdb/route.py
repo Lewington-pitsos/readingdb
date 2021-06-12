@@ -1,6 +1,6 @@
 import copy
 import time
-from typing import Any, Dict
+from typing import Any, Dict, List
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
 from readingdb.reading import AbstractReading, ddb_to_dict
@@ -8,10 +8,12 @@ from readingdb.reading import AbstractReading, ddb_to_dict
 class Route():
     MAX_NAME_LENGTH = 21
 
-    def __init__(self, 
+    def __init__(
+        self, 
         user_id: str, 
         id: str, 
         timestamp: int, 
+        access_group_ids: List[str], 
         name: str=None, 
         sample_data: Dict[str, AbstractReading]=None
     ) -> None:

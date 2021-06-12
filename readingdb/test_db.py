@@ -52,13 +52,13 @@ class TestDB(unittest.TestCase):
         self.db.create_reading_db()
         self.assertEqual(0, len(self.db.all_known_users()))
 
-        self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
+        self.db.put_route(Route('someuser_id', 'someRouteID', 123617823, ['somegroupid']))
         self.assertEqual(1, len(self.db.all_known_users()))
         self.assertEqual('someuser_id', self.db.all_known_users()[0])
 
-        self.db.put_route(Route('one-armed-larry', '2123y1h`278', 123617823))
-        self.db.put_route(Route('one-armed-larry', '87218t238', 123617823))
-        self.db.put_route(Route('jonny-the-wrench', '929298227', 123617823))
+        self.db.put_route(Route('one-armed-larry', '2123y1h`278', 123617823, ['somegroupid']))
+        self.db.put_route(Route('one-armed-larry', '87218t238', 123617823, ['somegroupid']))
+        self.db.put_route(Route('jonny-the-wrench', '929298227', 123617823, ['somegroupid']))
         self.assertEqual(3, len(self.db.all_known_users()))
 
     def test_saves_readings_with_severity(self):
@@ -112,9 +112,15 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route('3', '103', 123617823))
+        self.db.put_route(Route('3', '103', 123617823, ['somegroupid']))
         
         routes = self.db.routes_for_user('3')
+        self.assertEqual(len(routes), 0)
+
+        self.db.put_user('103', [
+            [{'GroupName': 'AppleCo', 'GroupID': 'somegroupid'}]
+        ])
+
         self.assertEqual(len(routes), 1)
         self.assertEqual({
             'LastUpdated': 1619496879,
@@ -130,7 +136,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        r = Route('3', '103', 123617823)
+        r = Route('3', '103', 123617823, ['somegroupid'])
         last_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -145,7 +151,7 @@ class TestDB(unittest.TestCase):
         route_id = '103'
         user_id = '3'
 
-        r = Route(user_id, route_id, 123617823)
+        r = Route(user_id, route_id, 123617823, ['somegroupid'])
         original_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -178,7 +184,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user(route_id)
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route('3', route_id, 123617823))
+        self.db.put_route(Route('3', route_id, 123617823, ['somegroupid']))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -202,7 +208,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route('3', '103', 123617823, name=name))
+        self.db.put_route(Route('3', '103', 123617823, ['somegroupid'], name=name))
         routes = self.db.routes_for_user('3')
         self.assertEqual(len(routes), 1)
         self.assertEqual(routes[0][RouteKeys.NAME], name)
@@ -307,6 +313,7 @@ class TestDB(unittest.TestCase):
             '3', 
             '103', 
             123617823,
+            ['somegroupid'],
             sample_data={'PredictionReading': json_to_reading('PredictionReading', sample_entry)}
         ))
         
@@ -318,7 +325,7 @@ class TestDB(unittest.TestCase):
         route_id = '103'
         self.db.create_reading_db()
         self.db.max_page_readings = 100
-        self.db.put_route(Route('3', route_id, 12, 3617823))
+        self.db.put_route(Route('3', route_id, 12, ['somegroupid'], 3617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -420,7 +427,10 @@ class TestDB(unittest.TestCase):
 
         user_data = self.db.user_data('wendigo')
         self.assertIn(UserKeys.DATA_ACCESS_GROUPS, user_data)
-        
+        self.assertEqual(user_data['DataAccessGroups'], [
+            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
+            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
+        ])
 
     def tearDown(self):
         tables = self.db.all_tables()

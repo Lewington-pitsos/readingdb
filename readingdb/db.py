@@ -146,6 +146,10 @@ class DB():
         return item
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        user_data = self.user_data(user_id)
+
+        
+
         return self.__ddb_query(
             Database.ROUTE_TABLE_NAME,
             RouteKeys.USER_ID,

@@ -74,7 +74,12 @@ class API(DB, ReadingDB):
         # self.mlapi.add_message_to_queue(user_id, route_id)
         pass
 
-    def save_route(self, route_spec: RouteSpec, user_id: str) -> Route:
+    def save_route(
+        self, 
+        route_spec: RouteSpec, 
+        user_id: str, 
+        acces_group_ids: List[str]
+    ) -> Route:
         route_id = str(uuid.uuid1())
 
         print(f'uploading route {route_spec} as {route_id}')
@@ -103,6 +108,7 @@ class API(DB, ReadingDB):
             user_id=user_id,
             id=route_id,
             timestamp=timestamp,
+            acces_group_ids=acces_group_ids,
             name=route_spec.name if route_spec.name else None,
             sample_data=initial_entries
         )
