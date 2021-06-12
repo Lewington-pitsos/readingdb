@@ -148,7 +148,6 @@ class TestAPI(unittest.TestCase):
         route = api.save_route(route_spec, user_id)
 
         self.assertEqual(route.name, route.id[:Route.MAX_NAME_LENGTH])
-
         api.update_route_name(route.id, user_id, 'Belgrave')
 
         loaded_route = api.get_route(route.id, user_id)
@@ -221,8 +220,9 @@ class TestAPI(unittest.TestCase):
             'Timestamp': 1616116106935,
         }]
 
-        api.save_predictions(preds, route.id, user_id)
+        saved = api.save_predictions(preds, route.id, user_id)
         loaded_route = api.get_route(route.id, user_id)
+        self.assertEqual(len(preds), len(saved))
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
 
@@ -269,7 +269,6 @@ class TestAPI(unittest.TestCase):
         )
         updated_time = r.update_timestamp
         api.put_route(r)
-
 
         s3 = boto3.resource(
             's3',
@@ -545,7 +544,6 @@ class TestAPI(unittest.TestCase):
             else:
                 self.assertEqual(r['AnnotatorID'], '3f01d5ec-c80b-11eb-acfa-02428ee80691')
         
-
     def test_can_filter_non_prediction_readings(self):
         user_id = 'aghsghavgas'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)

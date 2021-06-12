@@ -150,8 +150,9 @@ class API(DB, ReadingDB):
                 else:
                     raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
         
-        self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
+        saved_entries = self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
         self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        return saved_entries
 
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
