@@ -4,7 +4,7 @@ class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'
     PAGINATION_KEY_NAME = 'PaginationKey'
-    ANNOTATOR_TABLE_NAME = 'Annotators'
+    USER_TABLE_NAME = 'Annotators'
 class ReadingRouteKeys():
     ROUTE_ID = 'RouteID'
 class ReadingKeys():

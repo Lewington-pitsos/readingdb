@@ -52,39 +52,15 @@ class DB():
 
     def create_reading_db(
         self, 
-        readCapacity=500, 
-        writeCapacity=500
     ) -> Tuple[Any, Any]:
-        reading_table = self.db.create_table(
-            TableName=Database.READING_TABLE_NAME,
-            KeySchema=[
-                {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
-                    'KeyType': 'HASH'  
-                },
-                {
-                    'AttributeName': ReadingKeys.READING_ID,
-                    'KeyType': 'RANGE'
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': ReadingKeys.READING_ID,
-                    'AttributeType': 'S'
-                },
-
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': readCapacity,
-                'WriteCapacityUnits': writeCapacity
-            }
+        return (
+            self.__make_reading_table(), 
+            self.__make_route_table(),
+            self.__make_user_table()
         )
 
-        route_table = self.db.create_table(
+    def __make_route_table(self):
+        return self.db.create_table(
             TableName=Database.ROUTE_TABLE_NAME,
             KeySchema=[
                 {
@@ -111,28 +87,51 @@ class DB():
                 'WriteCapacityUnits': 50
             }
         )
-        
-        annotator_table = self.db.create_table(
-            TableName=Database.ANNOTATOR_TABLE_NAME,
+
+    def __make_reading_table(self):
+        return self.db.create_table(
+            TableName=Database.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  AnnotatorKeys.ANNOTATOR_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
-                    'KeyType': 'RANGE'  
+                    'AttributeName': ReadingKeys.READING_ID,
+                    'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': AnnotatorKeys.ANNOTATOR_ID,
+                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName':  AnnotatorKeys.ANNOTATOR_GROUP,
-                    'AttributeType': 'S'  
+                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeType': 'S'
+                },
+
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 500,
+                'WriteCapacityUnits': 500
+            }
+        )
+
+    def __make_user_table(self):
+        return self.db.create_table(
+            TableName=Database.USER_TABLE_NAME,
+            KeySchema=[
+                {
+                    'AttributeName':  RouteKeys.USER_ID,
+                    'KeyType': 'HASH'  
                 }
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeType': 'S'
+                },
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 50,
@@ -140,15 +139,13 @@ class DB():
             }
         )
 
-        return (reading_table, route_table, annotator_table)
-
     def delete_table(self, table_name) -> None:
         self.db.Table(table_name).delete()
 
     def teardown_reading_db(self) -> None:
         self.delete_table(Database.READING_TABLE_NAME)
         self.delete_table(Database.ROUTE_TABLE_NAME)
-        self.delete_table(Database.ANNOTATOR_TABLE_NAME)
+        self.delete_table(Database.USER_TABLE_NAME)
 
     def put_route(self, route: Route): 
         route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
@@ -165,11 +162,6 @@ class DB():
     def put_reading(self, reading: AbstractReading):
         table = self.db.Table(Database.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
-        return response
-
-    def put_annotator(self, annotator: Annotator):
-        table = self.db.Table(Database.ANNOTATOR_TABLE_NAME)
-        response = table.put_item(Item=annotator.item_data())
         return response
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
