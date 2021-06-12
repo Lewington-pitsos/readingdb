@@ -13,7 +13,6 @@ class Route():
         user_id: str, 
         id: str, 
         timestamp: int, 
-        access_group_ids: List[str], 
         name: str=None, 
         sample_data: Dict[str, AbstractReading]=None
     ) -> None:

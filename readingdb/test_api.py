@@ -94,7 +94,7 @@ class TestAPI(unittest.TestCase):
 
     def test_handles_large_queries_correctly(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823, ['3']))
+        self.api.put_route(Route('3', route_id, 123617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -119,7 +119,7 @@ class TestAPI(unittest.TestCase):
 
     def test_can_upload_readings_with_given_key(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823, ['somegroupid']))
+        self.api.put_route(Route('3', route_id, 123617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -266,7 +266,6 @@ class TestAPI(unittest.TestCase):
             user_id,
             route_id,
             0,
-            ['somegroupid']
         )
         updated_time = r.update_timestamp
         api.put_route(r)
@@ -332,7 +331,6 @@ class TestAPI(unittest.TestCase):
             user_id,
             route_id,
             0,
-            ['somegroupid']
         )
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
@@ -345,7 +343,7 @@ class TestAPI(unittest.TestCase):
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
-        r = Route(user_id, route_id, 0, ['somegroupid'])
+        r = Route(user_id, route_id, 0)
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)        
@@ -627,15 +625,15 @@ class TestAPI(unittest.TestCase):
         usrs = self.api.all_users()
         self.assertEqual(1, len(usrs))
     
-    def test_gets_accessible_routes(self):
-        uid = "ahsd78astdy87asdgha87s"
+    # def test_gets_accessible_routes(self):
+    #     uid = "ahsd78astdy87asdgha87s"
 
-        access_groups = self.api.save_user(uid)
-        routes = self.api.routes_for_user(uid)
-        self.assertEqual(0, len(routes))
+    #     access_groups = self.api.save_user(uid)
+    #     routes = self.api.routes_for_user(uid)
+    #     self.assertEqual(0, len(routes))
 
-        rid = '17231-12312321'
-        self.api.put_route(Route('3', rid, 123617823, access_groups))
-        routes = self.api.routes_for_user(uid)
-        self.assertEqual(1, len(routes))
+    #     rid = '17231-12312321'
+    #     self.api.put_route(Route('3', rid, 123617823, access_groups))
+    #     routes = self.api.routes_for_user(uid)
+    #     self.assertEqual(1, len(routes))
         
