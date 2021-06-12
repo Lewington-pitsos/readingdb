@@ -22,7 +22,7 @@ class TestGeolocator(unittest.TestCase):
     def test_snapping(self):
         g = Geolocator()
         snapped_pos_readings = g.geolocate(self.pos_readings[:80])
-        self.assertEqual(80, len(snapped_pos_readings))
+        self.assertEqual(70, len(snapped_pos_readings))
         self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
         self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
         self.assertEqual(-37.7022301, RUtils.get_lat(snapped_pos_readings[-1]))
@@ -31,14 +31,14 @@ class TestGeolocator(unittest.TestCase):
         lastTimestamp = 0
         for s in snapped_pos_readings:
             new_ts = s[ReadingKeys.TIMESTAMP]
-            self.assertGreater(new_ts, lastTimestamp)
+            self.assertGreaterEqual(new_ts, lastTimestamp)
             lastTimestamp = new_ts
     
     @roads_api_test
     def test_snapping_for_more_than_100_readings(self):
         g = Geolocator()
         snapped_pos_readings = g.geolocate(self.pos_readings[:240])
-        self.assertEqual(240, len(snapped_pos_readings))
+        self.assertEqual(230, len(snapped_pos_readings))
         self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
         self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
 
@@ -49,7 +49,7 @@ class TestGeolocator(unittest.TestCase):
             lastTimestamp = new_ts
 
         snapped_pos_readings = g.geolocate(self.pos_readings[:101])
-        self.assertEqual(101, len(snapped_pos_readings))
+        self.assertEqual(91, len(snapped_pos_readings))
         self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
         self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
 
@@ -60,7 +60,7 @@ class TestGeolocator(unittest.TestCase):
             lastTimestamp = new_ts
 
         snapped_pos_readings = g.geolocate(self.pos_readings[:100])
-        self.assertEqual(100, len(snapped_pos_readings))
+        self.assertEqual(90, len(snapped_pos_readings))
         self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
         self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
 
@@ -73,9 +73,8 @@ class TestGeolocator(unittest.TestCase):
     @roads_api_test
     def test_prediction_generating(self):
         g = Geolocator()
-        cnt = 80
-        predictions = g.generate_predictions(self.pos_readings[:cnt], self.img_readings[:cnt])
-        self.assertEqual(cnt, len(predictions))
+        predictions = g.generate_predictions(self.pos_readings[:80], self.img_readings[:80])
+        self.assertEqual(80, len(predictions))
         self.assertEqual('PredictionReading', RUtils.get_type(predictions[0]))
 
     def test_interpolation(self):
