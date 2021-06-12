@@ -130,8 +130,6 @@ class PredictionReading(ImageReading, PositionReading):
             e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
             e[EntityKeys.SEVERITY] = decode_float(e[EntityKeys.SEVERITY]) if EntityKeys.SEVERITY in e else 1.0
         
-        # if PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
-        #     item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
         item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
             
     def item_data(self):
@@ -144,7 +142,7 @@ class PredictionReading(ImageReading, PositionReading):
         data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
 
         data[AnnotatorKeys.ANNOTATOR_ID] = self.annotator_id
-        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = encode_as_float(self.annotation_timestamp)
+        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
 
         return data
 
@@ -152,7 +150,6 @@ READING_TYPE_MAP: Dict[str, AbstractReading] = {
     ReadingTypes.POSITIONAL: PositionReading,
     ReadingTypes.IMAGE: ImageReading,
     ReadingTypes.PREDICTION: PredictionReading,
-    ReadingTypes.ANNOTATION: PredictionReading,
 }
 def ddb_to_dict(reading_type, reading) -> None:
     READING_TYPE_MAP[reading_type].decode(reading)
@@ -179,7 +176,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             get_filename(reading[ReadingKeys.READING]),
             get_uri(reading[ReadingKeys.READING])
         )
-    elif reading_type in [ReadingTypes.PREDICTION, ReadingTypes.ANNOTATION]:
+    elif reading_type in [ReadingTypes.PREDICTION]:
         binaries: Dict[str, bool] = {}
         reading_data = reading[ReadingKeys.READING]
 

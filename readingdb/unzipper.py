@@ -1,3 +1,5 @@
+from readingdb.rutils import RUtils
+from readingdb.geolocator import Geolocator
 from typing import List
 from readingdb.mlapi import MLAPI
 from readingdb.endpoints import SQS_URL
@@ -22,7 +24,13 @@ class Unzipper():
         self.api: API = API(url, *args, **kwargs)
         self.mlapi = MLAPI(sqs_url)
 
-    def process(self, bucket: str, key: str, name: str = None) -> Route:
+    def process(
+        self, 
+        bucket: str, 
+        key: str, 
+        name: str = None,
+        snap_to_roads=False
+    ) -> Route:
         print('bucket', bucket)
         print('key', key)
  
@@ -52,14 +60,23 @@ class Unzipper():
             key, 
             bucket, 
             z.namelist(), 
-            name
+            name,
+            snap_to_roads=snap_to_roads
         )
         self.s3_resource.Object(bucket, key).delete()
         self.mlapi.add_message_to_queue(user_id, route.id)
 
         return route
 
-    def process_local(self, user_id, key, bucket, filenames, name = None):
+    def process_local(
+        self, 
+        user_id: str, 
+        key: str, 
+        bucket: str, 
+        filenames: List[str],
+        name: str = None,
+        snap_to_roads=False,
+    ):
 
         def upload(filename, bucket, s3_filename):
             segs = s3_filename.split('/')
@@ -76,7 +93,16 @@ class Unzipper():
 
             return lines
 
-        return self.__process_names(upload, read, user_id, key, bucket, filenames, name)
+        return self.__process_names(
+            upload, 
+            read, 
+            user_id, 
+            key, 
+            bucket, 
+            filenames, 
+            name,
+            snap_to_roads,
+        )
 
     def __process_names(
         self, 
@@ -86,51 +112,46 @@ class Unzipper():
         key: str, 
         bucket: str, 
         filenames: List[str], 
-        name: str = None
+        name: str = None,
+        snap_to_roads=False
     ):
-        reading_types = {}
         img_readings = []
+        points = []
+
+        filename_map = {}
 
         for filename in filenames:
-            print(filename)
             s3_filename = f'{key.split(".")[0]}/{filename}'
-            print('extracting file:', s3_filename)
-
-            upload(filename, bucket, s3_filename)
+            filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
 
-            if extension == self.IMG_EXT:
-                if self.IMG_EXT not in reading_types:
-                    reading_types[self.IMG_EXT] = ReadingSpec(
-                        ReadingTypes.IMAGE, 
-                        ReadingSpec.S3_FILES_FORMAT, 
-                        ''
-                    )
-                
+            if extension == self.IMG_EXT:               
                 img_readings.append(entry_from_file(bucket, s3_filename))
 
             elif extension == self.TXT_EXT:
-                if self.TXT_EXT in reading_types:
-                    raise ValueError(f'found two .txt files when unzipping {key} of bucket {bucket}, this should never happen')
-
-                lines = read(filename)
-
-                points = txt_to_points(lines)
-
-                reading_types[self.TXT_EXT] = ReadingSpec(
-                    ReadingTypes.POSITIONAL, 
-                    ReadingSpec.S3_FILES_FORMAT, 
-                    points
-                )
+                points.extend(txt_to_points(read(filename)))
             else:
                 raise ValueError('unrecognized reading file type: ', s3_filename)
 
-        # sends a request to the RaedingDB lambda to upload that routespec
+        g = Geolocator()
+        if snap_to_roads:
+            pred_readings = g.generate_predictions(points, img_readings)
+        else:
+            pred_readings = g.interpolated(points, img_readings)
+        print("finished generating prediction readings")
 
-        if self.IMG_EXT in reading_types:
-            reading_types[self.IMG_EXT].data = img_readings
+        for r in pred_readings:
+            uri = RUtils.get_uri(r)
+            upload(filename_map[uri[S3Path.KEY]], uri[S3Path.BUCKET], uri[S3Path.KEY])
 
-        routeSpec = RouteSpec(list(reading_types.values()), name)
+        routeSpec = RouteSpec(
+            [ReadingSpec(
+                ReadingTypes.PREDICTION, 
+                ReadingSpec.S3_FILES_FORMAT,
+                pred_readings
+            )], 
+            name
+        )
 
         print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)

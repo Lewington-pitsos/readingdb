@@ -1,6 +1,5 @@
-from copy import Error
-from logging import error
 import os
+
 from readingdb.route import Route
 import tempfile
 import unittest
@@ -67,7 +66,7 @@ class TestUnzipper(unittest.TestCase):
         route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
         readings = self.api.all_route_readings(route.id)
 
-        self.assertEqual(len(readings), 39)
+        self.assertEqual(len(readings), 28)
 
         msg = self.sqs.receive_message(
             QueueUrl=self.sqs_url,
@@ -86,8 +85,7 @@ class TestUnzipper(unittest.TestCase):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = z.process(self.bucket_name, 'mocks/route_1621394080578.zip')
         readings = self.api.all_route_readings(route.id)
-
-        self.assertEqual(len(readings), 98)
+        self.assertEqual(len(readings), 70)
 
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(self.bucket_name)
@@ -149,7 +147,6 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_1621394080578/img_1621394088049-12.jpg',
             'mocks/route_1621394080578/img_1621394103542-40.jpg',
             'mocks/route_1621394080578/img_1621394085792-8.jpg',
-            'mocks/route_1621394080578/GPS.txt',
             'mocks/apple.json',
             'mocks/route_1621394080578/img_1621394087430-11.jpg',
             'mocks/route_1621394080578/img_1621394108573-49.jpg',
@@ -157,7 +154,6 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_1621394080578/img_1621394092962-21.jpg',
             'mocks/route_1621394080578/img_1621394093580-22.jpg',
             'mocks/route_1621394080578/img_1621394106316-45.jpg',
-            'mocks/route_1621394080578/img_1621394083027-3.jpg',
             'mocks/route_1621394080578/img_1621394088560-13.jpg',
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578/img_1621394085174-7.jpg',
@@ -180,7 +176,7 @@ class TestUnzipper(unittest.TestCase):
         route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
         readings = self.api.all_route_readings(route.id)
 
-        self.assertEqual(len(readings), 39)
+        self.assertEqual(len(readings), 28)
 
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(self.bucket_name)
@@ -203,7 +199,6 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_922-18.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_230-16.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_51_150-30.jpg',
-            'mocks/route_2021_04_07_17_14_36_709/GPS.txt',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_48_689-23.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_198-33.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_51_500-31.jpg',
@@ -216,7 +211,6 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_50_798-29.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_284-39.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_50_055-27.jpg',
-            'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_55_404-42.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_47_928-21.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_54_006-38.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_46_544-17.jpg',
@@ -225,14 +219,36 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_53_587-37.jpg',
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_899-35.jpg',
         ]))
-
         
     def test_unzipper_uploads_with_route_name(self):
         z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', 'bennet court')
 
         readings = self.api.all_route_readings(route.id)
-        self.assertEqual(len(readings), 39)
+        self.assertEqual(len(readings), 28)
         self.assertEqual('bennet court', route.name)
 
-        
+    def test_unzipper_uploads_local_files(self):
+        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+
+        pth = 'readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/'
+        files = [pth + f for f in os.listdir(pth)]
+
+        route = z.process_local(
+            'some_user_id',
+            'route_2021_04_29_14_15_34_999',
+            self.bucket_name,
+            files,
+            'test_route',
+            snap_to_roads=False
+        )
+
+        readings = self.api.all_route_readings(route.id)
+        self.assertEqual(len(readings), 28)
+
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(self.bucket_name)
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+        self.assertEqual(32, len(bucket_objects))
