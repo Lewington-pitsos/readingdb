@@ -30,6 +30,7 @@ EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 EVENT_SAVE_PREDICTIONS = 'SavePredictions'
 EVENT_BUCKET_KEY = 'BucketKey'
+EVENT_ADD_USER = 'AddUser'
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
@@ -229,6 +230,17 @@ def handler(event: Dict[str, Any], context):
         api.update_route_name(route_id, user_data.user_sub, name)
 
         return success_response(None)
+
+    elif event_name == EVENT_ADD_USER:
+        user_id, err_resp = get_key(event, UserKeys.USER_ID)
+        if err_resp:
+            return err_resp 
+
+        if len(user_id) < 20:
+            return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
+        return success_response({
+            UserKeys.DATA_ACCESS_GROUPS: [user_id]
+        })
 
     else:
         return error_response(f'Unrecognized event type {event_name}')

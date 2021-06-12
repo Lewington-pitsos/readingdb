@@ -235,6 +235,40 @@ class TestLambdaW(TestLambdaRW):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_handles_user_put_request_correctly(self):
+        resp = handler({
+            'Type': 'AddUser',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key UserID missing from event'
+        }, resp)
+
+        resp = handler({
+            'Type': 'AddUser',
+            'UserID': 'too-short',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'User ID too-short was too short, must be at least 20 characters long'
+        }, resp)
+
+        resp = handler({
+            'Type': 'AddUser',
+            'UserID': 'too-shorta-sd-asdas-dasd-asd',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Success',
+            'Body': {'DataAccessGroups': ['too-shorta-sd-asdas-dasd-asd']}
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_success_on_paginated_readings_for_absent_route(self):
         resp = handler({
             'Type': 'GetPaginatedReadings',
