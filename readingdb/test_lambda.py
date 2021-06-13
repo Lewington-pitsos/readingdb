@@ -324,6 +324,7 @@ class TestLambdaW(TestLambdaRW):
         resp = handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': r.id,
+            'PredictionOnly': False,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -344,9 +345,12 @@ class TestLambdaW(TestLambdaRW):
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
+        self.assertEqual(22, len(resp['Body']['SavedReadings']))
         resp = handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': r.id,
+            'PredictionOnly': False,
+            'AnnotatorPreference': None,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -355,7 +359,7 @@ class TestLambdaW(TestLambdaRW):
     
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
-    def test_uploads_predictions(self):
+    def test_uploads_predictions_for_long_route(self):
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
@@ -383,7 +387,7 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']), 713)
+        self.assertEqual(len(resp['Body']['Readings']), 713)
 
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
@@ -477,29 +481,29 @@ class TestLambdaR(TestLambdaRW):
             self.tst_route.id
         ])
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_readings(self):
-        resp = handler({
-            'Type': 'GetReadings',
-            'RouteID': self.twenty_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_gets_readings(self):
+    #     resp = handler({
+    #         'Type': 'GetReadings',
+    #         'RouteID': self.twenty_route.id,
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertIsInstance(resp['Body'], dict)
-        self.assertEqual(resp['Body']['Bucket'], self.tmp_bucket)
+    #     self.assertEqual(resp['Status'], 'Success')
+    #     self.assertIsInstance(resp['Body'], dict)
+    #     self.assertEqual(resp['Body']['Bucket'], self.tmp_bucket)
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_readings_with_key(self):
-        resp = handler({
-            'Type': 'GetReadings',
-            'BucketKey': 'rulerruler.json',
-            'RouteID': self.twenty_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_gets_readings_with_key(self):
+    #     resp = handler({
+    #         'Type': 'GetReadings',
+    #         'BucketKey': 'rulerruler.json',
+    #         'RouteID': self.twenty_route.id,
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(resp['Body']['Key'], 'rulerruler.json')
+    #     self.assertEqual(resp['Status'], 'Success')
+    #     self.assertEqual(resp['Body']['Key'], 'rulerruler.json')
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):

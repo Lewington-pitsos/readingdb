@@ -35,6 +35,7 @@ EVENT_ADD_USER = 'AddUser'
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
 RESPONSE_BODY_KEY = 'Body'
+RESPONSE_SAVED_READINGS = 'SavedReadings'
 
 # Response Statuses
 RESPONSE_ERROR = 'Error'
@@ -152,7 +153,7 @@ def handler(event: Dict[str, Any], context):
             annotator_preference=annotator_preference
         )
 
-        return success_response(readings)
+        return success_response({Database.READING_TABLE_NAME: readings})
 
     elif event_name == EVENT_GET_PAGINATED_READINGS:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
@@ -230,7 +231,7 @@ def handler(event: Dict[str, Any], context):
             user_id,
             save_imgs=True
         )
-        return success_response(readings)
+        return success_response({RESPONSE_SAVED_READINGS: readings})
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
