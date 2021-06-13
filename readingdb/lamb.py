@@ -81,7 +81,7 @@ def handler(event: Dict[str, Any], context):
 
     api = API(
         endpoint, 
-        size_limit=0, 
+        size_limit=500000, 
         bucket=bucket, 
         tmp_bucket=bucket, 
         config=Config(
@@ -137,7 +137,20 @@ def handler(event: Dict[str, Any], context):
         else:
             key = None
 
-        readings = api.all_route_readings(route_id, key)
+        annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
+        if missing:
+            annotator_preference = [DEFAULT_ANNOTATOR_ID]
+
+        pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
+        if missing:
+            pred_only = True
+
+        readings = api.all_route_readings(
+            route_id, 
+            key,
+            predictions_only=pred_only,
+            annotator_preference=annotator_preference
+        )
 
         return success_response(readings)
 

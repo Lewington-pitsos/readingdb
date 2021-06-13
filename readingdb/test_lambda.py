@@ -373,6 +373,18 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual(len(resp['Body']['Readings']), 713)
         self.assertIsNone(resp['Body']['PaginationKey'])
 
+        resp = handler({
+            'Type': 'GetReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']), 713)
+
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
