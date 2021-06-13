@@ -215,7 +215,7 @@ def handler(event: Dict[str, Any], context):
             readings, 
             route_id,
             user_id,
-            save_imgs=False
+            save_imgs=True
         )
         return success_response(readings)
 
