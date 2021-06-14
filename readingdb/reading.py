@@ -206,7 +206,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_type,
             reading_data[PositionReadingKeys.LATITUDE],
             reading_data[PositionReadingKeys.LONGITUDE],
-            reading_data[ImageReadingKeys.FILENAME],
+            get_filename(reading_data),
             entities,
             annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP],
             annotator_id=reading[PredictionReadingKeys.ANNOTATOR_ID],

@@ -129,6 +129,7 @@
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
 import os
+from readingdb.api import API
 from readingdb.unzipper import Unzipper
 from readingdb.endpoints import *
 
@@ -150,6 +151,9 @@ z.process_local(
     'route_2021_04_29_14_15_34_999', 
     'mobileappsessions172800-main', 
     files,
-    'roora_test_route',
+    'roora test route',
     snap_to_roads=True,
 )
+
+# api = API(DYNAMO_ENDPOINT)
+# api.delete_route('b2b0e1b8-cce8-11eb-abcd-0242fd6f28d9', '8f647285-58a7-4d7f-af64-238db703e38e', )

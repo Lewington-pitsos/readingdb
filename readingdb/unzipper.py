@@ -30,10 +30,7 @@ class Unzipper():
         key: str, 
         name: str = None,
         snap_to_roads=False
-    ) -> Route:
-        print('bucket', bucket)
-        print('key', key)
- 
+    ) -> Route: 
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
         print('metadata', zip_obj.metadata)
         user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
@@ -121,7 +118,7 @@ class Unzipper():
         filename_map = {}
 
         for filename in filenames:
-            s3_filename = f'{key.split(".")[0]}/{filename}'
+            s3_filename = f'{key.split(".")[0]}/{filename.split("/")[-1]}'
             filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
 
@@ -155,8 +152,6 @@ class Unzipper():
 
         print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)
-
-        print('deleting zipped route: ', key)
 
         return route
 
