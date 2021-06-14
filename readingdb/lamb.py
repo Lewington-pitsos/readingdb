@@ -225,7 +225,7 @@ def handler(event: Dict[str, Any], context):
         if err_resp:
             return err_resp
 
-        readings = api.save_predictions(
+        api.save_predictions(
             readings, 
             route_id,
             user_id,

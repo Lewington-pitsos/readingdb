@@ -231,8 +231,7 @@ class DB():
         table = self.db.Table(Database.READING_TABLE_NAME)
         with table.batch_writer() as batch:
             for r in readings:
-                response = batch.put_item(Item=r.item_data())
-        return response
+                batch.put_item(Item=r.item_data())
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         return self.__paginate_table(
