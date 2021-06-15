@@ -210,7 +210,9 @@ def handler(event: Dict[str, Any], context):
         # Bucket: the name of the bucket where the files are uploaded to,
         # Key: the common prefix shared by all the uploaded route files,
         # RouteName (optional): the name we wish to save as the name for the newly created route
-        # 
+        # See the test_integrates_uploaded_files test in test_lambda.py
+        # for details.
+        #
         # Returns Format:
         # Status: 'Success' | 'Error'
         # Body: {
@@ -218,8 +220,9 @@ def handler(event: Dict[str, Any], context):
         # } 
         # 
         # File Format
-        # All Files must be sitting in the same bucket directory (i.e. prefix) 
-        # with no subdirectories permitted. 
+        # All Files must be sitting in the same bucket directory (i.e. 
+        # the common prefix, which is the value of the Key field in the
+        # Event Format), with no subdirectories permitted. 
         #
         # All image files must be named according to
         #       img_<ts>-<num>.jpg

@@ -280,7 +280,7 @@ class TestLambdaW(TestLambdaRW):
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': TEST_BUCKET,
-             'Key': 'mocks/route_1621394080578/',
+             'Key': 'mocks/route_1621394080578',
              'RouteName': 'Jenkins Way'
         }, TEST_CONTEXT)
 

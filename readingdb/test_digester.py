@@ -1,4 +1,5 @@
 from io import BytesIO
+import io
 import os
 import zipfile
 
@@ -272,6 +273,26 @@ class TestDigester(unittest.TestCase):
                 Bucket=self.bucket_name,
                 Key=s3_filename
             )
+        
+        faux_file = io.BytesIO()
+        faux_file.write(b'\x02\x1b\x92\x1fs\x96\x97\xe8\x01')
+        faux_file.seek(0)
+
+        s3_resource.meta.client.upload_fileobj(
+            faux_file,
+            Bucket=self.bucket_name,
+            Key='mocks/route_1621394080578/STATUS.json'
+        )
+
+        faux_file = io.BytesIO()
+        faux_file.write(b'\x02\x1b\x92\x1fs\x96\x97\xe8\x01')
+        faux_file.seek(0)
+
+        s3_resource.meta.client.upload_fileobj(
+            faux_file,
+            Bucket=self.bucket_name,
+            Key='mocks/route_1621394080578/CRUFT.txt'
+        )
 
         bucket = s3_resource.Bucket(self.bucket_name)
         bucket_objects = []
@@ -355,13 +376,15 @@ class TestDigester(unittest.TestCase):
             'mocks/route_1621394080578/img_1621394100257-34.jpg',
             'mocks/route_1621394080578/img_1621394083027-3.jpg',
             'mocks/route_1621394080578.zip',
+            'mocks/route_1621394080578/STATUS.json',
+            'mocks/route_1621394080578/CRUFT.txt',
             'mocks/route_1621394080578/GPS.txt',
         ]))
 
         d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
         route = d.process_upload(  
             user_id='someuderid',      
-            key='mocks/route_1621394080578/', 
+            key='mocks/route_1621394080578', 
             bucket=self.bucket_name, 
             name='hedge cresent',
             snap_to_roads=True

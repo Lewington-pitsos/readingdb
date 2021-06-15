@@ -57,7 +57,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
-            key, 
+            key.split(".")[0], 
             bucket, 
             z.namelist(), 
             name,
@@ -152,17 +152,17 @@ class Digester():
         filename_map = {}
 
         for filename in filenames:
-            s3_filename = f'{key.split(".")[0]}/{filename.split("/")[-1]}'
+            s3_filename = f'{key}/{filename.split("/")[-1]}'
             filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
+            file_portion = s3_filename.split('/')[-1]
 
             if extension == self.IMG_EXT:               
                 img_readings.append(entry_from_file(bucket, s3_filename))
-
-            elif extension == self.TXT_EXT:
+            elif file_portion == "GPS.txt":
                 points.extend(txt_to_points(read_gps_file(filename)))
             else:
-                raise ValueError('unrecognized reading file type: ', s3_filename)
+                print('unrecognized file in s3 bucket: ', s3_filename)
 
         g = Geolocator()
         if snap_to_roads:
