@@ -19,9 +19,12 @@ class Digester():
     TXT_EXT = 'txt'
     OBJ_BODY_KEY = 'Body'
 
-    def __init__(self, url:str, sqs_url: str=SQS_URL, *args, **kwargs) -> None:
+    def __init__(self, url:str, sqs_url: str=SQS_URL, api=None, *args, **kwargs) -> None:
         self.s3_resource = boto3.resource('s3')
-        self.api: API = API(url, *args, **kwargs)
+        if api is None:
+            self.api: API = API(url, *args, **kwargs)
+        else:
+            self.api = api
         self.mlapi = MLAPI(sqs_url)
 
     def process(
