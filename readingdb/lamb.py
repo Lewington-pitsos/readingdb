@@ -204,6 +204,34 @@ def handler(event: Dict[str, Any], context):
         return success_response(s3_uri)
 
     elif event_name == EVENT_PROCESS_UPLOADED_ROUTE:
+        # Event Format:
+        # Type: 'ProcessUpload',
+        # AccessToken: the access token obtained from cognito,
+        # Bucket: the name of the bucket where the files are uploaded to,
+        # Key: the common prefix shared by all the uploaded route files,
+        # RouteName (optional): the name we wish to save as the name for the newly created route
+        # 
+        # Returns Format:
+        # Status: 'Success' | 'Error'
+        # Body: {
+        #   'RouteID': The id of the route that was just created
+        # } 
+        # 
+        # File Format
+        # All Files must be sitting in the same bucket directory (i.e. prefix) 
+        # with no subdirectories permitted. 
+        #
+        # All image files must be named according to
+        #       img_<ts>-<num>.jpg
+        # e.g   img_1621394116949-64.jpg
+        # ts: the unix timestamp in UTC milliseconds of when the file was saved
+        # num: can be any integer value. Originally its purpose was to provide a 
+        # guarentee of filename uniqueness.
+        # 
+        # The GPS readings must be stored in GPS.txt
+        #
+        # Currently any additional files will be ignored.
+
         bucket, err_resp = get_key(event, EVENT_BUCKET)
         if err_resp:
             return err_resp
