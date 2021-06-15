@@ -44,7 +44,7 @@ class Digester():
                 Key=s3_filename
             )
 
-        def read(filename):
+        def read_gps_file(filename):
             with z.open(filename) as f:
                 lines = [b.decode('unicode_escape') for b in f.readlines()]
 
@@ -52,7 +52,7 @@ class Digester():
 
         route = self.__process_names(
             upload, 
-            read, 
+            read_gps_file, 
             user_id, 
             key, 
             bucket, 
@@ -70,26 +70,28 @@ class Digester():
         user_id: str, 
         key: str, 
         bucket: str, 
-        filenames: List[str],
         name: str = None,
         snap_to_roads=False,
     ):
         def upload(filename, bucket, s3_filename):
             pass
-        
-        def read(filename):
-            with open(filename) as f:
-                lines = f.readlines()
 
-            return lines
+        s3_bucket = self.s3_resource.Bucket(bucket)
+        bucket_objects = [o.key for o in s3_bucket.objects.filter(Prefix=key)]
+
+        def read_gps_file(filename):
+            obj = s3_bucket.Object(filename)
+            body = obj.get()['Body'].read()
+
+            return [l.decode("utf-8")  for l in body.split(b'\r')]
 
         return self.__process_names(
             upload, 
-            read, 
+            read_gps_file, 
             user_id, 
             key, 
             bucket, 
-            filenames, 
+            bucket_objects,
             name,
             snap_to_roads,
         )
@@ -113,7 +115,7 @@ class Digester():
                 Key= segs[0] + '/' + segs[-1]
             )
 
-        def read(filename):
+        def read_gps_file(filename):
             with open(filename) as f:
                 lines = f.readlines()
 
@@ -121,7 +123,7 @@ class Digester():
 
         return self.__process_names(
             upload, 
-            read, 
+            read_gps_file, 
             user_id, 
             key, 
             bucket, 
@@ -133,7 +135,7 @@ class Digester():
     def __process_names(
         self, 
         upload, 
-        read, 
+        read_gps_file, 
         user_id: str, 
         key: str, 
         bucket: str, 
@@ -155,7 +157,7 @@ class Digester():
                 img_readings.append(entry_from_file(bucket, s3_filename))
 
             elif extension == self.TXT_EXT:
-                points.extend(txt_to_points(read(filename)))
+                points.extend(txt_to_points(read_gps_file(filename)))
             else:
                 raise ValueError('unrecognized reading file type: ', s3_filename)
 

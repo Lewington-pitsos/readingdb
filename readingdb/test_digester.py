@@ -358,9 +358,15 @@ class TestDigester(unittest.TestCase):
             'mocks/route_1621394080578/GPS.txt',
         ]))
 
-        # d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
-        # d.process_upload(        
-        #     bucket=self.bucket_name, 
-        #     key='mocks/route_1621394080578/', 
-        #     snap_to_roads=True
-        # )
+        d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
+        route = d.process_upload(  
+            user_id='someuderid',      
+            key='mocks/route_1621394080578/', 
+            bucket=self.bucket_name, 
+            name='hedge cresent',
+            snap_to_roads=True
+        )
+
+        readings = self.api.all_route_readings(route.id)
+        self.assertEqual(len(readings), 64)
+        self.assertEqual('hedge cresent', route.name)
