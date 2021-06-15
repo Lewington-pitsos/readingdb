@@ -130,7 +130,7 @@
 
 import os
 from readingdb.api import API
-from readingdb.unzipper import Unzipper
+from readingdb.digester import Digester
 from readingdb.endpoints import *
 
 root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
@@ -145,7 +145,7 @@ for s in subdirs:
     else:
         files.append(s)
 
-z = Unzipper(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
 z.process_local(
     '8f647285-58a7-4d7f-af64-238db703e38e',
     'route_2021_04_29_14_15_34_999', 

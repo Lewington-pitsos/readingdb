@@ -14,7 +14,7 @@ from readingdb.constants import *
 from readingdb.format import *
 from readingdb.api import API
 
-class Unzipper():
+class Digester():
     IMG_EXT = 'jpg'
     TXT_EXT = 'txt'
     OBJ_BODY_KEY = 'Body'
@@ -64,6 +64,35 @@ class Unzipper():
         self.mlapi.add_message_to_queue(user_id, route.id)
 
         return route
+
+    def process_upload(
+        self, 
+        user_id: str, 
+        key: str, 
+        bucket: str, 
+        filenames: List[str],
+        name: str = None,
+        snap_to_roads=False,
+    ):
+        def upload(filename, bucket, s3_filename):
+            pass
+        
+        def read(filename):
+            with open(filename) as f:
+                lines = f.readlines()
+
+            return lines
+
+        return self.__process_names(
+            upload, 
+            read, 
+            user_id, 
+            key, 
+            bucket, 
+            filenames, 
+            name,
+            snap_to_roads,
+        )
 
     def process_local(
         self, 

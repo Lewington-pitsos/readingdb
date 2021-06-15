@@ -1,7 +1,6 @@
 from io import BytesIO
 import os
 import zipfile
-from readingdb.constants import RouteKeys
 
 from readingdb.route import Route
 import tempfile
@@ -12,12 +11,12 @@ import uuid
 from readingdb.download_json import download_json_files
 from readingdb.api import API
 from readingdb.endpoints import *
-from readingdb.unzipper import Unzipper
+from readingdb.digester import Digester
 from readingdb.tutils import *
 
 @mock_s3
 @mock_sqs
-class TestUnzipper(unittest.TestCase):
+class TestDigester(unittest.TestCase):
     region_name = 'ap-southeast-2'
     access_key = 'fake_access_key'
     secret_key = 'fake_secret_key'
@@ -64,9 +63,9 @@ class TestUnzipper(unittest.TestCase):
             desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
-    def test_unzipper_adds_to_queue(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
+    def test_digester_adds_to_queue(self):
+        d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
         readings = self.api.all_route_readings(route.id)
 
         self.assertEqual(len(readings), 28)
@@ -84,9 +83,9 @@ class TestUnzipper(unittest.TestCase):
         # washiwashi is the userid in the metadata of mocks/route_2021_04_07_17_14_36_709.zip
         self.assertEqual(f'washiwashi,{route.id}', msg['Body'])
 
-    def test_unzipper_uploads_route_with_unix_timestamps(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = z.process(self.bucket_name, 'mocks/route_1621394080578.zip')
+    def test_digester_uploads_route_with_unix_timestamps(self):
+        d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = d.process(self.bucket_name, 'mocks/route_1621394080578.zip')
         readings = self.api.all_route_readings(route.id)
         self.assertEqual(len(readings), 70)
 
@@ -174,9 +173,9 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_1621394080578/img_1621394100257-34.jpg',
         ]))
 
-    def test_unzipper_uploads(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
+    def test_digester_uploads(self):
+        d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
         readings = self.api.all_route_readings(route.id)
 
         self.assertEqual(len(readings), 28)
@@ -223,21 +222,21 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709/2021_04_07_17_14_52_899-35.jpg',
         ]))
         
-    def test_unzipper_uploads_with_route_name(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = z.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', 'bennet court')
+    def test_digester_uploads_with_route_name(self):
+        d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', 'bennet court')
 
         readings = self.api.all_route_readings(route.id)
         self.assertEqual(len(readings), 28)
         self.assertEqual('bennet court', route.name)
 
-    def test_unzipper_uploads_local_files(self):
-        z = Unzipper(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
+    def test_digester_uploads_local_files(self):
+        d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
 
         pth = 'readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/'
         files = [pth + f for f in os.listdir(pth)]
 
-        route = z.process_local(
+        route = d.process_local(
             'some_user_id',
             'route_2021_04_29_14_15_34_999',
             self.bucket_name,
@@ -256,20 +255,20 @@ class TestUnzipper(unittest.TestCase):
             bucket_objects.append(my_bucket_object.key)
         self.assertEqual(32, len(bucket_objects))
 
-    def test_unzipper_processes_uploaded_files(self):
+    def test_digester_processes_uploaded_files(self):
         s3_resource = boto3.resource('s3')
         zip_obj = s3_resource.Object(
             bucket_name=self.bucket_name, 
             key='mocks/route_1621394080578.zip'
         )
         buffer = BytesIO(zip_obj.get()['Body'].read())
-        z = zipfile.ZipFile(buffer)
+        d = zipfile.ZipFile(buffer)
         key = 'mocks/route_1621394080578.zip'
 
-        for filename in z.namelist():
+        for filename in d.namelist():
             s3_filename = f'{key.split(".")[0]}/{filename.split("/")[-1]}'
             s3_resource.meta.client.upload_fileobj(
-                z.open(filename),
+                d.open(filename),
                 Bucket=self.bucket_name,
                 Key=s3_filename
             )
@@ -358,3 +357,10 @@ class TestUnzipper(unittest.TestCase):
             'mocks/route_1621394080578.zip',
             'mocks/route_1621394080578/GPS.txt',
         ]))
+
+        # d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
+        # d.process_upload(        
+        #     bucket=self.bucket_name, 
+        #     key='mocks/route_1621394080578/', 
+        #     snap_to_roads=True
+        # )
