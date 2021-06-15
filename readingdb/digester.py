@@ -108,7 +108,6 @@ class Digester():
         name: str = None,
         snap_to_roads=False,
     ):
-
         def upload(filename, bucket, s3_filename):
             segs = s3_filename.split('/')
 

@@ -129,11 +129,11 @@
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
 import os
-from readingdb.api import API
 from readingdb.digester import Digester
 from readingdb.endpoints import *
 
-root = '/home/lewington/Desktop/alicia/uploaded/route_2021_04_29_14_15_34_999/'
+name = "route_2021_04_29_12_40_15_528"
+root = f'/home/lewington/Desktop/alicia/{name}/'
 
 subdirs = [root + r for r in  os.listdir(root)]
 files = []
@@ -147,8 +147,8 @@ for s in subdirs:
 
 z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
 z.process_local(
-    '8f647285-58a7-4d7f-af64-238db703e38e',
-    'route_2021_04_29_14_15_34_999', 
+    '2f11b71a-cecf-40b8-ab6b-8c73e4254b26',
+    name, 
     'mobileappsessions172800-main', 
     files,
     'roora test route',
