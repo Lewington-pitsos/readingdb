@@ -45,12 +45,10 @@ class Geolocator():
         road_points = self.__snapped_points(pos_readings)
 
         final_readings = []
-        snapped_ids = []
         for p in road_points:
             if p.has_idx:
                 snapped = self.__repositioned(pos_readings[p.idx], p)
                 final_readings.append(snapped)
-                snapped_ids.append(snapped[ReadingKeys.READING_ID])
 
         return sorted(final_readings, key=lambda r: RUtils.get_ts(r))
         

@@ -14,14 +14,17 @@ from readingdb.constants import *
 from readingdb.format import *
 from readingdb.api import API
 
-class Unzipper():
+class Digester():
     IMG_EXT = 'jpg'
     TXT_EXT = 'txt'
     OBJ_BODY_KEY = 'Body'
 
-    def __init__(self, url:str, sqs_url: str=SQS_URL, *args, **kwargs) -> None:
+    def __init__(self, url:str, sqs_url: str=SQS_URL, api=None, *args, **kwargs) -> None:
         self.s3_resource = boto3.resource('s3')
-        self.api: API = API(url, *args, **kwargs)
+        if api is None:
+            self.api: API = API(url, *args, **kwargs)
+        else:
+            self.api = api
         self.mlapi = MLAPI(sqs_url)
 
     def process(
@@ -30,10 +33,7 @@ class Unzipper():
         key: str, 
         name: str = None,
         snap_to_roads=False
-    ) -> Route:
-        print('bucket', bucket)
-        print('key', key)
- 
+    ) -> Route: 
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
         print('metadata', zip_obj.metadata)
         user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
@@ -47,7 +47,7 @@ class Unzipper():
                 Key=s3_filename
             )
 
-        def read(filename):
+        def read_gps_file(filename):
             with z.open(filename) as f:
                 lines = [b.decode('unicode_escape') for b in f.readlines()]
 
@@ -55,9 +55,9 @@ class Unzipper():
 
         route = self.__process_names(
             upload, 
-            read, 
+            read_gps_file, 
             user_id, 
-            key, 
+            key.split(".")[0], 
             bucket, 
             z.namelist(), 
             name,
@@ -67,6 +67,37 @@ class Unzipper():
         self.mlapi.add_message_to_queue(user_id, route.id)
 
         return route
+
+    def process_upload(
+        self, 
+        user_id: str, 
+        key: str, 
+        bucket: str, 
+        name: str = None,
+        snap_to_roads=False,
+    ):
+        def upload(filename, bucket, s3_filename):
+            pass
+
+        s3_bucket = self.s3_resource.Bucket(bucket)
+        bucket_objects = [o.key for o in s3_bucket.objects.filter(Prefix=key)]
+
+        def read_gps_file(filename):
+            obj = s3_bucket.Object(filename)
+            body = obj.get()['Body'].read()
+
+            return [l.decode("utf-8")  for l in body.split(b'\r')]
+
+        return self.__process_names(
+            upload, 
+            read_gps_file, 
+            user_id, 
+            key, 
+            bucket, 
+            bucket_objects,
+            name,
+            snap_to_roads,
+        )
 
     def process_local(
         self, 
@@ -87,7 +118,7 @@ class Unzipper():
                 Key= segs[0] + '/' + segs[-1]
             )
 
-        def read(filename):
+        def read_gps_file(filename):
             with open(filename) as f:
                 lines = f.readlines()
 
@@ -95,7 +126,7 @@ class Unzipper():
 
         return self.__process_names(
             upload, 
-            read, 
+            read_gps_file, 
             user_id, 
             key, 
             bucket, 
@@ -107,7 +138,7 @@ class Unzipper():
     def __process_names(
         self, 
         upload, 
-        read, 
+        read_gps_file, 
         user_id: str, 
         key: str, 
         bucket: str, 
@@ -121,17 +152,17 @@ class Unzipper():
         filename_map = {}
 
         for filename in filenames:
-            s3_filename = f'{key.split(".")[0]}/{filename}'
+            s3_filename = f'{key}/{filename.split("/")[-1]}'
             filename_map[s3_filename] = filename
             extension = s3_filename.split('.')[-1]
+            file_portion = s3_filename.split('/')[-1]
 
             if extension == self.IMG_EXT:               
                 img_readings.append(entry_from_file(bucket, s3_filename))
-
-            elif extension == self.TXT_EXT:
-                points.extend(txt_to_points(read(filename)))
+            elif file_portion == "GPS.txt":
+                points.extend(txt_to_points(read_gps_file(filename)))
             else:
-                raise ValueError('unrecognized reading file type: ', s3_filename)
+                print('unrecognized file in s3 bucket: ', s3_filename)
 
         g = Geolocator()
         if snap_to_roads:
@@ -155,8 +186,6 @@ class Unzipper():
 
         print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)
-
-        print('deleting zipped route: ', key)
 
         return route
 

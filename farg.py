@@ -1,6 +1,6 @@
 import argparse
 
-from readingdb.unzipper import Unzipper
+from readingdb.digester import Digester
 from readingdb.endpoints import *
 
 parser = argparse.ArgumentParser()
@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 def perform_unzip(bucket: str, key: str, name: str=None):
     print('initializing unzipper')
-    z = Unzipper(DYNAMO_ENDPOINT, region_name=args.region)
+    z = Digester(DYNAMO_ENDPOINT, region_name=args.region)
 
     print('unzipping')
     z.process(bucket, key, name)

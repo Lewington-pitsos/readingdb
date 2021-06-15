@@ -1,4 +1,7 @@
+from io import BytesIO
 import os
+import zipfile
+import boto3
 import json
 from unittest import mock
 from readingdb.routespec import RouteSpec
@@ -62,6 +65,16 @@ class TestBasic(TestLambda):
             'Body': 'Unauthenticated request, no Access Token Provided'
         }, resp)
 
+    def test_correct_error_on_unauthenticated_process_upload_event(self):
+        resp = handler({
+             'Type': 'ProcessUpload'
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Unauthenticated request, no Access Token Provided'
+        }, resp)
+
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_correct_error_on_malformed_upload_event(self):
         resp = handler({
@@ -76,6 +89,29 @@ class TestBasic(TestLambda):
 
         resp = handler({
              'Type': 'NotifyUploadComplete',
+             'AccessToken': self.access_token,
+             'Bucket': 'somebucket'
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key Key missing from event'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_correct_error_on_malformed_process_upload_event(self):
+        resp = handler({
+             'Type': 'ProcessUpload',
+             'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key Bucket missing from event'
+        }, resp)
+
+        resp = handler({
+             'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': 'somebucket'
         }, TEST_CONTEXT)
@@ -220,6 +256,52 @@ class TestLambdaW(TestLambdaRW):
              'Key': 'public/route_2021_04_12_20_59_16_782.zip',
              'RouteName': 'Blinkins Ct.'
         }, TEST_CONTEXT)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_integrates_uploaded_files(self):
+        s3_resource = boto3.resource('s3')
+        zip_obj = s3_resource.Object(
+            bucket_name=TEST_BUCKET, 
+            key='mocks/route_1621394080578.zip'
+        )
+        buffer = BytesIO(zip_obj.get()['Body'].read())
+        d = zipfile.ZipFile(buffer)
+        key = 'mocks/route_1621394080578.zip'
+
+        for filename in d.namelist():
+            s3_filename = f'{key.split(".")[0]}/{filename.split("/")[-1]}'
+            s3_resource.meta.client.upload_fileobj(
+                d.open(filename),
+                Bucket=TEST_BUCKET,
+                Key=s3_filename
+            )
+
+        resp = handler({
+             'Type': 'ProcessUpload',
+             'AccessToken': self.access_token,
+             'Bucket': TEST_BUCKET,
+             'Key': 'mocks/route_1621394080578',
+             'RouteName': 'Jenkins Way'
+        }, TEST_CONTEXT)
+
+        self.assertEqual('Success', resp['Status'])
+        self.assertIn('RouteID', resp['Body'])
+        rid = resp['Body']['RouteID']
+        resp = handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': rid,
+            'PredictionOnly': False,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(64, len(resp['Body']['Readings']))
+
+        resp = handler({
+            'Type': 'GetRoute',
+            'RouteID': rid,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual('Jenkins Way', resp['Body']['RouteName'])
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_non_existant_route(self):
@@ -480,30 +562,6 @@ class TestLambdaR(TestLambdaRW):
             self.gps_img_route.id,
             self.tst_route.id
         ])
-
-    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    # def test_gets_readings(self):
-    #     resp = handler({
-    #         'Type': 'GetReadings',
-    #         'RouteID': self.twenty_route.id,
-    #         'AccessToken': self.access_token,
-    #     }, TEST_CONTEXT)
-
-    #     self.assertEqual(resp['Status'], 'Success')
-    #     self.assertIsInstance(resp['Body'], dict)
-    #     self.assertEqual(resp['Body']['Bucket'], self.tmp_bucket)
-
-    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    # def test_gets_readings_with_key(self):
-    #     resp = handler({
-    #         'Type': 'GetReadings',
-    #         'BucketKey': 'rulerruler.json',
-    #         'RouteID': self.twenty_route.id,
-    #         'AccessToken': self.access_token,
-    #     }, TEST_CONTEXT)
-
-    #     self.assertEqual(resp['Status'], 'Success')
-    #     self.assertEqual(resp['Body']['Key'], 'rulerruler.json')
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
