@@ -2,21 +2,33 @@
 
 According to AWS, you should design your DynamoDB schema based on the kind of access patterns you will be using. This document is an attempt to clarify what these access patterns are currently, and what they will be in future.
 
-## Future Access Patterns
+## Summary
+
+### Users
+- All Access groups for the current user
+- All Routes associated with a data access group (annotating)
+- All readings associated with a route (when annotating)
+- All readings within a geographic area and assoaicted with an access group
+- All readings associated with a given image (when saving annotations)
+- Get particular route (for deletion/update)
+
+### Admin
+- All Routes
+
 
 ### Get all Routes Associated with a data access group
 
 A data access group roughly corresponds to a real life organization or client.
 
-**Load:** This will occur once, or maybe a few times the user logs in. There will probably be less than 100 routes per org returned by the server at any one time (as older ones will be filtered out).
+**Load:** This will occur once, or maybe a few times the user logs in, and only if the user is using the annotation feautures. There will probably be less than 100 routes per org returned by the server at any one time (as older ones will be filtered out).
 
 **Implications** A data access group ID should be part of the primary key of a table containing all Route items.
 
-### Get all Readings Associated with a Route
+### Get all Readings Inside a Geographic Box
 
-**Load:** At the moment this occurs once or maybe a few times per user session, as we load all readings at once. As the number of readings grows beyond 50,000, loading them all at once will be too expensive. As a result, we will need to start loading these readings incrementally (as the user gets closer to each reading), which could mean multiple queries per minute.
+**Load:** This will happen many times during a session as the user pans around and zooms the map. Each new pan means a new box and each new zoom means a different resolution of faults. This will basically be happening constantly. This is necessairy to avoid long wait times as faults that are not needed (i.e. literally any faults outside that box) are loaded.
 
-**Implications** The primary key of the Readings table should include a RouteID. We might also require some time-based or location based secindary keys so that we avoid loading readings not relevent to the user every 15 seconds or so.
+**Implications** We need some kind of geographic caching for each reading.
 
 ### Get the data access group of the current user
 
@@ -24,11 +36,11 @@ A data access group roughly corresponds to a real life organization or client.
 
 **Implications**: Could simply be stored as its own table. Could be stored in a "misc" table which holds many low-load items, such as user-related data.
 
-### Save New Prediction Readings**
+### Load readings that correspond to predictions being saved
 
-Annotators will save their predictions to the database.
+Annotators will save their predictions (for images) to the database. This will require querying the predictions that already exist for the relevent images to check if any of these predictions are overriding existing predictions. E.g. the same annotator makes a correction to an earlier prediction.
 
-**Load**: a few items multiple times a minute, or 1000+ items all at once.
+**Load**: About 3 per second, saved in batches of 100 or 200, or up to 10,000 saved all at once.
 
-**Implications**: ???
+**Implications**: It is not economical to load all readings every time 100 or so get saved. Basically we will need to add an image hash to each reading and make this a secondary key.
 

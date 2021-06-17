@@ -168,10 +168,11 @@ class Digester():
             pred_readings = g.generate_predictions(points, img_readings)
         else:
             pred_readings = g.interpolated(points, img_readings)
-        print("finished generating prediction readings")
+        print('finished generating prediction readings')
 
         for r in pred_readings:
             uri = RUtils.get_uri(r)
+            print('uploading', uri)
             upload(filename_map[uri[S3Path.KEY]], uri[S3Path.BUCKET], uri[S3Path.KEY])
 
         routeSpec = RouteSpec(

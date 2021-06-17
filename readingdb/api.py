@@ -140,16 +140,25 @@ class API(DB, ReadingDB):
         user_id: str, 
         save_imgs: bool = True
     ) -> None:
-        if not save_imgs:
-            existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
-            for r in readings:
-                for er in existing_readings:
-                    if self.__same_image(r, er):
-                        r[ReadingKeys.READING][ImageReadingKeys.URI] = er[ReadingKeys.READING][ImageReadingKeys.URI]
-                        break
-                else:
-                    raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
+        existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
         
+        to_delete = set()
+        for r in readings:
+            saved = False
+            for er in existing_readings:
+                if self.__same_image(r, er):
+                    if not save_imgs:
+                        r[ReadingKeys.READING][ImageReadingKeys.URI] = er[ReadingKeys.READING][ImageReadingKeys.URI]
+                    saved=True
+
+                    if (er[ReadingKeys.TYPE] == ReadingTypes.PREDICTION and er[PredictionReadingKeys.ANNOTATOR_ID] == r[PredictionReadingKeys.ANNOTATOR_ID]):
+                        to_delete.add(er[ReadingKeys.READING_ID]) 
+            
+            if not saved and not save_imgs:
+                raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
+        
+        self.delete_reading_items(route_id, list(to_delete))
+
         saved_entries = self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
         self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
         return saved_entries

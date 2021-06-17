@@ -132,7 +132,7 @@ import os
 from readingdb.digester import Digester
 from readingdb.endpoints import *
 
-name = "route_2021_04_29_12_40_15_528"
+name = "route_2021_04_29_13_24_37_374"
 root = f'/home/lewington/Desktop/alicia/{name}/'
 
 subdirs = [root + r for r in  os.listdir(root)]

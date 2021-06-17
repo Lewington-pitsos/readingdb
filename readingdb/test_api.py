@@ -1,10 +1,7 @@
 import json
 import os
-from re import U
-import time
 from typing import List
 from unittest import mock
-from readingdb import reading
 from readingdb.reading import AbstractReading, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
@@ -320,7 +317,7 @@ class TestAPI(unittest.TestCase):
             'mocks/route_1621394080578.zip'
         ]))
     
-    def test_raises_while_saving_readings_to_existing_route_with_inknown_images(self):
+    def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
@@ -345,14 +342,10 @@ class TestAPI(unittest.TestCase):
         r = Route(user_id, route_id, 0)
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
-            route_spec_data = json.load(j)        
-        api.save_predictions(route_spec_data, route_id, user_id)
+            raw_readings = json.load(j)        
+        api.save_predictions(raw_readings, route_id, user_id)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
-        api.save_predictions(route_spec_data, route_id, user_id, save_imgs=False)
-
-        readings = api.all_route_readings(route_id)
-        self.assertEqual(len(readings), 44)
 
         self.maxDiff = None
         for r in readings:
@@ -367,6 +360,32 @@ class TestAPI(unittest.TestCase):
             self.assertEqual(   
                 r['AnnotatorID'],
                 '99994519-85d9-4726-9471-4c91a7677925'
+            )
+
+        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 22)
+
+        new_annotator_id = "9a9a9a9a9a9a9a9a9" 
+        for r in raw_readings:
+            r['AnnotatorID'] = new_annotator_id
+        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
+        readings = api.all_route_readings(route_id)
+        self.assertEqual(len(readings), 44)
+
+        self.maxDiff = None
+        for r in readings:
+            self.assertEqual(
+                {'Bucket': 'test_bucket', 'Key': 'asdasdasdasdreadingdb/test_data/images/road1.jpg'}, 
+                r['Reading']['S3Uri'],
+            )
+            self.assertEqual(   
+                r['AnnotationTimestamp'],
+                2378910
+            )
+            self.assertIn(   
+                r['AnnotatorID'],
+                ['9a9a9a9a9a9a9a9a9', '99994519-85d9-4726-9471-4c91a7677925']
             )
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
