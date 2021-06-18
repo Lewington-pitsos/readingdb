@@ -128,12 +128,10 @@ class DB():
         return list(user_ids)
 
     def put_route(self, route: Route): 
-        route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        return route_table.put_item(Item=route.item_data())
+        return self.route_table.put_item(Item=route.item_data())
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        response = table.query(
+        response = self.route_table.query(
             KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
         )
 
@@ -154,12 +152,10 @@ class DB():
         )
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
         if r[RouteKeys.NAME] != name:        
-            table.update_item(
+            self.route_table.update_item(
                 Key={
                     ReadingRouteKeys.ROUTE_ID: route_id,
                     RouteKeys.USER_ID: user_id
@@ -172,12 +168,10 @@ class DB():
             )
 
     def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
         if r[RouteKeys.STATUS] != status:
-            table.update_item(
+            self.route_table.update_item(
                 Key={
                     ReadingRouteKeys.ROUTE_ID: route_id,
                     RouteKeys.USER_ID: user_id
@@ -231,8 +225,7 @@ class DB():
     # -----------------------------------------------------------------
 
     def put_readings(self, readings: List[AbstractReading]):
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        with table.batch_writer() as batch:
+        with self.reading_table.batch_writer() as batch:
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
@@ -245,8 +238,6 @@ class DB():
         )
 
     def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
-        table = self.db.Table(Database.READING_TABLE_NAME)
-
         query_params = {
             'KeyConditionExpression': Key('RouteID').eq(route_id),
             'Limit': self.max_page_readings
@@ -255,7 +246,7 @@ class DB():
         if last_key is not None:
             query_params['ExclusiveStartKey']= last_key
 
-        resp = table.query(**query_params)
+        resp = self.reading_table.query(**query_params)
 
         next_key = None
         if self.LAST_EVAL_KEY in resp:
@@ -269,9 +260,7 @@ class DB():
         return items, next_key
 
     def put_reading(self, reading: AbstractReading):
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.put_item(Item=reading.item_data())
-        return response
+        return self.reading_table.put_item(Item=reading.item_data())
 
     def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
         table = self.db.Table('Readings')
@@ -344,10 +333,9 @@ class DB():
         return users
 
     def put_user(self, uid: str):
-        user_table = self.db.Table(Database.USER_TABLE_NAME)
         uk = self.__user_k(uid)
 
-        user_table.put_item(Item={
+        self.user_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
             AdjKeys.PK: uk,
             AdjKeys.SK: uk
@@ -356,17 +344,16 @@ class DB():
         return uid
 
     def add_access_group(self, uid: str, agid: str) -> None:
-        user_table = self.db.Table(Database.USER_TABLE_NAME)
         uk = self.__user_k(uid)
         gk = self.__group_k(agid)
 
-        user_table.put_item(Item={
+        self.user_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
             AdjKeys.PK: gk,
             AdjKeys.SK: gk
         })
 
-        user_table.put_item(Item={
+        self.user_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
             AdjKeys.PK: uk,
             AdjKeys.SK: gk
