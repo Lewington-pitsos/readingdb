@@ -128,31 +128,37 @@
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-import os
 from readingdb.digester import Digester
 from readingdb.endpoints import *
 
-name = "route_2021_04_29_13_24_37_374"
-root = f'/home/lewington/Desktop/alicia/{name}/'
+# name = "route_2021_04_29_13_24_37_374"
+# root = f'/home/lewington/Desktop/alicia/{name}/'
 
-subdirs = [root + r for r in  os.listdir(root)]
-files = []
-for s in subdirs:
-    if os.path.isdir(s):
-        subsubdirs = [s + '/' + r for r in os.listdir(s)]
-        for ss in subsubdirs:
-            files.append(ss)
-    else:
-        files.append(s)
+# subdirs = [root + r for r in  os.listdir(root)]
+# files = []
+# for s in subdirs:
+#     if os.path.isdir(s):
+#         subsubdirs = [s + '/' + r for r in os.listdir(s)]
+#         for ss in subsubdirs:
+#             files.append(ss)
+#     else:
+#         files.append(s)
 
 z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
-z.process_local(
-    '2f11b71a-cecf-40b8-ab6b-8c73e4254b26',
-    name, 
-    'mobileappsessions172800-main', 
-    files,
-    'roora test route',
-    snap_to_roads=True,
+# z.process_local(
+#     '2f11b71a-cecf-40b8-ab6b-8c73e4254b26',
+#     name, 
+#     'mobileappsessions172800-main', 
+#     files,
+#     'roora test route',
+#     snap_to_roads=True,
+# )
+
+z.process_upload(
+    '62af2bda-a15f-43b7-a84a-55f9908351c7',
+    'public/19_06_2021--07:57:47',
+    'mobileappsessions172800-main',
+    snap_to_roads=True
 )
 
 # api = API(DYNAMO_ENDPOINT)
