@@ -333,40 +333,38 @@ class DB():
             lambda item: item
         )
 
-    def put_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []):
-        if len(data_access_groups) == 0:
-            data_access_groups = [{
-                DataAccessGroupKeys.GROUP_NAME: uid,
-                DataAccessGroupKeys.GROUP_ID: uid
-            }]
-
-        for g in data_access_groups:
-            assert DataAccessGroupKeys.GROUP_NAME in g 
-            assert DataAccessGroupKeys.GROUP_ID in g 
-
+    def put_user(self, uid: str,):
         route_table = self.db.Table(Database.USER_TABLE_NAME)
         route_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
-            UserKeys.USER_ID: uid,
-            UserKeys.DATA_ACCESS_GROUPS: data_access_groups 
+            UserKeys.PK: uid,
+            UserKeys.SK: uid
         })
 
-        return data_access_groups
+        return uid
 
     def __make_user_table(self):
         return self.db.create_table(
             TableName=Database.USER_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  RouteKeys.USER_ID,
+                    'AttributeName':  UserKeys.PK,
                     'KeyType': 'HASH'  
+                },
+                {
+                    'AttributeName': UserKeys.SK,
+                    'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeName': UserKeys.PK,
                     'AttributeType': 'S'
                 },
+                {
+                    'AttributeName': UserKeys.SK,
+                    'AttributeType': 'S'
+                }
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 50,

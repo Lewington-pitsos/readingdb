@@ -1,8 +1,8 @@
 REGION_NAME = 'ap-southeast-2'
 
 class UserKeys(): 
-    USER_ID = 'UserID'
-    DATA_ACCESS_GROUPS = 'DataAccessGroups'
+    PK = 'PK'
+    SK = 'SK'
 class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'
