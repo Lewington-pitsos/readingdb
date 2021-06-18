@@ -190,7 +190,7 @@ class DB():
             )
 
     def __make_route_table(self):
-        return self.db.create_table(
+        table = self.db.create_table(
             TableName=Database.ROUTE_TABLE_NAME,
             KeySchema=[
                 {
@@ -217,6 +217,9 @@ class DB():
                 'WriteCapacityUnits': 50
             }
         )
+
+        self.route_table = table
+        return table
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -282,7 +285,7 @@ class DB():
             )
 
     def __make_reading_table(self):
-        return self.db.create_table(
+        table = self.db.create_table(
             TableName=Database.READING_TABLE_NAME,
             KeySchema=[
                 {
@@ -310,6 +313,8 @@ class DB():
                 'WriteCapacityUnits': 500
             }
         )
+        self.reading_table = table
+        return table
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -338,24 +343,51 @@ class DB():
         
         return users
 
+    def put_user(self, uid: str):
+        user_table = self.db.Table(Database.USER_TABLE_NAME)
+        uk = self.__user_k(uid)
+
+        user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: uk,
+            AdjKeys.SK: uk
+        })
+
+        return uid
+
+    def add_access_group(self, uid: str, agid: str) -> None:
+        user_table = self.db.Table(Database.USER_TABLE_NAME)
+        uk = self.__user_k(uid)
+        gk = self.__group_k(agid)
+
+        user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: gk,
+            AdjKeys.SK: gk
+        })
+
+        user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: uk,
+            AdjKeys.SK: gk
+        })
+
+    def __user_k(self, uid: str) -> str:
+        return self.__k(uid, UserKeys.USER_SUFFIX)
+
+    def __group_k(self, uid: str) -> str:
+        return self.__k(uid, UserKeys.GROUP_SUFFIX)
+
+    def __k(self, identifier: str, prefix: str) -> str:
+        return prefix + AdjKeys.DIVIDER + identifier
+
+
     def __decode_adj_pattern_item(self, item: Dict[str, Any]) -> str:
         item[AdjKeys.PK] = item[AdjKeys.PK].split(AdjKeys.DIVIDER)[-1]
         item[AdjKeys.SK] = item[AdjKeys.SK].split(AdjKeys.DIVIDER)[-1]
 
-    def put_user(self, uid: str,):
-        route_table = self.db.Table(Database.USER_TABLE_NAME)
-        pk = UserKeys.USER_SUFFIX + AdjKeys.DIVIDER + uid
-
-        route_table.put_item(Item={
-            ReadingKeys.TIMESTAMP: timestamp(),
-            AdjKeys.PK: pk,
-            AdjKeys.SK: pk
-        })
-
-        return pk
-
     def __make_user_table(self):
-        return self.db.create_table(
+        table = self.db.create_table(
             TableName=Database.USER_TABLE_NAME,
             KeySchema=[
                 {
@@ -382,5 +414,8 @@ class DB():
                 'WriteCapacityUnits': 50
             }
         )
+
+        self.user_table = table
+        return table
 
 

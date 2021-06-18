@@ -6,7 +6,7 @@ class AdjKeys():
     DIVIDER = "#"
 
 class UserKeys(): 
-
+    GROUP_SUFFIX = 'AccessGroup'
     USER_SUFFIX = 'User'
 
 class Database():
