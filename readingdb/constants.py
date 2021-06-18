@@ -1,8 +1,14 @@
 REGION_NAME = 'ap-southeast-2'
 
-class UserKeys(): 
+class AdjKeys(): 
     PK = 'PK'
     SK = 'SK'
+    DIVIDER = "#"
+
+class UserKeys(): 
+
+    USER_SUFFIX = 'User'
+
 class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'

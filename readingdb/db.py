@@ -323,46 +323,57 @@ class DB():
     def user_data(self, uid: str)-> Dict[str, Any]:
         return self.__ddb_query(
             Database.USER_TABLE_NAME,
-            UserKeys.USER_ID,
+            AdjKeys.PK,
             uid,
         )[0]
 
     def all_users(self) -> List[Dict[str, Any]]:
-        return self.__paginate_table(
+        users = self.__paginate_table(
             Database.USER_TABLE_NAME,
             lambda item: item
         )
 
+        for u in users:
+           self.__decode_adj_pattern_item(u)
+        
+        return users
+
+    def __decode_adj_pattern_item(self, item: Dict[str, Any]) -> str:
+        item[AdjKeys.PK] = item[AdjKeys.PK].split(AdjKeys.DIVIDER)[-1]
+        item[AdjKeys.SK] = item[AdjKeys.SK].split(AdjKeys.DIVIDER)[-1]
+
     def put_user(self, uid: str,):
         route_table = self.db.Table(Database.USER_TABLE_NAME)
+        pk = UserKeys.USER_SUFFIX + AdjKeys.DIVIDER + uid
+
         route_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
-            UserKeys.PK: uid,
-            UserKeys.SK: uid
+            AdjKeys.PK: pk,
+            AdjKeys.SK: pk
         })
 
-        return uid
+        return pk
 
     def __make_user_table(self):
         return self.db.create_table(
             TableName=Database.USER_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  UserKeys.PK,
+                    'AttributeName':  AdjKeys.PK,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': UserKeys.SK,
+                    'AttributeName': AdjKeys.SK,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': UserKeys.PK,
+                    'AttributeName': AdjKeys.PK,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': UserKeys.SK,
+                    'AttributeName': AdjKeys.SK,
                     'AttributeType': 'S'
                 }
             ],
