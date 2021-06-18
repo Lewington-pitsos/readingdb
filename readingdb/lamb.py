@@ -1,4 +1,5 @@
 import logging
+from readingdb.geolocator import Geolocator
 from readingdb.digester import Digester
 from typing import Dict, Any
 
