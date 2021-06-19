@@ -456,9 +456,9 @@ class API(DB, ReadingDB):
         all_users = self.all_users()
 
         for u in all_users:
-            if u[UserKeys.USER_ID] == uid:
+            if u[AdjKeys.PK] == uid:
                 return False
         
-        return self.put_user(uid, data_access_groups)
+        return self.put_user(uid)
 
         

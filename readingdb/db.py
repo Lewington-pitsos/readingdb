@@ -38,6 +38,10 @@ class DB():
         self.scan_paginator = self.db.meta.client.get_paginator('scan')
         self.max_page_readings = max_page_readings
 
+        self.route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        self.reading_table = self.db.Table(Database.READING_TABLE_NAME)
+        self.user_table = self.db.Table(Database.USER_TABLE_NAME)
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

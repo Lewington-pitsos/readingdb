@@ -315,72 +315,72 @@ class TestLambdaW(TestLambdaRW):
             'Body': None
         }, resp)
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_saves_data_access_groups(self):
-        resp = handler({
-            'Type': 'AddUser',
-            'UserID': "a98s7das87dba0sa7gdas87",
-            'DataAccessGroups': [
-                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
-                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
-            ],
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_saves_data_access_groups(self):
+    #     resp = handler({
+    #         'Type': 'AddUser',
+    #         'UserID': "a98s7das87dba0sa7gdas87",
+    #         'DataAccessGroups': [
+    #             {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
+    #             {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
+    #         ],
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual({
-            'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
-                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
-            ]}
-        }, resp)
+    #     self.assertEqual({
+    #         'Status': 'Success',
+    #         'Body': {'DataAccessGroups': [
+    #             {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
+    #             {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
+    #         ]}
+    #     }, resp)
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_handles_user_put_request_correctly(self):
-        resp = handler({
-            'Type': 'AddUser',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # def test_handles_user_put_request_correctly(self):
+    #     resp = handler({
+    #         'Type': 'AddUser',
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'Bad Format Error: key UserID missing from event'
-        }, resp)
+    #     self.assertEqual({
+    #         'Status': 'Error',
+    #         'Body': 'Bad Format Error: key UserID missing from event'
+    #     }, resp)
 
-        resp = handler({
-            'Type': 'AddUser',
-            'UserID': 'too-short',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    #     resp = handler({
+    #         'Type': 'AddUser',
+    #         'UserID': 'too-short',
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'User ID too-short was too short, must be at least 20 characters long'
-        }, resp)
+    #     self.assertEqual({
+    #         'Status': 'Error',
+    #         'Body': 'User ID too-short was too short, must be at least 20 characters long'
+    #     }, resp)
 
-        resp = handler({
-            'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    #     resp = handler({
+    #         'Type': 'AddUser',
+    #         'UserID': 'too-shorta-sd-asdas-dasd-asd',
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual({
-            'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                 {'GroupName': 'too-shorta-sd-asdas-dasd-asd', 'GroupID': 'too-shorta-sd-asdas-dasd-asd'}
-            ]}
-        }, resp)
+    #     self.assertEqual({
+    #         'Status': 'Success',
+    #         'Body': {'DataAccessGroups': [
+    #              {'GroupName': 'too-shorta-sd-asdas-dasd-asd', 'GroupID': 'too-shorta-sd-asdas-dasd-asd'}
+    #         ]}
+    #     }, resp)
   
-        resp = handler({
-            'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
+    #     resp = handler({
+    #         'Type': 'AddUser',
+    #         'UserID': 'too-shorta-sd-asdas-dasd-asd',
+    #         'AccessToken': self.access_token,
+    #     }, TEST_CONTEXT)
 
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'User ID too-shorta-sd-asdas-dasd-asd has already been registered'
-        }, resp)
+    #     self.assertEqual({
+    #         'Status': 'Error',
+    #         'Body': 'User ID too-shorta-sd-asdas-dasd-asd has already been registered'
+    #     }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_success_on_paginated_readings_for_absent_route(self):

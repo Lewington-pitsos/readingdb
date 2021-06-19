@@ -302,15 +302,14 @@ def handler(event: Dict[str, Any], context):
         return success_response(None)
 
     elif event_name == EVENT_ADD_USER:
-        user_id, err_resp = get_key(event, UserKeys.USER_ID)
+        user_id, err_resp = get_key(event, RouteKeys.USER_ID)
         if err_resp:
             return err_resp 
 
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
 
-        data_access_groups, not_found = get_key(event, UserKeys.DATA_ACCESS_GROUPS)
-
+        data_access_groups, not_found = get_key(event, UserKeys.GROUP_SUFFIX)
         if not_found:
             saved_access_groups = api.save_user(user_id)
         else:
@@ -320,7 +319,7 @@ def handler(event: Dict[str, Any], context):
             return error_response(f'User ID {user_id} has already been registered')
 
         return success_response({
-            UserKeys.DATA_ACCESS_GROUPS: saved_access_groups
+            UserKeys.GROUP_SUFFIX: saved_access_groups
         })
     else:
         return error_response(f'Unrecognized event type {event_name}')
