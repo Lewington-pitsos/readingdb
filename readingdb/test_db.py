@@ -393,13 +393,18 @@ class TestDB(unittest.TestCase):
         users = self.db.all_users()
         self.assertEqual(3, len(users))
 
-
     def test_adds_data_access_group_to_user(self):
         self.db.create_reading_db()
         uid = 'asd78asdgasiud-asd87agdasd7-asd78asd'
         agid = 'someid'
         self.db.put_user(uid)
         self.db.add_access_group(uid, agid)
+
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+
+        self.assertEqual(1, len(user_data['AccessGroups']))
+        self.assertEqual(agid, user_data['AccessGroups'][0])
 
     def test_saves_user_with_correct_pk(self):
         self.db.create_reading_db()

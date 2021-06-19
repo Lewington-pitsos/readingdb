@@ -1,4 +1,5 @@
 from random import sample
+from readingdb.user import User
 from readingdb.utils import timestamp
 import time
 from readingdb.routestatus import RouteStatus
@@ -318,12 +319,16 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def user_data(self, uid: str)-> Dict[str, Any]:
-        return self.__ddb_query(
-            Database.USER_TABLE_NAME,
-            AdjKeys.PK,
-            uid,
-        )[0]
+    def get_user(self, uid: str)-> Dict[str, Any]:
+        user_k = self.__user_k(uid)
+        user_data_items = self.user_table.query(
+            KeyConditionExpression=Key(AdjKeys.PK)
+                .eq(user_k)
+        )
+
+        print(user_data_items)
+
+        return User.from_raw(user_data_items[DDB.ITEMS])
 
     def all_users(self) -> List[Dict[str, Any]]:
         users = self.__paginate_table(

@@ -1,14 +1,24 @@
 REGION_NAME = 'ap-southeast-2'
 
+class DDB():
+    ITEMS = 'Items'
+
 class AdjKeys(): 
     PK = 'PK'
     SK = 'SK'
-    DIVIDER = "#"
+    DIVIDER = '#'
 
 class UserKeys(): 
     GROUP_SUFFIX = 'AccessGroup'
     USER_SUFFIX = 'User'
+    ORG_SUFFIX = 'Org'
 
+    SUB = 'Sub'
+
+    ORG_NAME = 'OrgName'
+    ORG_ID = 'OrgID'
+
+    ACCESS_GROUPS = 'AccessGroups'
 class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'
