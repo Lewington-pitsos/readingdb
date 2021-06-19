@@ -9,14 +9,13 @@ from readingdb.api import API
 from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
 from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 import unittest
-from moto import mock_s3, mock_sqs
+from moto import mock_s3
 
 from readingdb.lamb import handler
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f'no credentials file located at {CREDENTIALS_FILE}'
 TEST_CONTEXT = 'TEST_STUB'
-
 
 def credentials_present():
     return os.path.isfile(CREDENTIALS_FILE)

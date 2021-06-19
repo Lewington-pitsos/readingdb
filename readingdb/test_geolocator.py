@@ -35,6 +35,14 @@ class TestGeolocator(unittest.TestCase):
             lastTimestamp = new_ts
     
     @roads_api_test
+    def test_snapping_for_less_than_15_readings(self):
+        g = Geolocator()
+        snapped_pos_readings = g.geolocate(self.pos_readings[:10])
+        self.assertEqual(10, len(snapped_pos_readings))
+        self.assertEqual(-37.6969851, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(144.8028779,  RUtils.get_lng(snapped_pos_readings[0]))
+
+    @roads_api_test
     def test_snapping_for_more_than_100_readings(self):
         g = Geolocator()
         snapped_pos_readings = g.geolocate(self.pos_readings[:240])

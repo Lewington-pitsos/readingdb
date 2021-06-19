@@ -31,13 +31,18 @@ class Geolocator():
         if len(pos_readings) == 0:
             return []
 
+        if len(pos_readings) < self.overlap:
+            return pos_readings
+
         all_final_readings = []
 
         start_idx = 0
-        while start_idx < len(pos_readings) - self.overlap:
-            next_readings = pos_readings[start_idx:start_idx+self.max_points]
+        while start_idx < len(pos_readings):
+            end_idx = start_idx + self.max_points
+            overlap = self.overlap if end_idx < len(pos_readings) else 0
+            next_readings = pos_readings[start_idx:end_idx]
             all_final_readings.extend(self.__geolocate_subset(next_readings)[min(self.overlap, start_idx):])
-            start_idx += self.max_points - self.overlap
+            start_idx += self.max_points - overlap
 
         return all_final_readings
 
@@ -91,7 +96,6 @@ class Geolocator():
         img_readings: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         lr = LineRoute.from_readings(pos_readings)
-
         pred_readings = []
         for r in img_readings:
             ts = RUtils.get_ts(r)

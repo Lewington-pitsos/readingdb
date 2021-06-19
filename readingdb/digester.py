@@ -160,6 +160,7 @@ class Digester():
                 img_readings.append(entry_from_file(bucket, s3_filename))
             elif file_portion == "GPS.txt":
                 points.extend(txt_to_points(read_gps_file(filename)))
+                print(points)
             else:
                 print('unrecognized file in s3 bucket: ', s3_filename)
 
