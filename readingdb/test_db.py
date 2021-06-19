@@ -393,18 +393,66 @@ class TestDB(unittest.TestCase):
         users = self.db.all_users()
         self.assertEqual(3, len(users))
 
-    def test_adds_data_access_group_to_user(self):
+    def test_never_adds_more_than_one_access_group(self):
         self.db.create_reading_db()
         uid = 'asd78asdgasiud-asd87agdasd7-asd78asd'
         agid = 'someid'
         self.db.put_user(uid)
+
+        self.db.create_access_group(agid, 'Roora')
+        self.db.add_access_group(uid, agid)
+        self.db.add_access_group(uid, agid)
+        self.db.add_access_group(uid, agid)
+        self.db.add_access_group(uid, agid)
         self.db.add_access_group(uid, agid)
 
         usr = self.db.get_user(uid)
         user_data = usr.json()
-
         self.assertEqual(1, len(user_data['AccessGroups']))
-        self.assertEqual(agid, user_data['AccessGroups'][0])
+
+        self.db.remove_user_access(uid, agid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(0, len(user_data['AccessGroups']))
+
+    def test_adds_and_removes_data_access_groups(self):
+        self.db.create_reading_db()
+        uid = 'asd78asdgasiud-asd87agdasd7-asd78asd'
+        agid = 'someid'
+        self.db.put_user(uid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(0, len(user_data['AccessGroups']))
+        
+        self.db.create_access_group(agid, 'Roora')
+        self.db.add_access_group(uid, agid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(1, len(user_data['AccessGroups']))
+        self.assertEqual(
+            {'AccessGroupName': 'Roora', 'AccessGroupID': 'someid'}, 
+            user_data['AccessGroups'][0]
+        )
+
+        self.db.create_access_group('some-otherid', 'Pwetra')
+        self.db.add_access_group(uid, 'some-otherid')
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(2, len(user_data['AccessGroups']))
+
+        self.db.remove_user_access(uid, agid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(1, len(user_data['AccessGroups']))
+        self.assertEqual(
+            {'AccessGroupName': 'Pwetra', 'AccessGroupID': 'some-otherid'},
+            user_data['AccessGroups'][0]
+        )
+
+        self.db.remove_user_access(uid, 'some-otherid')
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(0, len(user_data['AccessGroups']))
 
     def test_saves_user_with_correct_pk(self):
         self.db.create_reading_db()

@@ -19,6 +19,8 @@ class UserKeys():
     ORG_ID = 'OrgID'
 
     ACCESS_GROUPS = 'AccessGroups'
+    AG_NAME = 'AccessGroupName'
+    AG_ID = 'AccessGroupID'
 class Database():
     READING_TABLE_NAME = 'Readings'
     ROUTE_TABLE_NAME = 'Routes'

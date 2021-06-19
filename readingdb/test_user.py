@@ -1,7 +1,7 @@
 from readingdb.user import User
 import unittest
 
-class TestDB(unittest.TestCase):   
+class TestUser(unittest.TestCase):   
     def test_user_from_adjacency_patten_data(self):
         user_data = [
             {
@@ -11,6 +11,16 @@ class TestDB(unittest.TestCase):
             {
                 'PK': 'User#12923-nd12u-123n-12812-12213',
                 'SK': 'AccessGroup#23123123'
+            },
+            {
+                'PK': 'AccessGroup#23123123',
+                'SK': 'AccessGroup#23123123',
+                'AccessGroupName': 'Wakanda Forever'
+            },
+            {
+                'PK': 'AccessGroup#717811j176',
+                'SK': 'AccessGroup#717811j176',
+                'AccessGroupName': 'Ben Shapiro'
             },
             {
                 'PK': 'User#12923-nd12u-123n-12812-12213',
@@ -25,7 +35,10 @@ class TestDB(unittest.TestCase):
         usr = User.from_raw(user_data)
         output = {
             'Sub': '12923-nd12u-123n-12812-12213',
-            'AccessGroups': ['23123123', '717811j176'],
+            'AccessGroups': [
+                {'AccessGroupID': '23123123', 'AccessGroupName':  'Wakanda Forever'},
+                {'AccessGroupID': '717811j176', 'AccessGroupName':  'Ben Shapiro'}
+            ],
             'Org': {
                 'OrgName': 'AEC',
                 'OrgID': '28122123'
@@ -45,7 +58,33 @@ class TestDB(unittest.TestCase):
             'AccessGroups': []
         }
         self.assertDictEqual(output, usr.json())
-    
+
+        user_data = [
+            {
+                'PK': 'User#12923-nd12u-123n-12812',
+                'SK': 'User#12923-nd12u-123n-12812'
+            },
+            {
+                'PK': 'AccessGroup#23123123',
+                'SK': 'AccessGroup#23123123',
+                'AccessGroupName': 'Edge'
+            },
+            {
+                'PK': 'AccessGroup#717811j176',
+                'SK': 'AccessGroup#717811j176',
+                'AccessGroupName': 'Ben Shapiro'
+            },
+        ]
+        usr = User.from_raw(user_data)
+        output = {
+            'Sub': '12923-nd12u-123n-12812',
+            'AccessGroups': [
+                {'AccessGroupID': '23123123', 'AccessGroupName':  'Edge'},
+                {'AccessGroupID': '717811j176', 'AccessGroupName':  'Ben Shapiro'}
+            ],
+        }
+        self.assertDictEqual(output, usr.json())
+
     def test_user_raises_errors_on_bad_data(self):
         user_data = [
             {

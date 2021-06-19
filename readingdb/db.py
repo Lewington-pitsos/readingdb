@@ -1,5 +1,5 @@
 from random import sample
-from readingdb.user import User
+from readingdb.user import User, get_key_type
 from readingdb.utils import timestamp
 import time
 from readingdb.routestatus import RouteStatus
@@ -268,10 +268,8 @@ class DB():
         return self.reading_table.put_item(Item=reading.item_data())
 
     def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
-        table = self.db.Table('Readings')
-        
         for r in reading_ids:
-            table.delete_item(
+            self.reading_table.delete_item(
                 Key={
                     ReadingRouteKeys.ROUTE_ID: route_id,
                     ReadingKeys.READING_ID: r
@@ -324,11 +322,22 @@ class DB():
         user_data_items = self.user_table.query(
             KeyConditionExpression=Key(AdjKeys.PK)
                 .eq(user_k)
-        )
+        )[DDB.ITEMS]
 
-        print(user_data_items)
+        ag_rows = self.__get_ag_data(user_data_items)
 
-        return User.from_raw(user_data_items[DDB.ITEMS])
+        return User.from_raw(user_data_items + ag_rows)
+
+    def __get_ag_data(self, user_data: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+        ag_rows = []
+        for row in user_data:
+            key = row[AdjKeys.SK]
+            sk_type = get_key_type(key)
+            if sk_type == UserKeys.GROUP_SUFFIX:
+                ag_rows.extend(self.user_table.query(
+                    KeyConditionExpression=Key(AdjKeys.PK).eq(key)
+                )[DDB.ITEMS])
+        return ag_rows
 
     def all_users(self) -> List[Dict[str, Any]]:
         users = self.__paginate_table(
@@ -352,21 +361,36 @@ class DB():
 
         return uid
 
+    def create_access_group(self, agid: str, name: str) -> None:
+        gk = self.__group_k(agid)
+
+        self.user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: gk,
+            AdjKeys.SK: gk,
+            UserKeys.AG_NAME: name
+        })
+
     def add_access_group(self, uid: str, agid: str) -> None:
         uk = self.__user_k(uid)
         gk = self.__group_k(agid)
 
         self.user_table.put_item(Item={
             ReadingKeys.TIMESTAMP: timestamp(),
-            AdjKeys.PK: gk,
-            AdjKeys.SK: gk
-        })
-
-        self.user_table.put_item(Item={
-            ReadingKeys.TIMESTAMP: timestamp(),
             AdjKeys.PK: uk,
             AdjKeys.SK: gk
         })
+
+    def remove_user_access(self, uid: str, agid: str) -> None:
+        uk = self.__user_k(uid)
+        gk = self.__group_k(agid)
+
+        self.user_table.delete_item(
+            Key={
+                AdjKeys.PK: uk,
+                AdjKeys.SK: gk
+            }
+        )
 
     def __user_k(self, uid: str) -> str:
         return self.__k(uid, UserKeys.USER_SUFFIX)
