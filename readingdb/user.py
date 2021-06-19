@@ -13,13 +13,15 @@ class User():
     def from_raw(cls, data: List[Dict[str, Any]]) -> None:
         formatted = {
             UserKeys.ACCESS_GROUPS: [],
-            UserKeys.ORG_SUFFIX: {},
         }
 
         for row in data:
             kind = get_type(row[AdjKeys.SK])
             identifier = get_value(row[AdjKeys.SK])
             if kind == UserKeys.ORG_SUFFIX:
+                if UserKeys.ORG_SUFFIX in formatted:
+                    raise ValueError('Multiple orgs given for user data', data)
+
                 formatted[UserKeys.ORG_SUFFIX] = {
                     UserKeys.ORG_NAME: row[UserKeys.ORG_NAME],
                     UserKeys.ORG_ID: identifier

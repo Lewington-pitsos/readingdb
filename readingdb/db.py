@@ -370,18 +370,13 @@ class DB():
 
     def __user_k(self, uid: str) -> str:
         return self.__k(uid, UserKeys.USER_SUFFIX)
-
     def __group_k(self, uid: str) -> str:
         return self.__k(uid, UserKeys.GROUP_SUFFIX)
-
     def __k(self, identifier: str, prefix: str) -> str:
         return prefix + AdjKeys.DIVIDER + identifier
-
-
     def __decode_adj_pattern_item(self, item: Dict[str, Any]) -> str:
         item[AdjKeys.PK] = item[AdjKeys.PK].split(AdjKeys.DIVIDER)[-1]
         item[AdjKeys.SK] = item[AdjKeys.SK].split(AdjKeys.DIVIDER)[-1]
-
     def __make_user_table(self):
         table = self.db.create_table(
             TableName=Database.USER_TABLE_NAME,

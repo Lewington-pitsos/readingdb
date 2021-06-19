@@ -1,10 +1,7 @@
 from readingdb.user import User
 import unittest
 
-class TestDB(unittest.TestCase):
-    def setUp(self):
-        pass
-    
+class TestDB(unittest.TestCase):   
     def test_user_from_adjacency_patten_data(self):
         user_data = [
             {
@@ -25,9 +22,7 @@ class TestDB(unittest.TestCase):
                 'OrgName': 'AEC'
             }
         ]
-
         usr = User.from_raw(user_data)
-
         output = {
             'Sub': '12923-nd12u-123n-12812-12213',
             'AccessGroups': ['23123123', '717811j176'],
@@ -36,7 +31,19 @@ class TestDB(unittest.TestCase):
                 'OrgID': '28122123'
             }
         }
+        self.assertDictEqual(output, usr.json())
 
+        user_data = [
+            {
+                'PK': 'User#12923-nd12u-123n-12812-12213',
+                'SK': 'User#12923-nd12u-123n-12812-12213'
+            }
+        ]
+        usr = User.from_raw(user_data)
+        output = {
+            'Sub': '12923-nd12u-123n-12812-12213',
+            'AccessGroups': []
+        }
         self.assertDictEqual(output, usr.json())
     
     def test_user_raises_errors_on_bad_data(self):
@@ -52,6 +59,27 @@ class TestDB(unittest.TestCase):
         ]
 
         self.assertRaises(ValueError, User.from_raw, user_data)
+
+        user_data = [
+            {
+                'PK': 'User#12923-nd12u-123n-12812-12213',
+                'SK': 'User#12923-nd12u-123n-12812-12213'
+            },
+            {
+                'PK': 'User#12923-nd12u-123n-12812-12213',
+                'SK': 'Org#28122123',
+                'OrgName': 'AEC'
+            },
+            {
+                'PK': 'User#12923-nd12u-123n-12812-12213',
+                'SK': 'Org#28122123',
+                'OrgName': 'AEC'
+            }
+        ]
+
+        self.assertRaises(ValueError, User.from_raw, user_data)
+
+
 
     def test_user_data_extract(self):
         user_data = {
