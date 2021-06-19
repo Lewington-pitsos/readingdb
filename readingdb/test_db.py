@@ -454,6 +454,47 @@ class TestDB(unittest.TestCase):
         user_data = usr.json()
         self.assertEqual(0, len(user_data['AccessGroups']))
 
+    def test_adds_and_removes_org(self):
+        self.db.create_reading_db()
+        uid = 'asd78asdgasiud-asd87agdasd7-asd78asd'
+        orgid = '12037-21341823'
+        self.db.put_user(uid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertNotIn('Org', user_data)
+
+        self.db.add_org(orgid, 'Vicroads')
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertNotIn('Org', user_data)
+
+        self.db.set_user_org(uid, orgid)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertIn('Org', user_data)
+        self.assertEqual(
+            user_data['Org'], 
+            {'OrgName': 'Vicroads', 'OrgID': '12037-21341823'}
+        )
+
+        self.db.add_org(orgid, 'Roora')
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(
+            user_data['Org'], 
+            {'OrgName': 'Roora', 'OrgID': '12037-21341823'}
+        )
+
+        orgid2 = '109273-127217'
+        self.db.add_org(orgid2, 'Batman')
+        self.db.set_user_org(uid, orgid2)
+        usr = self.db.get_user(uid)
+        user_data = usr.json()
+        self.assertEqual(
+            user_data['Org'], 
+            {'OrgName': 'Batman', 'OrgID': '109273-127217'}
+        )
+
     def test_saves_user_with_correct_pk(self):
         self.db.create_reading_db()
 

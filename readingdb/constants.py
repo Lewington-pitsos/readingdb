@@ -17,6 +17,7 @@ class UserKeys():
 
     ORG_NAME = 'OrgName'
     ORG_ID = 'OrgID'
+    ORG_SK = 'Org#UserOrg'
 
     ACCESS_GROUPS = 'AccessGroups'
     AG_NAME = 'AccessGroupName'

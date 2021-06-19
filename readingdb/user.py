@@ -16,17 +16,13 @@ class User():
         access_groups = []
 
         for row in data:
+            sk = row[AdjKeys.SK]
             pk_type = get_key_type(row[AdjKeys.PK])
-            sk_type = get_key_type(row[AdjKeys.SK])
-            sk_value = get_key_value(row[AdjKeys.SK])
-            if pk_type == UserKeys.USER_SUFFIX and sk_type == UserKeys.ORG_SUFFIX:
-                if UserKeys.ORG_SUFFIX in formatted:
-                    raise ValueError('Multiple orgs given for user data', data)
-                formatted[UserKeys.ORG_SUFFIX] = {
-                    UserKeys.ORG_NAME: row[UserKeys.ORG_NAME],
-                    UserKeys.ORG_ID: sk_value
-                }
-            elif pk_type == UserKeys.USER_SUFFIX and sk_type == UserKeys.GROUP_SUFFIX:
+            sk_type = get_key_type(sk)
+            sk_value = get_key_value(sk)
+            if pk_type == UserKeys.USER_SUFFIX and sk_type == UserKeys.GROUP_SUFFIX:
+                pass
+            elif pk_type == UserKeys.USER_SUFFIX and sk == UserKeys.ORG_SK:
                 pass
             elif pk_type == UserKeys.USER_SUFFIX and sk_type == UserKeys.USER_SUFFIX:
                 if UserKeys.SUB in formatted:
@@ -37,11 +33,17 @@ class User():
                     UserKeys.AG_NAME: row[UserKeys.AG_NAME],
                     UserKeys.AG_ID: sk_value        
                 })
+            elif pk_type == UserKeys.ORG_SUFFIX and sk_type == UserKeys.ORG_SUFFIX:
+                if UserKeys.ORG_SUFFIX in formatted:
+                    raise ValueError('Multiple orgs given for user data', data)
+                formatted[UserKeys.ORG_SUFFIX] = {
+                    UserKeys.ORG_NAME: row[UserKeys.ORG_NAME],
+                    UserKeys.ORG_ID: sk_value
+                }
             else:
                 raise ValueError(f'Unexpected kind found in row:', row)
 
         formatted[UserKeys.ACCESS_GROUPS] = access_groups
-
 
         return cls(formatted)
 

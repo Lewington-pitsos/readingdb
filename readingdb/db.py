@@ -1,4 +1,5 @@
 from random import sample
+from readingdb import constants
 from readingdb.user import User, get_key_type
 from readingdb.utils import timestamp
 import time
@@ -325,8 +326,9 @@ class DB():
         )[DDB.ITEMS]
 
         ag_rows = self.__get_ag_data(user_data_items)
+        org_rows = self.__get_org_data(user_data_items)
 
-        return User.from_raw(user_data_items + ag_rows)
+        return User.from_raw(user_data_items + ag_rows + org_rows)
 
     def __get_ag_data(self, user_data: List[Dict[str, Any]]) -> List[Dict[str, str]]:
         ag_rows = []
@@ -338,6 +340,37 @@ class DB():
                     KeyConditionExpression=Key(AdjKeys.PK).eq(key)
                 )[DDB.ITEMS])
         return ag_rows
+
+    def __get_org_data(self, user_data: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+        org_rows = []
+        for row in user_data:
+            key = row[AdjKeys.SK]
+            if key == UserKeys.ORG_SK:
+                org_rows.extend(self.user_table.query(
+                    KeyConditionExpression=Key(AdjKeys.PK)
+                        .eq(self.__org_k(row[UserKeys.ORG_ID]))
+                )[DDB.ITEMS])
+        return org_rows
+
+    def add_org(self, orgid: str, name: str) -> None:
+        gk = self.__org_k(orgid)
+
+        self.user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: gk,
+            AdjKeys.SK: gk,
+            UserKeys.ORG_NAME: name
+        })
+
+    def set_user_org(self, uid: str, orgid: str) -> None:
+        pk = self.__user_k(uid)
+
+        self.user_table.put_item(Item={
+            ReadingKeys.TIMESTAMP: timestamp(),
+            AdjKeys.PK: pk,
+            AdjKeys.SK: UserKeys.ORG_SK,
+            UserKeys.ORG_ID: orgid
+        })
 
     def all_users(self) -> List[Dict[str, Any]]:
         users = self.__paginate_table(
@@ -396,6 +429,8 @@ class DB():
         return self.__k(uid, UserKeys.USER_SUFFIX)
     def __group_k(self, uid: str) -> str:
         return self.__k(uid, UserKeys.GROUP_SUFFIX)
+    def __org_k(self, uid: str) -> str:
+        return self.__k(uid, UserKeys.ORG_SUFFIX)
     def __k(self, identifier: str, prefix: str) -> str:
         return prefix + AdjKeys.DIVIDER + identifier
     def __decode_adj_pattern_item(self, item: Dict[str, Any]) -> str:

@@ -27,7 +27,7 @@ class TestUser(unittest.TestCase):
                 'SK': 'AccessGroup#717811j176'
             },
             {
-                'PK': 'User#12923-nd12u-123n-12812-12213',
+                'PK': 'Org#28122123',
                 'SK': 'Org#28122123',
                 'OrgName': 'AEC'
             }
@@ -98,26 +98,6 @@ class TestUser(unittest.TestCase):
         ]
 
         self.assertRaises(ValueError, User.from_raw, user_data)
-
-        user_data = [
-            {
-                'PK': 'User#12923-nd12u-123n-12812-12213',
-                'SK': 'User#12923-nd12u-123n-12812-12213'
-            },
-            {
-                'PK': 'User#12923-nd12u-123n-12812-12213',
-                'SK': 'Org#28122123',
-                'OrgName': 'AEC'
-            },
-            {
-                'PK': 'User#12923-nd12u-123n-12812-12213',
-                'SK': 'Org#28122123',
-                'OrgName': 'AEC'
-            }
-        ]
-
-        self.assertRaises(ValueError, User.from_raw, user_data)
-
 
 
     def test_user_data_extract(self):
