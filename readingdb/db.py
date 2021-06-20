@@ -325,6 +325,9 @@ class DB():
                 .eq(user_k)
         )[DDB.ITEMS]
 
+        if len(user_data_items) == 0:
+            return None
+
         ag_rows = self.__get_ag_data(user_data_items)
         org_rows = self.__get_org_data(user_data_items)
 

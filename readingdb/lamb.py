@@ -308,7 +308,13 @@ def handler(event: Dict[str, Any], context):
             return err_resp 
 
         if len(user_sub) < 20:
-            return error_response(f'User ID {user_sub} was too short, must be at least 20 characters long')
+            return error_response(f'User Sub {user_sub} was too short, must be at least 20 characters long')
+
+        data = api.get_user(user_sub)
+        if data is not None:
+            return error_response(f'User Sub {user_sub} has already been registered')
+
+        api.put_user(user_sub)
 
         return success_response(None)
     else:

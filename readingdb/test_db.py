@@ -393,6 +393,11 @@ class TestDB(unittest.TestCase):
         users = self.db.all_users()
         self.assertEqual(3, len(users))
 
+    def test_does_not_find_non_existant_user(self):
+        self.db.create_reading_db()
+        usr = self.db.get_user('asd78asdgasiud-asd87agdasd7-asd78asd')
+        self.assertIsNone(usr)
+
     def test_never_adds_more_than_one_access_group(self):
         self.db.create_reading_db()
         uid = 'asd78asdgasiud-asd87agdasd7-asd78asd'
