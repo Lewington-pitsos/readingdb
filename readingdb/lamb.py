@@ -1,4 +1,5 @@
 import logging
+from readingdb.user import User
 from readingdb.geolocator import Geolocator
 from readingdb.digester import Digester
 from typing import Dict, Any
@@ -274,7 +275,7 @@ def handler(event: Dict[str, Any], context):
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
         if err_resp:
             return err_resp
-        user_id, err_resp = get_key(event, RouteKeys.USER_ID)
+        user_sub, err_resp = get_key(event, RouteKeys.USER_ID)
         if err_resp:
             return err_resp
         readings, err_resp = get_key(event, EVENT_PREDICTIONS)
@@ -284,7 +285,7 @@ def handler(event: Dict[str, Any], context):
         api.save_predictions(
             readings, 
             route_id,
-            user_id,
+            user_sub,
             save_imgs=True
         )
         return success_response({RESPONSE_SAVED_READINGS: readings})
@@ -302,25 +303,14 @@ def handler(event: Dict[str, Any], context):
         return success_response(None)
 
     elif event_name == EVENT_ADD_USER:
-        user_id, err_resp = get_key(event, RouteKeys.USER_ID)
+        user_sub, err_resp = get_key(event, UserKeys.SUB)
         if err_resp:
             return err_resp 
 
-        if len(user_id) < 20:
-            return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
+        if len(user_sub) < 20:
+            return error_response(f'User ID {user_sub} was too short, must be at least 20 characters long')
 
-        data_access_groups, not_found = get_key(event, UserKeys.GROUP_SUFFIX)
-        if not_found:
-            saved_access_groups = api.save_user(user_id)
-        else:
-            saved_access_groups = api.save_user(user_id, data_access_groups)
-
-        if not saved_access_groups:
-            return error_response(f'User ID {user_id} has already been registered')
-
-        return success_response({
-            UserKeys.GROUP_SUFFIX: saved_access_groups
-        })
+        return success_response(None)
     else:
         return error_response(f'Unrecognized event type {event_name}')
     
