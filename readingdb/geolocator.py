@@ -55,6 +55,22 @@ class Geolocator():
 
         return keep
 
+    def wanted_img_readings(
+        self,
+        pos_readings: List[Dict[str, Any]], 
+        img_readings: List[Dict[str, Any]] 
+    ):
+        interpolated = self.interpolated(pos_readings, img_readings)
+        filtered = self.filter_stationary(interpolated)
+
+        wanted_images = set()
+
+        for f in filtered:
+            wanted_images.add(f[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+        
+        return [i for i in img_readings if i[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY] in wanted_images]
+
+
     def __milli_diff(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
         return r1[ReadingKeys.TIMESTAMP] - r2[ReadingKeys.TIMESTAMP] 
 
@@ -136,6 +152,7 @@ class Geolocator():
         pos_readings: List[Dict[str, Any]], 
         img_readings: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
+        img_readings = self.wanted_img_readings(pos_readings, img_readings)
         snapped = self.geolocate(pos_readings)
         return self.interpolated(snapped, img_readings)
 

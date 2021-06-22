@@ -116,19 +116,18 @@
 
 # zip_name = "route_2021_04_29_14_15_34_999.zip"
 # uploaded_name = 'public/' + zip_name
-# # s3_resource = boto3.resource('s3')
-# # s3 = boto3.client('s3', region_name='ap-southeast-2')
+# s3_resource = boto3.resource('s3')
+# s3 = boto3.client('s3', region_name='ap-southeast-2')
 
-# # s3.upload_file(
-# #     '/home/lewington/Desktop/alicia/uploaded/' + zip_name, 
-# #     'mobileappsessions172800-main', 
-# #     uploaded_name
-# # )
+# s3.upload_file(
+#     '/home/lewington/Desktop/alicia/uploaded/' + zip_name, 
+#     'mobileappsessions172800-main', 
+#     uploaded_name
+# )
 
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-import json
 import os
 from readingdb.digester import Digester
 from readingdb.geolocator import Geolocator
@@ -148,22 +147,9 @@ for s in subdirs:
         files.append(s)
 
 z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
-def read_gps_file(filename):
-    with open(filename) as f:
-        lines = f.readlines()
-
-    return lines
-
-
-points, imgs, _ = z.get_readings(
-    files,
-    name,
+z.process_local(
+    'a2eb9df8-54ab-419f-9a97-ff69513d7809',
     'mobileappsessions172800-main', 
-    read_gps_file
+    files,
+    snap_to_roads=True
 )
-
-g = Geolocator()
-preds = g.generate_predictions(points, imgs)
-
-with open('readingdb/test_data/box-hill-geolocated.json', 'w') as f:
-    json.dump(preds, f)

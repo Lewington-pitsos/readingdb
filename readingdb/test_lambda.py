@@ -293,7 +293,7 @@ class TestLambdaW(TestLambdaRW):
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
-        self.assertEqual(64, len(resp['Body']['Readings']))
+        self.assertEqual(42, len(resp['Body']['Readings']))
 
         resp = handler({
             'Type': 'GetRoute',

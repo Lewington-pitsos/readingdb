@@ -3,7 +3,7 @@ import json
 import sys
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
 from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading

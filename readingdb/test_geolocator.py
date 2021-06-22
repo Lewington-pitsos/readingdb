@@ -106,7 +106,7 @@ class TestGeolocator(unittest.TestCase):
    
     def test_filtering_after_geolocation(self):
         g = Geolocator()
-        with open('readingdb/test_data/box-hill.json', 'r') as f:
+        with open('readingdb/test_data/box-hill-geolocated.json', 'r') as f:
             readings = json.load(f)
 
         filtered = g.filter_stationary(readings)
@@ -121,7 +121,7 @@ class TestGeolocator(unittest.TestCase):
             filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
 
         removed = list(all_imgs - filtered_imgs)
-        self.assertEqual(553, len(removed))
+        self.assertEqual(501, len(removed))
 
     def test_interpolation(self):
         g = Geolocator()

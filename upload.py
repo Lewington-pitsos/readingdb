@@ -1,23 +1,35 @@
+import os
+from readingdb.digester import Digester
+from readingdb.geolocator import Geolocator
+from readingdb.endpoints import *
 import argparse
-import json
-from readingdb.uploader import Uploader
-from readingdb.auth import Auth
 
-parser = argparse.ArgumentParser(description='Uploads given data to the Faultnet Database')
-parser.add_argument('routepath', type=str, help='A path to a file containing all the data for a route')
-parser.add_argument('-u', '--username', type=str, help='The AWS cognito login username')
-parser.add_argument('-p', '--password', type=str, help='The AWS cognito login password')
-parser.add_argument('-c', '--clientid', type=str, help='The AWS cognito client id')
-parser.add_argument('-a', '--authfile', type=str, help='A path to a file containing authentication details')
-
+parser = argparse.ArgumentParser()
+parser.add_argument('root', help='the directory containing all the images', type=str)
+parser.add_argument('uid', help='the id of the user to upload the routes under', type=str)
+parser.add_argument('dir', help='the directory to save assessemnt data in', type=str)
+parser.add_argument('routes', help='all route ids being assessed', nargs='+', default=[])
 args = parser.parse_args()
 
-if __name__ == '__main__':
-    auth = Auth(args.username, args.password, args.clientid)
+root = args.root
 
-    with open(args.routepath, 'r') as f:
-        route = json.load(f)
+if root[-1] != '/':
+    root += '/'
 
-    uploader = Uploader(auth)
+subdirs = [root + r for r in  os.listdir(root)]
+files = []
+for s in subdirs:
+    if os.path.isdir(s):
+        subsubdirs = [s + '/' + r for r in os.listdir(s)]
+        for ss in subsubdirs:
+            files.append(ss)
+    else:
+        files.append(s)
 
-    uploader.upload(route)
+z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+z.process_local(
+    args.uid,
+    'mobileappsessions172800-main', 
+    files,
+    snap_to_roads=True
+)
