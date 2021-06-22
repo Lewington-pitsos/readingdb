@@ -85,6 +85,27 @@ class TestGeolocator(unittest.TestCase):
         self.assertEqual(80, len(predictions))
         self.assertEqual('PredictionReading', RUtils.get_type(predictions[0]))
 
+    def test_filtering(self):
+        g = Geolocator()
+        with open('readingdb/test_data/box-hill.json', 'r') as f:
+            readings = json.load(f)
+
+        print(len(readings))
+        filtered = g.filter_stationary(readings)
+        self.assertLess(len(filtered), len(readings))
+
+        all_imgs = set()
+        filtered_imgs = set()
+
+        for r in readings:
+            all_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+        for r in filtered_imgs:
+            filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+
+        self.assertIn('route_2021_04_29_12_40_15_528/2021_04_29_12_43_18_993-211.jpg', all_imgs)
+        self.assertNotIn('route_2021_04_29_12_40_15_528/2021_04_29_12_43_18_993-211.jpg', all_imgs)
+
+
     def test_interpolation(self):
         g = Geolocator()
         interp = g.interpolated(self.pos_readings, self.img_readings)
