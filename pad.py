@@ -163,7 +163,7 @@ points, imgs, _ = z.get_readings(
 )
 
 g = Geolocator()
-preds = g.interpolated(points, imgs)
+preds = g.generate_predictions(points, imgs)
 
-with open('readingdb/test_data/box-hill.json', 'w') as f:
+with open('readingdb/test_data/box-hill-geolocated.json', 'w') as f:
     json.dump(preds, f)

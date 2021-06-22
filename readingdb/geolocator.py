@@ -1,11 +1,13 @@
 import time
 import json
 import copy
+
+import haversine as hs
+from haversine import Unit
 from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
-
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes
+from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes, S3Path
 import googlemaps
 from typing import Any, Dict, List, Tuple, overload
 
@@ -28,8 +30,43 @@ class Geolocator():
     # ------------------------------------------------------------------------
 
     def filter_stationary(self, readings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        return readings[1:]
+        keep = [readings[0]]
+        dropMillis = 5000
+        gpsErrMeters = 8
+        lastMotion = readings[0]
 
+        buffer = []
+        
+        readings = sorted(readings, key=lambda r: r[ReadingKeys.TIMESTAMP])
+
+        for r in readings[1:]:
+            if self.__meters_dist(r, lastMotion) > gpsErrMeters:
+                keep.extend(buffer)
+                buffer = []
+                keep.append(r)
+                lastMotion = r
+            elif self.__milli_diff(r, lastMotion) < dropMillis:
+                keep.append(r)
+            else:
+                buffer.append(r)
+
+                if len(buffer) > 10:
+                    buffer.pop(0)
+
+        return keep
+
+    def __milli_diff(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
+        return r1[ReadingKeys.TIMESTAMP] - r2[ReadingKeys.TIMESTAMP] 
+
+    def __meters_dist(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
+        p1 = self.__to_point(r1)
+        p2 = self.__to_point(r2)
+
+        return hs.haversine(p1, p2, unit=Unit.METERS)
+
+    def __to_point(self, r1: Dict[str, Any]) -> Tuple[float, float]:
+        reading = r1[ReadingKeys.READING]
+        return (reading[PositionReadingKeys.LATITUDE], reading[PositionReadingKeys.LONGITUDE])
 
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
