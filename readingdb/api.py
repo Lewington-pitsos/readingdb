@@ -1,9 +1,6 @@
-import time
-import datetime
 from collections import defaultdict
 import json
 import sys
-from readingdb import s3uri
 from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple, Type
