@@ -1,3 +1,6 @@
+
+pipenv lock -r > requirements.txt
+
 aws ecs create-cluster --cluster-name unzipper-cluster
 
 # run this and it will create revisions automatically

@@ -1,4 +1,6 @@
 # deploying to aws ecr
+pipenv lock -r > requirements.txt
+
 docker build -f Dockerfile.readingdb -t readingdb:latest ./
 
 aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 950765595897.dkr.ecr.ap-southeast-2.amazonaws.com
