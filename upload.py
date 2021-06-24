@@ -7,8 +7,6 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('root', help='the directory containing all the images', type=str)
 parser.add_argument('uid', help='the id of the user to upload the routes under', type=str)
-parser.add_argument('dir', help='the directory to save assessemnt data in', type=str)
-parser.add_argument('routes', help='all route ids being assessed', nargs='+', default=[])
 args = parser.parse_args()
 
 root = args.root
@@ -29,6 +27,7 @@ for s in subdirs:
 z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
 z.process_local(
     args.uid,
+    root.split("/")[-2],
     'mobileappsessions172800-main', 
     files,
     snap_to_roads=True

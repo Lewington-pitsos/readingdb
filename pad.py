@@ -128,28 +128,42 @@
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-import os
-from readingdb.digester import Digester
-from readingdb.geolocator import Geolocator
-from readingdb.endpoints import *
+# import os
+# from readingdb.digester import Digester
+# from readingdb.geolocator import Geolocator
+# from readingdb.endpoints import *
 
-name = "route_2021_04_29_12_40_15_528"
-root = f'/home/lewington/Desktop/alicia/{name}/'
+# name = "route_2021_04_29_12_40_15_528"
+# root = f'/home/lewington/Desktop/alicia/{name}/'
 
-subdirs = [root + r for r in  os.listdir(root)]
-files = []
-for s in subdirs:
-    if os.path.isdir(s):
-        subsubdirs = [s + '/' + r for r in os.listdir(s)]
-        for ss in subsubdirs:
-            files.append(ss)
-    else:
-        files.append(s)
+# subdirs = [root + r for r in  os.listdir(root)]
+# files = []
+# for s in subdirs:
+#     if os.path.isdir(s):
+#         subsubdirs = [s + '/' + r for r in os.listdir(s)]
+#         for ss in subsubdirs:
+#             files.append(ss)
+#     else:
+#         files.append(s)
 
-z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
-z.process_local(
-    'a2eb9df8-54ab-419f-9a97-ff69513d7809',
-    'mobileappsessions172800-main', 
-    files,
-    snap_to_roads=True
+# z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+# z.process_local(
+#     'a2eb9df8-54ab-419f-9a97-ff69513d7809',
+#     'mobileappsessions172800-main', 
+#     files,
+#     snap_to_roads=True
+# )
+
+
+import sys
+from readingdb.endpoints import DYNAMO_ENDPOINT
+from readingdb.api import API
+
+api = API(DYNAMO_ENDPOINT)
+
+rs = api.all_route_readings(
+    'dfb5a3d4-d47b-11eb-af1d-0242247ac2c5'
 )
+
+print(sys.getsizeof(rs))
+print(len(rs))
