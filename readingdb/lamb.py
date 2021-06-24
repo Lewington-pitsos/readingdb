@@ -75,14 +75,14 @@ def get_key(event, key):
     return event[key], None
     
 def handler(event: Dict[str, Any], context):
-    return handler_request(event, context, DYNAMO_ENDPOINT, BUCKET, 600_000_000)
+    return handler_request(event, context, DYNAMO_ENDPOINT, BUCKET, 25_000_000)
 
 def test_handler(
     event: Dict[str, Any], 
     context,  
     endpoint: str=TEST_DYNAMO_ENDPOINT, 
     bucket: str=TEST_BUCKET,
-    size_limit: int=600_000_000
+    size_limit: int=2_400_000
 ):
     return handler_request(event, context, endpoint, bucket, size_limit)
     
