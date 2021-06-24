@@ -3,7 +3,7 @@ import os
 import zipfile
 import boto3
 import json
-import readingdb.constants as constants
+from readingdb.constants import *
 from unittest import mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
@@ -478,6 +478,15 @@ class TestLambdaW(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
+
+        s3 = boto3.resource('s3', region_name=REGION_NAME)
+        bucket = s3.Bucket(TEST_BUCKET)
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(len(bucket_objects), 717)
+
         resp = test_handler({
             'Type': 'GetReadings',
             'RouteID': r.id,
@@ -489,6 +498,10 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertIn('Bucket', resp['Body']['Readings'])
         self.assertIn('Key', resp['Body']['Readings'])
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+        self.assertEqual(len(bucket_objects), 718)
 
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
@@ -554,7 +567,7 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']['Readings']), 86)
         self.assertIsNone(resp['Body']['PaginationKey'])
         self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
-
+    
         resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,

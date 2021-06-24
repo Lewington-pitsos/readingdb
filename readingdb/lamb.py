@@ -11,7 +11,6 @@ from readingdb.auth import Auth
 from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.authresponse import AuthResponse
 
-
 logger = logging.getLogger('main')
 logger.setLevel(logging.INFO)
 
