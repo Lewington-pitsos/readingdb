@@ -27,6 +27,7 @@ class API(DB, ReadingDB):
         region_name='ap-southeast-2',
         config=None,
         size_limit=999999999999999
+        # size_limit=2_500_000
     ):
         super().__init__(url=url, resource_name=resource_name, region_name=region_name, config=config)
         self.bucket = bucket
@@ -205,7 +206,10 @@ class API(DB, ReadingDB):
         # Lambda cannot send responses that are larger than
         # 6 mb in size. The JSON for the readings will often
         # be larger than 6mb.
-        if sys.getsizeof(readings) > size_limit:
+        reading_json = json.dumps(readings)
+        resp_size = sys.getsizeof(reading_json)
+        print('response size:', resp_size)
+        if resp_size > size_limit:
             s3_key = str(uuid.uuid1()) + '.json' if key is None else key
             self.s3_client.put_object(
                 Body=str(json.dumps(readings)),
