@@ -145,24 +145,12 @@ class Digester():
         name: str = None,
         snap_to_roads=False
     ):
-        img_readings = []
-        points = []
-
-        filename_map = {}
-
-        for filename in filenames:
-            s3_filename = f'{key}/{filename.split("/")[-1]}'
-            filename_map[s3_filename] = filename
-            extension = s3_filename.split('.')[-1]
-            file_portion = s3_filename.split('/')[-1]
-
-            if extension == self.IMG_EXT:               
-                img_readings.append(entry_from_file(bucket, s3_filename))
-            elif file_portion == "GPS.txt":
-                points.extend(txt_to_points(read_gps_file(filename)))
-                print(points)
-            else:
-                print('unrecognized file in s3 bucket: ', s3_filename)
+        points, img_readings, filename_map = self.get_readings(
+            filenames,
+            key,
+            bucket,
+            read_gps_file,
+        )
 
         g = Geolocator()
         if snap_to_roads:
@@ -190,3 +178,30 @@ class Digester():
 
         return route
 
+    def get_readings(
+        self, 
+        filenames: List[str],
+        key: str,
+        bucket: str, 
+        read_gps_file: str, 
+    ): 
+        img_readings = []
+        points = []
+
+        filename_map = {}
+
+        for filename in filenames:
+            s3_filename = f'{key}/{filename.split("/")[-1]}'
+            filename_map[s3_filename] = filename
+            extension = s3_filename.split('.')[-1]
+            file_portion = s3_filename.split('/')[-1]
+
+            if extension == self.IMG_EXT:               
+                img_readings.append(entry_from_file(bucket, s3_filename))
+            elif file_portion == "GPS.txt":
+                points.extend(txt_to_points(read_gps_file(filename)))
+                print(points)
+            else:
+                print('unrecognized file in s3 bucket: ', s3_filename)
+
+        return points, img_readings, filename_map

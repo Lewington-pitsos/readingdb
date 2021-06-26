@@ -116,22 +116,24 @@
 
 # zip_name = "route_2021_04_29_14_15_34_999.zip"
 # uploaded_name = 'public/' + zip_name
-# # s3_resource = boto3.resource('s3')
-# # s3 = boto3.client('s3', region_name='ap-southeast-2')
+# s3_resource = boto3.resource('s3')
+# s3 = boto3.client('s3', region_name='ap-southeast-2')
 
-# # s3.upload_file(
-# #     '/home/lewington/Desktop/alicia/uploaded/' + zip_name, 
-# #     'mobileappsessions172800-main', 
-# #     uploaded_name
-# # )
+# s3.upload_file(
+#     '/home/lewington/Desktop/alicia/uploaded/' + zip_name, 
+#     'mobileappsessions172800-main', 
+#     uploaded_name
+# )
 
 # api = API(DYNAMO_ENDPOINT)
 # api.save_new_route(, uploaded_name, "roora_test_route")
 
-from readingdb.digester import Digester
-from readingdb.endpoints import *
+# import os
+# from readingdb.digester import Digester
+# from readingdb.geolocator import Geolocator
+# from readingdb.endpoints import *
 
-# name = "route_2021_04_29_13_24_37_374"
+# name = "route_2021_04_29_12_40_15_528"
 # root = f'/home/lewington/Desktop/alicia/{name}/'
 
 # subdirs = [root + r for r in  os.listdir(root)]
@@ -144,22 +146,24 @@ from readingdb.endpoints import *
 #     else:
 #         files.append(s)
 
-z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
+# z = Digester(DYNAMO_ENDPOINT, region_name="ap-southeast-2")
 # z.process_local(
-#     '2f11b71a-cecf-40b8-ab6b-8c73e4254b26',
-#     name, 
+#     'a2eb9df8-54ab-419f-9a97-ff69513d7809',
 #     'mobileappsessions172800-main', 
 #     files,
-#     'roora test route',
-#     snap_to_roads=True,
+#     snap_to_roads=True
 # )
 
-z.process_upload(
-    '62af2bda-a15f-43b7-a84a-55f9908351c7',
-    'public/19_06_2021--07:57:47',
-    'mobileappsessions172800-main',
-    snap_to_roads=True
+
+import sys
+from readingdb.endpoints import DYNAMO_ENDPOINT
+from readingdb.api import API
+
+api = API(DYNAMO_ENDPOINT)
+
+rs = api.all_route_readings(
+    'dfb5a3d4-d47b-11eb-af1d-0242247ac2c5'
 )
 
-# api = API(DYNAMO_ENDPOINT)
-# api.delete_route('b2b0e1b8-cce8-11eb-abcd-0242fd6f28d9', '8f647285-58a7-4d7f-af64-238db703e38e', )
+print(sys.getsizeof(rs))
+print(len(rs))

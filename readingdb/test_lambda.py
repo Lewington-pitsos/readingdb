@@ -3,6 +3,7 @@ import os
 import zipfile
 import boto3
 import json
+from readingdb.constants import *
 from unittest import mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
@@ -11,7 +12,7 @@ from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOI
 import unittest
 from moto import mock_s3
 
-from readingdb.lamb import handler
+from readingdb.lamb import test_handler
 from readingdb.getat import get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f'no credentials file located at {CREDENTIALS_FILE}'
@@ -30,14 +31,14 @@ class TestLambda(unittest.TestCase):
 
 class TestBasic(TestLambda):
     def test_error_response_on_bad_input(self):
-        resp = handler({}, TEST_CONTEXT)
+        resp = test_handler({}, TEST_CONTEXT)
 
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Invalid Event Syntax'
         }, resp)
 
-        resp = handler({'InvalidKey': 9}, TEST_CONTEXT)
+        resp = test_handler({'InvalidKey': 9}, TEST_CONTEXT)
 
         self.assertEqual({
             'Status': 'Error',
@@ -45,7 +46,7 @@ class TestBasic(TestLambda):
         }, resp)
 
     def test_correct_error_on_malformed_s3_event(self):
-        resp = handler({
+        resp = test_handler({
             'Records': []
         }, TEST_CONTEXT)
 
@@ -55,7 +56,7 @@ class TestBasic(TestLambda):
         }, resp)
 
     def test_correct_error_on_unauthenticated_upload_event(self):
-        resp = handler({
+        resp = test_handler({
              'Type': 'NotifyUploadComplete'
         }, TEST_CONTEXT)
 
@@ -65,7 +66,7 @@ class TestBasic(TestLambda):
         }, resp)
 
     def test_correct_error_on_unauthenticated_process_upload_event(self):
-        resp = handler({
+        resp = test_handler({
              'Type': 'ProcessUpload'
         }, TEST_CONTEXT)
 
@@ -76,7 +77,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_correct_error_on_malformed_upload_event(self):
-        resp = handler({
+        resp = test_handler({
              'Type': 'NotifyUploadComplete',
              'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -86,7 +87,7 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key Bucket missing from event'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
              'Type': 'NotifyUploadComplete',
              'AccessToken': self.access_token,
              'Bucket': 'somebucket'
@@ -99,7 +100,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_correct_error_on_malformed_process_upload_event(self):
-        resp = handler({
+        resp = test_handler({
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -109,7 +110,7 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key Bucket missing from event'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': 'somebucket'
@@ -122,7 +123,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_delete_event(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'DeleteRoute',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -134,7 +135,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_save_predictions_event(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'SavePredictions',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -144,7 +145,7 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key RouteID missing from event'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'SavePredictions',
             'RouteID': "1721739812-1238123",
             'AccessToken': self.access_token,
@@ -155,7 +156,7 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key UserID missing from event'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'SavePredictions',
             'RouteID': "1721739812-1238123",
             'UserID': 'asbdasd-asdasvdy',
@@ -169,7 +170,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_paginated_readings_event(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -180,7 +181,7 @@ class TestBasic(TestLambda):
         }, resp)
 
     def test_error_response_on_unauthenticated_event(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetRoute',
         }, TEST_CONTEXT)
 
@@ -189,7 +190,7 @@ class TestBasic(TestLambda):
             'Body': 'Unauthenticated request, no Access Token Provided'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetRoute',
             'AccessToken': 'bad_access_token',
         }, TEST_CONTEXT)
@@ -202,7 +203,7 @@ class TestBasic(TestLambda):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_nonexistant_type(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'foo',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -248,7 +249,7 @@ class TestLambdaRW(TestLambda):
 class TestLambdaW(TestLambdaRW):
     @unittest.skip('This make an actual call to fargate')
     def test_correct_upload_event_handling(self):
-        handler({
+        test_handler({
              'Type': 'NotifyUploadComplete',
              'AccessToken': 'eyJraWQiOiI0QXl3TjdidExEWm1RWFBEdVpxZ3JRTVk2MkVheXc0ZlN6eXBNcFI2bDh3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5OWJmNDUxOS04NWQ5LTQ3MjYtOTQ3MS00YzkxYTc2Nzc5MjUiLCJjb2duaXRvOmdyb3VwcyI6WyJhZG1pbiJdLCJldmVudF9pZCI6IjljYjMyZjRjLWFhMDktNDk4Yi1hYjkzLTk5ODE3ZjdmNGQxYyIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTgyNjc5MzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1zb3V0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1zb3V0aGVhc3QtMl9jdHBnbTBLdzQiLCJleHAiOjE2MTgyNzE1MzEsImlhdCI6MTYxODI2NzkzMSwianRpIjoiNmRkNGZiNWMtMTZhZS00N2JjLTg4OTEtODRkYjUzNjg0NmMwIiwiY2xpZW50X2lkIjoiNHVxaHFzb29lNDNlYnRxMG9idm4wbG03dWkiLCJ1c2VybmFtZSI6ImZkc2FkbWluIn0.EgNiuZYENTdIF7t7Zs0LC0UEPaMSc1M66fxfi4OpoLcKvCXdLax6r4wa0gdeL96N6x2PzpBmdxEoeZfSnIFq2NNtcLPXYpmONGgbmP4bxdQW1FcplE6dlvkfo6UnQQdmjTd6r6rTq6CHlHBskFWfi7YRcdbtFf8Ic9nIB2G8J8EkjN1cwGrUUrQ3CqaOuLNjUqxtP6fYgrqEk6lseWVp4P33HK8zOwPUxUuqjwtWfJK_Mchy0QL_K-HpnyUoXU5cv63_PY_OI63QYz5FHFtloTwj1iWqGdE43_tH8AdT3UJpmFNHwHijqVVpsFVmTowRuw1QskdZP-yHK4p7Ea8Y7Q',
              'Bucket': 'mobileappsessions172800-main',
@@ -275,7 +276,7 @@ class TestLambdaW(TestLambdaRW):
                 Key=s3_filename
             )
 
-        resp = handler({
+        resp = test_handler({
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': TEST_BUCKET,
@@ -286,16 +287,16 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual('Success', resp['Status'])
         self.assertIn('RouteID', resp['Body'])
         rid = resp['Body']['RouteID']
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': rid,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
-        self.assertEqual(64, len(resp['Body']['Readings']))
+        self.assertEqual(42, len(resp['Body']['Readings']))
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': rid,
             'AccessToken': self.access_token,
@@ -304,7 +305,7 @@ class TestLambdaW(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_non_existant_route(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': 'route-that-doesnt-exist',
             'AccessToken': self.access_token,
@@ -317,7 +318,7 @@ class TestLambdaW(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_saves_data_access_groups(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'AddUser',
             'UserID': "a98s7das87dba0sa7gdas87",
             'DataAccessGroups': [
@@ -337,7 +338,7 @@ class TestLambdaW(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_handles_user_put_request_correctly(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'AddUser',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -347,7 +348,7 @@ class TestLambdaW(TestLambdaRW):
             'Body': 'Bad Format Error: key UserID missing from event'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'AddUser',
             'UserID': 'too-short',
             'AccessToken': self.access_token,
@@ -358,7 +359,7 @@ class TestLambdaW(TestLambdaRW):
             'Body': 'User ID too-short was too short, must be at least 20 characters long'
         }, resp)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'AddUser',
             'UserID': 'too-shorta-sd-asdas-dasd-asd',
             'AccessToken': self.access_token,
@@ -371,7 +372,7 @@ class TestLambdaW(TestLambdaRW):
             ]}
         }, resp)
   
-        resp = handler({
+        resp = test_handler({
             'Type': 'AddUser',
             'UserID': 'too-shorta-sd-asdas-dasd-asd',
             'AccessToken': self.access_token,
@@ -384,7 +385,7 @@ class TestLambdaW(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_success_on_paginated_readings_for_absent_route(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': 'INVALID_ID',
             'AccessToken': self.access_token,
@@ -402,7 +403,7 @@ class TestLambdaW(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': r.id,
             'PredictionOnly': False,
@@ -418,7 +419,7 @@ class TestLambdaW(TestLambdaRW):
         for reading in pred_json:
             reading['Reading']['ImageFileName'] = "readingdb/test_data/route_imgs/route_2021_04_07_17_14_36_709/2021_04_07_17_14_49_386-25.jpg"
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'SavePredictions',
             'RouteID': r.id,
             'UserID': self.user_id,
@@ -427,7 +428,7 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(22, len(resp['Body']['SavedReadings']))
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': r.id,
             'PredictionOnly': False,
@@ -445,7 +446,7 @@ class TestLambdaW(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': r.id,
             'AnnotatorPreference': [
@@ -458,7 +459,7 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual(len(resp['Body']['Readings']), 713)
         self.assertIsNone(resp['Body']['PaginationKey'])
 
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetReadings',
             'RouteID': r.id,
             'AnnotatorPreference': [
@@ -469,6 +470,38 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 713)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_returns_s3_url_if_response_body_too_large(self):
+        with open('readingdb/test_data/sydney_route_short.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+
+
+        s3 = boto3.resource('s3', region_name=REGION_NAME)
+        bucket = s3.Bucket(TEST_BUCKET)
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+
+        self.assertEqual(len(bucket_objects), 717)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT, size_limit=500)
+
+        self.assertIn('Bucket', resp['Body']['Readings'])
+        self.assertIn('Key', resp['Body']['Readings'])
+        bucket_objects = []
+        for my_bucket_object in bucket.objects.all():
+            bucket_objects.append(my_bucket_object.key)
+        self.assertEqual(len(bucket_objects), 718)
 
 @mock_s3
 class TestLambdaR(TestLambdaRW): 
@@ -493,7 +526,7 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_pagination_filters_non_prediction_readings(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
             'AccessToken': self.access_token,
@@ -505,7 +538,7 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_paginated_readings_for_user(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.twenty_route.id,
             'AccessToken': self.access_token,
@@ -522,7 +555,7 @@ class TestLambdaR(TestLambdaRW):
         key1 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
         key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'ImageReading'][0]
         key2 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
             'PredictionOnly': False,
@@ -534,8 +567,8 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']['Readings']), 86)
         self.assertIsNone(resp['Body']['PaginationKey'])
         self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
-
-        resp = handler({
+    
+        resp = test_handler({
             'Type': 'GetPaginatedReadings',
             'RouteID': self.gps_img_route.id,
             'PredictionOnly': False,
@@ -550,7 +583,7 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetUserRoutes',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -564,7 +597,7 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
-        resp = handler({
+        resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': self.twenty_route.id,
             'AccessToken': self.access_token,

@@ -47,6 +47,7 @@ RESPONSE_SAVED_READINGS = 'SavedReadings'
 RESPONSE_ERROR = 'Error'
 RESPONSE_SUCCESS = 'Success'
 
+
 def key_missing_error_response(key):
     return error_response(f'Bad Format Error: key {key} missing from event')
 
@@ -74,16 +75,21 @@ def get_key(event, key):
     return event[key], None
     
 def handler(event: Dict[str, Any], context):
-    if context == 'TEST_STUB':
-        endpoint = TEST_DYNAMO_ENDPOINT
-        bucket = TEST_BUCKET
-    else:
-        endpoint = DYNAMO_ENDPOINT
-        bucket = BUCKET
+    return handler_request(event, context, DYNAMO_ENDPOINT, BUCKET, 2_400_000)
 
+def test_handler(
+    event: Dict[str, Any], 
+    context,  
+    endpoint: str=TEST_DYNAMO_ENDPOINT, 
+    bucket: str=TEST_BUCKET,
+    size_limit: int=25_000_000
+):
+    return handler_request(event, context, endpoint, bucket, size_limit)
+    
+def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, size_limit: int):
     api = API(
         endpoint, 
-        size_limit=500000, 
+        size_limit=size_limit, 
         bucket=bucket, 
         tmp_bucket=bucket, 
         config=Config(

@@ -85,6 +85,44 @@ class TestGeolocator(unittest.TestCase):
         self.assertEqual(80, len(predictions))
         self.assertEqual('PredictionReading', RUtils.get_type(predictions[0]))
 
+    def test_filtering(self):
+        g = Geolocator()
+        with open('readingdb/test_data/box-hill.json', 'r') as f:
+            readings = json.load(f)
+
+        filtered = g.filter_stationary(readings)
+        self.assertLess(len(filtered), len(readings))
+
+        all_imgs = set()
+        filtered_imgs = set()
+
+        for r in readings:
+            all_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+        for r in filtered:
+            filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+
+        removed = list(all_imgs - filtered_imgs)
+        self.assertEqual(553, len(removed))
+   
+    def test_filtering_after_geolocation(self):
+        g = Geolocator()
+        with open('readingdb/test_data/box-hill-geolocated.json', 'r') as f:
+            readings = json.load(f)
+
+        filtered = g.filter_stationary(readings)
+        self.assertLess(len(filtered), len(readings))
+
+        all_imgs = set()
+        filtered_imgs = set()
+
+        for r in readings:
+            all_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+        for r in filtered:
+            filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+
+        removed = list(all_imgs - filtered_imgs)
+        self.assertEqual(501, len(removed))
+
     def test_interpolation(self):
         g = Geolocator()
         interp = g.interpolated(self.pos_readings, self.img_readings)

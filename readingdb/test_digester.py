@@ -391,5 +391,5 @@ class TestDigester(unittest.TestCase):
         )
 
         readings = self.api.all_route_readings(route.id)
-        self.assertEqual(len(readings), 64)
+        self.assertEqual(len(readings), 42)
         self.assertEqual('hedge cresent', route.name)
