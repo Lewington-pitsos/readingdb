@@ -98,9 +98,8 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             region_name=REGION_NAME,
         )
     )
-
+    geolocator = Geolocator()
     digester = Digester(endpoint, api=api)
-
     logger.info('Event: %s', event)
     
     if EVENT_TYPE in event:
@@ -336,10 +335,8 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if len(points) < 2:
             return error_response(f'Not Enough Points Given ({len(points)})')
 
-        g = Geolocator()
-
         return success_response({
-            EVENT_POINTS: points
+            EVENT_POINTS: geolocator.geolocate(points, replacement=True)
         })
     else:
         return error_response(f'Unrecognized event type {event_name}')

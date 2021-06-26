@@ -4,11 +4,8 @@ import readingdb.constants as C
 from readingdb.rutils import RUtils
 from readingdb.geolocator import Geolocator
 import unittest
+from readingdb.tutils import roads_api_test
 from readingdb.format import *
-
-roads_api_test = unittest.skipIf(
-    not os.environ.get('ROADS_API', False), 'Googls Maps Road API tests are skipped by default'
-)
 
 class TestGeolocator(unittest.TestCase):
     @classmethod

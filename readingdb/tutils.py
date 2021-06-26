@@ -1,3 +1,4 @@
+import unittest
 import botocore
 import boto3
 import os
@@ -85,3 +86,7 @@ def teardown_s3_bucket(
     for key in bucket.objects.all():
         key.delete()
     bucket.delete()
+
+roads_api_test = unittest.skipIf(
+    not os.environ.get('ROADS_API', False), 'Googls Maps Road API tests are skipped by default'
+)
