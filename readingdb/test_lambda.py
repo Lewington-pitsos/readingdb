@@ -180,6 +180,51 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key RouteID missing from event'
         }, resp)
 
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_road_snap_event(self):
+        resp = test_handler({
+            'Type': 'SnapToRoads',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key Points missing from event'
+        }, resp)
+
+        resp = test_handler({
+            'Type': 'SnapToRoads',
+            'Points': [],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Not Enough Points Given (0)'
+        }, resp)
+
+        resp = test_handler({
+            'Type': 'SnapToRoads',
+            'Points': [
+                {
+                    'lat': -36.66161963200981, 
+                    'lng': 144.336176829216
+                },
+                {
+                    'lat': -36.655009623517365, 
+                    'lng': 144.34527488197006
+                }
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': {
+                'Points': []
+            },
+        }, resp)
+
     def test_error_response_on_unauthenticated_event(self):
         resp = test_handler({
             'Type': 'GetRoute',

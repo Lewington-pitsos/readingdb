@@ -23,6 +23,7 @@ EVENT_PREDICTION_ONLY = 'PredictionOnly'
 EVENT_BUCKET = 'Bucket'
 EVENT_OBJECT_KEY = 'Key'
 EVENT_ROUTE_NAME = 'RouteName'
+EVENT_POINTS = 'Points'
 
 # Event Types
 EVENT_GET_ROUTE = 'GetRoute'
@@ -36,6 +37,7 @@ EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
 EVENT_SAVE_PREDICTIONS = 'SavePredictions'
 EVENT_BUCKET_KEY = 'BucketKey'
+EVENT_ROAD_SNAP = 'SnapToRoads'
 EVENT_ADD_USER = 'AddUser'
 
 # Generic Response Keys
@@ -310,11 +312,9 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
     elif event_name == EVENT_ADD_USER:
         user_id, err_resp = get_key(event, UserKeys.USER_ID)
         if err_resp:
-            return err_resp 
-
+            return err_resp
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
-
         data_access_groups, not_found = get_key(event, UserKeys.DATA_ACCESS_GROUPS)
 
         if not_found:
@@ -327,6 +327,19 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         return success_response({
             UserKeys.DATA_ACCESS_GROUPS: saved_access_groups
+        })
+    elif event_name == EVENT_ROAD_SNAP:
+        points, err_resp = get_key(event, EVENT_POINTS)
+        if err_resp:
+            return err_resp
+
+        if len(points) < 2:
+            return error_response(f'Not Enough Points Given ({len(points)})')
+
+        g = Geolocator()
+
+        return success_response({
+            EVENT_POINTS: points
         })
     else:
         return error_response(f'Unrecognized event type {event_name}')

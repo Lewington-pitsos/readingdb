@@ -3,6 +3,7 @@ import json
 import copy
 
 import haversine as hs
+import readingdb.constants as C
 from haversine import Unit
 from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
@@ -10,6 +11,7 @@ from readingdb.roadpoint import RoadPoint
 from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes, S3Path
 import googlemaps
 from typing import Any, Dict, List, Tuple, overload
+
 
 
 class Geolocator():
@@ -92,7 +94,7 @@ class Geolocator():
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
 
-    def geolocate(self, pos_readings: List[Dict[str, Any]]):
+    def geolocate(self, pos_readings: List[Dict[str, Any]], replacement=False):
         if len(pos_readings) == 0:
             return []
 
@@ -106,12 +108,17 @@ class Geolocator():
             end_idx = start_idx + self.max_points
             overlap = self.overlap if end_idx < len(pos_readings) else 0
             next_readings = pos_readings[start_idx:end_idx]
-            all_final_readings.extend(self.__geolocate_subset(next_readings)[min(self.overlap, start_idx):])
+            all_final_readings.extend(self.__geolocate_subset(next_readings, replacement)[min(self.overlap, start_idx):])
             start_idx += self.max_points - overlap
 
         return all_final_readings
 
-    def __geolocate_subset(self, pos_readings: List[Dict[str, Any]]):
+    def __geolocate_subset(self, pos_readings: List[Dict[str, Any]], replace=False):
+        if replace:
+            return [r.to_point() for r in  self.__snapped_points(pos_readings)]
+        return self.__snap_readings(pos_readings)
+
+    def __snap_readings(self, pos_readings: List[Dict[str, Any]]):
         road_points = self.__snapped_points(pos_readings)
 
         final_readings = []
@@ -121,7 +128,7 @@ class Geolocator():
                 final_readings.append(snapped)
 
         return sorted(final_readings, key=lambda r: RUtils.get_ts(r))
-        
+
     def __repositioned(self, reading: Dict[str, Any], p: RoadPoint) -> None:
         repositioned = copy.deepcopy(reading)
         repositioned[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = p.lat
@@ -135,9 +142,12 @@ class Geolocator():
         )]
 
     def __to_latlng(self, reading: Dict[str, Any]) -> Tuple[float, float]:
-        pos = reading[ReadingKeys.READING]
+        if ReadingKeys.READING in reading:
+            pos = reading[ReadingKeys.READING]
 
-        return (pos[PositionReadingKeys.LATITUDE], pos[PositionReadingKeys.LONGITUDE])
+            return (pos[PositionReadingKeys.LATITUDE], pos[PositionReadingKeys.LONGITUDE])
+        
+        return (reading[C.LAT], reading[C.LNG])
 
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------

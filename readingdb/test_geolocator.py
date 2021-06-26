@@ -1,5 +1,6 @@
 import json
 import os
+import readingdb.constants as C
 from readingdb.rutils import RUtils
 from readingdb.geolocator import Geolocator
 import unittest
@@ -58,25 +59,21 @@ class TestGeolocator(unittest.TestCase):
 
         snapped_pos_readings = g.geolocate(self.pos_readings[:101])
         self.assertEqual(91, len(snapped_pos_readings))
-        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
+        self.assertEqual(-37.69701799822927,  RUtils.get_lat(snapped_pos_readings[0]))
         self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
 
-        lastTimestamp = 0
-        for s in snapped_pos_readings:
-            new_ts = s[ReadingKeys.TIMESTAMP]
-            self.assertGreater(new_ts, lastTimestamp)
-            lastTimestamp = new_ts
+    @roads_api_test
+    def test_replacement_for_more_than_100_readings(self):
+        g = Geolocator()
+        snapped_pos_readings = g.geolocate(self.pos_readings[:240], replacement=True)
+        self.assertEqual(416, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, snapped_pos_readings[0][C.LAT])
+        self.assertEqual(144.80300877308167, snapped_pos_readings[0][C.LNG])
 
-        snapped_pos_readings = g.geolocate(self.pos_readings[:100])
-        self.assertEqual(90, len(snapped_pos_readings))
-        self.assertEqual(-37.69701799822927, RUtils.get_lat(snapped_pos_readings[0]))
-        self.assertEqual(144.80300877308167,  RUtils.get_lng(snapped_pos_readings[0]))
-
-        lastTimestamp = 0
-        for s in snapped_pos_readings:
-            new_ts = s[ReadingKeys.TIMESTAMP]
-            self.assertGreater(new_ts, lastTimestamp)
-            lastTimestamp = new_ts
+        snapped_pos_readings = g.geolocate(self.pos_readings[:100], replacement=True)
+        self.assertEqual(169, len(snapped_pos_readings))
+        self.assertEqual(-37.69701799822927, snapped_pos_readings[0][C.LAT])
+        self.assertEqual(144.80300877308167, snapped_pos_readings[0][C.LNG])
 
     @roads_api_test
     def test_prediction_generating(self):

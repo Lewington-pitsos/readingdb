@@ -1,5 +1,8 @@
 REGION_NAME = 'ap-southeast-2'
 
+LAT = 'lat'
+LNG = 'lng'
+
 class UserKeys(): 
     USER_ID = 'UserID'
     DATA_ACCESS_GROUPS = 'DataAccessGroups'
