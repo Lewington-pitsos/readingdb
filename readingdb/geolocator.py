@@ -108,10 +108,27 @@ class Geolocator():
             end_idx = start_idx + self.max_points
             overlap = self.overlap if end_idx < len(pos_readings) else 0
             next_readings = pos_readings[start_idx:end_idx]
-            all_final_readings.extend(self.__geolocate_subset(next_readings, replacement)[min(self.overlap, start_idx):])
+
+            snapped = self.__geolocate_subset(next_readings, replacement)
+            if replacement:
+                all_final_readings.extend(self.__filter_duplicates(all_final_readings, snapped))
+            else:
+                all_final_readings.extend(snapped[min(self.overlap, start_idx):])
             start_idx += self.max_points - overlap
 
         return all_final_readings
+
+    def __filter_duplicates(self, current_points, new_points):
+        to_add = []
+        for p in new_points:
+            lat = p[C.LAT]
+            lng = p[C.LNG]
+            for cp in current_points:
+                if cp[C.LAT] == lat and cp[C.LNG] == lng:
+                    break
+            else:
+                to_add.append(p)
+        return to_add
 
     def __geolocate_subset(self, pos_readings: List[Dict[str, Any]], replace=False):
         if replace:
