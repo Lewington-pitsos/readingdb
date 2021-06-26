@@ -155,15 +155,23 @@
 # )
 
 
-import sys
-from readingdb.endpoints import DYNAMO_ENDPOINT
-from readingdb.api import API
+from readingdb.geolocator import Geolocator
 
-api = API(DYNAMO_ENDPOINT)
 
-rs = api.all_route_readings(
-    'dfb5a3d4-d47b-11eb-af1d-0242247ac2c5'
-)
+points = [
+    { "lat": 37.423784313448486, "lng": -122.08993385123442 },
+    { "lat": 37.42203760319805, "lng": -122.08923647689055 },
+    { "lat": 37.42155192530327, "lng": -122.08868930625151 },
+    { "lat": 37.4209128706424, "lng": -122.08684394644926 },
+    { "lat": 37.42108328575186, "lng": -122.08684394644926 },
+    { "lat": 37.421006599000606, "lng": -122.08518097686003 },
+    { "lat": 37.42087878757393, "lng": -122.08348582076262 },
+    { "lat": 37.42081062139052, "lng": -122.08277771758269 },
+]
 
-print(sys.getsizeof(rs))
-print(len(rs))
+g = Geolocator()
+
+res = g.geolocate(points, replacement=True)
+print(len(res))
+for p in res:
+    print(p)

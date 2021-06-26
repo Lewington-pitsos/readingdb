@@ -310,17 +310,14 @@ class TestBasic(TestLambda):
         resp = test_handler({
             'Type': 'GetRoute',
         }, TEST_CONTEXT)
-
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Unauthenticated request, no Access Token Provided'
         }, resp)
-
         resp = test_handler({
             'Type': 'GetRoute',
             'AccessToken': 'bad_access_token',
         }, TEST_CONTEXT)
-
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Unauthenticated request, unrecognized Access Token bad_access_token'
@@ -338,7 +335,6 @@ class TestBasic(TestLambda):
             'Status': 'Error',
             'Body': 'Unrecognized event type foo'
         }, resp)
-
 
 @mock_s3
 class TestLambdaRW(TestLambda):

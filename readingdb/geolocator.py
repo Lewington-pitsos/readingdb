@@ -72,7 +72,6 @@ class Geolocator():
         
         return [i for i in img_readings if i[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY] in wanted_images]
 
-
     def __milli_diff(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
         return r1[ReadingKeys.TIMESTAMP] - r2[ReadingKeys.TIMESTAMP] 
 
@@ -85,7 +84,7 @@ class Geolocator():
     def __to_point(self, r1: Dict[str, Any]) -> Tuple[float, float]:
         reading = r1[ReadingKeys.READING]
         return (reading[PositionReadingKeys.LATITUDE], reading[PositionReadingKeys.LONGITUDE])
-
+        
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
