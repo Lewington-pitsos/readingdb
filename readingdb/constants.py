@@ -3,6 +3,10 @@ REGION_NAME = 'ap-southeast-2'
 LAT = 'lat'
 LNG = 'lng'
 
+ANNOTATOR_PREFERENCE = [
+    '2f11b71a-cecf-40b8-ab6b-8c73e4254b26'
+]
+
 class UserKeys(): 
     USER_ID = 'UserID'
     DATA_ACCESS_GROUPS = 'DataAccessGroups'

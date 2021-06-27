@@ -150,7 +150,9 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
         if missing:
-            annotator_preference = [DEFAULT_ANNOTATOR_ID]
+            annotator_preference = ANNOTATOR_PREFERENCE
+        else:
+            annotator_preference += ANNOTATOR_PREFERENCE
 
         pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
         if missing:
@@ -181,7 +183,9 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
         if missing:
-            annotator_preference = [DEFAULT_ANNOTATOR_ID]
+            annotator_preference = ANNOTATOR_PREFERENCE
+        else:
+            annotator_preference += ANNOTATOR_PREFERENCE
 
         pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
         if missing:
