@@ -349,6 +349,9 @@ class API(DB, ReadingDB):
         return r[ReadingKeys.TYPE] == ReadingTypes.PREDICTION
 
     def __annotator_precedence(self, annotators: List[str], annotator: str) -> int:
+        if annotator == FAUX_ANNOTATOR_ID:
+            return len(annotators) + 1
+
         if not annotator in annotators:
             return len(annotators)
         
