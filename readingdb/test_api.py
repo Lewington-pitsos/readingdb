@@ -217,7 +217,7 @@ class TestAPI(unittest.TestCase):
             'Timestamp': 1616116106935,
         }]
 
-        saved = api.save_predictions(preds, route.id, user_id)
+        saved = api.save_predictions(preds, route.id)
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(len(preds), len(saved))
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)

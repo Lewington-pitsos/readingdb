@@ -42,6 +42,7 @@ class ReadingTypes():
 class PositionReadingKeys():
     LATITUDE = 'Latitude'
     LONGITUDE = 'Longitude'
+    PLACE_ID = 'PlaceID'
 
     FLOAT_FIELDS = [
         LATITUDE, 
