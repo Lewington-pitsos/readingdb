@@ -60,6 +60,15 @@ When the user looks at the map, they will want to look at the readings in that a
 
 **Load**: very high, this is kind of the main thing the app will do other than load aggregates. There will be thousands of readings per screen.
 
+
+### Load unprotected readings that need replacing
+
+When a new reading R1 is saved, if there exist unprotected readings in the same location as R1 (so, within x meters) and those readings have older timestamps than R1 and belong to the same access group as the uploader, those readings must be shunted to cold-storage.
+
+**Load**: multiple uploads of tens of thousands of readings each day, each reading must perform this check
+
+**Implications**: the reading's sort key should include some flag specifying whether it is protected or not.
+
 **Implications**: The process should presumably be 
 (1) user loads all routes that it is able to access 
 (2) user specifies some geographic bounds (probably multiple "squares" that together make up the entire map)
@@ -68,3 +77,20 @@ When the user looks at the map, they will want to look at the readings in that a
 ### Load aggregates that correspond to the user's screen.
 
 Same as above, but only hundreds of readings per screen.
+
+### Mark Readings for Annotation
+
+The user selectes a number of aggregates. Each reading associated with any of these aggregates
+must now be annotated. 
+
+**Load**: At most once per upload with all the readings for that upload. At least once per year.
+
+**Implications**: We need a new entity called an "annotation job". All it needs to do is store readingids and will be deleted frequently. It must be associated with a particular data access group. The sort key of reach reading must include the routeID so we can reconstruct readings into the order of capture (for easier annotation).
+
+### Update Aggregates
+
+Whenever a new route is uploaded, any aggregate that overlaps any of the readings in that new route must be updated. Presumably will simply delete all these aggregates and re-build using the new readings.
+
+**Load**: once per upload, probably hundreds, probably < 1000 aggregates will need to be deleted and re-created or at least updated.
+
+**Implications**: Aggregates will need to have a geohash as part of their primary key
