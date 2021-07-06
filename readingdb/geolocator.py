@@ -10,9 +10,7 @@ from readingdb.rutils import RUtils
 from readingdb.roadpoint import RoadPoint
 from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes, S3Path
 import googlemaps
-from typing import Any, Dict, List, Tuple, overload
-
-
+from typing import Any, Dict, List, Tuple
 
 class Geolocator():
     def __init__(self, overlap: int = 15) -> None:

@@ -122,9 +122,8 @@ class API(DB, ReadingDB):
             ImageReadingKeys.FILENAME in r2 and\
             r2[ImageReadingKeys.FILENAME] == r1[ImageReadingKeys.FILENAME]:
             return True
-        
         if ImageReadingKeys.URI in r1 and\
-            ImageReadingKeys.URI in r2 and \
+            ImageReadingKeys.URI in r2 and\
             r1[ImageReadingKeys.URI][S3Path.BUCKET] == r2[ImageReadingKeys.URI][S3Path.BUCKET] and\
             r1[ImageReadingKeys.URI][S3Path.KEY] == r2[ImageReadingKeys.URI][S3Path.KEY]:
             return True

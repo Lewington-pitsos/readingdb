@@ -12,9 +12,19 @@ According to AWS, you should design your DynamoDB schema based on the kind of ac
 - All readings associated with a given image (when saving annotations)
 - Get particular route (for deletion/update)
 
-### Admin
-- All Routes
+### Routes
+- All Routes associated with an access group
 
+### Readings
+
+- All Readings associated with a large geographic area and access group
+- All Readings of a certain type in the same geographic area and access group as the current reading
+
+
+### Aggregates
+
+- All Aggregates associated with a large geographic area and access group
+- All Aggregates in the same access group as a given reading
 
 ### Get all Routes Associated with a data access group
 
@@ -44,3 +54,17 @@ Annotators will save their predictions (for images) to the database. This will r
 
 **Implications**: It is not economical to load all readings every time 100 or so get saved. Basically we will need to add an image hash to each reading and make this a secondary key.
 
+### Load readings that correspond to the user's screen.
+
+When the user looks at the map, they will want to look at the readings in that area. They an only access readings that belong to routes that are within the proper access group though.
+
+**Load**: very high, this is kind of the main thing the app will do other than load aggregates. There will be thousands of readings per screen.
+
+**Implications**: The process should presumably be 
+(1) user loads all routes that it is able to access 
+(2) user specifies some geographic bounds (probably multiple "squares" that together make up the entire map)
+(3) The reading table is queried over geohash and route id
+
+### Load aggregates that correspond to the user's screen.
+
+Same as above, but only hundreds of readings per screen.
