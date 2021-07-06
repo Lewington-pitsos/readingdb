@@ -14,28 +14,4 @@ In general, whenever the user finishes saving a number of readings, we will have
 - recalculate their statuses
 - save them again
 
-Our options are:
-
-### polylines with arbitrary start and end points
-
-#### Pro
-
-- Segments relate to road defects rather than arbitrary points
-
-#### Con
-
-- Segments are always chainging
-
-
-### A mix of a geohashing grid with 100-300 m squares and google maps geo roads.
-
-I.e. a segment = all the road points for google roads road X that lie inside the square Y.
-
-
-#### Pro 
-
-- Easy + Cheap to tell which segment a reading belongs to
-
-#### Con
-
-- Grid will mean some segments of road are tiny (e.g. the last 20 meters of Fullard road is in square c1)
+Basically, we would have to use google maps Places api. When snapping points to roads (which we will do for every point) the returned points are all associated with a 'placeId'. The placeIds returned all refer to a road segment place, which in general seem to refer to streches of road between two intersections. These make reasonable candidates for aggregates (usually 20-100 points per segment), and are clearly deterministic. 

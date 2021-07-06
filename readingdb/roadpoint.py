@@ -6,12 +6,14 @@ class RoadPoint():
     Latitude = 'latitude'
     Longitude = 'longitude'
     Idx = 'originalIndex'
+    PlaceID = 'placeId'
 
     def __init__(self, point_data: Dict[str, Any]):
         self.lat = point_data[self.Location][self.Latitude] 
         self.lng = point_data[self.Location][self.Longitude]
         self.idx = point_data[self.Idx] if self.Idx in point_data else -1 
-
+        self.placeID = point_data[self.PlaceID]
+        
     def to_point(self):
         return {
             C.LAT: self.lat,

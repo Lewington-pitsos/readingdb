@@ -147,6 +147,7 @@ class Geolocator():
         repositioned = copy.deepcopy(reading)
         repositioned[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = p.lat
         repositioned[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = p.lng
+        repositioned[ReadingKeys.READING][PositionReadingKeys.PLACE_ID] = p.placeID
         return repositioned
 
     def __snapped_points(self, readings: List[Dict[str, Any]]):
