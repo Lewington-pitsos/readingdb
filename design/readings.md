@@ -6,7 +6,7 @@ Geohash @ around 100x100 meters
 
 ## Secondary Key
 
-ReadingType + Version + ReadingID
+ReadingType + Layer + ReadingID
 
 Nothing too fancy.
 
