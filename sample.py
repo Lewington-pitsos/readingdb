@@ -28,7 +28,7 @@ to_assess = []
 
 def has_defect(reading: Dict[str, Any]) -> bool:
     for e in reading[Constants.READING][Constants.ENTITIES]:
-        if e[Constants.PRESENT] and e[Constants.NAME] == 'D1001':
+        if e[Constants.PRESENT] and e[Constants.ENTITY_NAME] == 'D1001':
             return True
     return False
 

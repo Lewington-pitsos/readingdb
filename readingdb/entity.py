@@ -12,7 +12,7 @@ class Entity():
 
     def encode(self) -> Dict[str, Any]:
         return {
-            Constants.NAME: self.name,
+            Constants.ENTITY_NAME: self.name,
             Constants.CONFIDENCE: encode_as_float(self.confidence),
             Constants.PRESENT: encode_bool(self.present),
             Constants.SEVERITY: encode_as_float(self.severity)

@@ -58,7 +58,7 @@ class Constants():
     KEY = 'Key'
 
     # Entity Keys
-    NAME = 'Name'
+    ENTITY_NAME = 'Name'
     CONFIDENCE = 'Confidence'
     PRESENT = 'Present'
     SEVERITY = 'Severity'

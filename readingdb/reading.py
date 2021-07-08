@@ -193,7 +193,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         
         for e in reading_data[Constants.ENTITIES]:
             entities.append(Entity(
-                e[Constants.NAME],
+                e[Constants.ENTITY_NAME],
                 e[Constants.CONFIDENCE], 
                 e[Constants.PRESENT],
                 e[Constants.SEVERITY] if Constants.SEVERITY in e else 1.0
