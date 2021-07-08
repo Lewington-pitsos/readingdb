@@ -172,6 +172,15 @@ class TestDB(unittest.TestCase):
         second_name_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_name_timestamp, second_status_timestamp)
 
+    def deletes_route(self):
+        rid = '292929922'
+        uid = '287226281'
+        self.db.create_reading_db()
+
+        route = Route(uid, rid, 31232143242)
+        self.db.put_route(route)
+        self.db.remove_route(rid, uid)
+
     def test_loads_large_dataset(self):
         route_id = '103'
         self.db.create_reading_db()

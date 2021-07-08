@@ -1,7 +1,6 @@
 from collections import defaultdict
 import json
 import sys
-from readingdb.readingdb import ReadingDB
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
@@ -15,7 +14,7 @@ from readingdb.db import DB
 from readingdb.endpoints import LAMBDA_ENDPOINT
 from readingdb.constants import *
 
-class API(DB, ReadingDB):
+class API(DB):
     ECS_TASKS_KEY = 'tasks'
 
     def __init__(
@@ -299,7 +298,7 @@ class API(DB, ReadingDB):
                 reading = r[Constants.READING]
                 if Constants.URI in reading:
                     uri = reading[Constants.URI]
-                    resp = self.s3_client.delete_object(
+                    self.s3_client.delete_object(
                         Bucket=uri[Constants.BUCKET],
                         Key=uri[Constants.KEY]
                     )
@@ -309,14 +308,7 @@ class API(DB, ReadingDB):
             [r[Constants.READING_ID] for r in readings]
         )
 
-        table = self.db.Table('Routes')
-        
-        table.delete_item(
-            Key={
-                Constants.ROUTE_ID: route_id,
-                Constants.USER_ID: user_sub
-            }
-        )
+        self.remove_route(route_id, user_sub)
 
         return (deletedReadingCount, deletedImgCount)
 

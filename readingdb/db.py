@@ -118,6 +118,15 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def remove_route(self, route_id: str, user_sub: str):
+        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        table.delete_item(
+            Key={
+                Constants.ROUTE_ID: route_id,
+                Constants.USER_ID: user_sub
+            }
+        )
+
     def all_known_users(self) -> List[str]: 
         user_ids = set()
         pg = self.scan_paginator.paginate(TableName=Constants.ROUTE_TABLE_NAME)
@@ -271,7 +280,7 @@ class DB():
         return response
 
     def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
-        table = self.db.Table('Readings')
+        table = self.db.Table(Constants.READING_TABLE_NAME)
         
         for r in reading_ids:
             table.delete_item(
