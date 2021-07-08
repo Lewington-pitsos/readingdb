@@ -24,14 +24,14 @@ class Reading(AbstractReading):
         self.readingType: str = readingType
     def item_data(self):
         return {
-            ReadingKeys.READING_ID: self.id,
-            ReadingRouteKeys.ROUTE_ID: self.route_id,
-            ReadingKeys.TYPE: self.readingType,  
-            ReadingKeys.TIMESTAMP: self.date, 
+            Constants.READING_ID: self.id,
+            Constants.ROUTE_ID: self.route_id,
+            Constants.TYPE: self.readingType,  
+            Constants.TIMESTAMP: self.date, 
         }
     @classmethod
     def decode(cls, item: Dict[str, Any]):
-        item[ReadingKeys.TIMESTAMP] = int(item[ReadingKeys.TIMESTAMP])
+        item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
 
 class ImageReading(Reading):
     def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str = None, uri: str = None) -> None:
@@ -45,8 +45,8 @@ class ImageReading(Reading):
 
     def item_data(self):
         data = super().item_data()
-        data[ReadingKeys.READING] = {}
-        self.add_file_data(data[ReadingKeys.READING])
+        data[Constants.READING] = {}
+        self.add_file_data(data[Constants.READING])
 
         return data
 
@@ -57,12 +57,12 @@ class ImageReading(Reading):
 
     def add_file_data(self, data):
         if self.url:
-            data[ImageReadingKeys.FILENAME] = self.url
+            data[Constants.FILENAME] = self.url
 
         if self.uri:
-            data[ImageReadingKeys.URI] = {
-                S3Path.BUCKET: self.uri.bucket,
-                S3Path.KEY: self.uri.object_name
+            data[Constants.URI] = {
+                Constants.BUCKET: self.uri.bucket,
+                Constants.KEY: self.uri.object_name
             }
 
     def set_uri(self, uri: S3Uri):
@@ -81,9 +81,9 @@ class PositionReading(Reading):
     def item_data(self):
         data = super().item_data()
 
-        data[ReadingKeys.READING] = {
-            PositionReadingKeys.LATITUDE: encode_as_float(self.lat),
-            PositionReadingKeys.LONGITUDE: encode_as_float(self.long)
+        data[Constants.READING] = {
+            Constants.LATITUDE: encode_as_float(self.lat),
+            Constants.LONGITUDE: encode_as_float(self.long)
         }
 
         return data
@@ -92,11 +92,11 @@ class PositionReading(Reading):
     def decode(cls, item: Dict[str, Any]):
         super().decode(item)
 
-        item[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = decode_float(
-            item[ReadingKeys.READING][PositionReadingKeys.LATITUDE]
+        item[Constants.READING][Constants.LATITUDE] = decode_float(
+            item[Constants.READING][Constants.LATITUDE]
         )
-        item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = decode_float(
-            item[ReadingKeys.READING][PositionReadingKeys.LONGITUDE]
+        item[Constants.READING][Constants.LONGITUDE] = decode_float(
+            item[Constants.READING][Constants.LONGITUDE]
         )
 
 class PredictionReading(ImageReading, PositionReading):
@@ -125,21 +125,21 @@ class PredictionReading(ImageReading, PositionReading):
     def decode(cls, item: Dict[str, Any]):
         PositionReading.decode(item)
 
-        for e in item[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]:
-            e[EntityKeys.CONFIDENCE] = decode_float(e[EntityKeys.CONFIDENCE])
-            e[EntityKeys.PRESENT] = decode_bool(e[EntityKeys.PRESENT])
-            e[EntityKeys.SEVERITY] = decode_float(e[EntityKeys.SEVERITY]) if EntityKeys.SEVERITY in e else 1.0
+        for e in item[Constants.READING][PredictionReadingKeys.ENTITIES]:
+            e[Constants.CONFIDENCE] = decode_float(e[Constants.CONFIDENCE])
+            e[Constants.PRESENT] = decode_bool(e[Constants.PRESENT])
+            e[Constants.SEVERITY] = decode_float(e[Constants.SEVERITY]) if Constants.SEVERITY in e else 1.0
         
         item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
             
     def item_data(self):
         data = PositionReading.item_data(self)
-        self.add_file_data(data[ReadingKeys.READING])
+        self.add_file_data(data[Constants.READING])
 
         encoded_entities = []
         for e in self.entites:
             encoded_entities.append(e.encode())
-        data[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
+        data[Constants.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
 
         data[PredictionReadingKeys.ANNOTATOR_ID] = self.annotator_id
         data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
@@ -147,43 +147,43 @@ class PredictionReading(ImageReading, PositionReading):
         return data
 
 READING_TYPE_MAP: Dict[str, AbstractReading] = {
-    ReadingTypes.POSITIONAL: PositionReading,
-    ReadingTypes.IMAGE: ImageReading,
-    ReadingTypes.PREDICTION: PredictionReading,
+    Constants.POSITIONAL: PositionReading,
+    Constants.IMAGE: ImageReading,
+    Constants.PREDICTION: PredictionReading,
 }
 
 def ddb_to_dict(reading) -> None:
-    reading_type = reading[ReadingKeys.TYPE]
+    reading_type = reading[Constants.TYPE]
     READING_TYPE_MAP[reading_type].decode(reading)
 
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
-    return None if not ImageReadingKeys.URI in reading_data else S3Uri.from_json(reading_data[ImageReadingKeys.URI])
+    return None if not Constants.URI in reading_data else S3Uri.from_json(reading_data[Constants.URI])
 
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
-    return None if not ImageReadingKeys.FILENAME in reading_data else reading_data[ImageReadingKeys.FILENAME]
+    return None if not Constants.FILENAME in reading_data else reading_data[Constants.FILENAME]
     
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
-    if reading_type == ReadingTypes.POSITIONAL:
+    if reading_type == Constants.POSITIONAL:
         return PositionReading(
-            reading[ReadingKeys.READING_ID],
-            reading[ReadingRouteKeys.ROUTE_ID],
-            reading[ReadingKeys.TIMESTAMP],
+            reading[Constants.READING_ID],
+            reading[Constants.ROUTE_ID],
+            reading[Constants.TIMESTAMP],
             reading_type,
-            reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE],
-            reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE],
+            reading[Constants.READING][Constants.LATITUDE],
+            reading[Constants.READING][Constants.LONGITUDE],
         )
-    elif reading_type == ReadingTypes.IMAGE:
+    elif reading_type == Constants.IMAGE:
         return ImageReading(
-            reading[ReadingKeys.READING_ID],
-            reading[ReadingRouteKeys.ROUTE_ID],
-            reading[ReadingKeys.TIMESTAMP],
+            reading[Constants.READING_ID],
+            reading[Constants.ROUTE_ID],
+            reading[Constants.TIMESTAMP],
             reading_type,
-            get_filename(reading[ReadingKeys.READING]),
-            get_uri(reading[ReadingKeys.READING])
+            get_filename(reading[Constants.READING]),
+            get_uri(reading[Constants.READING])
         )
-    elif reading_type in [ReadingTypes.PREDICTION]:
+    elif reading_type in [Constants.PREDICTION]:
         binaries: Dict[str, bool] = {}
-        reading_data = reading[ReadingKeys.READING]
+        reading_data = reading[Constants.READING]
 
         for key in ENTITY_BIARIES:
             if key in reading_data:
@@ -193,19 +193,19 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         
         for e in reading_data[PredictionReadingKeys.ENTITIES]:
             entities.append(Entity(
-                e[EntityKeys.NAME],
-                e[EntityKeys.CONFIDENCE], 
-                e[EntityKeys.PRESENT],
-                e[EntityKeys.SEVERITY] if EntityKeys.SEVERITY in e else 1.0
+                e[Constants.NAME],
+                e[Constants.CONFIDENCE], 
+                e[Constants.PRESENT],
+                e[Constants.SEVERITY] if Constants.SEVERITY in e else 1.0
             ))
 
         return PredictionReading(
-            reading[ReadingKeys.READING_ID],
-            reading[ReadingRouteKeys.ROUTE_ID],
-            reading[ReadingKeys.TIMESTAMP],
+            reading[Constants.READING_ID],
+            reading[Constants.ROUTE_ID],
+            reading[Constants.TIMESTAMP],
             reading_type,
-            reading_data[PositionReadingKeys.LATITUDE],
-            reading_data[PositionReadingKeys.LONGITUDE],
+            reading_data[Constants.LATITUDE],
+            reading_data[Constants.LONGITUDE],
             get_filename(reading_data),
             entities,
             annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP],

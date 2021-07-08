@@ -8,7 +8,7 @@ from haversine import Unit
 from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, ReadingKeys, ReadingTypes, S3Path
+from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, S3Path
 import googlemaps
 from typing import Any, Dict, List, Tuple
 
@@ -37,7 +37,7 @@ class Geolocator():
 
         buffer = []
         
-        readings = sorted(readings, key=lambda r: r[ReadingKeys.TIMESTAMP])
+        readings = sorted(readings, key=lambda r: r[Constants.TIMESTAMP])
 
         for r in readings[1:]:
             if self.__meters_dist(r, lastMotion) > gpsErrMeters:
@@ -66,12 +66,12 @@ class Geolocator():
         wanted_images = set()
 
         for f in filtered:
-            wanted_images.add(f[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+            wanted_images.add(f[Constants.READING][Constants.URI][Constants.KEY])
         
-        return [i for i in img_readings if i[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY] in wanted_images]
+        return [i for i in img_readings if i[Constants.READING][Constants.URI][Constants.KEY] in wanted_images]
 
     def __milli_diff(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
-        return r1[ReadingKeys.TIMESTAMP] - r2[ReadingKeys.TIMESTAMP] 
+        return r1[Constants.TIMESTAMP] - r2[Constants.TIMESTAMP] 
 
     def __meters_dist(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> int:
         p1 = self.__to_point(r1)
@@ -80,8 +80,8 @@ class Geolocator():
         return hs.haversine(p1, p2, unit=Unit.METERS)
 
     def __to_point(self, r1: Dict[str, Any]) -> Tuple[float, float]:
-        reading = r1[ReadingKeys.READING]
-        return (reading[PositionReadingKeys.LATITUDE], reading[PositionReadingKeys.LONGITUDE])
+        reading = r1[Constants.READING]
+        return (reading[Constants.LATITUDE], reading[Constants.LONGITUDE])
         
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
@@ -145,9 +145,9 @@ class Geolocator():
 
     def __repositioned(self, reading: Dict[str, Any], p: RoadPoint) -> None:
         repositioned = copy.deepcopy(reading)
-        repositioned[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = p.lat
-        repositioned[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = p.lng
-        repositioned[ReadingKeys.READING][PositionReadingKeys.PLACE_ID] = p.placeID
+        repositioned[Constants.READING][Constants.LATITUDE] = p.lat
+        repositioned[Constants.READING][Constants.LONGITUDE] = p.lng
+        repositioned[Constants.READING][Constants.PLACE_ID] = p.placeID
         return repositioned
 
     def __snapped_points(self, readings: List[Dict[str, Any]]):
@@ -157,10 +157,10 @@ class Geolocator():
         )]
 
     def __to_latlng(self, reading: Dict[str, Any]) -> Tuple[float, float]:
-        if ReadingKeys.READING in reading:
-            pos = reading[ReadingKeys.READING]
+        if Constants.READING in reading:
+            pos = reading[Constants.READING]
 
-            return (pos[PositionReadingKeys.LATITUDE], pos[PositionReadingKeys.LONGITUDE])
+            return (pos[Constants.LATITUDE], pos[Constants.LONGITUDE])
         
         return (reading[C.LAT], reading[C.LNG])
 
@@ -198,18 +198,18 @@ class Geolocator():
 
     def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
-        pred_reading[ReadingKeys.TYPE] = ReadingTypes.PREDICTION
-        pred_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES] = []
+        pred_reading[Constants.TYPE] = Constants.PREDICTION
+        pred_reading[Constants.READING][PredictionReadingKeys.ENTITIES] = []
         pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
         pred_reading[PredictionReadingKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
-        pred_reading[ReadingKeys.READING][PositionReadingKeys.LATITUDE] = point.lat
-        pred_reading[ReadingKeys.READING][PositionReadingKeys.LONGITUDE] = point.lng
+        pred_reading[Constants.READING][Constants.LATITUDE] = point.lat
+        pred_reading[Constants.READING][Constants.LONGITUDE] = point.lng
 
-        if ImageReadingKeys.URI in img_reading[ReadingKeys.READING]:
-            pred_reading[ReadingKeys.READING][ImageReadingKeys.URI] = RUtils.get_uri(img_reading)
-        if ImageReadingKeys.FILENAME in img_reading[ReadingKeys.READING]:
-            pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = RUtils.get_filename(img_reading)
+        if Constants.URI in img_reading[Constants.READING]:
+            pred_reading[Constants.READING][Constants.URI] = RUtils.get_uri(img_reading)
+        if Constants.FILENAME in img_reading[Constants.READING]:
+            pred_reading[Constants.READING][Constants.FILENAME] = RUtils.get_filename(img_reading)
         else:
-            pred_reading[ReadingKeys.READING][ImageReadingKeys.FILENAME] = ""
+            pred_reading[Constants.READING][Constants.FILENAME] = ""
 
         return pred_reading

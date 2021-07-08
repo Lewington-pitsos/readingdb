@@ -36,7 +36,7 @@ class Digester():
     ) -> Route: 
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
         print('metadata', zip_obj.metadata)
-        user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
+        user_id = zip_obj.metadata[Constants.USER_ID.lower()]
         buffer = BytesIO(zip_obj.get()[self.OBJ_BODY_KEY].read())
         z = zipfile.ZipFile(buffer)
 
@@ -162,11 +162,11 @@ class Digester():
         for r in pred_readings:
             uri = RUtils.get_uri(r)
             print('uploading', uri)
-            upload(filename_map[uri[S3Path.KEY]], uri[S3Path.BUCKET], uri[S3Path.KEY])
+            upload(filename_map[uri[Constants.KEY]], uri[Constants.BUCKET], uri[Constants.KEY])
 
         routeSpec = RouteSpec(
             [ReadingSpec(
-                ReadingTypes.PREDICTION, 
+                Constants.PREDICTION, 
                 ReadingSpec.S3_FILES_FORMAT,
                 pred_readings
             )], 

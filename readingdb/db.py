@@ -104,9 +104,9 @@ class DB():
         self.db.Table(table_name).delete()
 
     def teardown_reading_db(self) -> None:
-        self.delete_table(Database.READING_TABLE_NAME)
-        self.delete_table(Database.ROUTE_TABLE_NAME)
-        self.delete_table(Database.USER_TABLE_NAME)
+        self.delete_table(Constants.READING_TABLE_NAME)
+        self.delete_table(Constants.ROUTE_TABLE_NAME)
+        self.delete_table(Constants.USER_TABLE_NAME)
 
     
     # -----------------------------------------------------------------
@@ -120,21 +120,21 @@ class DB():
 
     def all_known_users(self) -> List[str]: 
         user_ids = set()
-        pg = self.scan_paginator.paginate(TableName=Database.ROUTE_TABLE_NAME)
+        pg = self.scan_paginator.paginate(TableName=Constants.ROUTE_TABLE_NAME)
         for page in pg:
             for item in page[self.ITEM_KEY]:
-                user_ids.add(item[RouteKeys.USER_ID])
+                user_ids.add(item[Constants.USER_ID])
 
         return list(user_ids)
 
     def put_route(self, route: Route): 
-        route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        route_table = self.db.Table(Constants.ROUTE_TABLE_NAME)
         return route_table.put_item(Item=route.item_data())
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
         response = table.query(
-            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+            KeyConditionExpression=Key(Constants.ROUTE_ID).eq(route_id) & Key(Constants.USER_ID).eq(user_id)
         )
 
         if len(response[self.ITEM_KEY]) < 1:
@@ -147,24 +147,24 @@ class DB():
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:     
         return self.__ddb_query(
-            Database.ROUTE_TABLE_NAME,
-            RouteKeys.USER_ID,
+            Constants.ROUTE_TABLE_NAME,
+            Constants.USER_ID,
             user_id,
             Route.decode_item
         )
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
 
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
-        if r[RouteKeys.NAME] != name:        
+        if r[Constants.NAME] != name:        
             table.update_item(
                 Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    RouteKeys.USER_ID: user_id
+                    Constants.ROUTE_ID: route_id,
+                    Constants.USER_ID: user_id
                 },
-                UpdateExpression=f'set {RouteKeys.NAME} = :r, {RouteKeys.LAST_UPDATED} = :l',
+                UpdateExpression=f'set {Constants.NAME} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': name,
                     ':l': int(time.time())
@@ -172,17 +172,17 @@ class DB():
             )
 
     def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
         
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
-        if r[RouteKeys.STATUS] != status:
+        if r[Constants.STATUS] != status:
             table.update_item(
                 Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    RouteKeys.USER_ID: user_id
+                    Constants.ROUTE_ID: route_id,
+                    Constants.USER_ID: user_id
                 },
-                UpdateExpression=f'set {RouteKeys.STATUS} = :r, {RouteKeys.LAST_UPDATED} = :l',
+                UpdateExpression=f'set {Constants.STATUS} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': status,
                     ':l': int(time.time())
@@ -191,24 +191,24 @@ class DB():
 
     def __make_route_table(self):
         return self.db.create_table(
-            TableName=Database.ROUTE_TABLE_NAME,
+            TableName=Constants.ROUTE_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  RouteKeys.USER_ID,
+                    'AttributeName':  Constants.USER_ID,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.ROUTE_ID,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeName': Constants.USER_ID,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.ROUTE_ID,
                     'AttributeType': 'S'
                 },
             ],
@@ -228,21 +228,21 @@ class DB():
     # -----------------------------------------------------------------
 
     def put_readings(self, readings: List[AbstractReading]):
-        table = self.db.Table(Database.READING_TABLE_NAME)
+        table = self.db.Table(Constants.READING_TABLE_NAME)
         with table.batch_writer() as batch:
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
     def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         return self.__paginate_table(
-            Database.READING_TABLE_NAME,
+            Constants.READING_TABLE_NAME,
             ddb_to_dict,
-            ReadingRouteKeys.ROUTE_ID,
+            Constants.ROUTE_ID,
             route_id,
         )
 
     def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
-        table = self.db.Table(Database.READING_TABLE_NAME)
+        table = self.db.Table(Constants.READING_TABLE_NAME)
 
         query_params = {
             'KeyConditionExpression': Key('RouteID').eq(route_id),
@@ -266,7 +266,7 @@ class DB():
         return items, next_key
 
     def put_reading(self, reading: AbstractReading):
-        table = self.db.Table(Database.READING_TABLE_NAME)
+        table = self.db.Table(Constants.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
         return response
 
@@ -276,31 +276,31 @@ class DB():
         for r in reading_ids:
             table.delete_item(
                 Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    ReadingKeys.READING_ID: r
+                    Constants.ROUTE_ID: route_id,
+                    Constants.READING_ID: r
                 }
             )
 
     def __make_reading_table(self):
         return self.db.create_table(
-            TableName=Database.READING_TABLE_NAME,
+            TableName=Constants.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.ROUTE_ID,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeName': Constants.READING_ID,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.ROUTE_ID,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeName': Constants.READING_ID,
                     'AttributeType': 'S'
                 },
 
@@ -322,14 +322,14 @@ class DB():
 
     def user_data(self, uid: str)-> Dict[str, Any]:
         return self.__ddb_query(
-            Database.USER_TABLE_NAME,
-            UserKeys.USER_ID,
+            Constants.USER_TABLE_NAME,
+            Constants.USER_ID,
             uid,
         )[0]
 
     def all_users(self) -> List[Dict[str, Any]]:
         return self.__paginate_table(
-            Database.USER_TABLE_NAME,
+            Constants.USER_TABLE_NAME,
             lambda item: item
         )
 
@@ -344,27 +344,27 @@ class DB():
             assert DataAccessGroupKeys.GROUP_NAME in g 
             assert DataAccessGroupKeys.GROUP_ID in g 
 
-        route_table = self.db.Table(Database.USER_TABLE_NAME)
+        route_table = self.db.Table(Constants.USER_TABLE_NAME)
         route_table.put_item(Item={
-            ReadingKeys.TIMESTAMP: timestamp(),
-            UserKeys.USER_ID: uid,
-            UserKeys.DATA_ACCESS_GROUPS: data_access_groups 
+            Constants.TIMESTAMP: timestamp(),
+            Constants.USER_ID: uid,
+            Constants.DATA_ACCESS_GROUPS: data_access_groups 
         })
 
         return data_access_groups
 
     def __make_user_table(self):
         return self.db.create_table(
-            TableName=Database.USER_TABLE_NAME,
+            TableName=Constants.USER_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  RouteKeys.USER_ID,
+                    'AttributeName':  Constants.USER_ID,
                     'KeyType': 'HASH'  
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeName': Constants.USER_ID,
                     'AttributeType': 'S'
                 },
             ],

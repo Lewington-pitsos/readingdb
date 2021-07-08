@@ -12,8 +12,8 @@ class TestGeolocator(unittest.TestCase):
         with open('readingdb/test_data/melb_gps_img.json', 'r') as f:
             allReadings = json.load(f)
         
-        cls.pos_readings = [r for r in allReadings if r[ReadingKeys.TYPE] == ReadingTypes.POSITIONAL] 
-        cls.img_readings = [r for r in allReadings if r[ReadingKeys.TYPE] == ReadingTypes.IMAGE] 
+        cls.pos_readings = [r for r in allReadings if r[Constants.TYPE] == Constants.POSITIONAL] 
+        cls.img_readings = [r for r in allReadings if r[Constants.TYPE] == Constants.IMAGE] 
 
     @roads_api_test
     def test_snapping(self):
@@ -27,7 +27,7 @@ class TestGeolocator(unittest.TestCase):
 
         lastTimestamp = 0
         for s in snapped_pos_readings:
-            new_ts = s[ReadingKeys.TIMESTAMP]
+            new_ts = s[Constants.TIMESTAMP]
             self.assertGreaterEqual(new_ts, lastTimestamp)
             lastTimestamp = new_ts
     
@@ -49,7 +49,7 @@ class TestGeolocator(unittest.TestCase):
 
         lastTimestamp = 0
         for s in snapped_pos_readings:
-            new_ts = s[ReadingKeys.TIMESTAMP]
+            new_ts = s[Constants.TIMESTAMP]
             self.assertGreater(new_ts, lastTimestamp)
             lastTimestamp = new_ts
 
@@ -90,9 +90,9 @@ class TestGeolocator(unittest.TestCase):
         filtered_imgs = set()
 
         for r in readings:
-            all_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+            all_imgs.add(r[Constants.READING][Constants.URI][Constants.KEY])
         for r in filtered:
-            filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+            filtered_imgs.add(r[Constants.READING][Constants.URI][Constants.KEY])
 
         removed = list(all_imgs - filtered_imgs)
         self.assertEqual(553, len(removed))
@@ -109,9 +109,9 @@ class TestGeolocator(unittest.TestCase):
         filtered_imgs = set()
 
         for r in readings:
-            all_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+            all_imgs.add(r[Constants.READING][Constants.URI][Constants.KEY])
         for r in filtered:
-            filtered_imgs.add(r[ReadingKeys.READING][ImageReadingKeys.URI][S3Path.KEY])
+            filtered_imgs.add(r[Constants.READING][Constants.URI][Constants.KEY])
 
         removed = list(all_imgs - filtered_imgs)
         self.assertEqual(501, len(removed))

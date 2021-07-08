@@ -119,7 +119,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
     #  ------------ Per-Event-Type handling -------------
     
     if event_name == EVENT_GET_ROUTE:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
 
@@ -127,7 +127,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         return success_response(route)
 
     if event_name == EVENT_DELETE_ROUTE:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
 
@@ -139,7 +139,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
 
@@ -165,10 +165,10 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             annotator_preference=annotator_preference
         )
 
-        return success_response({Database.READING_TABLE_NAME: readings})
+        return success_response({Constants.READING_TABLE_NAME: readings})
 
     elif event_name == EVENT_GET_PAGINATED_READINGS:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
 
@@ -177,7 +177,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if route is None:
             return success_response(None)
 
-        pagination_key, missing = get_key(event, Database.PAGINATION_KEY_NAME)
+        pagination_key, missing = get_key(event, Constants.PAGINATION_KEY_NAME)
         if missing:
             pagination_key = None
 
@@ -199,12 +199,12 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         )
 
         return success_response({
-            Database.READING_TABLE_NAME: readings,
-            Database.PAGINATION_KEY_NAME: pagination_key,
+            Constants.READING_TABLE_NAME: readings,
+            Constants.PAGINATION_KEY_NAME: pagination_key,
         })
 
     elif event_name == EVENT_GET_READINGS_ASYNC:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
 
@@ -266,7 +266,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             snap_to_roads=True,
         )
 
-        return success_response({ReadingRouteKeys.ROUTE_ID: route.id})
+        return success_response({Constants.ROUTE_ID: route.id})
 
     elif event_name == EVENT_UPLOAD_NEW_ROUTE:
         bucket, err_resp = get_key(event, EVENT_BUCKET)
@@ -282,7 +282,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         return success_response(readings)
 
     elif event_name == EVENT_SAVE_PREDICTIONS:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
         readings, err_resp = get_key(event, EVENT_PREDICTIONS)
@@ -297,10 +297,10 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         return success_response({RESPONSE_SAVED_READINGS: readings})
 
     elif event_name == EVENT_UPDATE_ROUTE_NAME:
-        route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
+        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp 
-        name, err_resp = get_key(event, RouteKeys.NAME)
+        name, err_resp = get_key(event, Constants.NAME)
         if err_resp:
             return err_resp 
 
@@ -309,12 +309,12 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         return success_response(None)
 
     elif event_name == EVENT_ADD_USER:
-        user_id, err_resp = get_key(event, UserKeys.USER_ID)
+        user_id, err_resp = get_key(event, Constants.USER_ID)
         if err_resp:
             return err_resp
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
-        data_access_groups, not_found = get_key(event, UserKeys.DATA_ACCESS_GROUPS)
+        data_access_groups, not_found = get_key(event, Constants.DATA_ACCESS_GROUPS)
 
         if not_found:
             saved_access_groups = api.save_user(user_id)
@@ -325,7 +325,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             return error_response(f'User ID {user_id} has already been registered')
 
         return success_response({
-            UserKeys.DATA_ACCESS_GROUPS: saved_access_groups
+            Constants.DATA_ACCESS_GROUPS: saved_access_groups
         })
     elif event_name == EVENT_ROAD_SNAP:
         points, err_resp = get_key(event, EVENT_POINTS)

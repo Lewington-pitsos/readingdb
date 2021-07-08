@@ -21,8 +21,8 @@ class LinePoint():
     def from_point(cls, entry: Dict[str, Any]):
         return LinePoint(
             RUtils.get_ts(entry),
-            entry[PositionReadingKeys.LATITUDE],
-            entry[PositionReadingKeys.LONGITUDE],
+            entry[Constants.LATITUDE],
+            entry[Constants.LONGITUDE],
         )
 
     def __init__(self, timestamp: int, lat: float, lng: float) -> None:

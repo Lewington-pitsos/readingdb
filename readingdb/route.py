@@ -31,38 +31,38 @@ class Route():
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
-        if RouteKeys.SAMPLE_DATA in item:
-            for k, v in item[RouteKeys.SAMPLE_DATA].items():
+        if Constants.SAMPLE_DATA in item:
+            for k, v in item[Constants.SAMPLE_DATA].items():
                 ddb_to_dict(v)
-                item[RouteKeys.SAMPLE_DATA][k] = v
+                item[Constants.SAMPLE_DATA][k] = v
                 
-        item[RouteKeys.STATUS] = int(item[RouteKeys.STATUS])
-        item[RouteKeys.TIMESTAMP] = int(item[RouteKeys.TIMESTAMP])
+        item[Constants.STATUS] = int(item[Constants.STATUS])
+        item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
         if PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
             item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
 
-        if RouteKeys.LAST_UPDATED in item:
-            item[RouteKeys.LAST_UPDATED] = int(item[RouteKeys.LAST_UPDATED])
+        if Constants.LAST_UPDATED in item:
+            item[Constants.LAST_UPDATED] = int(item[Constants.LAST_UPDATED])
         else:
-            item[RouteKeys.LAST_UPDATED] = 0
+            item[Constants.LAST_UPDATED] = 0
 
         return item
 
     def item_data(self) -> Dict[str, Any]:
         data = {
-            RouteKeys.USER_ID: self.user_id,
-            ReadingRouteKeys.ROUTE_ID: self.id,
-            RouteKeys.STATUS: int(self.status),
-            RouteKeys.TIMESTAMP: self.timestamp,
-            RouteKeys.LAST_UPDATED: self.update_timestamp
+            Constants.USER_ID: self.user_id,
+            Constants.ROUTE_ID: self.id,
+            Constants.STATUS: int(self.status),
+            Constants.TIMESTAMP: self.timestamp,
+            Constants.LAST_UPDATED: self.update_timestamp
         }
 
         if self.name:
-            data[RouteKeys.NAME] = self.name
+            data[Constants.NAME] = self.name
 
         if self.sample_data:
-            data[RouteKeys.SAMPLE_DATA] = {} 
+            data[Constants.SAMPLE_DATA] = {} 
             for k, v in self.sample_data.items():
-                data[RouteKeys.SAMPLE_DATA][k] = v.item_data()
+                data[Constants.SAMPLE_DATA][k] = v.item_data()
 
         return data

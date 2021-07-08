@@ -32,7 +32,7 @@ class TestDB(unittest.TestCase):
                     'sdasdasd-' + str(i),
                     'xxxa',
                     reading_time,
-                    ReadingTypes.IMAGE,
+                    Constants.IMAGE,
                     'https://aws/s3/somebucket/file.jpg', 
                 )
             )
@@ -40,13 +40,13 @@ class TestDB(unittest.TestCase):
         readings = self.db.all_route_readings('xxxa')
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
-        self.assertEqual(first_reading[ReadingKeys.READING_ID], 'sdasdasd-0')
-        self.assertEqual(first_reading[ReadingKeys.READING], {
-                ImageReadingKeys.FILENAME: 'https://aws/s3/somebucket/file.jpg' 
+        self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
+        self.assertEqual(first_reading[Constants.TYPE], Constants.IMAGE)
+        self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
+        self.assertEqual(first_reading[Constants.READING], {
+                Constants.FILENAME: 'https://aws/s3/somebucket/file.jpg' 
         })
-        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
+        self.assertEqual(first_reading[Constants.TIMESTAMP], reading_time)
 
     def test_gets_all_users(self):
         self.db.create_reading_db()
@@ -73,7 +73,7 @@ class TestDB(unittest.TestCase):
                 'sdasdasd-',
                 'xxxa',
                 reading_time,
-                ReadingTypes.PREDICTION,
+                Constants.PREDICTION,
                 -33.0089,
                 109.868887601,
                 'https://aws/s3/somebucket/file.jpg', 
@@ -90,16 +90,16 @@ class TestDB(unittest.TestCase):
         readings = self.db.all_route_readings('xxxa')
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.PREDICTION)
-        self.assertEqual(first_reading[ReadingKeys.READING_ID], 'sdasdasd-')
-        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][0], {
+        self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
+        self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
+        self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-')
+        self.assertEqual(first_reading[Constants.READING][PredictionReadingKeys.ENTITIES][0], {
             'Name': 'Crocodile Cracks',
             'Confidence': 0.432,
             'Severity': 1.876,
             'Present': True
         })
-        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][1], {
+        self.assertEqual(first_reading[Constants.READING][PredictionReadingKeys.ENTITIES][1], {
             'Name': 'Rutting',
             'Confidence': 0.432,
             'Severity': 2.1,
@@ -185,8 +185,8 @@ class TestDB(unittest.TestCase):
 
         entity_readings = []
         for e in entities:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading('PredictionReading', e)
             entity_readings.append(r)
 
@@ -205,7 +205,7 @@ class TestDB(unittest.TestCase):
         self.db.put_route(Route('3', '103', 123617823, name=name))
         routes = self.db.routes_for_user('3')
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0][RouteKeys.NAME], name)
+        self.assertEqual(routes[0][Constants.NAME], name)
 
     def test_creates_new_route_with_sample_data(self):
         self.maxDiff = None
@@ -312,7 +312,7 @@ class TestDB(unittest.TestCase):
         
         routes = self.db.routes_for_user('3')
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0][RouteKeys.SAMPLE_DATA], expected_entry)
+        self.assertEqual(routes[0][Constants.SAMPLE_DATA], expected_entry)
 
     def test_returns_paginated_results_correctly(self):
         route_id = '103'
@@ -325,8 +325,8 @@ class TestDB(unittest.TestCase):
 
         entity_readings = []
         for e in entities[:250]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading('PredictionReading', e)
             entity_readings.append(r)
         self.db.put_readings(entity_readings)
@@ -419,7 +419,7 @@ class TestDB(unittest.TestCase):
         ])
 
         user_data = self.db.user_data('wendigo')
-        self.assertIn(UserKeys.DATA_ACCESS_GROUPS, user_data)
+        self.assertIn(Constants.DATA_ACCESS_GROUPS, user_data)
         self.assertEqual(user_data['DataAccessGroups'], [
             {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
             {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}

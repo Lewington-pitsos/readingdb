@@ -115,17 +115,17 @@ class API(DB, ReadingDB):
         return route
 
     def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool:
-        r1 = r1[ReadingKeys.READING]
-        r2 = r2[ReadingKeys.READING]
+        r1 = r1[Constants.READING]
+        r2 = r2[Constants.READING]
 
-        if ImageReadingKeys.FILENAME in r1 and\
-            ImageReadingKeys.FILENAME in r2 and\
-            r2[ImageReadingKeys.FILENAME] == r1[ImageReadingKeys.FILENAME]:
+        if Constants.FILENAME in r1 and\
+            Constants.FILENAME in r2 and\
+            r2[Constants.FILENAME] == r1[Constants.FILENAME]:
             return True
-        if ImageReadingKeys.URI in r1 and\
-            ImageReadingKeys.URI in r2 and\
-            r1[ImageReadingKeys.URI][S3Path.BUCKET] == r2[ImageReadingKeys.URI][S3Path.BUCKET] and\
-            r1[ImageReadingKeys.URI][S3Path.KEY] == r2[ImageReadingKeys.URI][S3Path.KEY]:
+        if Constants.URI in r1 and\
+            Constants.URI in r2 and\
+            r1[Constants.URI][Constants.BUCKET] == r2[Constants.URI][Constants.BUCKET] and\
+            r1[Constants.URI][Constants.KEY] == r2[Constants.URI][Constants.KEY]:
             return True
         
         return False
@@ -144,18 +144,18 @@ class API(DB, ReadingDB):
             for er in existing_readings:
                 if self.__same_image(r, er):
                     if not save_imgs:
-                        r[ReadingKeys.READING][ImageReadingKeys.URI] = er[ReadingKeys.READING][ImageReadingKeys.URI]
+                        r[Constants.READING][Constants.URI] = er[Constants.READING][Constants.URI]
                     saved=True
 
-                    if (er[ReadingKeys.TYPE] == ReadingTypes.PREDICTION and er[PredictionReadingKeys.ANNOTATOR_ID] == r[PredictionReadingKeys.ANNOTATOR_ID]):
-                        to_delete.add(er[ReadingKeys.READING_ID]) 
+                    if (er[Constants.TYPE] == Constants.PREDICTION and er[PredictionReadingKeys.ANNOTATOR_ID] == r[PredictionReadingKeys.ANNOTATOR_ID]):
+                        to_delete.add(er[Constants.READING_ID]) 
             
             if not saved and not save_imgs:
                 raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
         
         self.delete_reading_items(route_id, list(to_delete))
 
-        saved_entries = self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
+        saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
         return saved_entries
 
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
@@ -176,7 +176,7 @@ class API(DB, ReadingDB):
             Payload=json.dumps(pl)
         )
 
-        return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
+        return {Constants.BUCKET: self.tmp_bucket, Constants.KEY: bucket_key}
 
     def all_route_readings(
         self, 
@@ -189,7 +189,7 @@ class API(DB, ReadingDB):
         readings = super().all_route_readings(route_id)
 
         if predictions_only:
-            readings = [r for r in readings if r['Type'] == ReadingTypes.PREDICTION]
+            readings = [r for r in readings if r['Type'] == Constants.PREDICTION]
 
         if annotator_preference:
             readings = self.__preferred_readings(annotator_preference, readings)
@@ -214,7 +214,7 @@ class API(DB, ReadingDB):
                 Key=s3_key
             )
 
-            return { S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: s3_key }
+            return { Constants.BUCKET: self.tmp_bucket, Constants.KEY: s3_key }
 
         return readings
 
@@ -272,7 +272,7 @@ class API(DB, ReadingDB):
             paginated_uris = [self.__uri_str(r) for r in readings if\
                 self.__is_prediction_reading(r)]
 
-            paginated_ids = [r[ReadingKeys.READING_ID] for r in readings]
+            paginated_ids = [r[Constants.READING_ID] for r in readings]
             all_readings = self.all_route_readings(
                 route_id, 
                 predictions_only=predictions_only, 
@@ -281,7 +281,7 @@ class API(DB, ReadingDB):
             relevent_readings = [r for r in all_readings if\
                 self.__is_prediction_reading(r) and\
                 self.__uri_str(r) in paginated_uris and not\
-                r[ReadingKeys.READING_ID] in paginated_ids]
+                r[Constants.READING_ID] in paginated_ids]
             preferred = self.__preferred_readings(annotator_preference, readings + relevent_readings)
             readings = [r for r in readings if r in preferred]
 
@@ -294,27 +294,27 @@ class API(DB, ReadingDB):
         readings = self.all_route_readings(route_id)
 
         for r in readings:
-            if r[ReadingKeys.TYPE] == ReadingTypes.PREDICTION or \
-                r[ReadingKeys.TYPE] == ReadingTypes.IMAGE:
-                reading = r[ReadingKeys.READING]
-                if ImageReadingKeys.URI in reading:
-                    uri = reading[ImageReadingKeys.URI]
+            if r[Constants.TYPE] == Constants.PREDICTION or \
+                r[Constants.TYPE] == Constants.IMAGE:
+                reading = r[Constants.READING]
+                if Constants.URI in reading:
+                    uri = reading[Constants.URI]
                     resp = self.s3_client.delete_object(
-                        Bucket=uri[S3Path.BUCKET],
-                        Key=uri[S3Path.KEY]
+                        Bucket=uri[Constants.BUCKET],
+                        Key=uri[Constants.KEY]
                     )
 
         deletedReadingCount = self.delete_reading_items(
             route_id, 
-            [r[ReadingKeys.READING_ID] for r in readings]
+            [r[Constants.READING_ID] for r in readings]
         )
 
         table = self.db.Table('Routes')
         
         table.delete_item(
             Key={
-                ReadingRouteKeys.ROUTE_ID: route_id,
-                RouteKeys.USER_ID: user_sub
+                Constants.ROUTE_ID: route_id,
+                Constants.USER_ID: user_sub
             }
         )
 
@@ -339,11 +339,11 @@ class API(DB, ReadingDB):
         return final_readings
 
     def __uri_str(self, reading: Dict[str, Any]) -> str:
-        uri = reading[ReadingKeys.READING][ImageReadingKeys.URI]
-        return uri[S3Path.BUCKET] + '/' + uri[S3Path.KEY]
+        uri = reading[Constants.READING][Constants.URI]
+        return uri[Constants.BUCKET] + '/' + uri[Constants.KEY]
 
     def __is_prediction_reading(self, r: Dict[str, Any]) -> bool:
-        return r[ReadingKeys.TYPE] == ReadingTypes.PREDICTION
+        return r[Constants.TYPE] == Constants.PREDICTION
 
     def __annotator_precedence(self, annotators: List[str], annotator: str) -> int:
         if annotator == FAUX_ANNOTATOR_ID:
@@ -355,8 +355,8 @@ class API(DB, ReadingDB):
         return annotators.index(annotator)
 
     def __inject_samples_with_presigned_urls(self, route: Dict[str, Any]) -> None:
-        if RouteKeys.SAMPLE_DATA in route:
-            for _, sample in route[RouteKeys.SAMPLE_DATA].items():
+        if Constants.SAMPLE_DATA in route:
+            for _, sample in route[Constants.SAMPLE_DATA].items():
                 self.__inject_presigned_url(sample)
 
     def __inject_presigned_urls(self, readings: List[Dict[str, Any]]) -> None:
@@ -364,12 +364,12 @@ class API(DB, ReadingDB):
             self.__inject_presigned_url(r)
     
     def __inject_presigned_url(self, r: Dict[str, Any]) -> None:    
-        if ImageReadingKeys.URI in r[ReadingKeys.READING]:
-            uri = r[ReadingKeys.READING][ImageReadingKeys.URI]
+        if Constants.URI in r[Constants.READING]:
+            uri = r[Constants.READING][Constants.URI]
 
-            r[ReadingKeys.READING][ImageReadingKeys.PRESIGNED_URL] = self.__presigned_url(
-                uri[S3Path.BUCKET],
-                uri[S3Path.KEY],
+            r[Constants.READING][Constants.PRESIGNED_URL] = self.__presigned_url(
+                uri[Constants.BUCKET],
+                uri[Constants.KEY],
             )
 
     def __presigned_url(self, bucket: str, object: str) -> str:
@@ -386,7 +386,7 @@ class API(DB, ReadingDB):
         return response, object_name
 
     def __save_entry_data(self, entry: Reading, save_img=True) -> AbstractReading:
-        if entry.readingType in ReadingTypes.IMAGE_TYPES and save_img:
+        if entry.readingType in Constants.IMAGE_TYPES and save_img:
             self.__save_img_data(entry)
 
         return entry
@@ -424,8 +424,8 @@ class API(DB, ReadingDB):
         return finalized
 
     def __json_to_entry(self, e: Dict[str, Any], entry_type: str, reading_id: str, route_id: str) -> Reading:
-        e[ReadingKeys.READING_ID] = reading_id
-        e[ReadingRouteKeys.ROUTE_ID] = route_id
+        e[Constants.READING_ID] = reading_id
+        e[Constants.ROUTE_ID] = route_id
         return json_to_reading(entry_type, e)
 
     # -----------------------------------------------------------------
@@ -457,7 +457,7 @@ class API(DB, ReadingDB):
         all_users = self.all_users()
 
         for u in all_users:
-            if u[UserKeys.USER_ID] == uid:
+            if u[Constants.USER_ID] == uid:
                 return False
         
         return self.put_user(uid, data_access_groups)

@@ -98,8 +98,8 @@ class TestAPI(unittest.TestCase):
 
         finalized = []
         for e in entities[:60]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
         self.api.put_readings(finalized)
@@ -123,8 +123,8 @@ class TestAPI(unittest.TestCase):
 
         finalized = []
         for e in entities[:60]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
             r: AbstractReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
         self.api.put_readings(finalized)
@@ -148,8 +148,8 @@ class TestAPI(unittest.TestCase):
         api.update_route_name(route.id, user_id, 'Belgrave')
 
         loaded_route = api.get_route(route.id, user_id)
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.NAME], 'Belgrave')
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[Constants.NAME], 'Belgrave')
 
     def test_update_route_status(self):
         user_id = 'aghsghavgas'
@@ -163,7 +163,7 @@ class TestAPI(unittest.TestCase):
         api.set_as_predicting(route.id, user_id)
 
         loaded_route = api.get_route(route.id, user_id)
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
         preds = [{
             'Reading': {
@@ -219,7 +219,7 @@ class TestAPI(unittest.TestCase):
         saved = api.save_predictions(preds, route.id)
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(len(preds), len(saved))
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
     def test_saves_severity(self):
         user_id = 'aghsghavgas'
@@ -233,8 +233,8 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(3, len(readings))
         first_reading = readings[0]
 
-        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], 1616116106935)
-        entites = first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]
+        self.assertEqual(first_reading[Constants.TIMESTAMP], 1616116106935)
+        entites = first_reading[Constants.READING][PredictionReadingKeys.ENTITIES]
 
         longCrack = None
         crockCrack = None

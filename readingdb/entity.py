@@ -12,8 +12,8 @@ class Entity():
 
     def encode(self) -> Dict[str, Any]:
         return {
-            EntityKeys.NAME: self.name,
-            EntityKeys.CONFIDENCE: encode_as_float(self.confidence),
-            EntityKeys.PRESENT: encode_bool(self.present),
-            EntityKeys.SEVERITY: encode_as_float(self.severity)
+            Constants.NAME: self.name,
+            Constants.CONFIDENCE: encode_as_float(self.confidence),
+            Constants.PRESENT: encode_bool(self.present),
+            Constants.SEVERITY: encode_as_float(self.severity)
         }

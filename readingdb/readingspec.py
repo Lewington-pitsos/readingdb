@@ -17,15 +17,15 @@ class ReadingSpec():
     GPS_FILE_FORMAT = 'gps_txt_file'
 
     RECOGNIZED_READING_TYPES = {
-        ReadingTypes.IMAGE:{
+        Constants.IMAGE:{
             JSON_ENTRIES_FORMAT: load_json_entries,
             S3_FILES_FORMAT: get_entries
         },
-        ReadingTypes.POSITIONAL:{
+        Constants.POSITIONAL:{
             JSON_ENTRIES_FORMAT: load_json_entries,
             S3_FILES_FORMAT: get_entries
         },
-        ReadingTypes.PREDICTION:{
+        Constants.PREDICTION:{
             JSON_ENTRIES_FORMAT: load_json_entries,
             S3_FILES_FORMAT: get_entries
         }
