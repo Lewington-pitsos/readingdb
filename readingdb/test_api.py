@@ -136,23 +136,23 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
         self.assertEqual(uri['Key'], 'kingofkings.json')
 
-    def test_can_return_readings_via_geohash(self):
-        route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823))
+    # def test_can_return_readings_via_geohash(self):
+    #     route_id = '103'
+    #     self.api.put_route(Route('3', route_id, 123617823))
         
-        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
-            entities = json.load(f)
+    #     with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+    #         entities = json.load(f)
 
-        finalized = []
-        for e in entities[:60]:
-            e[Constants.READING_ID] = str(uuid.uuid1())
-            e[Constants.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
-            finalized.append(r)
-        self.api.put_readings(finalized)
+    #     finalized = []
+    #     for e in entities[:60]:
+    #         e[Constants.READING_ID] = str(uuid.uuid1())
+    #         e[Constants.ROUTE_ID] = route_id
+    #         r: AbstractReading = json_to_reading('PredictionReading', e)
+    #         finalized.append(r)
+    #     self.api.put_readings(finalized)
 
-        readings = self.api.geohash_readings('r3gqu8')
-        self.assertEqual(21, len(readings))
+    #     readings = self.api.geohash_readings('r3gqu8')
+    #     self.assertEqual(21, len(readings))
 
     def test_updates_route_name(self):
         user_id = 'aghsghavgas'
@@ -575,25 +575,6 @@ class TestAPI(unittest.TestCase):
             else:
                 self.assertEqual(r['AnnotatorID'], '3f01d5ec-c80b-11eb-acfa-02428ee80691')
         
-    def test_can_filter_non_prediction_readings(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-
-        route = api.save_route(route_spec, user_id)
-        self.assertEqual(116, len(api.all_route_readings(route.id)))
-        self.assertEqual(0, len(api.prediction_readings(route.id)))
-
-        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-
-        route = api.save_route(route_spec, user_id)
-        self.assertEqual(116, len(api.all_route_readings(route.id)))
-        self.assertEqual(0, len(api.prediction_readings(route.id)))
-
     def test_filters_paginated_readings_correctly(self):
         user_id = 'aghsghavgas'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)

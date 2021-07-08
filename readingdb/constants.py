@@ -24,10 +24,8 @@ class Constants():
     USER_TABLE_NAME = 'Annotators'
 
     # Reading Types
-    POSITIONAL = 'PositionalReading'
-    IMAGE = 'ImageReading'
     PREDICTION = 'PredictionReading'
-    IMAGE_TYPES = [PREDICTION, IMAGE]
+    IMAGE_TYPES = [PREDICTION]
 
     # Reading Keys
     GEOHASH = 'Geohash'

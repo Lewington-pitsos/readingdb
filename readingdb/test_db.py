@@ -1,3 +1,4 @@
+from readingdb.entities import ENTITIES
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -47,8 +48,11 @@ class TestDB(unittest.TestCase):
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
         self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
-        self.assertEqual(first_reading[Constants.READING], {
-                Constants.FILENAME: 'https://aws/s3/somebucket/file.jpg' 
+        self.assertDictEqual(first_reading[Constants.READING], {
+                Constants.ENTITIES: [],
+                Constants.FILENAME: 'https://aws/s3/somebucket/file.jpg', 
+                Constants.LATITUDE: -33.96788819,
+                Constants.LONGITUDE: 151.0181246,
         })
         self.assertEqual(first_reading[Constants.TIMESTAMP], reading_time)
 

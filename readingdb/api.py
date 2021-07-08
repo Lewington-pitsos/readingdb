@@ -416,8 +416,7 @@ class API(DB):
         readings = self.all_route_readings(route_id)
 
         for r in readings:
-            if r[Constants.TYPE] == Constants.PREDICTION or \
-                r[Constants.TYPE] == Constants.IMAGE:
+            if r[Constants.TYPE] == Constants.PREDICTION:
                 reading = r[Constants.READING]
                 if Constants.URI in reading:
                     uri = reading[Constants.URI]

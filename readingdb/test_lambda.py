@@ -510,7 +510,7 @@ class TestLambdaW(TestLambdaRW):
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions(self):
-        with open('readingdb/test_data/gps_img_route.json') as f:
+        with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
         route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
@@ -522,7 +522,7 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 116)
+        self.assertEqual(len(resp['Body']['Readings']), 181)
 
         with open('readingdb/test_data/ftg_imgs.json') as f:
             pred_json = json.load(f)
@@ -547,7 +547,7 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 117)
+        self.assertEqual(len(resp['Body']['Readings']), 182)
 
         annotator_count = defaultdict(lambda: 0)
         for r in resp['Body']['Readings']:
@@ -574,7 +574,7 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 117)
+        self.assertEqual(len(resp['Body']['Readings']), 182)
 
         annotator_count = defaultdict(lambda: 0)
         for r in resp['Body']['Readings']:
