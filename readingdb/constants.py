@@ -22,6 +22,7 @@ class Constants():
     POSITIONAL = 'PositionalReading'
     IMAGE = 'ImageReading'
     PREDICTION = 'PredictionReading'
+    IMAGE_TYPES = [PREDICTION, IMAGE]
 
     # Reading Keys
     ROUTE_ID = 'RouteID'
