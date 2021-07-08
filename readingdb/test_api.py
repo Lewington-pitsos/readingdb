@@ -164,7 +164,6 @@ class TestAPI(unittest.TestCase):
 
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.PREDICTING)
 
         preds = [{
             'Reading': {
@@ -221,7 +220,6 @@ class TestAPI(unittest.TestCase):
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(len(preds), len(saved))
         self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
 
     def test_saves_severity(self):
         user_id = 'aghsghavgas'
@@ -288,7 +286,6 @@ class TestAPI(unittest.TestCase):
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
-        self.assertEqual(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
         self.assertNotIn('SampleData', user_routes[0])
 
         readings = api.all_route_readings(route_id)
@@ -297,10 +294,7 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
 
-        api.save_predictions(route_spec_data, route_id, user_id)
-        user_routes = api.routes_for_user(user_id)
-        self.assertGreater(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
-
+        api.save_predictions(route_spec_data, route_id)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
@@ -331,7 +325,7 @@ class TestAPI(unittest.TestCase):
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
-        self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, user_id, False) 
+        self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, False) 
 
     def test_saves_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
@@ -343,7 +337,7 @@ class TestAPI(unittest.TestCase):
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             raw_readings = json.load(j)        
-        api.save_predictions(raw_readings, route_id, user_id)
+        api.save_predictions(raw_readings, route_id)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
@@ -362,14 +356,14 @@ class TestAPI(unittest.TestCase):
                 '99994519-85d9-4726-9471-4c91a7677925'
             )
 
-        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
+        api.save_predictions(raw_readings, route_id, save_imgs=False)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
         new_annotator_id = "9a9a9a9a9a9a9a9a9" 
         for r in raw_readings:
             r['AnnotatorID'] = new_annotator_id
-        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
+        api.save_predictions(raw_readings, route_id, save_imgs=False)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 44)
 

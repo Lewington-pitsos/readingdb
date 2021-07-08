@@ -134,7 +134,6 @@ class API(DB, ReadingDB):
         self, 
         readings: List[Dict[str, Any]], 
         route_id: int, 
-        user_id: str, 
         save_imgs: bool = True
     ) -> None:
         existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
@@ -157,7 +156,6 @@ class API(DB, ReadingDB):
         self.delete_reading_items(route_id, list(to_delete))
 
         saved_entries = self.__save_entries(route_id, ReadingTypes.PREDICTION, readings, save_imgs)
-        self.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
         return saved_entries
 
     def set_as_predicting(self, route_id: str, user_id: str) -> None:

@@ -182,7 +182,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             pagination_key = None
 
         annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
-        if missing:
+        if missing or annotator_preference == None:
             annotator_preference = ANNOTATOR_PREFERENCE
         else:
             annotator_preference += ANNOTATOR_PREFERENCE
@@ -285,9 +285,6 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         route_id, err_resp = get_key(event, ReadingRouteKeys.ROUTE_ID)
         if err_resp:
             return err_resp
-        user_id, err_resp = get_key(event, RouteKeys.USER_ID)
-        if err_resp:
-            return err_resp
         readings, err_resp = get_key(event, EVENT_PREDICTIONS)
         if err_resp:
             return err_resp
@@ -295,7 +292,6 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         api.save_predictions(
             readings, 
             route_id,
-            user_id,
             save_imgs=True
         )
         return success_response({RESPONSE_SAVED_READINGS: readings})

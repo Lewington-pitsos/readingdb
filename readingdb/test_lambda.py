@@ -1,3 +1,4 @@
+from collections import defaultdict
 from io import BytesIO
 import os
 import zipfile
@@ -149,18 +150,6 @@ class TestBasic(TestLambda):
         resp = test_handler({
             'Type': 'SavePredictions',
             'RouteID': "1721739812-1238123",
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'Bad Format Error: key UserID missing from event'
-        }, resp)
-
-        resp = test_handler({
-            'Type': 'SavePredictions',
-            'RouteID': "1721739812-1238123",
-            'UserID': 'asbdasd-asdasvdy',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -523,11 +512,11 @@ class TestLambdaW(TestLambdaRW):
     def test_uploads_predictions(self):
         with open('readingdb/test_data/gps_img_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
         resp = test_handler({
             'Type': 'GetPaginatedReadings',
-            'RouteID': r.id,
+            'RouteID': route.id,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -543,8 +532,7 @@ class TestLambdaW(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'SavePredictions',
-            'RouteID': r.id,
-            'UserID': self.user_id,
+            'RouteID': route.id,
             'Predictions': pred_json,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -552,15 +540,50 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual(22, len(resp['Body']['SavedReadings']))
         resp = test_handler({
             'Type': 'GetPaginatedReadings',
-            'RouteID': r.id,
+            'RouteID': route.id,
             'PredictionOnly': False,
             'AnnotatorPreference': None,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 138)
-    
+        self.assertEqual(len(resp['Body']['Readings']), 117)
+
+        annotator_count = defaultdict(lambda: 0)
+        for r in resp['Body']['Readings']:
+            if r['Type'] == 'PredictionReading':
+                annotator_count[r['AnnotatorID']] += 1
+
+        self.assertEqual(annotator_count["99994519-85d9-4726-9471-4c91a7677925"], 1)
+
+        for reading in pred_json:
+            reading['AnnotatorID'] = 'a8s8as78a7a7a7a7a'
+
+        resp = test_handler({
+            'Type': 'SavePredictions',
+            'RouteID': route.id,
+            'Predictions': pred_json,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        resp = test_handler({
+            'Type': 'GetPaginatedReadings',
+            'RouteID': route.id,
+            'PredictionOnly': False,
+            'AnnotatorPreference': ['a8s8as78a7a7a7a7a'],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 117)
+
+        annotator_count = defaultdict(lambda: 0)
+        for r in resp['Body']['Readings']:
+            if r['Type'] == 'PredictionReading':
+                annotator_count[r['AnnotatorID']] += 1
+
+        self.assertEqual(annotator_count['a8s8as78a7a7a7a7a'], 1)
+        self.assertEqual(annotator_count["99994519-85d9-4726-9471-4c91a7677925"], 0)
+
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions_for_long_route(self):
