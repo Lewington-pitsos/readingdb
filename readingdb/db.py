@@ -336,13 +336,13 @@ class DB():
     def put_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []):
         if len(data_access_groups) == 0:
             data_access_groups = [{
-                DataAccessGroupKeys.GROUP_NAME: uid,
-                DataAccessGroupKeys.GROUP_ID: uid
+                Constants.GROUP_NAME: uid,
+                Constants.GROUP_ID: uid
             }]
 
         for g in data_access_groups:
-            assert DataAccessGroupKeys.GROUP_NAME in g 
-            assert DataAccessGroupKeys.GROUP_ID in g 
+            assert Constants.GROUP_NAME in g 
+            assert Constants.GROUP_ID in g 
 
         route_table = self.db.Table(Constants.USER_TABLE_NAME)
         route_table.put_item(Item={

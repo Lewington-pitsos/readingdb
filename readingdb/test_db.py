@@ -93,13 +93,13 @@ class TestDB(unittest.TestCase):
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
         self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-')
-        self.assertEqual(first_reading[Constants.READING][PredictionReadingKeys.ENTITIES][0], {
+        self.assertEqual(first_reading[Constants.READING][Constants.ENTITIES][0], {
             'Name': 'Crocodile Cracks',
             'Confidence': 0.432,
             'Severity': 1.876,
             'Present': True
         })
-        self.assertEqual(first_reading[Constants.READING][PredictionReadingKeys.ENTITIES][1], {
+        self.assertEqual(first_reading[Constants.READING][Constants.ENTITIES][1], {
             'Name': 'Rutting',
             'Confidence': 0.432,
             'Severity': 2.1,

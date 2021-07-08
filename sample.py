@@ -27,7 +27,7 @@ api = API(DYNAMO_ENDPOINT)
 to_assess = []
 
 def has_defect(reading: Dict[str, Any]) -> bool:
-    for e in reading[Constants.READING][PredictionReadingKeys.ENTITIES]:
+    for e in reading[Constants.READING][Constants.ENTITIES]:
         if e[Constants.PRESENT] and e[Constants.NAME] == 'D1001':
             return True
     return False

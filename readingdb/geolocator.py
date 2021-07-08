@@ -8,7 +8,7 @@ from haversine import Unit
 from readingdb.lineroute import LineRoute
 from readingdb.rutils import RUtils
 from readingdb.roadpoint import RoadPoint
-from readingdb.constants import PredictionReadingKeys, FAUX_ANNOTATOR_ID, ImageReadingKeys, PositionReadingKeys, PredictionReadingKeys, S3Path
+from readingdb.constants import Constants, FAUX_ANNOTATOR_ID 
 import googlemaps
 from typing import Any, Dict, List, Tuple
 
@@ -199,9 +199,9 @@ class Geolocator():
     def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
         pred_reading[Constants.TYPE] = Constants.PREDICTION
-        pred_reading[Constants.READING][PredictionReadingKeys.ENTITIES] = []
-        pred_reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
-        pred_reading[PredictionReadingKeys.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
+        pred_reading[Constants.READING][Constants.ENTITIES] = []
+        pred_reading[Constants.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
+        pred_reading[Constants.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID
         pred_reading[Constants.READING][Constants.LATITUDE] = point.lat
         pred_reading[Constants.READING][Constants.LONGITUDE] = point.lng
 

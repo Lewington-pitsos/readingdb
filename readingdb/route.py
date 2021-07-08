@@ -38,8 +38,8 @@ class Route():
                 
         item[Constants.STATUS] = int(item[Constants.STATUS])
         item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
-        if PredictionReadingKeys.ANNOTATION_TIMESTAMP in item:
-            item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
+        if Constants.ANNOTATION_TIMESTAMP in item:
+            item[Constants.ANNOTATION_TIMESTAMP] = int(item[Constants.ANNOTATION_TIMESTAMP])
 
         if Constants.LAST_UPDATED in item:
             item[Constants.LAST_UPDATED] = int(item[Constants.LAST_UPDATED])

@@ -125,12 +125,12 @@ class PredictionReading(ImageReading, PositionReading):
     def decode(cls, item: Dict[str, Any]):
         PositionReading.decode(item)
 
-        for e in item[Constants.READING][PredictionReadingKeys.ENTITIES]:
+        for e in item[Constants.READING][Constants.ENTITIES]:
             e[Constants.CONFIDENCE] = decode_float(e[Constants.CONFIDENCE])
             e[Constants.PRESENT] = decode_bool(e[Constants.PRESENT])
             e[Constants.SEVERITY] = decode_float(e[Constants.SEVERITY]) if Constants.SEVERITY in e else 1.0
         
-        item[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(item[PredictionReadingKeys.ANNOTATION_TIMESTAMP])
+        item[Constants.ANNOTATION_TIMESTAMP] = int(item[Constants.ANNOTATION_TIMESTAMP])
             
     def item_data(self):
         data = PositionReading.item_data(self)
@@ -139,10 +139,10 @@ class PredictionReading(ImageReading, PositionReading):
         encoded_entities = []
         for e in self.entites:
             encoded_entities.append(e.encode())
-        data[Constants.READING][PredictionReadingKeys.ENTITIES] = encoded_entities
+        data[Constants.READING][Constants.ENTITIES] = encoded_entities
 
-        data[PredictionReadingKeys.ANNOTATOR_ID] = self.annotator_id
-        data[PredictionReadingKeys.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
+        data[Constants.ANNOTATOR_ID] = self.annotator_id
+        data[Constants.ANNOTATION_TIMESTAMP] = int(self.annotation_timestamp)
 
         return data
 
@@ -191,7 +191,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
         
         entities = []
         
-        for e in reading_data[PredictionReadingKeys.ENTITIES]:
+        for e in reading_data[Constants.ENTITIES]:
             entities.append(Entity(
                 e[Constants.NAME],
                 e[Constants.CONFIDENCE], 
@@ -208,8 +208,8 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
             reading_data[Constants.LONGITUDE],
             get_filename(reading_data),
             entities,
-            annotation_timestamp=reading[PredictionReadingKeys.ANNOTATION_TIMESTAMP],
-            annotator_id=reading[PredictionReadingKeys.ANNOTATOR_ID],
+            annotation_timestamp=reading[Constants.ANNOTATION_TIMESTAMP],
+            annotator_id=reading[Constants.ANNOTATOR_ID],
             uri=get_uri(reading_data)
         )
     else:

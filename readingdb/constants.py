@@ -40,6 +40,11 @@ class Constants():
     URI = 'S3Uri'
     PRESIGNED_URL = 'PresignedURL'
 
+    # Prediction Reading Keys
+    ENTITIES = 'Entities'
+    ANNOTATOR_ID = 'AnnotatorID'
+    ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
+
     # Route Keys
     USER_ID = 'UserID'
     NAME = 'RouteName'
@@ -47,9 +52,6 @@ class Constants():
     STATUS = 'RouteStatus'
     TIMESTAMP = 'Timestamp'
     LAST_UPDATED = 'LastUpdated'
-
-    # Entry Keys
-    TIMESTAMP = 'Date'
 
     # S3 Path
     BUCKET = 'Bucket'
@@ -61,34 +63,7 @@ class Constants():
     PRESENT = 'Present'
     SEVERITY = 'Severity'
 
-
-class PredictionReadingKeys(ImageReadingKeys):
-    TIMESTAMP = EntryKeys.TIMESTAMP
-    FILENAME = Constants.FILENAME
-
-    LATCRACK_CONFIDENCE = 'LatCrackConfidence'
-    LONGCRACK_CONFIDENCE = 'LongCrackConfidence'
-    CROCODILECRACK_CONFIDENCE =  'CrocodileCrackConfidence'
-    POTHOLE_CONFIDENCE = 'PotholeConfidence'
-    LINEBLUR_CONFIDENCE = 'LineblurConfidence'
-    GOOD_CONDITION_CONFIDENCE = 'GoodConditionConfidence'
-
-    LATITUDE = 'Latitude'
-    LONGITUDE = 'Longitude'
-
-    IS_LATCRACK = 'IsLatCrackFault'
-    IS_LONGCRACK = 'IsLongCrackFault'
-    IS_CROCODILECRACK =  'IsCrocodileCrackFault'
-    IS_POTHOLE = 'IsPotholeFault'
-    IS_LINEBLUR = 'IsLineblurFault'
-    IS_GOOD_CONDITION = 'IsGoodCondition'
-    
-    ENTITIES = 'Entities'
-    
-    ANNOTATOR_ID = 'AnnotatorID'
-    ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
-
-class DataAccessGroupKeys():
+    # Data Access Group
     GROUP_NAME = 'GroupName'
     GROUP_ID = 'GroupID'
 

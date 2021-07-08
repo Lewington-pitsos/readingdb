@@ -147,7 +147,7 @@ class API(DB, ReadingDB):
                         r[Constants.READING][Constants.URI] = er[Constants.READING][Constants.URI]
                     saved=True
 
-                    if (er[Constants.TYPE] == Constants.PREDICTION and er[PredictionReadingKeys.ANNOTATOR_ID] == r[PredictionReadingKeys.ANNOTATOR_ID]):
+                    if (er[Constants.TYPE] == Constants.PREDICTION and er[Constants.ANNOTATOR_ID] == r[Constants.ANNOTATOR_ID]):
                         to_delete.add(er[Constants.READING_ID]) 
             
             if not saved and not save_imgs:
@@ -333,7 +333,7 @@ class API(DB, ReadingDB):
         for g in reading_groups.values():
             final_readings.append(sorted(
                 g,
-                key=lambda r: self.__annotator_precedence(preference, r[PredictionReadingKeys.ANNOTATOR_ID])
+                key=lambda r: self.__annotator_precedence(preference, r[Constants.ANNOTATOR_ID])
             )[0])
             
         return final_readings

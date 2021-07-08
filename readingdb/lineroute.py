@@ -1,6 +1,6 @@
 from readingdb.rutils import RUtils
 from typing import Any, Dict, List
-from readingdb.constants import PositionReadingKeys, ReadingKeys
+from readingdb.constants import Constants
 
 def interpolate_lat(p1, a1, p2, a2) -> float:
     return p1.lat * a1 + p2.lat * a2    

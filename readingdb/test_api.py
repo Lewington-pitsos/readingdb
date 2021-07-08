@@ -8,7 +8,7 @@ from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
 from readingdb.constants import *
 from readingdb.routestatus import RouteStatus
-from readingdb.constants import ReadingRouteKeys, RouteKeys
+from readingdb.constants import Constants
 from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
@@ -234,7 +234,7 @@ class TestAPI(unittest.TestCase):
         first_reading = readings[0]
 
         self.assertEqual(first_reading[Constants.TIMESTAMP], 1616116106935)
-        entites = first_reading[Constants.READING][PredictionReadingKeys.ENTITIES]
+        entites = first_reading[Constants.READING][Constants.ENTITIES]
 
         longCrack = None
         crockCrack = None
