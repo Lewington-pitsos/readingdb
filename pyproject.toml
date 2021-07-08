@@ -23,7 +23,6 @@ defusedxml = "^0.7.1"
 docker = "^5.0.0"
 entrypoints = "^0.3"
 geographiclib = "^1.52"
-geopy = "^2.1.0"
 googlemaps = "^4.4.5"
 haversine = "^2.3.1"
 importlib-metadata = "^4.6.1"
@@ -85,6 +84,7 @@ widgetsnbextension = "^3.5.1"
 wrapt = "^1.12.1"
 xmltodict = "^0.12.0"
 zipp = "^3.5.0"
+pygeohash = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 
