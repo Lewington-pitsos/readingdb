@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -11,7 +10,7 @@ from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, ImageReading, PredictionReading, json_to_reading
+from readingdb.reading import AbstractReading, PredictionReading, json_to_reading
 from readingdb.route import Route
 
 class TestDB(unittest.TestCase):
@@ -28,12 +27,17 @@ class TestDB(unittest.TestCase):
         finalized = []
         for i in range(21):
             finalized.append(
-                ImageReading(
+                PredictionReading(
                     'sdasdasd-' + str(i),
                     'xxxa',
                     reading_time,
-                    Constants.IMAGE,
-                    'https://aws/s3/somebucket/file.jpg', 
+                    Constants.PREDICTION,
+                    -33.96788819,
+                    151.0181246,
+                    'https://aws/s3/somebucket/file.jpg',
+                    [],
+                    reading_time,
+                    DEFAULT_ANNOTATOR_ID,
                 )
             )
         self.db.put_readings(finalized)
@@ -41,7 +45,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[Constants.TYPE], Constants.IMAGE)
+        self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
         self.assertEqual(first_reading[Constants.READING], {
                 Constants.FILENAME: 'https://aws/s3/somebucket/file.jpg' 

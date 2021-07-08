@@ -5,7 +5,7 @@ from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
-from readingdb.reading import AbstractReading, ImageReading, Reading, json_to_reading
+from readingdb.reading import AbstractReading, PredictionReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
 import uuid
@@ -284,7 +284,7 @@ class API(DB):
 
         return entry
 
-    def __save_img_data(self, entry: ImageReading):
+    def __save_img_data(self, entry: PredictionReading):
         if not entry.has_uri():
             uri: S3Uri = self.__upload_entry_file(entry)
             entry.set_uri(uri)

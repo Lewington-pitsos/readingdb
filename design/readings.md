@@ -8,8 +8,6 @@ Geohash @ around 100x100 meters
 
 ReadingType + Layer + ReadingID
 
-Nothing too fancy.
-
 ## Indices
 
 Global Index - RouteID - All Fields

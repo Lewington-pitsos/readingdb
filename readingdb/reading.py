@@ -1,5 +1,4 @@
 import abc
-from os import read
 from typing import Any, Dict, List
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
@@ -33,73 +32,7 @@ class Reading(AbstractReading):
     def decode(cls, item: Dict[str, Any]):
         item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
 
-class ImageReading(Reading):
-    def __init__(self, id: int, route_id: int, date: int, readingType: str, url: str = None, uri: str = None) -> None:
-        super().__init__(id, route_id, date, readingType)
-
-        if not url and not uri:
-            raise ValueError('at least one of url or uri must be supplied when initializing an ImageReading')
-
-        self.url: str = url
-        self.uri = uri
-
-    def item_data(self):
-        data = super().item_data()
-        data[Constants.READING] = {}
-        self.add_file_data(data[Constants.READING])
-
-        return data
-
-    @classmethod
-    def decode(cls, item: Dict[str, Any]):
-        super().decode(item)
-        pass
-
-    def add_file_data(self, data):
-        if self.url:
-            data[Constants.FILENAME] = self.url
-
-        if self.uri:
-            data[Constants.URI] = {
-                Constants.BUCKET: self.uri.bucket,
-                Constants.KEY: self.uri.object_name
-            }
-
-    def set_uri(self, uri: S3Uri):
-        self.uri: S3Uri = uri
-
-    def has_uri(self) -> bool:
-        return self.uri is not None
-
-class PositionReading(Reading):
-    def __init__(self, id: int, route_id: str, date: int, readingType: str, lat: int, long: int) -> None:
-        super().__init__(id, route_id, date, readingType)
-
-        self.lat: int = lat
-        self.long: int = long
-    
-    def item_data(self):
-        data = super().item_data()
-
-        data[Constants.READING] = {
-            Constants.LATITUDE: encode_as_float(self.lat),
-            Constants.LONGITUDE: encode_as_float(self.long)
-        }
-
-        return data
-
-    @classmethod
-    def decode(cls, item: Dict[str, Any]):
-        super().decode(item)
-
-        item[Constants.READING][Constants.LATITUDE] = decode_float(
-            item[Constants.READING][Constants.LATITUDE]
-        )
-        item[Constants.READING][Constants.LONGITUDE] = decode_float(
-            item[Constants.READING][Constants.LONGITUDE]
-        )
-
-class PredictionReading(ImageReading, PositionReading):
+class PredictionReading(Reading):
     def __init__(
         self, id: int, 
         route_id: str, 
@@ -113,8 +46,10 @@ class PredictionReading(ImageReading, PositionReading):
         annotator_id: str,
         uri: str = None,
     ):
-        PositionReading.__init__(self, id, route_id, date, readingType, lat, long)    
-        
+        super().__init__(id, route_id, date, readingType)
+
+        self.lat: int = lat
+        self.long: int = long
         self.url = url
         self.uri = uri
         self.entites: List[Entity] = entities
@@ -123,7 +58,13 @@ class PredictionReading(ImageReading, PositionReading):
     
     @classmethod
     def decode(cls, item: Dict[str, Any]):
-        PositionReading.decode(item)
+        super().decode(item)
+        item[Constants.READING][Constants.LATITUDE] = decode_float(
+            item[Constants.READING][Constants.LATITUDE]
+        )
+        item[Constants.READING][Constants.LONGITUDE] = decode_float(
+            item[Constants.READING][Constants.LONGITUDE]
+        )
 
         for e in item[Constants.READING][Constants.ENTITIES]:
             e[Constants.CONFIDENCE] = decode_float(e[Constants.CONFIDENCE])
@@ -133,8 +74,12 @@ class PredictionReading(ImageReading, PositionReading):
         item[Constants.ANNOTATION_TIMESTAMP] = int(item[Constants.ANNOTATION_TIMESTAMP])
             
     def item_data(self):
-        data = PositionReading.item_data(self)
-        self.add_file_data(data[Constants.READING])
+        data = super().item_data()
+        data[Constants.READING] = {
+            Constants.LATITUDE: encode_as_float(self.lat),
+            Constants.LONGITUDE: encode_as_float(self.long)
+        }
+        self.__add_file_data(data[Constants.READING])
 
         encoded_entities = []
         for e in self.entites:
@@ -146,9 +91,23 @@ class PredictionReading(ImageReading, PositionReading):
 
         return data
 
+    def set_uri(self, uri: S3Uri):
+        self.uri: S3Uri = uri
+
+    def has_uri(self) -> bool:
+        return self.uri is not None
+
+    def __add_file_data(self, data):
+        if self.url:
+            data[Constants.FILENAME] = self.url
+
+        if self.uri:
+            data[Constants.URI] = {
+                Constants.BUCKET: self.uri.bucket,
+                Constants.KEY: self.uri.object_name
+            }
+
 READING_TYPE_MAP: Dict[str, AbstractReading] = {
-    Constants.POSITIONAL: PositionReading,
-    Constants.IMAGE: ImageReading,
     Constants.PREDICTION: PredictionReading,
 }
 
@@ -163,25 +122,7 @@ def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not Constants.FILENAME in reading_data else reading_data[Constants.FILENAME]
     
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
-    if reading_type == Constants.POSITIONAL:
-        return PositionReading(
-            reading[Constants.READING_ID],
-            reading[Constants.ROUTE_ID],
-            reading[Constants.TIMESTAMP],
-            reading_type,
-            reading[Constants.READING][Constants.LATITUDE],
-            reading[Constants.READING][Constants.LONGITUDE],
-        )
-    elif reading_type == Constants.IMAGE:
-        return ImageReading(
-            reading[Constants.READING_ID],
-            reading[Constants.ROUTE_ID],
-            reading[Constants.TIMESTAMP],
-            reading_type,
-            get_filename(reading[Constants.READING]),
-            get_uri(reading[Constants.READING])
-        )
-    elif reading_type in [Constants.PREDICTION]:
+    if reading_type in [Constants.PREDICTION]:
         binaries: Dict[str, bool] = {}
         reading_data = reading[Constants.READING]
 

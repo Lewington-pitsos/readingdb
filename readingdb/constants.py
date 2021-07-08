@@ -8,9 +8,14 @@ ANNOTATOR_PREFERENCE = [
 ]
 
 class Constants():
+    # Generic
+    PK = 'PK'
+    SK = 'SK'
+
     # User
     USER_ID = 'UserID'
     DATA_ACCESS_GROUPS = 'DataAccessGroups'
+
     
     # Database
     READING_TABLE_NAME = 'Readings'
@@ -25,6 +30,7 @@ class Constants():
     IMAGE_TYPES = [PREDICTION, IMAGE]
 
     # Reading Keys
+    GEOHASH = 'Geohash'
     ROUTE_ID = 'RouteID'
     READING_ID = 'ReadingID'
     TYPE = 'Type'

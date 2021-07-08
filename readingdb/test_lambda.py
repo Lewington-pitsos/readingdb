@@ -654,10 +654,10 @@ class TestLambdaR(TestLambdaRW):
     def setUp(self) -> None:
         super().setUp()
 
-        with open('readingdb/test_data/gps_img_route.json') as f:
+        with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
-        self.gps_img_route = r
+        self.long_route = r
 
         with open('readingdb/test_data/ftg_route.json') as f:
             route_json = json.load(f) 
@@ -668,18 +668,6 @@ class TestLambdaR(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
         self.twenty_route = r
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_pagination_filters_non_prediction_readings(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 0)
-        self.assertIsNone(resp['Body']['PaginationKey'])
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_paginated_readings_for_user(self):
@@ -696,35 +684,42 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_paginated_readings_with_start_key(self):
-        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'PositionalReading'][0]
-        key1 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
-        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'ImageReading'][0]
-        key2 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': self.long_route.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        long_route_readings = resp['Body']['Readings']
+        key_reading = long_route_readings[17]
+        key1 = { "ReadingID": key_reading['ReadingID'], "RouteID": key_reading['RouteID'] }
+        key_reading = long_route_readings[77]
+        key2 = { "ReadingID": key_reading['ReadingID'], "RouteID": key_reading['RouteID'] }
         resp = test_handler({
             'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
+            'RouteID': self.long_route.id,
             'PredictionOnly': False,
             'PaginationKey': key1,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 86)
+        self.assertEqual(len(resp['Body']['Readings']), 163)
         self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.long_route.id)
     
         resp = test_handler({
             'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
+            'RouteID': self.long_route.id,
             'PredictionOnly': False,
             'PaginationKey': key2,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 115)
+        self.assertEqual(len(resp['Body']['Readings']), 104)
         self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.long_route.id)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
@@ -736,7 +731,7 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']), 3)
         self.assertTrue(resp['Body'][0]['RouteID'] in [
             self.twenty_route.id,
-            self.gps_img_route.id,
+            self.long_route.id,
             self.tst_route.id
         ])
 
