@@ -38,80 +38,16 @@ class API(DB):
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
         self.lambda_client = boto3.client('lambda')
 
-    def save_new_route(self, bucket: str, key: str, name: str = None) -> None:
-        resp = self.ecs.run_task(
-            networkConfiguration={
-                'awsvpcConfiguration': {
-                    'subnets': ['subnet-0567cac0229946232'],
-                    'securityGroups': ['sg-fe12c9b7'],
-                    'assignPublicIp': 'ENABLED' # TODO: check if this is needed
-                },
-            },
-            launchType='FARGATE',
-            cluster='arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster',
-            taskDefinition='arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:8',
-            overrides={
-                'containerOverrides': [
-                    {
-                        'name': 'unzipper', 
-                        'command':  ['python', 'farg.py', bucket, key, self.region_name, name]
-                    }
-                ]
-            }
-        )
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- READINGS -----------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
-        if len(resp[self.ECS_TASKS_KEY]) < 1:
-            raise ValueError(f'Unable to run any tasks, ecs returned the following response:', resp)
-
-        print('unzipping execution begun:', resp)
-
-        return str(resp)
-
-    def begin_prediction(self, user_id: str, route_id: str) -> None:
-        # self.mlapi.add_message_to_queue(user_id, route_id)
-        pass
-
-    def save_route(
-        self, 
-        route_spec: RouteSpec, 
-        user_id: str, 
-    ) -> Route:
-        route_id = str(uuid.uuid1())
-
-        print(f'uploading route {route_spec} as {route_id}')
-
-        initial_entries = {}
-        timestamp = 0
-
-        for reading_spec in route_spec.reading_specs:
-            print(f'starting upload for reading {reading_spec}')
-
-            entries = reading_spec.load_readings()
-
-            if len(entries) > 0:
-                finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
-                first_entry: Reading = finalized_entries[0]
-                initial_entries[reading_spec.reading_type] = first_entry
-
-                if timestamp == 0:
-                    timestamp = first_entry.date
-
-                print('Finished saving all readings to FDS database')
-            else:
-                print(f'No entries found for reading specification {reading_spec}')
-
-        route = Route(
-            user_id=user_id,
-            id=route_id,
-            timestamp=timestamp,
-            name=route_spec.name if route_spec.name else None,
-            sample_data=initial_entries
-        )
-
-        self.put_route(route)
-        print(f'Finished uploading route {route_id} for user {user_id}')
-
-        return route
+    def geohash_readings(self, geohash: str):
+        return []
 
     def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool:
         r1 = r1[Constants.READING]
@@ -157,8 +93,6 @@ class API(DB):
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
         return saved_entries
 
-    def set_as_predicting(self, route_id: str, user_id: str) -> None:
-        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
 
     def all_route_readings_async(self, route_id: str, access_token: str) -> str:
         bucket_key = str(uuid.uuid1()) + '.json'
@@ -233,15 +167,6 @@ class API(DB):
             annotator_preference=annotator_preference,
         )
 
-    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        r = super().get_route(route_id, user_id)
-        if not r:
-            return r
-
-        self.__inject_samples_with_presigned_urls(r)
-
-        return r
-
     def filtered_paginated_readings(
         self, 
         route_id: str, 
@@ -287,30 +212,6 @@ class API(DB):
         self.__inject_presigned_urls(readings)
         return readings, next_key
 
-    def delete_route(self, route_id: str, user_sub: str) -> Any:
-        deletedImgCount = 0
-
-        readings = self.all_route_readings(route_id)
-
-        for r in readings:
-            if r[Constants.TYPE] == Constants.PREDICTION or \
-                r[Constants.TYPE] == Constants.IMAGE:
-                reading = r[Constants.READING]
-                if Constants.URI in reading:
-                    uri = reading[Constants.URI]
-                    self.s3_client.delete_object(
-                        Bucket=uri[Constants.BUCKET],
-                        Key=uri[Constants.KEY]
-                    )
-
-        deletedReadingCount = self.delete_reading_items(
-            route_id, 
-            [r[Constants.READING_ID] for r in readings]
-        )
-
-        self.remove_route(route_id, user_sub)
-
-        return (deletedReadingCount, deletedImgCount)
 
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
         reading_groups = defaultdict(lambda: [])
@@ -427,7 +328,77 @@ class API(DB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-    # -----------------------------------------------------------------
+
+    def save_new_route(self, bucket: str, key: str, name: str = None) -> None:
+        resp = self.ecs.run_task(
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': ['subnet-0567cac0229946232'],
+                    'securityGroups': ['sg-fe12c9b7'],
+                    'assignPublicIp': 'ENABLED' # TODO: check if this is needed
+                },
+            },
+            launchType='FARGATE',
+            cluster='arn:aws:ecs:ap-southeast-2:950765595897:cluster/unzipper-cluster',
+            taskDefinition='arn:aws:ecs:ap-southeast-2:950765595897:task-definition/unzipper-fargate:8',
+            overrides={
+                'containerOverrides': [
+                    {
+                        'name': 'unzipper', 
+                        'command':  ['python', 'farg.py', bucket, key, self.region_name, name]
+                    }
+                ]
+            }
+        )
+
+        if len(resp[self.ECS_TASKS_KEY]) < 1:
+            raise ValueError(f'Unable to run any tasks, ecs returned the following response:', resp)
+
+        print('unzipping execution begun:', resp)
+
+        return str(resp)
+
+    def save_route(
+        self, 
+        route_spec: RouteSpec, 
+        user_id: str, 
+    ) -> Route:
+        route_id = str(uuid.uuid1())
+
+        print(f'uploading route {route_spec} as {route_id}')
+
+        initial_entries = {}
+        timestamp = 0
+
+        for reading_spec in route_spec.reading_specs:
+            print(f'starting upload for reading {reading_spec}')
+
+            entries = reading_spec.load_readings()
+
+            if len(entries) > 0:
+                finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
+                first_entry: Reading = finalized_entries[0]
+                initial_entries[reading_spec.reading_type] = first_entry
+
+                if timestamp == 0:
+                    timestamp = first_entry.date
+
+                print('Finished saving all readings to FDS database')
+            else:
+                print(f'No entries found for reading specification {reading_spec}')
+
+        route = Route(
+            user_id=user_id,
+            id=route_id,
+            timestamp=timestamp,
+            name=route_spec.name if route_spec.name else None,
+            sample_data=initial_entries
+        )
+
+        self.put_route(route)
+        print(f'Finished uploading route {route_id} for user {user_id}')
+
+        return route
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         routes = super().routes_for_user(user_id)
@@ -436,11 +407,47 @@ class API(DB):
         
         return routes
 
+    def set_as_predicting(self, route_id: str, user_id: str) -> None:
+        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
+
+    def delete_route(self, route_id: str, user_sub: str) -> Any:
+        deletedImgCount = 0
+
+        readings = self.all_route_readings(route_id)
+
+        for r in readings:
+            if r[Constants.TYPE] == Constants.PREDICTION or \
+                r[Constants.TYPE] == Constants.IMAGE:
+                reading = r[Constants.READING]
+                if Constants.URI in reading:
+                    uri = reading[Constants.URI]
+                    self.s3_client.delete_object(
+                        Bucket=uri[Constants.BUCKET],
+                        Key=uri[Constants.KEY]
+                    )
+
+        deletedReadingCount = self.delete_reading_items(
+            route_id, 
+            [r[Constants.READING_ID] for r in readings]
+        )
+
+        self.remove_route(route_id, user_sub)
+
+        return (deletedReadingCount, deletedImgCount)
+
+    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
+        r = super().get_route(route_id, user_id)
+        if not r:
+            return r
+
+        self.__inject_samples_with_presigned_urls(r)
+
+        return r
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -------------------------- USER ---------------------------------
-    # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
