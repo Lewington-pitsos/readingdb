@@ -1,16 +1,26 @@
-# Schema Design
+# Schema Design For DynamoDB Items
 
-## Primary Key
+## Readings
+
+### Primary Key
 
 Geohash @ around 100x100 meters
 
-## Secondary Key
+### Secondary Key
 
 Layer + ReadingID
 
-## Indices
+### Indices
 
 Global Index - RouteID - All Fields
 Global Index - ImageHash - All Fields
 Global Index - Geohash @ 4x4 meters - All Fields
 
+
+## Routes
+
+### Primary Key
+
+Route + RouteID
+
+### Secondary Key

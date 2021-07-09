@@ -159,18 +159,6 @@ class TestBasic(TestLambda):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_error_response_on_paginated_readings_event(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'Bad Format Error: key RouteID missing from event'
-        }, resp)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_road_snap_event(self):
         resp = test_handler({
             'Type': 'SnapToRoads',
@@ -399,7 +387,7 @@ class TestLambdaW(TestLambdaRW):
         self.assertIn('RouteID', resp['Body'])
         rid = resp['Body']['RouteID']
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': rid,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
@@ -495,19 +483,6 @@ class TestLambdaW(TestLambdaRW):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_success_on_paginated_readings_for_absent_route(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': 'INVALID_ID',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Success',
-            'Body': None
-        }, resp)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions(self):
         with open('readingdb/test_data/long_route.json') as f:
@@ -515,7 +490,7 @@ class TestLambdaW(TestLambdaRW):
         route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': route.id,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
@@ -539,10 +514,9 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual(22, len(resp['Body']['SavedReadings']))
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': route.id,
             'PredictionOnly': False,
-            'AnnotatorPreference': None,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -565,8 +539,9 @@ class TestLambdaW(TestLambdaRW):
             'Predictions': pred_json,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
+
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': route.id,
             'PredictionOnly': False,
             'AnnotatorPreference': ['a8s8as78a7a7a7a7a'],
@@ -592,7 +567,7 @@ class TestLambdaW(TestLambdaRW):
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
 
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': r.id,
             'AnnotatorPreference': [
                 '99bf4519-85d9-4726-9471-4c91a7677925'
@@ -602,7 +577,6 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 713)
-        self.assertIsNone(resp['Body']['PaginationKey'])
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -670,58 +644,6 @@ class TestLambdaR(TestLambdaRW):
         self.twenty_route = r
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_paginated_readings_for_user(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.twenty_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 1)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.twenty_route.id)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_paginated_readings_with_start_key(self):
-        resp = test_handler({
-            'Type': 'GetReadings',
-            'RouteID': self.long_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        long_route_readings = resp['Body']['Readings']
-        key_reading = long_route_readings[17]
-        key1 = { "ReadingID": key_reading['ReadingID'], "RouteID": key_reading['RouteID'] }
-        key_reading = long_route_readings[77]
-        key2 = { "ReadingID": key_reading['ReadingID'], "RouteID": key_reading['RouteID'] }
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.long_route.id,
-            'PredictionOnly': False,
-            'PaginationKey': key1,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 163)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.long_route.id)
-    
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.long_route.id,
-            'PredictionOnly': False,
-            'PaginationKey': key2,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 104)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.long_route.id)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
         resp = test_handler({
             'Type': 'GetUserRoutes',
@@ -750,6 +672,7 @@ class TestLambdaR(TestLambdaRW):
 
         self.assertIn('LastUpdated', resp['Body'])
         del resp['Body']['LastUpdated']
+        user_id = resp['Body']['SampleData']['PredictionReading']['ReadingID']
         self.assertEqual({
             'Status': 'Success', 
             'Body': {
@@ -760,7 +683,10 @@ class TestLambdaR(TestLambdaRW):
                     'PredictionReading': {
                         'AnnotationTimestamp': 2378910,
                         'AnnotatorID': '99994519-85d9-4726-9471-4c91a7677925',
-                        'ReadingID': resp['Body']['SampleData']['PredictionReading']['ReadingID'], 
+                        'Geohash': 'r1r291',
+                        'LayerID': 'f9ddebe1-e054-11eb-b74d-04d9f584cf20',
+                        'PK': 'r1r291',
+                        'ReadingID': user_id, 
                         'Type': 'PredictionReading', 
                         'Reading': {
                             'S3Uri': {
@@ -795,6 +721,7 @@ class TestLambdaR(TestLambdaRW):
                             ],
                         }, 
                         'RouteID': self.twenty_route.id, 
+                        'SK': 'f9ddebe1-e054-11eb-b74d-04d9f584cf20#' + user_id,
                         'Timestamp': 1616116106935
                     }
                 }, 

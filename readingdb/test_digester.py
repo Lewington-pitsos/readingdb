@@ -246,7 +246,7 @@ class TestDigester(unittest.TestCase):
             snap_to_roads=False
         )
 
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
         self.assertEqual(len(readings), 28)
 
         s3 = boto3.resource('s3')
@@ -390,6 +390,6 @@ class TestDigester(unittest.TestCase):
             snap_to_roads=True
         )
 
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
         self.assertEqual(len(readings), 42)
         self.assertEqual('hedge cresent', route.name)

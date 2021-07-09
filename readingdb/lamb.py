@@ -160,6 +160,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         readings = api.all_route_readings(
             route_id, 
+            user_data.user_sub,
             key,
             predictions_only=pred_only,
             annotator_preference=annotator_preference
@@ -256,6 +257,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         api.save_predictions(
             readings, 
             route_id,
+            user_data.user_sub,
             save_imgs=True
         )
         return success_response({RESPONSE_SAVED_READINGS: readings})
