@@ -48,6 +48,8 @@ class Route():
         else:
             item[Constants.LAST_UPDATED] = 0
 
+        
+
         return item
 
     def item_data(self) -> Dict[str, Any]:

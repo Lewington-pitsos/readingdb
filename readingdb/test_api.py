@@ -85,7 +85,7 @@ class TestAPI(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
 
-        page0, _ = self.api.paginated_route_readings(route.id)
+        page0, _ = self.api.paginated_route_readings(route.id, route.user_id)
         self.assertEqual(22, len(page0))
         self.assertIn('PresignedURL', page0[0]['Reading'])
 
@@ -104,12 +104,12 @@ class TestAPI(unittest.TestCase):
             finalized.append(r)
         self.api.put_readings(finalized)
 
-        readings =  self.api.all_route_readings(route_id)
+        readings =  self.api.all_route_readings(route_id, '3')
         self.assertIsInstance(readings, list)
         self.assertEqual(60, len(readings))
         
         self.api.size_limit = 400
-        uri = self.api.all_route_readings(route_id)
+        uri = self.api.all_route_readings(route_id, '3')
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
@@ -130,7 +130,7 @@ class TestAPI(unittest.TestCase):
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
-        uri = self.api.all_route_readings(route_id, key='kingofkings.json')
+        uri = self.api.all_route_readings(route_id, '3', key='kingofkings.json')
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
@@ -247,7 +247,7 @@ class TestAPI(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
 
-        readings = api.all_route_readings(route.id)
+        readings = api.all_route_readings(route.id, user_id)
         self.assertEqual(3, len(readings))
         first_reading = readings[0]
 
@@ -280,7 +280,6 @@ class TestAPI(unittest.TestCase):
             route_id,
             0,
         )
-        updated_time = r.update_timestamp
         api.put_route(r)
 
         s3 = boto3.resource(
@@ -302,18 +301,18 @@ class TestAPI(unittest.TestCase):
             'mocks/route_1621394080578.zip'
         ]))
 
-        user_routes = api.routes_for_user(user_id)
+        user_routes = api.routes_for_user(user_id, user_id)
         self.assertEqual(len(user_routes), 1)
         self.assertNotIn('SampleData', user_routes[0])
 
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 0)
 
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
 
         api.save_predictions(route_spec_data, route_id)
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
         bucket_objects = []
@@ -356,7 +355,7 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             raw_readings = json.load(j)        
         api.save_predictions(raw_readings, route_id)
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
         self.maxDiff = None
@@ -375,14 +374,14 @@ class TestAPI(unittest.TestCase):
             )
 
         api.save_predictions(raw_readings, route_id, save_imgs=False)
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
         new_annotator_id = "9a9a9a9a9a9a9a9a9" 
         for r in raw_readings:
             r['AnnotatorID'] = new_annotator_id
         api.save_predictions(raw_readings, route_id, save_imgs=False)
-        readings = api.all_route_readings(route_id)
+        readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 44)
 
         self.maxDiff = None
@@ -511,12 +510,12 @@ class TestAPI(unittest.TestCase):
 
         route = api.save_route(route_spec, user_id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
-        self.assertEqual(22, len(api.all_route_readings(route.id)))
+        self.assertEqual(22, len(api.all_route_readings(route.id, route.user_id)))
         self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
 
         api.delete_route(route.id, user_id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
-        self.assertEqual(0, len(api.all_route_readings(route.id)))
+        self.assertEqual(0, len(api.all_route_readings(route.id, route.user_id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
         
         route = api.save_route(route_spec, user_id)
@@ -527,9 +526,9 @@ class TestAPI(unittest.TestCase):
         route3 = api.save_route(route_spec, user_id2)
         self.assertEqual(2, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
-        self.assertEqual(22, len(api.all_route_readings(route.id)))
-        self.assertEqual(22, len(api.all_route_readings(route2.id)))
-        self.assertEqual(22, len(api.all_route_readings(route3.id)))
+        self.assertEqual(22, len(api.all_route_readings(route.id, route.user_id)))
+        self.assertEqual(22, len(api.all_route_readings(route2.id, route2.user_id)))
+        self.assertEqual(22, len(api.all_route_readings(route3.id, route3.user_id)))
         self.assertEqual(7, len(self.__get_bucket_objects(bucket)))
         
         api.delete_route(route.id, user_id)
@@ -545,9 +544,9 @@ class TestAPI(unittest.TestCase):
         api.delete_route(route3.id, user_id2)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(0, len(api.routes_for_user(user_id2)))
-        self.assertEqual(0, len(api.all_route_readings(route.id)))
-        self.assertEqual(0, len(api.all_route_readings(route2.id)))
-        self.assertEqual(0, len(api.all_route_readings(route3.id)))
+        self.assertEqual(0, len(api.all_route_readings(route.id, route.user_id)))
+        self.assertEqual(0, len(api.all_route_readings(route2.id, route2.user_id)))
+        self.assertEqual(0, len(api.all_route_readings(route3.id, route3.user_id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
 
     def __get_bucket_objects(self, bucket: str) -> List[str]:
@@ -565,9 +564,9 @@ class TestAPI(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
 
         route = api.save_route(route_spec, user_id)
-        self.assertEqual(3, len(api.all_route_readings(route.id)))
+        self.assertEqual(3, len(api.all_route_readings(route.id, route.user_id)))
 
-        readings = api.prediction_readings(route.id, [DEFAULT_ANNOTATOR_ID])
+        readings = api.prediction_readings(route.id, route.user_id, [DEFAULT_ANNOTATOR_ID])
         self.assertEqual(2, len(readings))
 
         for r in readings:
@@ -585,7 +584,7 @@ class TestAPI(unittest.TestCase):
         route_spec = RouteSpec.from_json(route_spec_data)
         route = api.save_route(route_spec, user_id)
 
-        readings = api.all_route_readings(route.id)
+        readings = api.all_route_readings(route.id, route.user_id)
         self.assertEqual(971, len(readings))
 
         preference = [
@@ -594,17 +593,20 @@ class TestAPI(unittest.TestCase):
         all_readings = []
         pag, key = api.filtered_paginated_readings(
             route.id, 
+            route.user_id,
             annotator_preference=preference
         )
         all_readings += pag
         pag, key = api.filtered_paginated_readings(
             route.id, 
+            route.user_id,
             annotator_preference=preference,
             last_key=key,
         )
         all_readings += pag
         pag, key = api.filtered_paginated_readings(
             route.id, 
+            route.user_id,
             annotator_preference=preference,
             last_key=key,
         )
@@ -612,6 +614,7 @@ class TestAPI(unittest.TestCase):
 
         pag, key = api.filtered_paginated_readings(
             route.id, 
+            route.user_id,
             annotator_preference=preference,
             last_key=key,
         )

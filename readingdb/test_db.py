@@ -20,16 +20,16 @@ class TestDB(unittest.TestCase):
     
     def test_saves_readings(self):
         self.db.create_reading_db()
-        readings = self.db.routes_for_user('103')
-        self.assertEqual(len(readings), 0)
         reading_time = int(time.time())
-
+        uid = 'someuser'
+        rid = 'someroute'
+        self.db.put_route(Route(uid, rid, 123151234, geohashes=set(['r3gqu8'])))
         finalized = []
         for i in range(21):
             finalized.append(
                 PredictionReading(
                     'sdasdasd-' + str(i),
-                    'xxxa',
+                    rid,
                     reading_time,
                     Constants.PREDICTION,
                     -33.96788819,
@@ -41,10 +41,10 @@ class TestDB(unittest.TestCase):
                 )
             )
         self.db.put_readings(finalized)
-        readings = self.db.all_route_readings('xxxa')
+        readings = self.db.all_route_readings(rid, uid)
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
-        self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
+        self.assertEqual(first_reading[Constants.ROUTE_ID], 'someroute')
         self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
         self.assertDictEqual(first_reading[Constants.READING], {
@@ -94,7 +94,7 @@ class TestDB(unittest.TestCase):
             )
         )
     
-        readings = self.db.all_route_readings('xxxa')
+        readings = self.db.all_route_readings('xxxa', '103')
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
@@ -209,7 +209,7 @@ class TestDB(unittest.TestCase):
 
         self.db.put_readings(entity_readings)
 
-        readings = self.db.all_route_readings(route_id)
+        readings = self.db.all_route_readings(route_id, '3')
     
         self.assertEqual(3383, len(readings))
 
@@ -348,7 +348,7 @@ class TestDB(unittest.TestCase):
             entity_readings.append(r)
         self.db.put_readings(entity_readings)
 
-        readings = self.db.all_route_readings(route_id)
+        readings = self.db.all_route_readings(route_id, '3')
         self.assertEqual(250, len(readings))
 
         page0, key0 = self.db.paginated_route_readings(route_id)

@@ -114,12 +114,13 @@ class API(DB):
     def all_route_readings(
         self, 
         route_id: str, 
+        user_id: str,
         key: str = None, 
         size_limit = None,
         predictions_only = False,
         annotator_preference = None
     ) -> List[Dict[str, Any]]:
-        readings = super().all_route_readings(route_id)
+        readings = super().all_route_readings(route_id, user_id)
 
         if predictions_only:
             readings = [r for r in readings if r['Type'] == Constants.PREDICTION]
@@ -154,6 +155,7 @@ class API(DB):
     def prediction_readings(
         self, 
         route_id: str, 
+        user_id: str,
         annotator_preference: List[str] = [],
         key: str = None, 
         size_limit: int = None,
@@ -161,6 +163,7 @@ class API(DB):
 
         return self.all_route_readings(
             route_id, 
+            user_id,
             key, 
             size_limit,
             predictions_only=True,
@@ -170,11 +173,13 @@ class API(DB):
     def filtered_paginated_readings(
         self, 
         route_id: str, 
+        user_id: str,
         annotator_preference,
         last_key: str = None,
     ) -> Tuple[List[Dict[str, Any]], str]:
         return self.paginated_route_readings(
             route_id,
+            user_id,
             last_key,
             predictions_only=True,
             annotator_preference=annotator_preference
@@ -183,6 +188,7 @@ class API(DB):
     def paginated_route_readings(
         self, 
         route_id: str, 
+        user_id,
         last_key: str = None,
         predictions_only = False,
         annotator_preference = None
@@ -199,6 +205,7 @@ class API(DB):
             paginated_ids = [r[Constants.READING_ID] for r in readings]
             all_readings = self.all_route_readings(
                 route_id, 
+                user_id,
                 predictions_only=predictions_only, 
                 size_limit=9999999
             )
@@ -419,7 +426,7 @@ class API(DB):
     def delete_route(self, route_id: str, user_sub: str) -> Any:
         deletedImgCount = 0
 
-        readings = self.all_route_readings(route_id)
+        readings = self.all_route_readings(route_id, user_sub)
 
         for r in readings:
             if r[Constants.TYPE] == Constants.PREDICTION:

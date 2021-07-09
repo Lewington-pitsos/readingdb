@@ -67,7 +67,7 @@ class TestDigester(unittest.TestCase):
     def test_digester_adds_to_queue(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
 
         self.assertEqual(len(readings), 28)
 
@@ -87,7 +87,7 @@ class TestDigester(unittest.TestCase):
     def test_digester_uploads_route_with_unix_timestamps(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = d.process(self.bucket_name, 'mocks/route_1621394080578.zip')
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
         self.assertEqual(len(readings), 70)
 
         s3 = boto3.resource('s3')
@@ -177,7 +177,7 @@ class TestDigester(unittest.TestCase):
     def test_digester_uploads(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
 
         self.assertEqual(len(readings), 28)
 
@@ -227,7 +227,7 @@ class TestDigester(unittest.TestCase):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
         route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', 'bennet court')
 
-        readings = self.api.all_route_readings(route.id)
+        readings = self.api.all_route_readings(route.id, route.user_id)
         self.assertEqual(len(readings), 28)
         self.assertEqual('bennet court', route.name)
 

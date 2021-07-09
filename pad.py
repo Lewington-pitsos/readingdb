@@ -179,4 +179,4 @@
 import pygeohash as pgh
 
 # print(pgh.encode(37.421006599000606, -122.08518097686003))
-print(pgh.encode(-33.96788819,151.0181246))
+print(pgh.encode(-33.96788819,151.0181246, precision=6))

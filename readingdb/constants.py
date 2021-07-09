@@ -10,8 +10,8 @@ ANNOTATOR_PREFERENCE = [
 
 class Constants():
     # Generic
-    PK = 'PK'
-    SK = 'SK'
+    PART_KEY = 'PK'
+    SORT_KEY = 'SK'
 
     # User
     USER_ID = 'UserID'
@@ -35,6 +35,8 @@ class Constants():
     TYPE = 'Type'
     READING = 'Reading'
     TIMESTAMP = 'Timestamp'
+    LAYER_ID = 'LayerID',
+    
 
     # Positional Reading Keys
     LATITUDE = 'Latitude'

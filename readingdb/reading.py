@@ -1,4 +1,3 @@
-import abc
 from typing import Any, Dict, List
 import pygeohash as pgh
 
@@ -9,21 +8,54 @@ from readingdb.entities import *
 from readingdb.clean import encode_as_float, decode_bool, decode_float
 
 class Reading():
-    def __init__(self, id: str, route_id: str, date: int, readingType: str) -> None:
+    def __init__(
+        self, 
+        id: str, 
+        route_id: str, 
+        date: int, 
+        readingType: str,
+        lat: int, 
+        lng: int,
+        layer_id: str = DEFAULT_LAYER_ID
+    ) -> None:
         self.id: str = id
         self.route_id: str = route_id
         self.date: int = int(date) if isinstance(date, float) else date
         self.readingType: str = readingType
+        self.lat: int = lat
+        self.lng: int = lng
+        self.layer_id = layer_id
+
     def item_data(self):
         return {
-            Constants.READING_ID: self.id,
+            Constants.PART_KEY: self.geohash(),
+            Constants.SORT_KEY: self.sort_key(),
             Constants.ROUTE_ID: self.route_id,
             Constants.TYPE: self.readingType,  
             Constants.TIMESTAMP: self.date, 
+            Constants.READING: {
+                Constants.LATITUDE: encode_as_float(self.lat),
+                Constants.LONGITUDE: encode_as_float(self.lng),
+            }
         }
+
+    def sort_key(self) -> str:
+        return f'{self.layer_id}#{self.id}'
+
+    def geohash(self) -> str:
+        return pgh.encode(self.lat, self.lng, precision=GEOHASH_PRECISION)
+
     @classmethod
     def decode(cls, item: Dict[str, Any]):
+        item[Constants.GEOHASH] = item[Constants.PART_KEY]
+
+        sort_key_segments = item[Constants.SORT_KEY].split('#')
+        item[Constants.LAYER_ID] = sort_key_segments[0]
+        item[Constants.READING_ID] = sort_key_segments[1]
+
         item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
+
+
 
 class PredictionReading(Reading):
     def __init__(
@@ -32,17 +64,15 @@ class PredictionReading(Reading):
         date: int, 
         readingType: str, 
         lat: int, 
-        long: int,
+        lng: int,
         url: str,
         entities: List[Entity],
         annotation_timestamp: int,
         annotator_id: str,
         uri: str = None,
     ):
-        super().__init__(id, route_id, date, readingType)
+        super().__init__(id, route_id, date, readingType, lat, lng)
 
-        self.lat: int = lat
-        self.long: int = long
         self.url = url
         self.uri = uri
         self.entites: List[Entity] = entities
@@ -68,10 +98,6 @@ class PredictionReading(Reading):
             
     def item_data(self):
         data = super().item_data()
-        data[Constants.READING] = {
-            Constants.LATITUDE: encode_as_float(self.lat),
-            Constants.LONGITUDE: encode_as_float(self.long)
-        }
         self.__add_file_data(data[Constants.READING])
 
         encoded_entities = []
@@ -89,9 +115,6 @@ class PredictionReading(Reading):
 
     def has_uri(self) -> bool:
         return self.uri is not None
-
-    def geohash(self) -> str:
-        return pgh.encode(self.lat, self.long, precision=GEOHASH_PRECISION)
 
     def __add_file_data(self, data):
         if self.url:

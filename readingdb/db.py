@@ -239,13 +239,21 @@ class DB():
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
-    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
-        return self.__paginate_table(
-            Constants.READING_TABLE_NAME,
-            ddb_to_dict,
-            Constants.ROUTE_ID,
-            route_id,
-        )
+    def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
+        route = self.get_route(route_id, user_id)
+        geohashes = route[Constants.ROUTE_HASHES]
+        
+        all_readings = []
+
+        for h in geohashes:
+            all_readings.extend(self.__paginate_table(
+                Constants.READING_TABLE_NAME,
+                ddb_to_dict,
+                Constants.PART_KEY,
+                h,
+            ))
+        
+        return all_readings
 
     def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
         table = self.db.Table(Constants.READING_TABLE_NAME)
@@ -292,21 +300,21 @@ class DB():
             TableName=Constants.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName': Constants.ROUTE_ID,
+                    'AttributeName': Constants.PART_KEY,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': Constants.READING_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': Constants.ROUTE_ID,
+                    'AttributeName': Constants.PART_KEY,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': Constants.READING_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'AttributeType': 'S'
                 },
 

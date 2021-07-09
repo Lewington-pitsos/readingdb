@@ -193,6 +193,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         readings, pagination_key = api.paginated_route_readings(
             route_id,
+            user_data.user_sub,
             last_key=pagination_key,
             predictions_only=pred_only,
             annotator_preference=annotator_preference, 
