@@ -10,6 +10,9 @@ from readingdb.clean import encode_as_float, decode_bool, decode_float
 def reading_sort_key(layer_id:str, reading_id: str) -> str:
     return f'{layer_id}#{reading_id}'
 
+def get_geohash(lat: float, lng: float) -> str:
+    return pgh.encode(lat, lng, precision=GEOHASH_PRECISION)
+
 class Reading():
     def __init__(
         self, 
@@ -44,8 +47,9 @@ class Reading():
 
     def sort_key(self) -> str:
         return reading_sort_key(self.layer_id, self.id)
+    
     def geohash(self) -> str:
-        return pgh.encode(self.lat, self.lng, precision=GEOHASH_PRECISION)
+        return get_geohash(self.lat, self.lng)
 
     @classmethod
     def decode(cls, item: Dict[str, Any]):

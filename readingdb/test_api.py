@@ -2,7 +2,7 @@ import json
 import os
 from typing import List
 from unittest import mock
-from readingdb.reading import PredictionReading, json_to_reading
+from readingdb.reading import PredictionReading, get_geohash, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
@@ -65,7 +65,6 @@ class TestAPI(unittest.TestCase):
             self.secret_key,
             self.tmp_bucket
         )
-
         self.api.teardown_reading_db()
     
     def test_mocking_works(self):
@@ -282,13 +281,20 @@ class TestAPI(unittest.TestCase):
         route_id = 'asdasdasdasd'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        user_routes = api.routes_for_user(user_id)
-        self.assertEqual(len(user_routes), 0)
+        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
+            route_spec_data = json.load(j)
+
+        geohashes = set()
+
+        for reading in route_spec_data:
+            reading_data = reading[Constants.READING]
+            geohashes.add(get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE]))
 
         r = Route(
             user_id,
             route_id,
             0,
+            geohashes=geohashes
         )
         api.put_route(r)
 
@@ -317,9 +323,6 @@ class TestAPI(unittest.TestCase):
 
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 0)
-
-        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
-            route_spec_data = json.load(j)
 
         api.save_predictions(route_spec_data, route_id, user_id)
         readings = api.all_route_readings(route_id, user_id)
@@ -360,10 +363,17 @@ class TestAPI(unittest.TestCase):
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
-        r = Route(user_id, route_id, 0)
-        api.put_route(r)
+
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
-            raw_readings = json.load(j)        
+            raw_readings = json.load(j)   
+        
+        geohashes = set()
+        for r in raw_readings:
+            reading_data = r[Constants.READING]
+            geohashes.add(get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE]))
+        r = Route(user_id, route_id, 0, geohashes=geohashes)
+        api.put_route(r)
+
         api.save_predictions(raw_readings, route_id, user_id)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
@@ -383,14 +393,14 @@ class TestAPI(unittest.TestCase):
                 '99994519-85d9-4726-9471-4c91a7677925'
             )
 
-        api.save_predictions(raw_readings, route_id, save_imgs=False)
+        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
         new_annotator_id = "9a9a9a9a9a9a9a9a9" 
         for r in raw_readings:
             r['AnnotatorID'] = new_annotator_id
-        api.save_predictions(raw_readings, route_id, save_imgs=False)
+        api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 44)
 

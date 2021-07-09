@@ -153,6 +153,10 @@ class DB():
 
     def route_geohashes(self, route_id: str, user_id: str) -> Set[str]:
         route = self.get_route(route_id, user_id)
+
+        if route is None:
+            return set()
+
         return set(route[Constants.ROUTE_HASHES])
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:     
@@ -247,12 +251,13 @@ class DB():
         all_readings = []
 
         for h in geohashes:
-            all_readings.extend(self.__paginate_table(
+            hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
                 ddb_to_dict,
                 Constants.PART_KEY,
                 h,
-            ))
+            )
+            all_readings.extend([r for r in hash_readings if r[Constants.ROUTE_ID] == route_id])
         
         return all_readings
 
