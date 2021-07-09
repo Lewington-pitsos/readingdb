@@ -35,7 +35,7 @@ class Constants():
     TYPE = 'Type'
     READING = 'Reading'
     TIMESTAMP = 'Timestamp'
-    LAYER_ID = 'LayerID',
+    LAYER_ID = 'LayerID'
     
 
     # Positional Reading Keys

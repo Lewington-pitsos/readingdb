@@ -170,56 +170,6 @@ class API(DB):
             annotator_preference=annotator_preference,
         )
 
-    def filtered_paginated_readings(
-        self, 
-        route_id: str, 
-        user_id: str,
-        annotator_preference,
-        last_key: str = None,
-    ) -> Tuple[List[Dict[str, Any]], str]:
-        return self.paginated_route_readings(
-            route_id,
-            user_id,
-            last_key,
-            predictions_only=True,
-            annotator_preference=annotator_preference
-        )
-
-    def paginated_route_readings(
-        self, 
-        route_id: str, 
-        user_id,
-        last_key: str = None,
-        predictions_only = False,
-        annotator_preference = None
-    ) -> Tuple[List[Dict[str, Any]], str]:
-        readings, next_key = super().paginated_route_readings(route_id, last_key)
-    
-        if predictions_only:
-            readings = [r for r in readings if self.__is_prediction_reading(r)]
-
-        if annotator_preference:
-            paginated_uris = [self.__uri_str(r) for r in readings if\
-                self.__is_prediction_reading(r)]
-
-            paginated_ids = [r[Constants.READING_ID] for r in readings]
-            all_readings = self.all_route_readings(
-                route_id, 
-                user_id,
-                predictions_only=predictions_only, 
-                size_limit=9999999
-            )
-            relevent_readings = [r for r in all_readings if\
-                self.__is_prediction_reading(r) and\
-                self.__uri_str(r) in paginated_uris and not\
-                r[Constants.READING_ID] in paginated_ids]
-            preferred = self.__preferred_readings(annotator_preference, readings + relevent_readings)
-            readings = [r for r in readings if r in preferred]
-
-        self.__inject_presigned_urls(readings)
-        return readings, next_key
-
-
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
         reading_groups = defaultdict(lambda: [])
         final_readings = []

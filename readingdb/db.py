@@ -2,7 +2,7 @@ from random import sample
 from readingdb.utils import timestamp
 import time
 from readingdb.routestatus import RouteStatus
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Set, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -152,6 +152,10 @@ class DB():
 
         return item
 
+    def __route_geohashes(self, route_id: str, user_id: str) -> Set[str]:
+        route = self.get_route(route_id, user_id)
+        return set(route[Constants.ROUTE_HASHES])
+
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:     
         return self.__ddb_query(
             Constants.ROUTE_TABLE_NAME,
@@ -240,9 +244,7 @@ class DB():
                 batch.put_item(Item=r.item_data())
 
     def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
-        route = self.get_route(route_id, user_id)
-        geohashes = route[Constants.ROUTE_HASHES]
-        
+        geohashes = self.__route_geohashes(route_id, user_id)
         all_readings = []
 
         for h in geohashes:
@@ -254,30 +256,6 @@ class DB():
             ))
         
         return all_readings
-
-    def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
-        table = self.db.Table(Constants.READING_TABLE_NAME)
-
-        query_params = {
-            'KeyConditionExpression': Key('RouteID').eq(route_id),
-            'Limit': self.max_page_readings
-        }
-
-        if last_key is not None:
-            query_params['ExclusiveStartKey']= last_key
-
-        resp = table.query(**query_params)
-
-        next_key = None
-        if self.LAST_EVAL_KEY in resp:
-            next_key = resp[self.LAST_EVAL_KEY]
-
-        items = []
-        for item in resp[self.ITEM_KEY]:
-            ddb_to_dict(item)
-            items.append(item)
-
-        return items, next_key
 
     def put_reading(self, reading: PredictionReading):
         table = self.db.Table(Constants.READING_TABLE_NAME)

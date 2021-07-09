@@ -167,43 +167,6 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
 
         return success_response({Constants.READING_TABLE_NAME: readings})
 
-    elif event_name == EVENT_GET_PAGINATED_READINGS:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp
-
-        route = api.get_route(route_id, user_data.user_sub)
-
-        if route is None:
-            return success_response(None)
-
-        pagination_key, missing = get_key(event, Constants.PAGINATION_KEY_NAME)
-        if missing:
-            pagination_key = None
-
-        annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
-        if missing or annotator_preference == None:
-            annotator_preference = ANNOTATOR_PREFERENCE
-        else:
-            annotator_preference += ANNOTATOR_PREFERENCE
-
-        pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
-        if missing:
-            pred_only = True
-
-        readings, pagination_key = api.paginated_route_readings(
-            route_id,
-            user_data.user_sub,
-            last_key=pagination_key,
-            predictions_only=pred_only,
-            annotator_preference=annotator_preference, 
-        )
-
-        return success_response({
-            Constants.READING_TABLE_NAME: readings,
-            Constants.PAGINATION_KEY_NAME: pagination_key,
-        })
-
     elif event_name == EVENT_GET_READINGS_ASYNC:
         route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
