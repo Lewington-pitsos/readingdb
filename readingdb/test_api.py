@@ -418,6 +418,7 @@ class TestAPI(unittest.TestCase):
         del user_routes[0]['SampleData']['PredictionReading']['Reading']['PresignedURL']
         self.maxDiff = None
         expected_sample_data = {
+            'Geohashes': {'r1r291'},
             'LastUpdated': 1619496879,
             'RouteStatus': 1,
             'RouteID': route.id,

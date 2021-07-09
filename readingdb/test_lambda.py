@@ -798,6 +798,7 @@ class TestLambdaR(TestLambdaRW):
                         'Timestamp': 1616116106935
                     }
                 }, 
+                'Geohashes': {'r1r291'},
                 'RouteID': self.twenty_route.id, 
                 'RouteName': self.twenty_route.name
             }

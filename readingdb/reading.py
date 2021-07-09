@@ -1,5 +1,7 @@
 import abc
 from typing import Any, Dict, List
+import pygeohash as pgh
+
 from readingdb.entity import Entity
 from readingdb.s3uri import S3Uri
 from readingdb.constants import *
@@ -96,6 +98,9 @@ class PredictionReading(Reading):
 
     def has_uri(self) -> bool:
         return self.uri is not None
+
+    def geohash(self) -> str:
+        return pgh.encode(self.lat, self.long, precision=GEOHASH_PRECISION)
 
     def __add_file_data(self, data):
         if self.url:

@@ -125,6 +125,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('3')
         self.assertEqual(len(routes), 1)
         self.assertEqual({
+            'Geohashes': [],
             'LastUpdated': 1619496879,
             'RouteID': '103',
             'RouteName': '103',

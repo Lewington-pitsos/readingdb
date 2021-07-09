@@ -14,6 +14,7 @@ class Route():
         id: str, 
         timestamp: int, 
         name: str=None, 
+        geohashes: List[str] = [],
         sample_data: Dict[str, AbstractReading]=None
     ) -> None:
         '''sample_data contains a small collection of readings that belong to
@@ -28,6 +29,7 @@ class Route():
         self.status = RouteStatus.UPLOADED
         self.timestamp: int = timestamp
         self.update_timestamp: int = int(time.time())
+        self.geohashes = geohashes
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
@@ -54,7 +56,8 @@ class Route():
             Constants.ROUTE_ID: self.id,
             Constants.STATUS: int(self.status),
             Constants.TIMESTAMP: self.timestamp,
-            Constants.LAST_UPDATED: self.update_timestamp
+            Constants.LAST_UPDATED: self.update_timestamp,
+            Constants.ROUTE_HASHES: self.geohashes
         }
 
         if self.name:

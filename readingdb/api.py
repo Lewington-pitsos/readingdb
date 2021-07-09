@@ -301,8 +301,8 @@ class API(DB):
             object_name,
         )
 
-    def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[AbstractReading]:
-        finalized: List[AbstractReading] = []
+    def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[PredictionReading]:
+        finalized: List[PredictionReading] = []
         n_entries = len(entries)
         for i, e in enumerate(entries):
             if i % 10 == 0:
@@ -369,6 +369,7 @@ class API(DB):
 
         initial_entries = {}
         timestamp = 0
+        geohashes = set()
 
         for reading_spec in route_spec.reading_specs:
             print(f'starting upload for reading {reading_spec}')
@@ -377,6 +378,10 @@ class API(DB):
 
             if len(entries) > 0:
                 finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
+
+                for e in finalized_entries:
+                    geohashes.add(e.geohash())
+
                 first_entry: Reading = finalized_entries[0]
                 initial_entries[reading_spec.reading_type] = first_entry
 
@@ -392,6 +397,7 @@ class API(DB):
             id=route_id,
             timestamp=timestamp,
             name=route_spec.name if route_spec.name else None,
+            geohashes=geohashes,
             sample_data=initial_entries
         )
 

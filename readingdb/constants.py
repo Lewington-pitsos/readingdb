@@ -1,3 +1,4 @@
+GEOHASH_PRECISION = 6
 REGION_NAME = 'ap-southeast-2'
 
 LAT = 'lat'
@@ -57,6 +58,7 @@ class Constants():
     STATUS = 'RouteStatus'
     TIMESTAMP = 'Timestamp'
     LAST_UPDATED = 'LastUpdated'
+    ROUTE_HASHES = 'Geohashes'
 
     # S3 Path
     BUCKET = 'Bucket'
@@ -71,7 +73,9 @@ class Constants():
     # Data Access Group
     GROUP_NAME = 'GroupName'
     GROUP_ID = 'GroupID'
+    
 
-DEFAULT_ANNOTATOR_NAME = "LoukaSean"
-DEFAULT_ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"
-FAUX_ANNOTATOR_ID = "3f01d5ec-c80b-11eb-acfa-02428ee80691"
+DEFAULT_ANNOTATOR_NAME = 'LoukaSean'
+DEFAULT_ANNOTATOR_ID = '99bf4519-85d9-4726-9471-4c91a7677925'
+FAUX_ANNOTATOR_ID = '3f01d5ec-c80b-11eb-acfa-02428ee80691'
+DEFAULT_LAYER_ID = 'f9ddebe1-e054-11eb-b74d-04d9f584cf20'
