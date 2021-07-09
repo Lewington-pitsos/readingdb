@@ -5,7 +5,7 @@ from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
-from readingdb.reading import AbstractReading, PredictionReading, Reading, json_to_reading
+from readingdb.reading import PredictionReading, Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
 import uuid
@@ -278,7 +278,7 @@ class API(DB):
 
         return response, object_name
 
-    def __save_entry_data(self, entry: Reading, save_img=True) -> AbstractReading:
+    def __save_entry_data(self, entry: Reading, save_img=True) -> PredictionReading:
         if entry.readingType in Constants.IMAGE_TYPES and save_img:
             self.__save_img_data(entry)
 

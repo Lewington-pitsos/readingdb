@@ -1,4 +1,3 @@
-from readingdb.entities import ENTITIES
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -11,7 +10,7 @@ from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, PredictionReading, json_to_reading
+from readingdb.reading import PredictionReading, json_to_reading
 from readingdb.route import Route
 
 class TestDB(unittest.TestCase):
@@ -205,7 +204,7 @@ class TestDB(unittest.TestCase):
         for e in entities:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
+            r: PredictionReading = json_to_reading('PredictionReading', e)
             entity_readings.append(r)
 
         self.db.put_readings(entity_readings)
@@ -345,7 +344,7 @@ class TestDB(unittest.TestCase):
         for e in entities[:250]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
+            r: PredictionReading = json_to_reading('PredictionReading', e)
             entity_readings.append(r)
         self.db.put_readings(entity_readings)
 

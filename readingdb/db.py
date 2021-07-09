@@ -8,7 +8,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import AbstractReading, ddb_to_dict
+from readingdb.reading import PredictionReading, ddb_to_dict
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -233,7 +233,7 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def put_readings(self, readings: List[AbstractReading]):
+    def put_readings(self, readings: List[PredictionReading]):
         table = self.db.Table(Constants.READING_TABLE_NAME)
         with table.batch_writer() as batch:
             for r in readings:
@@ -271,7 +271,7 @@ class DB():
 
         return items, next_key
 
-    def put_reading(self, reading: AbstractReading):
+    def put_reading(self, reading: PredictionReading):
         table = self.db.Table(Constants.READING_TABLE_NAME)
         response = table.put_item(Item=reading.item_data())
         return response

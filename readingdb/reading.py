@@ -8,16 +8,7 @@ from readingdb.constants import *
 from readingdb.entities import *
 from readingdb.clean import encode_as_float, decode_bool, decode_float
 
-class AbstractReading(abc.ABC):
-    @abc.abstractmethod
-    def item_data(self) -> Dict[str, Any]:
-        raise NotImplementedError('not implemented')
-
-    @abc.abstractclassmethod
-    def decode(cls, item: Dict[str, Any]):
-        raise NotImplementedError('not implemented')
-
-class Reading(AbstractReading):
+class Reading():
     def __init__(self, id: str, route_id: str, date: int, readingType: str) -> None:
         self.id: str = id
         self.route_id: str = route_id
@@ -112,7 +103,7 @@ class PredictionReading(Reading):
                 Constants.KEY: self.uri.object_name
             }
 
-READING_TYPE_MAP: Dict[str, AbstractReading] = {
+READING_TYPE_MAP: Dict[str, PredictionReading] = {
     Constants.PREDICTION: PredictionReading,
 }
 
