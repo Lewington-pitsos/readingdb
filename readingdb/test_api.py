@@ -77,32 +77,31 @@ class TestAPI(unittest.TestCase):
             desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
-    def test_adds_presigned_urls_to_paginated_readings(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
-
-        page0, _ = self.api.paginated_route_readings(route.id, route.user_id)
-        self.assertEqual(22, len(page0))
-        self.assertIn('PresignedURL', page0[0]['Reading'])
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- READING ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
     def test_handles_large_queries_correctly(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823))
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
+        geohashes = set()
         finalized = []
         for e in entities[:60]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
             finalized.append(r)
         self.api.put_readings(finalized)
+        self.api.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
+        
 
         readings =  self.api.all_route_readings(route_id, '3')
         self.assertIsInstance(readings, list)
@@ -116,17 +115,20 @@ class TestAPI(unittest.TestCase):
 
     def test_can_upload_readings_with_given_key(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823))
         
-        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+        with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
+        geohashes = set()
         finalized = []
         for e in entities[:60]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: PredictionReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
+            geohashes.add(r.geohash())
+
+        self.api.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
@@ -153,6 +155,14 @@ class TestAPI(unittest.TestCase):
 
     #     readings = self.api.geohash_readings('r3gqu8')
     #     self.assertEqual(21, len(readings))
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- ROUTE --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
     def test_updates_route_name(self):
         user_id = 'aghsghavgas'
@@ -234,7 +244,7 @@ class TestAPI(unittest.TestCase):
             'Timestamp': 1616116106935,
         }]
 
-        saved = api.save_predictions(preds, route.id)
+        saved = api.save_predictions(preds, route.id, route.user_id)
         loaded_route = api.get_route(route.id, user_id)
         self.assertEqual(len(preds), len(saved))
         self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
@@ -301,7 +311,7 @@ class TestAPI(unittest.TestCase):
             'mocks/route_1621394080578.zip'
         ]))
 
-        user_routes = api.routes_for_user(user_id, user_id)
+        user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
         self.assertNotIn('SampleData', user_routes[0])
 
@@ -311,7 +321,7 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
 
-        api.save_predictions(route_spec_data, route_id)
+        api.save_predictions(route_spec_data, route_id, user_id)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
@@ -342,7 +352,7 @@ class TestAPI(unittest.TestCase):
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
-        self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, False) 
+        self.assertRaises(ValueError, api.save_predictions, route_spec_data, route_id, user_id, False) 
 
     def test_saves_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
@@ -354,7 +364,7 @@ class TestAPI(unittest.TestCase):
         api.put_route(r)
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             raw_readings = json.load(j)        
-        api.save_predictions(raw_readings, route_id)
+        api.save_predictions(raw_readings, route_id, user_id)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 
@@ -427,6 +437,9 @@ class TestAPI(unittest.TestCase):
                 'PredictionReading': {
                     'AnnotationTimestamp': 1623124150112,
                     'AnnotatorID': '3f01d5ec-c80b-11eb-acfa-02428ee80691',
+                    'Geohash': 'r1r291',
+                    'LayerID': 'f9ddebe1-e054-11eb-b74d-04d9f584cf20',
+                    'PK': 'r1r291',
                     'Reading': {
                         'ImageFileName': 'readingdb/test_data/images/road1.jpg',
                         'S3Uri': {
@@ -461,6 +474,7 @@ class TestAPI(unittest.TestCase):
                 'ReadingID': user_routes[0]['SampleData']['PredictionReading']['ReadingID'],
                 'Type': 'PredictionReading',
                 'RouteID': route.id,
+                'SK': f"f9ddebe1-e054-11eb-b74d-04d9f584cf20#{user_routes[0]['SampleData']['PredictionReading']['ReadingID']}",
                 'Timestamp': 1616116106935
                 }
             },
@@ -575,70 +589,6 @@ class TestAPI(unittest.TestCase):
             else:
                 self.assertEqual(r['AnnotatorID'], '3f01d5ec-c80b-11eb-acfa-02428ee80691')
         
-    def test_filters_paginated_readings_correctly(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        api.max_page_readings = 300
-        with open(self.current_dir + '/test_data/sydney_route_short.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
-
-        readings = api.all_route_readings(route.id, route.user_id)
-        self.assertEqual(971, len(readings))
-
-        preference = [
-            DEFAULT_ANNOTATOR_ID
-        ]
-        all_readings = []
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            route.user_id,
-            annotator_preference=preference
-        )
-        all_readings += pag
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            route.user_id,
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            route.user_id,
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            route.user_id,
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-        self.assertIsNone(key)
-        self.assertEqual(713, len(all_readings))
-
-        well_annotated = [r for r in all_readings if r['AnnotatorID'] == DEFAULT_ANNOTATOR_ID]
-        self.assertEqual(227, len(well_annotated))
-
-    def test_save_user(self):
-        usrs = self.api.all_users()
-        self.assertEqual(0, len(usrs))
-
-        success = self.api.save_user('some-user-id-that-is')
-        self.assertTrue(success)
-        usrs = self.api.all_users()
-        self.assertEqual(1, len(usrs))
-
-        success = self.api.save_user('some-user-id-that-is')
-        self.assertFalse(success)
-        usrs = self.api.all_users()
-        self.assertEqual(1, len(usrs))
-    
     # def test_gets_accessible_routes(self):
     #     uid = "ahsd78astdy87asdgha87s"
 

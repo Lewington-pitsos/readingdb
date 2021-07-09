@@ -1,14 +1,13 @@
 from random import sample
 from readingdb.utils import timestamp
 import time
-from readingdb.routestatus import RouteStatus
 from typing import Any, Callable, Dict, List, Set, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import PredictionReading, ddb_to_dict
+from readingdb.reading import PredictionReading, ddb_to_dict, reading_sort_key
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -152,7 +151,7 @@ class DB():
 
         return item
 
-    def __route_geohashes(self, route_id: str, user_id: str) -> Set[str]:
+    def route_geohashes(self, route_id: str, user_id: str) -> Set[str]:
         route = self.get_route(route_id, user_id)
         return set(route[Constants.ROUTE_HASHES])
 
@@ -244,7 +243,7 @@ class DB():
                 batch.put_item(Item=r.item_data())
 
     def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
-        geohashes = self.__route_geohashes(route_id, user_id)
+        geohashes = self.route_geohashes(route_id, user_id)
         all_readings = []
 
         for h in geohashes:
@@ -262,14 +261,14 @@ class DB():
         response = table.put_item(Item=reading.item_data())
         return response
 
-    def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
+    def delete_reading_items(self, readings: List[Dict[str, str]])-> None:
         table = self.db.Table(Constants.READING_TABLE_NAME)
-        
-        for r in reading_ids:
+    
+        for r in readings:
             table.delete_item(
                 Key={
-                    Constants.ROUTE_ID: route_id,
-                    Constants.READING_ID: r
+                    Constants.PART_KEY: r[Constants.GEOHASH],
+                    Constants.SORT_KEY: reading_sort_key(r[Constants.LAYER_ID], r[Constants.READING_ID])
                 }
             )
 

@@ -68,12 +68,13 @@ class API(DB):
     def save_predictions(
         self, 
         readings: List[Dict[str, Any]], 
-        route_id: int, 
+        route_id: str, 
+        user_id: str,
         save_imgs: bool = True
     ) -> None:
-        existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
+        existing_readings = self.all_route_readings(route_id, user_id, size_limit=99999999999)
         
-        to_delete = set()
+        to_delete = {}
         for r in readings:
             saved = False
             for er in existing_readings:
@@ -83,12 +84,12 @@ class API(DB):
                     saved=True
 
                     if (er[Constants.TYPE] == Constants.PREDICTION and er[Constants.ANNOTATOR_ID] == r[Constants.ANNOTATOR_ID]):
-                        to_delete.add(er[Constants.READING_ID]) 
+                        to_delete[er[Constants.READING_ID]] = er 
             
             if not saved and not save_imgs:
                 raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
         
-        self.delete_reading_items(route_id, list(to_delete))
+        self.delete_reading_items(to_delete.values())
 
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
         return saved_entries
@@ -388,10 +389,7 @@ class API(DB):
                         Key=uri[Constants.KEY]
                     )
 
-        deletedReadingCount = self.delete_reading_items(
-            route_id, 
-            [r[Constants.READING_ID] for r in readings]
-        )
+        deletedReadingCount = self.delete_reading_items(readings)
 
         self.remove_route(route_id, user_sub)
 

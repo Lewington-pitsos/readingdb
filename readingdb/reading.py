@@ -7,6 +7,9 @@ from readingdb.constants import *
 from readingdb.entities import *
 from readingdb.clean import encode_as_float, decode_bool, decode_float
 
+def reading_sort_key(layer_id:str, reading_id: str) -> str:
+    return f'{layer_id}#{reading_id}'
+
 class Reading():
     def __init__(
         self, 
@@ -40,8 +43,7 @@ class Reading():
         }
 
     def sort_key(self) -> str:
-        return f'{self.layer_id}#{self.id}'
-
+        return reading_sort_key(self.layer_id, self.id)
     def geohash(self) -> str:
         return pgh.encode(self.lat, self.lng, precision=GEOHASH_PRECISION)
 
