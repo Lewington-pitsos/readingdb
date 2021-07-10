@@ -1,6 +1,6 @@
 # Schema Design For DynamoDB Items
 
-## Readings
+## Reading
 
 ### Primary Key
 
@@ -17,10 +17,24 @@ Global Index - ImageHash - All Fields
 Global Index - Geohash @ 4x4 meters - All Fields
 
 
-## Routes
 
-### Primary Key
+| Item           | Primary Key  | Sort Key     |
+| :------------- | :----------: | -----------: |
+|  Route         | Route        | And Again    |
+| You Can Also   | Put Pipes In | Like this \| |
 
-Route + RouteID
 
-### Secondary Key
+
+## AccessGroup
+
+This will be modelled exclusively using inverted indices
+
+### Inverted Indices
+
+User + AccessGroup
+Layer + AccessGroup
+
+### Query Logic
+
+1. find all access groups for user
+2. find all layers for each access group
