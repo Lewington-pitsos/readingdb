@@ -1,4 +1,5 @@
 import copy
+from readingdb.format import route_sort_key
 import time
 from typing import Any, Dict, List
 from readingdb.routestatus import RouteStatus
@@ -48,13 +49,12 @@ class Route():
         else:
             item[Constants.LAST_UPDATED] = 0
 
-        
-
         return item
 
     def item_data(self) -> Dict[str, Any]:
         data = {
-            Constants.USER_ID: self.user_id,
+            Constants.PARTITION_KEY: Constants.ROUTE_PK,
+            Constants.SORT_KEY: route_sort_key(self.id),
             Constants.ROUTE_ID: self.id,
             Constants.STATUS: int(self.status),
             Constants.TIMESTAMP: self.timestamp,

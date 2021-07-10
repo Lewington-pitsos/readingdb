@@ -280,7 +280,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             return err_resp
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
-        data_access_groups, not_found = get_key(event, Constants.DATA_ACCESS_GROUPS)
+        data_access_groups, not_found = get_key(event, Constants.GROUPS)
 
         if not_found:
             saved_access_groups = api.save_user(user_id)
@@ -291,7 +291,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             return error_response(f'User ID {user_id} has already been registered')
 
         return success_response({
-            Constants.DATA_ACCESS_GROUPS: saved_access_groups
+            Constants.GROUPS: saved_access_groups
         })
     elif event_name == EVENT_ROAD_SNAP:
         points, err_resp = get_key(event, EVENT_POINTS)

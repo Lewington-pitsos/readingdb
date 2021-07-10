@@ -3,5 +3,5 @@ Route, Route, Route + RouteID
 Org, Org, Org + OrgID
 User, User, User + UserID
 Layer, Layer, Layer + LayerID
-UserAccessGroup, UAG + UserID, UAG + AccessGroupID, Secondary Key
-LayerAccessGroup, LAG + LayerID, LAG + AccessGroupID, Secondary Key
+UserAccessGroup, UAG + UserID, AccessGroup + AccessGroupID, Secondary Key
+LayerAccessGroup, AccessGroup + AccessGroupID, LAG + LayerID, Secondary Key

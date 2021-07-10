@@ -168,17 +168,46 @@ class TestDB(unittest.TestCase):
         self.db.create_reading_db()
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
+        rid = '3'
+        uid = '103'
+        group_id = '12312543'
 
-        self.db.put_route(Route('3', '103', 123617823))
-        
-        routes = self.db.routes_for_user('3')
+        self.db.put_user(uid)
+        self.db.user_add_group(uid, group_id)
+        reading = PredictionReading(
+                'sdasdasd-',
+                rid,
+                123617823,
+                Constants.PREDICTION,
+                -33.0089,
+                109.868887601,
+                'https://aws/s3/somebucket/file.jpg', 
+                entities=[
+                    Entity('Crocodile Cracks', 0.432, True, 1.876),
+                    Entity('Rutting', 0.432, True, 2.1),
+                    Entity('Ravelling', 0.432, True, 0.1),
+                ],
+                annotation_timestamp=1231238,
+                annotator_id='someid'
+            )
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer([reading.query_data()])
+        self.assertEqual(DEFAULT_LAYER_ID, layer_id)
+        self.db.group_add_layer(group_id, DEFAULT_LAYER_ID)
+
+        self.assertEqual([group_id], self.db.groups_for_user(uid))
+        self.assertEqual(1, len(self.db.layers_for_user(uid)))
+
+        self.db.put_route(Route(uid, rid, 123617823, geohashes=[reading.geohash()]))
+        routes = self.db.routes_for_user(uid)
         self.assertEqual(len(routes), 1)
         self.assertEqual({
-            'Geohashes': [],
-            'LastUpdated': 1619496879,
-            'RouteID': '103',
-            'RouteName': '103',
-            'UserID': '3',
+            'Geohashes': ['q6nhhn'],
+            'PK': 'Route',
+            'SK': 'Route#3',
+            'LastUpdated': 1619496880,
+            'RouteID': '3',
+            'RouteName': '3',
             'RouteStatus': 1,
             'Timestamp': 123617823
         }, routes[0])
@@ -391,7 +420,7 @@ class TestDB(unittest.TestCase):
         ])
 
         user_data = self.db.user_data('wendigo')
-        self.assertIn(Constants.DATA_ACCESS_GROUPS, user_data)
+        self.assertIn(Constants.GROUPS, user_data)
         self.assertEqual(user_data['DataAccessGroups'], [
             {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
             {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}

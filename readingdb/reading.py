@@ -34,15 +34,22 @@ class Reading():
 
     def item_data(self):
         return {
-            Constants.PART_KEY: self.geohash(),
+            Constants.PARTITION_KEY: self.geohash(),
             Constants.SORT_KEY: self.sort_key(),
             Constants.ROUTE_ID: self.route_id,
+            Constants.READING_ID: self.id,
             Constants.TYPE: self.readingType,  
             Constants.TIMESTAMP: self.date, 
             Constants.READING: {
                 Constants.LATITUDE: encode_as_float(self.lat),
                 Constants.LONGITUDE: encode_as_float(self.lng),
             }
+        }
+
+    def query_data(self) -> Dict[str, str]:
+        return {
+            Constants.READING_ID: self.id,
+            Constants.GEOHASH: self.geohash()
         }
 
     def sort_key(self) -> str:
@@ -53,7 +60,7 @@ class Reading():
 
     @classmethod
     def decode(cls, item: Dict[str, Any]):
-        item[Constants.GEOHASH] = item[Constants.PART_KEY]
+        item[Constants.GEOHASH] = item[Constants.PARTITION_KEY]
 
         sort_key_segments = item[Constants.SORT_KEY].split('#')
         item[Constants.LAYER_ID] = sort_key_segments[0]

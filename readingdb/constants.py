@@ -10,19 +10,27 @@ ANNOTATOR_PREFERENCE = [
 
 class Constants():
     # Generic
-    PART_KEY = 'PK'
+    PARTITION_KEY = 'PK'
     SORT_KEY = 'SK'
 
     # User
     USER_ID = 'UserID'
-    DATA_ACCESS_GROUPS = 'DataAccessGroups'
+    GROUPS = 'DataAccessGroups'
 
     
     # Database
     READING_TABLE_NAME = 'Readings'
-    ROUTE_TABLE_NAME = 'Routes'
+    ORG_TABLE_NAME = 'Org'
     PAGINATION_KEY_NAME = 'PaginationKey'
     USER_TABLE_NAME = 'Annotators'
+
+    # Org Table Partitions
+
+    READING_PK = 'Reading'
+    ROUTE_PK = 'Route'
+    LAYER_PK = 'Layer'
+    ORG_PK = 'Org'
+    USER_PK = 'User'
 
     # Reading Types
     PREDICTION = 'PredictionReading'
@@ -71,6 +79,10 @@ class Constants():
     CONFIDENCE = 'Confidence'
     PRESENT = 'Present'
     SEVERITY = 'Severity'
+
+    # Layer Keys
+    LAYER_READINGS = 'LayerReadings'
+
 
     # Data Access Group
     GROUP_NAME = 'GroupName'

@@ -1,5 +1,7 @@
 # Schema Design For DynamoDB Items
 
+Our general strategy is based on what the guy talks about in this video: https://www.youtube.com/watch?v=BnDKD_Zv0og
+
 ## Reading
 
 ### Primary Key

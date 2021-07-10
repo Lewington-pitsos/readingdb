@@ -1,4 +1,6 @@
+from os import read
 from random import sample
+from readingdb.format import route_sort_key
 from readingdb.utils import timestamp
 import time
 from typing import Any, Callable, Dict, List, Set, Tuple
@@ -103,7 +105,7 @@ class DB():
 
     def teardown_reading_db(self) -> None:
         self.delete_table(Constants.READING_TABLE_NAME)
-        self.delete_table(Constants.ROUTE_TABLE_NAME)
+        self.delete_table(Constants.ORG_TABLE_NAME)
         self.delete_table(Constants.USER_TABLE_NAME)
 
     
@@ -116,7 +118,7 @@ class DB():
     # -----------------------------------------------------------------
 
     def remove_route(self, route_id: str, user_sub: str):
-        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
         table.delete_item(
             Key={
                 Constants.ROUTE_ID: route_id,
@@ -126,7 +128,7 @@ class DB():
 
     def all_known_users(self) -> List[str]: 
         user_ids = set()
-        pg = self.scan_paginator.paginate(TableName=Constants.ROUTE_TABLE_NAME)
+        pg = self.scan_paginator.paginate(TableName=Constants.ORG_TABLE_NAME)
         for page in pg:
             for item in page[self.ITEM_KEY]:
                 user_ids.add(item[Constants.USER_ID])
@@ -134,13 +136,17 @@ class DB():
         return list(user_ids)
 
     def put_route(self, route: Route): 
-        route_table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        route_table = self.db.Table(Constants.ORG_TABLE_NAME)
+
+        print(route.item_data())
         return route_table.put_item(Item=route.item_data())
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
         response = table.query(
-            KeyConditionExpression=Key(Constants.ROUTE_ID).eq(route_id) & Key(Constants.USER_ID).eq(user_id)
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.ROUTE_PK) &
+                Key(Constants.SORT_KEY).eq(route_sort_key(route_id))
         )
 
         if len(response[self.ITEM_KEY]) < 1:
@@ -159,16 +165,30 @@ class DB():
 
         return set(route[Constants.ROUTE_HASHES])
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:     
-        return self.__ddb_query(
-            Constants.ROUTE_TABLE_NAME,
-            Constants.USER_ID,
-            user_id,
-            Route.decode_item
-        )
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]: 
+        layers = self.layers_for_user(user_id)
+        route_ids = set()
+
+        for layer in layers:
+            readings = self.__layer_readings(layer)
+
+            geohashes = set() 
+            reading_ids = set()
+
+            for reading in readings:
+                geohashes.add(reading[Constants.GEOHASH])
+                reading_ids.add(reading[Constants.READING_ID])
+
+            for geohash in geohashes:
+                geohash_readings = self.geohash_readings(geohash)
+                for geohash_reading in geohash_readings:
+                    if geohash_reading[Constants.READING_ID] in reading_ids:
+                        route_ids.add(geohash_reading[Constants.ROUTE_ID])
+        print(route_ids)
+        return [self.get_route(rid, user_id) for rid in route_ids]
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
-        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
 
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
@@ -186,7 +206,7 @@ class DB():
             )
 
     def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
-        table = self.db.Table(Constants.ROUTE_TABLE_NAME)
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
         
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
@@ -205,30 +225,30 @@ class DB():
 
     def __make_route_table(self):
         return self.db.create_table(
-            TableName=Constants.ROUTE_TABLE_NAME,
+            TableName=Constants.ORG_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  Constants.USER_ID,
+                    'AttributeName':  Constants.PARTITION_KEY,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': Constants.ROUTE_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': Constants.USER_ID,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': Constants.ROUTE_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'AttributeType': 'S'
                 },
             ],
             ProvisionedThroughput={
-                'ReadCapacityUnits': 50,
-                'WriteCapacityUnits': 50
+                'ReadCapacityUnits': 100,
+                'WriteCapacityUnits': 100
             }
         )
 
@@ -254,12 +274,28 @@ class DB():
             hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
                 ddb_to_dict,
-                Constants.PART_KEY,
+                Constants.PARTITION_KEY,
                 h,
             )
             all_readings.extend([r for r in hash_readings if r[Constants.ROUTE_ID] == route_id])
         
         return all_readings
+
+    def geohash_readings(self, geohash: str) -> List[Dict[str, Any]]:
+        table = self.db.Table(Constants.READING_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(geohash)
+        )
+        return response[self.ITEM_KEY]
+
+    def get_reading(self, geohash:str, reading_id: str) -> Dict[str, Any]:
+        hash_readings = self.geohash_readings(geohash)
+
+        for r in hash_readings:
+            if r[Constants.READING_ID] == reading_id:
+                return r
+        
+        raise ValueError(f'reading {reading_id} could not be located in geohash {geohash}')
 
     def put_reading(self, reading: PredictionReading):
         table = self.db.Table(Constants.READING_TABLE_NAME)
@@ -272,7 +308,7 @@ class DB():
         for r in readings:
             table.delete_item(
                 Key={
-                    Constants.PART_KEY: r[Constants.GEOHASH],
+                    Constants.PARTITION_KEY: r[Constants.GEOHASH],
                     Constants.SORT_KEY: reading_sort_key(r[Constants.LAYER_ID], r[Constants.READING_ID])
                 }
             )
@@ -282,7 +318,7 @@ class DB():
             TableName=Constants.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName': Constants.PART_KEY,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'KeyType': 'HASH'  
                 },
                 {
@@ -292,7 +328,7 @@ class DB():
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': Constants.PART_KEY,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'AttributeType': 'S'
                 },
                 {
@@ -306,6 +342,124 @@ class DB():
                 'WriteCapacityUnits': 500
             }
         )
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # --------------------------- LAYERS ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def put_layer(self, reading_data: List[Dict[str, Any]], layer_id: str = DEFAULT_LAYER_ID) -> str:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+
+        formatted_reading_data = []
+
+        for r in reading_data:
+            formatted_reading_data.append({
+                Constants.READING_ID: r[Constants.READING_ID],
+                Constants.GEOHASH: r[Constants.GEOHASH],
+            })
+
+        table.put_item(Item={
+            Constants.PARTITION_KEY: Constants.LAYER_PK,
+            Constants.SORT_KEY: self.__layer_pk(layer_id),
+            Constants.LAYER_READINGS: formatted_reading_data
+        })
+
+        return layer_id
+
+    def layers_for_user(self, uid:str) -> str:
+        layers = []
+
+        group_ids = self.groups_for_user(uid)
+        for id in group_ids:
+            layer_ids = self.__layer_ids_for_group(id)
+
+            for layer_id in layer_ids:
+                layers.append(self.get_layer(layer_id))        
+
+        return layers
+
+    def get_layer(self, layer_id: str) -> Dict[str, Any]:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.LAYER_PK) &
+                Key(Constants.SORT_KEY).eq(self.__layer_pk(layer_id))
+        )
+        
+        return response[self.ITEM_KEY][0]
+    
+    def __layer_pk(self, layer_id: str) -> str:
+        return f'Layer#{layer_id}'
+
+    def __layer_readings(self, layer: Dict[str, Any]) -> List[Dict[str, Any]]:
+        return layer[Constants.LAYER_READINGS]
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # ---------------------------- GROUPS -----------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def user_add_group(self, user_id: str, group_id: str) -> None:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+
+        table.put_item(Item={
+            Constants.PARTITION_KEY: self.__user_group_pk(user_id),
+            Constants.SORT_KEY: self.__group_key(group_id),
+        })
+
+    def group_add_layer(self, group_id: str, layer_id: str) -> None:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+
+        table.put_item(Item={
+            Constants.PARTITION_KEY: self.__group_key(group_id),
+            Constants.SORT_KEY: self.__layer_group_pk(layer_id),
+        })
+
+
+    def groups_for_user(self, user_id: str) -> List[str]:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        response = table.query(KeyConditionExpression=
+            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id)))
+
+        group_ids = []
+
+        for item in response[self.ITEM_KEY]:
+            group_ids.append(self.__id_from_key(item[Constants.SORT_KEY]))
+
+        return group_ids
+
+    def __user_group_pk(self, user_id: str) -> str:
+        return f'UserGroup#{user_id}'
+    
+    def __id_from_key(self, agid: str) -> str:
+        return agid.split("#")[-1]
+
+    def __layer_ids_for_group(self, group_id: str) -> str:
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__group_key(group_id))
+        )
+
+        layer_ids = []
+
+        for item in response[self.ITEM_KEY]:
+            layer_ids.append(self.__id_from_key(item[Constants.SORT_KEY]))
+        
+        return layer_ids
+
+    def __layer_group_pk(self, uid: str) -> str:
+        return f'LayerGroup#{uid}'
+
+    def __group_key(self, acess_group_id: str) -> str:
+        return f'Group#{acess_group_id}'
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -328,14 +482,14 @@ class DB():
             lambda item: item
         )
 
-    def put_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []):
-        if len(data_access_groups) == 0:
-            data_access_groups = [{
+    def put_user(self, uid: str, groups: List[Dict[str, str]] = []):
+        if len(groups) == 0:
+            groups = [{
                 Constants.GROUP_NAME: uid,
                 Constants.GROUP_ID: uid
             }]
 
-        for g in data_access_groups:
+        for g in groups:
             assert Constants.GROUP_NAME in g 
             assert Constants.GROUP_ID in g 
 
@@ -343,10 +497,10 @@ class DB():
         route_table.put_item(Item={
             Constants.TIMESTAMP: timestamp(),
             Constants.USER_ID: uid,
-            Constants.DATA_ACCESS_GROUPS: data_access_groups 
+            Constants.GROUPS: groups 
         })
 
-        return data_access_groups
+        return groups
 
     def __make_user_table(self):
         return self.db.create_table(
