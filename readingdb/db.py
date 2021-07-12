@@ -121,24 +121,14 @@ class DB():
         table = self.db.Table(Constants.ORG_TABLE_NAME)
         table.delete_item(
             Key={
-                Constants.ROUTE_ID: route_id,
-                Constants.USER_ID: user_sub
+                Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                Constants.SORT_KEY: route_sort_key(route_id)
             }
         )
-
-    def all_known_users(self) -> List[str]: 
-        user_ids = set()
-        pg = self.scan_paginator.paginate(TableName=Constants.ORG_TABLE_NAME)
-        for page in pg:
-            for item in page[self.ITEM_KEY]:
-                user_ids.add(item[Constants.USER_ID])
-
-        return list(user_ids)
 
     def put_route(self, route: Route): 
         route_table = self.db.Table(Constants.ORG_TABLE_NAME)
 
-        print(route.item_data())
         return route_table.put_item(Item=route.item_data())
 
     def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
@@ -184,7 +174,7 @@ class DB():
                 for geohash_reading in geohash_readings:
                     if geohash_reading[Constants.READING_ID] in reading_ids:
                         route_ids.add(geohash_reading[Constants.ROUTE_ID])
-        print(route_ids)
+
         return [self.get_route(rid, user_id) for rid in route_ids]
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
@@ -195,8 +185,8 @@ class DB():
         if r[Constants.NAME] != name:        
             table.update_item(
                 Key={
-                    Constants.ROUTE_ID: route_id,
-                    Constants.USER_ID: user_id
+                    Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                    Constants.SORT_KEY: route_sort_key(route_id)
                 },
                 UpdateExpression=f'set {Constants.NAME} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
@@ -213,8 +203,8 @@ class DB():
         if r[Constants.STATUS] != status:
             table.update_item(
                 Key={
-                    Constants.ROUTE_ID: route_id,
-                    Constants.USER_ID: user_id
+                    Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                    Constants.SORT_KEY: route_sort_key(route_id)
                 },
                 UpdateExpression=f'set {Constants.STATUS} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
@@ -482,25 +472,30 @@ class DB():
             lambda item: item
         )
 
-    def put_user(self, uid: str, groups: List[Dict[str, str]] = []):
-        if len(groups) == 0:
-            groups = [{
-                Constants.GROUP_NAME: uid,
-                Constants.GROUP_ID: uid
-            }]
+    def all_known_users(self) -> List[str]: 
+        user_ids = []
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.USER_PK)
+        )
 
-        for g in groups:
-            assert Constants.GROUP_NAME in g 
-            assert Constants.GROUP_ID in g 
+        for item in response[self.ITEM_KEY]:
+            user_ids.append(item[Constants.USER_ID])
 
-        route_table = self.db.Table(Constants.USER_TABLE_NAME)
-        route_table.put_item(Item={
+        return user_ids
+
+    def put_user(self, user_id: str, groups: List[Dict[str, str]] = []) -> None:       
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        table.put_item(Item={
+            Constants.PARTITION_KEY: Constants.USER_PK,
+            Constants.SORT_KEY: self.__user_sort_key(user_id),
             Constants.TIMESTAMP: timestamp(),
-            Constants.USER_ID: uid,
-            Constants.GROUPS: groups 
+            Constants.USER_ID: user_id,
         })
 
-        return groups
+    def __user_sort_key(self, user_id: str) -> str:
+        return f'User#{user_id}'
 
     def __make_user_table(self):
         return self.db.create_table(
