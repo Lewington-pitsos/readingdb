@@ -147,7 +147,7 @@ class TestDB(unittest.TestCase):
     def test_creates_and_deletes_tables(self):
         self.db.create_reading_db()
         tables = self.db.all_tables()
-        self.assertEqual(len(tables), 3)
+        self.assertEqual(len(tables), 2)
 
         self.db.teardown_reading_db()
         tables = self.db.all_tables()
@@ -260,21 +260,21 @@ class TestDB(unittest.TestCase):
         self.db.put_user(user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
-                'sdasdasd-',
-                route_id,
-                123617823,
-                Constants.PREDICTION,
-                -33.0089,
-                109.868887601,
-                'https://aws/s3/somebucket/file.jpg', 
-                entities=[
-                    Entity('Crocodile Cracks', 0.432, True, 1.876),
-                    Entity('Rutting', 0.432, True, 2.1),
-                    Entity('Ravelling', 0.432, True, 0.1),
-                ],
-                annotation_timestamp=1231238,
-                annotator_id='someid'
-            )
+            'sdasdasd-',
+            route_id,
+            123617823,
+            Constants.PREDICTION,
+            -33.0089,
+            109.868887601,
+            'https://aws/s3/somebucket/file.jpg', 
+            entities=[
+                Entity('Crocodile Cracks', 0.432, True, 1.876),
+                Entity('Rutting', 0.432, True, 2.1),
+                Entity('Ravelling', 0.432, True, 0.1),
+            ],
+            annotation_timestamp=1231238,
+            annotator_id='someid'
+        )
         self.db.put_reading(reading)
         layer_id = self.db.put_layer([reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
@@ -390,9 +390,7 @@ class TestDB(unittest.TestCase):
             route_id, 
             123617823,
             sample_data={'PredictionReading': json_to_reading('PredictionReading', reading.item_data())}
-
         ))
-        
         routes = self.db.routes_for_user(user_id)
         
         self.assertEqual(len(routes), 1)
@@ -420,16 +418,16 @@ class TestDB(unittest.TestCase):
 
     def test_gets_all_users(self):
         self.db.create_reading_db()
-        self.assertEqual(0, len(self.db.all_known_users()))
+        self.assertEqual(0, len(self.db.all_user_ids()))
 
         self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
-        self.assertEqual(0, len(self.db.all_known_users()))
+        self.assertEqual(0, len(self.db.all_user_ids()))
 
         self.db.put_user('one-armed-larry')
-        self.assertEqual(1, len(self.db.all_known_users()))
+        self.assertEqual(1, len(self.db.all_user_ids()))
         self.db.put_user('one-armed-larry')
         self.db.put_user('jonny-the-wrench')
-        self.assertEqual(2, len(self.db.all_known_users()))
+        self.assertEqual(2, len(self.db.all_user_ids()))
 
     def test_gets_user_data(self):
         self.db.create_reading_db()
@@ -464,26 +462,14 @@ class TestDB(unittest.TestCase):
         users = self.db.all_users()
         self.assertEqual(3, len(users))
 
-    def test_creates_default_data_access_groups(self):
-        self.db.create_reading_db()
-        self.db.put_user('asdasd7as7das7d')
-        usr = self.db.all_users()[0]
-        self.assertEqual(usr['UserID'], 'asdasd7as7das7d')
-        self.assertEqual(usr['DataAccessGroups'], [
-            {'GroupName': 'asdasd7as7das7d', 'GroupID': 'asdasd7as7das7d'}
-        ])
-
     def test_inserts_data_access_groups(self):
         self.db.create_reading_db()
-        self.assertRaises(AssertionError, self.db.put_user, 'wendigo', ['qqqq', 'bread'])
-        self.db.put_user( 'wendigo', [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        self.db.put_user( 'wendigo') 
+
+        self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
+        self.db.user_add_group('wendigo', 'a8sa6d7asd')
         usr = self.db.all_users()[0]
 
         self.assertEqual(usr['UserID'], 'wendigo')
-        self.assertEqual(usr['DataAccessGroups'], [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        groups = self.db.groups_for_user('wendigo')
+        self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
