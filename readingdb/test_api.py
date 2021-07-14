@@ -278,7 +278,12 @@ class TestAPI(unittest.TestCase):
     def test_saves_readings_to_existing_route(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
+        layer_id = '1018171187'
+        group_id = '0a0a0a0a'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_user(user_id)
+        api.user_add_group(user_id, group_id)
 
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
             route_spec_data = json.load(j)
@@ -290,9 +295,10 @@ class TestAPI(unittest.TestCase):
             reading_data = reading[Constants.READING]
             geohash = get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE])
             geohashes.add(geohash)
-            reading_query_data.append()
+            reading_query_data.append(reading)
         # you should be able to add a layer to save_predictions
-        api.save_predictions(route_spec_data, route_id, user_id)
+        api.save_predictions(route_spec_data, route_id, user_id, layer_id=layer_id)
+        api.group_add_layer(group_id, layer_id)
 
         r = Route(
             user_id,
@@ -322,16 +328,10 @@ class TestAPI(unittest.TestCase):
             'asdasdasdasdreadingdb/test_data/images/road1.jpg'
         ]))
 
-
-
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
         self.assertNotIn('SampleData', user_routes[0])
 
-        readings = api.all_route_readings(route_id, user_id)
-        self.assertEqual(len(readings), 0)
-
-        api.save_predictions(route_spec_data, route_id, user_id)
         readings = api.all_route_readings(route_id, user_id)
         self.assertEqual(len(readings), 22)
 

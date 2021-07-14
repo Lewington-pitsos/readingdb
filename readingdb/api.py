@@ -46,9 +46,6 @@ class API(DB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def geohash_readings(self, geohash: str):
-        return []
-
     def __same_image(self, r1: Dict[str, Any], r2: Dict[str, Any]) -> bool:
         r1 = r1[Constants.READING]
         r2 = r2[Constants.READING]
@@ -94,11 +91,11 @@ class API(DB):
 
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
 
-
         if layer_id is not None:
             reading_data = []
             for e in saved_entries:
                 reading_data.append(e.query_data())     
+            self.add_readings_to_layer(layer_id, reading_data)
 
         return saved_entries
 
