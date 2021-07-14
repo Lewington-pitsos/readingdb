@@ -31,6 +31,10 @@ class Constants():
     LAYER_PK = 'Layer'
     ORG_PK = 'Org'
     USER_PK = 'User'
+    GROUP_PK = 'Group'
+
+    # AccessGroups
+    GROUP_NAME = 'GroupName'
 
     # Reading Types
     PREDICTION = 'PredictionReading'

@@ -44,7 +44,6 @@ class TestAPI(unittest.TestCase):
             self.secret_key, 
             self.tmp_bucket,
         )
-
         self.api = API(
             TEST_DYNAMO_ENDPOINT,  
             bucket=self.bucket_name,
@@ -154,6 +153,8 @@ class TestAPI(unittest.TestCase):
 
     #     readings = self.api.geohash_readings('r3gqu8')
     #     self.assertEqual(21, len(readings))
+
+    ## ---------------------- TESTED DOWN TO HERE ALL PASSING
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

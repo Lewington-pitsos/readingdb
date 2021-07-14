@@ -464,7 +464,7 @@ class TestDB(unittest.TestCase):
 
     def test_inserts_data_access_groups(self):
         self.db.create_reading_db()
-        self.db.put_user( 'wendigo') 
+        self.db.put_user('wendigo') 
 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
         self.db.user_add_group('wendigo', 'a8sa6d7asd')
@@ -473,3 +473,30 @@ class TestDB(unittest.TestCase):
         self.assertEqual(usr['UserID'], 'wendigo')
         groups = self.db.groups_for_user('wendigo')
         self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
+
+    def test_names_access_groups(self):
+        self.db.create_reading_db()
+        group_id = 'as8s8s8s'
+        self.db.put_group(group_id, 'good_group')
+
+        group = self.db.get_group(group_id)
+        self.assertEqual(group[Constants.GROUP_ID], group_id)
+        self.assertEqual(group[Constants.GROUP_NAME], 'good_group')
+
+    def test_adds_name_to_existing_group(self):
+        self.db.create_reading_db()
+        self.db.put_user('wendigo') 
+        self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
+
+        self.db.set_group_name('8a8a8a67a6a6a', 'xxxx')
+
+        group = self.db.get_group('8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_ID], '8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_NAME], 'xxxx')
+
+        self.db.set_group_name('8a8a8a67a6a6a', 'yyyy')
+
+        group = self.db.get_group('8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_ID], '8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_NAME], 'yyyy')
+

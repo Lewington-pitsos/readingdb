@@ -360,6 +360,30 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def put_group(self, group_id: str, name=None) -> None:
+        item = {
+            Constants.PARTITION_KEY: Constants.GROUP_PK,
+            Constants.SORT_KEY: self.__group_key(group_id),
+            Constants.GROUP_ID: group_id
+        }
+
+        if name is not None:
+            item[Constants.GROUP_NAME] = name
+
+        self.org_table.put_item(Item=item)
+
+    def set_group_name(self, group_id:str, name:str) -> None:
+        self.put_group(group_id, name)
+
+    def get_group(self, group_id: str) -> Dict[str, Any]:
+        resp = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.GROUP_PK) &
+                Key(Constants.SORT_KEY).eq(self.__group_key(group_id))
+        )
+
+        return resp[self.ITEM_KEY][0]
+
     def user_add_group(self, user_id: str, group_id: str) -> None:
         self.org_table.put_item(Item={
             Constants.PARTITION_KEY: self.__user_group_pk(user_id),
