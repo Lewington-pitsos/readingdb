@@ -428,7 +428,7 @@ class TestDB(unittest.TestCase):
         geohashes = set([])
         prediction_readings = []
         query_data = []
-        for e in entities[:300]:
+        for e in entities[:100]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: PredictionReading = json_to_reading('PredictionReading', e)
@@ -437,17 +437,17 @@ class TestDB(unittest.TestCase):
             prediction_readings.append(r)
         
         self.db.put_readings(prediction_readings[:50])
-        self.db.put_layer(query_data[:50], layer_id)
+        self.db.put_layer(query_data[:30], layer_id)
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(30, len(readings))
+
+        self.db.put_layer(query_data[:40], layer_id)
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(40, len(readings))
+
+        self.db.add_readings_to_layer(layer_id, query_data[40:50])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(50, len(readings))
-
-        self.db.put_readings(prediction_readings[50:70])
-        self.db.put_layer(query_data[:70], layer_id)
-        readings = self.db.readings_for_layer_id(layer_id)
-        self.assertEqual(70, len(readings))
-        
-
-
         
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

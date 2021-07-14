@@ -98,10 +98,7 @@ class API(DB):
         if layer_id is not None:
             reading_data = []
             for e in saved_entries:
-                reading_data.append(e.query_data())
-
-        
-
+                reading_data.append(e.query_data())     
 
         return saved_entries
 

@@ -143,26 +143,6 @@ class DB():
                         
         return [self.get_route(rid, user_id) for rid in route_ids]
 
-    def layer_readings(self, layers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        readings = []
-        for layer in layers:
-            all_query_data = self.__layer_extract_readings(layer)
-
-            geohashes = set() 
-            reading_ids = set()
-
-            for reading_data in all_query_data:
-                geohashes.add(reading_data[Constants.GEOHASH])
-                reading_ids.add(reading_data[Constants.READING_ID])
-
-            for geohash in geohashes:
-                geohash_readings = self.geohash_readings(geohash)
-                for geohash_reading in geohash_readings:
-                    if geohash_reading[Constants.READING_ID] in reading_ids:
-                        readings.append(geohash_reading)
-        return readings
-
-
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
         r: Dict[str, Any] = self.get_route(route_id, user_id)
 
@@ -336,6 +316,24 @@ class DB():
 
         return layer_id
 
+    def add_readings_to_layer(self, layer_id:str, reading_data: List[Dict[str, Any]]) -> None:
+        layer = self.get_layer(layer_id)
+
+        new_reading_query_data = []
+        reading_ids = set()
+
+        for r in reading_data:
+            new_reading_query_data.append(r)
+            reading_ids.add(r[Constants.READING_ID])
+
+        for r in layer[Constants.LAYER_READINGS]:
+            reading_id = r[Constants.READING_ID]
+            if reading_id not in reading_ids:
+                reading_ids.add(reading_id)
+                new_reading_query_data.append(r)
+
+        self.put_layer(new_reading_query_data, layer_id)
+
     def layers_for_user(self, uid:str) -> str:
         layers = []
 
@@ -352,6 +350,26 @@ class DB():
         layer = self.get_layer(layer_id)
         return self.layer_readings([layer])
 
+    def layer_readings(self, layers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        readings = []
+        for layer in layers:
+            all_query_data = layer[Constants.LAYER_READINGS]
+
+            geohashes = set() 
+            reading_ids = set()
+
+            for reading_data in all_query_data:
+                geohashes.add(reading_data[Constants.GEOHASH])
+                reading_ids.add(reading_data[Constants.READING_ID])
+
+            for geohash in geohashes:
+                geohash_readings = self.geohash_readings(geohash)
+                for geohash_reading in geohash_readings:
+                    if geohash_reading[Constants.READING_ID] in reading_ids:
+                        readings.append(geohash_reading)
+        return readings
+
+
     def get_layer(self, layer_id: str) -> Dict[str, Any]:
         response = self.org_table.query(
             KeyConditionExpression=
@@ -363,9 +381,6 @@ class DB():
 
     def __layer_sort_key(self, layer_id: str) -> str:
         return f'Layer#{layer_id}'
-
-    def __layer_extract_readings(self, layer: Dict[str, Any]) -> List[Dict[str, Any]]:
-        return layer[Constants.LAYER_READINGS]
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
