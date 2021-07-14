@@ -153,7 +153,6 @@ class TestDB(unittest.TestCase):
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 0)
 
-
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -161,7 +160,6 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
@@ -397,7 +395,6 @@ class TestDB(unittest.TestCase):
         
         routes = self.db.routes_for_user(user_id)
         
-        print(routes[0][Constants.SAMPLE_DATA])
         self.assertEqual(len(routes), 1)
         sample_reading = routes[0][Constants.SAMPLE_DATA][Constants.PREDICTION] 
         self.assertEqual(
@@ -442,16 +439,13 @@ class TestDB(unittest.TestCase):
         self.db.user_add_group('wendigo', 'a8sa6d7asd')
 
         user_data = self.db.user_data('wendigo')
-        self.assertIn(Constants.GROUPS, user_data)
-        self.assertEqual(user_data['DataAccessGroups'], [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        self.assertEqual('wendigo', user_data[Constants.USER_ID])
+        groups = self.db.groups_for_user('wendigo')
+        self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
 
     def test_creates_new_user(self):
         self.db.create_reading_db()
         users = self.db.all_users()
-
         self.assertEqual(0, len(users))
 
         self.db.put_user(

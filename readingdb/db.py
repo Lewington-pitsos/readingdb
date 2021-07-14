@@ -460,11 +460,14 @@ class DB():
     # -----------------------------------------------------------------
 
     def user_data(self, uid: str)-> Dict[str, Any]:
-        return self.__ddb_query(
-            Constants.USER_TABLE_NAME,
-            Constants.USER_ID,
-            uid,
-        )[0]
+        table = self.db.Table(Constants.ORG_TABLE_NAME)
+        response = table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.USER_PK) &
+                Key(Constants.SORT_KEY).eq(self.__user_sort_key(uid))
+        )
+
+        return response[self.ITEM_KEY][0]
 
     def all_users(self) -> List[Dict[str, Any]]:
         return self.__paginate_table(
