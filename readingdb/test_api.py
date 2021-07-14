@@ -154,8 +154,6 @@ class TestAPI(unittest.TestCase):
     #     readings = self.api.geohash_readings('r3gqu8')
     #     self.assertEqual(21, len(readings))
 
-    ## ---------------------- TESTED DOWN TO HERE ALL PASSING
-
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -286,10 +284,15 @@ class TestAPI(unittest.TestCase):
             route_spec_data = json.load(j)
 
         geohashes = set()
+        reading_query_data = []
 
         for reading in route_spec_data:
             reading_data = reading[Constants.READING]
-            geohashes.add(get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE]))
+            geohash = get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE])
+            geohashes.add(geohash)
+            reading_query_data.append()
+        # you should be able to add a layer to save_predictions
+        api.save_predictions(route_spec_data, route_id, user_id)
 
         r = Route(
             user_id,
@@ -315,8 +318,11 @@ class TestAPI(unittest.TestCase):
             'mocks/apple.json', 
             'mocks/file.json',
             'mocks/route_2021_04_07_17_14_36_709.zip',
-            'mocks/route_1621394080578.zip'
+            'mocks/route_1621394080578.zip',
+            'asdasdasdasdreadingdb/test_data/images/road1.jpg'
         ]))
+
+
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)

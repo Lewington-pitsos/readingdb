@@ -68,8 +68,6 @@ class Reading():
 
         item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
 
-
-
 class PredictionReading(Reading):
     def __init__(
         self, id: int, 

@@ -411,6 +411,47 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
+    # -------------------------- LAYER --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_adds_readings_to_existing_layer(self):
+        self.db.create_reading_db()
+
+        route_id = '103'
+        layer_id = '919191919'
+        
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        prediction_readings = []
+        query_data = []
+        for e in entities[:300]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+            prediction_readings.append(r)
+        
+        self.db.put_readings(prediction_readings[:50])
+        self.db.put_layer(query_data[:50], layer_id)
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(50, len(readings))
+
+        self.db.put_readings(prediction_readings[50:70])
+        self.db.put_layer(query_data[:70], layer_id)
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(70, len(readings))
+        
+
+
+        
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
     # -------------------------- USER ---------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

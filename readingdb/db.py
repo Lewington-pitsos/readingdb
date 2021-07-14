@@ -37,8 +37,8 @@ class DB():
         self.scan_paginator = self.db.meta.client.get_paginator('scan')
         self.max_page_readings = max_page_readings
 
-        self.org_table = None
-        self.reading_table = None
+        self.reading_table = self.db.Table(Constants.READING_TABLE_NAME)
+        self.org_table = self.db.Table(Constants.ORG_TABLE_NAME)
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -133,26 +133,35 @@ class DB():
         return set(route[Constants.ROUTE_HASHES])
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]: 
-        layers = self.layers_for_user(user_id)
+        layer_data = self.layers_for_user(user_id)
         route_ids = set()
 
+        layer_readings = self.layer_readings(layer_data)
+
+        for reading in layer_readings:
+            route_ids.add(reading[Constants.ROUTE_ID])
+                        
+        return [self.get_route(rid, user_id) for rid in route_ids]
+
+    def layer_readings(self, layers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        readings = []
         for layer in layers:
-            readings = self.__layer_readings(layer)
+            all_query_data = self.__layer_extract_readings(layer)
 
             geohashes = set() 
             reading_ids = set()
 
-            for reading in readings:
-                geohashes.add(reading[Constants.GEOHASH])
-                reading_ids.add(reading[Constants.READING_ID])
+            for reading_data in all_query_data:
+                geohashes.add(reading_data[Constants.GEOHASH])
+                reading_ids.add(reading_data[Constants.READING_ID])
 
             for geohash in geohashes:
                 geohash_readings = self.geohash_readings(geohash)
                 for geohash_reading in geohash_readings:
                     if geohash_reading[Constants.READING_ID] in reading_ids:
-                        route_ids.add(geohash_reading[Constants.ROUTE_ID])
-                        
-        return [self.get_route(rid, user_id) for rid in route_ids]
+                        readings.append(geohash_reading)
+        return readings
+
 
     def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
         r: Dict[str, Any] = self.get_route(route_id, user_id)
@@ -311,6 +320,8 @@ class DB():
     def put_layer(self, reading_data: List[Dict[str, Any]], layer_id: str = DEFAULT_LAYER_ID) -> str:
         formatted_reading_data = []
 
+        # below we get rid of any other data that may be included
+        # in reading_data
         for r in reading_data:
             formatted_reading_data.append({
                 Constants.READING_ID: r[Constants.READING_ID],
@@ -319,7 +330,7 @@ class DB():
 
         self.org_table.put_item(Item={
             Constants.PARTITION_KEY: Constants.LAYER_PK,
-            Constants.SORT_KEY: self.__layer_pk(layer_id),
+            Constants.SORT_KEY: self.__layer_sort_key(layer_id),
             Constants.LAYER_READINGS: formatted_reading_data
         })
 
@@ -337,19 +348,23 @@ class DB():
 
         return layers
 
+    def readings_for_layer_id(self, layer_id:str) -> List[Dict[str, Any]]:
+        layer = self.get_layer(layer_id)
+        return self.layer_readings([layer])
+
     def get_layer(self, layer_id: str) -> Dict[str, Any]:
         response = self.org_table.query(
             KeyConditionExpression=
                 Key(Constants.PARTITION_KEY).eq(Constants.LAYER_PK) &
-                Key(Constants.SORT_KEY).eq(self.__layer_pk(layer_id))
+                Key(Constants.SORT_KEY).eq(self.__layer_sort_key(layer_id))
         )
         
         return response[self.ITEM_KEY][0]
-    
-    def __layer_pk(self, layer_id: str) -> str:
+
+    def __layer_sort_key(self, layer_id: str) -> str:
         return f'Layer#{layer_id}'
 
-    def __layer_readings(self, layer: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def __layer_extract_readings(self, layer: Dict[str, Any]) -> List[Dict[str, Any]]:
         return layer[Constants.LAYER_READINGS]
 
     # -----------------------------------------------------------------

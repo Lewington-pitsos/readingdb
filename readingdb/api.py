@@ -70,7 +70,8 @@ class API(DB):
         readings: List[Dict[str, Any]], 
         route_id: str, 
         user_id: str,
-        save_imgs: bool = True
+        save_imgs: bool = True,
+        layer_id: str = None
     ) -> None:
         existing_readings = self.all_route_readings(route_id, user_id, size_limit=99999999999)
         
@@ -92,6 +93,16 @@ class API(DB):
         self.delete_reading_items(to_delete.values())
 
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
+
+
+        if layer_id is not None:
+            reading_data = []
+            for e in saved_entries:
+                reading_data.append(e.query_data())
+
+        
+
+
         return saved_entries
 
 
