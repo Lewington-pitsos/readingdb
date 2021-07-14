@@ -297,7 +297,7 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def put_layer(self, reading_data: List[Dict[str, Any]], layer_id: str = DEFAULT_LAYER_ID) -> str:
+    def put_layer(self,  layer_id: str, reading_data: List[Dict[str, Any]]) -> str:
         formatted_reading_data = []
 
         # below we get rid of any other data that may be included
@@ -319,20 +319,23 @@ class DB():
     def add_readings_to_layer(self, layer_id:str, reading_data: List[Dict[str, Any]]) -> None:
         layer = self.get_layer(layer_id)
 
-        new_reading_query_data = []
-        reading_ids = set()
+        if layer == None:
+            self.put_layer(layer_id, reading_data)
+        else:
+            new_reading_query_data = []
+            reading_ids = set()
 
-        for r in reading_data:
-            new_reading_query_data.append(r)
-            reading_ids.add(r[Constants.READING_ID])
-
-        for r in layer[Constants.LAYER_READINGS]:
-            reading_id = r[Constants.READING_ID]
-            if reading_id not in reading_ids:
-                reading_ids.add(reading_id)
+            for r in reading_data:
                 new_reading_query_data.append(r)
+                reading_ids.add(r[Constants.READING_ID])
 
-        self.put_layer(new_reading_query_data, layer_id)
+            for r in layer[Constants.LAYER_READINGS]:
+                reading_id = r[Constants.READING_ID]
+                if reading_id not in reading_ids:
+                    reading_ids.add(reading_id)
+                    new_reading_query_data.append(r)
+
+            self.put_layer(layer_id, new_reading_query_data, )
 
     def layers_for_user(self, uid:str) -> str:
         layers = []
@@ -376,6 +379,9 @@ class DB():
                 Key(Constants.PARTITION_KEY).eq(Constants.LAYER_PK) &
                 Key(Constants.SORT_KEY).eq(self.__layer_sort_key(layer_id))
         )
+
+        if len(response[self.ITEM_KEY]) == 0:
+            return None 
         
         return response[self.ITEM_KEY][0]
 

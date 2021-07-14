@@ -189,7 +189,7 @@ class TestDB(unittest.TestCase):
                 annotator_id='someid'
             )
         self.db.put_reading(reading)
-        layer_id = self.db.put_layer([reading.query_data()])
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID, [reading.query_data()])
         self.assertEqual(DEFAULT_LAYER_ID, layer_id)
         self.db.group_add_layer(group_id, DEFAULT_LAYER_ID)
 
@@ -235,7 +235,7 @@ class TestDB(unittest.TestCase):
                 annotator_id='someid'
             )
         self.db.put_reading(reading)
-        layer_id = self.db.put_layer([reading.query_data()])
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID, [reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
         routes = self.db.routes_for_user('103')
@@ -276,7 +276,7 @@ class TestDB(unittest.TestCase):
             annotator_id='someid'
         )
         self.db.put_reading(reading)
-        layer_id = self.db.put_layer([reading.query_data()])
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
         r = Route(user_id, route_id, 123617823, geohashes=[reading.geohash()])
@@ -344,7 +344,7 @@ class TestDB(unittest.TestCase):
                 annotator_id='someid'
             )
         self.db.put_reading(reading)
-        layer_id = self.db.put_layer([reading.query_data()])
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(
@@ -382,7 +382,7 @@ class TestDB(unittest.TestCase):
         self.db.put_user(user_id)
         self.db.user_add_group(user_id, group_id)
         self.db.put_reading(reading)
-        layer_id = self.db.put_layer([reading.query_data()])
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(Route(
@@ -416,6 +416,31 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def test_creates_layer_when_adding_readings(self):
+        self.db.create_reading_db()
+
+        route_id = '103'
+        layer_id = '919191919'
+        
+        with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        prediction_readings = []
+        query_data = []
+        for e in entities[:50]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+            prediction_readings.append(r)
+
+        self.db.put_readings(prediction_readings[:20])
+        self.db.add_readings_to_layer(layer_id, query_data[:20])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(20, len(readings))
+
     def test_adds_readings_to_existing_layer(self):
         self.db.create_reading_db()
 
@@ -437,11 +462,11 @@ class TestDB(unittest.TestCase):
             prediction_readings.append(r)
         
         self.db.put_readings(prediction_readings[:50])
-        self.db.put_layer(query_data[:30], layer_id)
+        self.db.put_layer(layer_id, query_data[:30])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(30, len(readings))
 
-        self.db.put_layer(query_data[:40], layer_id)
+        self.db.put_layer(layer_id, query_data[:40])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(40, len(readings))
 
