@@ -166,9 +166,11 @@ class TestAPI(unittest.TestCase):
         user_id = 'aghsghavgas'
         group_id = '10101010'
         layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
@@ -188,9 +190,11 @@ class TestAPI(unittest.TestCase):
         user_id = 'aghsghavgas'
         group_id = '10101010'
         layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
@@ -265,9 +269,11 @@ class TestAPI(unittest.TestCase):
         user_id = 'aghsghavgas'
         group_id = 'a9a9a9a'
         layer_id = '2828282828'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
         
@@ -303,9 +309,11 @@ class TestAPI(unittest.TestCase):
         route_id = 'asdasdasdasd'
         layer_id = '1018171187'
         group_id = '0a0a0a0a'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
 
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
@@ -454,9 +462,12 @@ class TestAPI(unittest.TestCase):
         user_id = 'asdy7asdh'
         group_id = '1818176111'
         layer_id = '1919191919'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        api.put_user(user_id)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
@@ -554,6 +565,7 @@ class TestAPI(unittest.TestCase):
         ]))
 
     def test_deletes_route(self):
+        org_name = 'fds'
         user_id = 'aghsghavgas'
         user_id2 = "9a8a7ssa7s"
 
@@ -571,11 +583,12 @@ class TestAPI(unittest.TestCase):
         bucket = s3.Bucket(self.bucket_name)
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
-        api.put_user(user_id2)
+        api.put_user(org_name, user_id2)
         api.user_add_group(user_id2, group_id2)
         api.group_add_layer(group_id2, layer_id2)
 
@@ -637,12 +650,14 @@ class TestAPI(unittest.TestCase):
         user_id = 'aghsghavgas'
         group_id = '8s8ss'
         layer_id = '29292'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         with open(self.current_dir + '/test_data/ann_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
 
-        api.put_user(user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
