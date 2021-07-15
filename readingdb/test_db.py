@@ -171,6 +171,8 @@ class TestDB(unittest.TestCase):
         uid = '103'
         group_id = '12312543'
 
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
         self.db.put_user(org_name, uid)
         self.db.user_add_group(uid, group_id)
         reading = PredictionReading(
@@ -194,7 +196,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(DEFAULT_LAYER_ID, layer_id)
         self.db.group_add_layer(group_id, DEFAULT_LAYER_ID)
 
-        self.assertEqual([group_id], self.db.groups_for_user(uid))
+        self.assertEqual(set([group_id, default_org_group]), set(self.db.groups_for_user(uid)))
         self.assertEqual(1, len(self.db.layers_for_user(uid)))
 
         self.db.put_route(Route(uid, rid, 123617823, geohashes=[reading.geohash()]))
@@ -218,6 +220,7 @@ class TestDB(unittest.TestCase):
         route_id = '0202020'
         org_name = 'fds'
 
+        self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
@@ -254,12 +257,14 @@ class TestDB(unittest.TestCase):
     def test_updates_route_written_date_on_update(self):
         self.db.create_reading_db()
         org_name = 'fds'
+        self.db.put_org(org_name)
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
         route_id = '103'
         user_id = '3'
         group_id = '921929292'
 
+        self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
@@ -329,6 +334,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
 
+        self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
@@ -384,6 +390,7 @@ class TestDB(unittest.TestCase):
                 annotator_id='someid'
         )
 
+        self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         self.db.put_reading(reading)
@@ -500,11 +507,10 @@ class TestDB(unittest.TestCase):
 
     def test_creates_and_gets_orgs(self):
         self.db.create_reading_db()
-
         orgs = self.db.get_orgs()
         self.assertEqual(0, len(orgs))
 
-        self.db.put_org('roora')
+        self.db.put_org('roora', 'sdasdadasd')
 
         orgs = self.db.get_orgs()
         self.assertEqual(1, len(orgs))
@@ -520,7 +526,7 @@ class TestDB(unittest.TestCase):
 
     def test_gets_all_users(self):
         self.db.create_reading_db()
-        self.db.put_org('roora')
+        self.db.put_org('roora', 'a9a9a9a9a')
         self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
         self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
@@ -534,44 +540,51 @@ class TestDB(unittest.TestCase):
 
     def test_gets_user_data(self):
         self.db.create_reading_db()
-        org_id = 'Frontline Data Systems'
-        self.db.put_user(org_id, 'wendigo')
+        org_name = 'Frontline Data Systems'
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
+        self.db.put_user(org_name, 'wendigo')
 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
         self.db.user_add_group('wendigo', 'a8sa6d7asd')
 
-        user_data = self.db.user_data(org_id, 'wendigo')
+        user_data = self.db.user_data(org_name, 'wendigo')
         self.assertEqual('wendigo', user_data[Constants.USER_ID])
         groups = self.db.groups_for_user('wendigo')
-        self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
+        self.assertEqual(set(['8a8a8a67a6a6a', 'a8sa6d7asd', default_org_group]), set(groups))
 
     def test_creates_new_user(self):
         self.db.create_reading_db()
-        org_id = 'Frontline Data Systems'
-        users = self.db.all_users(org_id)
+        org_name = 'Frontline Data Systems'
+        users = self.db.all_users(org_name)
         self.assertEqual(0, len(users))
 
+        self.db.put_org(org_name)
         self.db.put_user(
-            org_id,
+            org_name,
             'asd78asdgasiud-asd87agdasd7-asd78asd',
         )
-        users = self.db.all_users(org_id)
+        users = self.db.all_users(org_name)
         self.assertEqual(1, len(users))
+        self.assertEqual('Frontline Data Systems', users[0][Constants.ORG_NAME])
         
         self.db.put_user(
-            org_id,
+            org_name,
             'asdasd7as7das7d',
         )
-        users = self.db.all_users(org_id)
+        users = self.db.all_users(org_name)
         self.assertEqual(2, len(users))
 
-        self.db.put_user(org_id, 'akakakakakakak')
-        users = self.db.all_users(org_id)
+        self.db.put_user(org_name, 'akakakakakakak')
+        users = self.db.all_users(org_name)
         self.assertEqual(3, len(users))
 
     def test_inserts_data_access_groups(self):
         self.db.create_reading_db()
         org_name = 'ekekeke'
+
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
         self.db.put_user(org_name, 'wendigo') 
 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
@@ -580,7 +593,7 @@ class TestDB(unittest.TestCase):
 
         self.assertEqual(usr['UserID'], 'wendigo')
         groups = self.db.groups_for_user('wendigo')
-        self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
+        self.assertEqual(set([default_org_group, '8a8a8a67a6a6a', 'a8sa6d7asd']), set(groups))
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -602,6 +615,7 @@ class TestDB(unittest.TestCase):
     def test_adds_name_to_existing_group(self):
         self.db.create_reading_db()
         org_name = 'fds'
+        self.db.put_org(org_name)
         self.db.put_user(org_name, 'wendigo') 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
 

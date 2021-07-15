@@ -88,6 +88,7 @@ class Constants():
 
     # Org Keys
     ORG_NAME = 'OrgName'
+    ORG_GROUP = 'OrgGroup'
 
     # Data Access Group
     GROUP_NAME = 'GroupName'

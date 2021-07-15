@@ -1,3 +1,4 @@
+import uuid
 from readingdb.format import route_sort_key
 from readingdb.utils import timestamp
 import time
@@ -487,14 +488,20 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def put_org(self, org_name:str) -> None:
+    def put_org(self, org_name:str, default_group_id: str = None) -> Dict[str, Any]:
+        if default_group_id is None:
+            default_group_id = str(uuid.uuid1())
+        
         item = {
             Constants.PARTITION_KEY: Constants.ORG_PK,
             Constants.SORT_KEY: self.__org_sk(org_name),
-            Constants.ORG_NAME: org_name
+            Constants.ORG_NAME: org_name,
+            Constants.ORG_GROUP: default_group_id
         }
 
         self.org_table.put_item(Item=item)
+
+        return item
 
     def get_orgs(self) -> List[Dict[str, Any]]:
         response = self.org_table.query(
@@ -503,6 +510,15 @@ class DB():
         )
 
         return response[self.ITEM_KEY]
+    
+    def get_org(self, org_name: str) -> Dict[str, Any]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.ORG_PK) &
+                Key(Constants.SORT_KEY).eq(self.__org_sk(org_name)),
+        )
+
+        return response[self.ITEM_KEY][0]
 
     def __org_sk(self, org_id:str) -> str:
         return f'Org#{org_id}'
@@ -550,8 +566,12 @@ class DB():
             Constants.SORT_KEY: self.__user_sort_key(user_id),
             Constants.TIMESTAMP: timestamp(),
             Constants.USER_ID: user_id,
+            Constants.ORG_NAME: org_name
         })
 
+        org = self.get_org(org_name)
+
+        self.user_add_group(user_id, org[Constants.ORG_GROUP])
 
     def __user_org_key(self, org_name: str) -> str:
         return f'Org#{org_name}'
