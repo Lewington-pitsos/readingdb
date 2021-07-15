@@ -16,7 +16,6 @@ class Constants():
     # User
     USER_ID = 'UserID'
     GROUPS = 'DataAccessGroups'
-
     
     # Database
     READING_TABLE_NAME = 'Readings'
@@ -25,7 +24,6 @@ class Constants():
     USER_TABLE_NAME = 'Annotators'
 
     # Org Table Partitions
-
     READING_PK = 'Reading'
     ROUTE_PK = 'Route'
     LAYER_PK = 'Layer'
@@ -88,6 +86,8 @@ class Constants():
     LAYER_NAME = 'LayerName'
     LAYER_READINGS = 'LayerReadings'
 
+    # Org Keys
+    ORG_NAME = 'OrgName'
 
     # Data Access Group
     GROUP_NAME = 'GroupName'
