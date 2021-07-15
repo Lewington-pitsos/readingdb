@@ -391,6 +391,9 @@ class TestDigester(unittest.TestCase):
             'mocks/route_1621394080578/GPS.txt',
         ]))
 
+        layer_ids = self.api.layer_ids_for_group(self.default_group)
+        self.assertEqual(0, len(layer_ids))
+
         d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
         route = d.process_upload(  
             user_id='someuderid',     
@@ -402,5 +405,11 @@ class TestDigester(unittest.TestCase):
         )
 
         readings = self.api.all_route_readings(route.id, route.user_id)
-        self.assertEqual(len(readings), 42)
+        self.assertEqual(42, len(readings))
         self.assertEqual('hedge cresent', route.name)
+
+        layer_ids = self.api.layer_ids_for_group(self.default_group)
+        self.assertEqual(1, len(layer_ids))
+
+        layer_readings = self.api.readings_for_layer_id(layer_ids[0])
+        self.assertEqual(42, len(layer_readings))

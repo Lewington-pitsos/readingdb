@@ -353,7 +353,7 @@ class DB():
 
         group_ids = self.groups_for_user(uid)
         for id in group_ids:
-            layer_ids = self.__layer_ids_for_group(id)
+            layer_ids = self.layer_ids_for_group(id)
 
             for layer_id in layer_ids:
                 layers.append(self.get_layer(layer_id))        
@@ -461,7 +461,7 @@ class DB():
     def __id_from_key(self, agid: str) -> str:
         return agid.split("#")[-1]
 
-    def __layer_ids_for_group(self, group_id: str) -> str:
+    def layer_ids_for_group(self, group_id: str) -> str:
         response = self.org_table.query(
             KeyConditionExpression=
                 Key(Constants.PARTITION_KEY).eq(self.__group_key(group_id))
