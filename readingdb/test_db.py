@@ -165,12 +165,13 @@ class TestDB(unittest.TestCase):
     def test_creates_new_route(self):
         self.db.create_reading_db()
         routes = self.db.routes_for_user('103')
+        org_name = 'xero'
         self.assertEqual(len(routes), 0)
         rid = '3'
         uid = '103'
         group_id = '12312543'
 
-        self.db.put_user(uid)
+        self.db.put_user(org_name, uid)
         self.db.user_add_group(uid, group_id)
         reading = PredictionReading(
                 'sdasdasd-',
@@ -215,8 +216,9 @@ class TestDB(unittest.TestCase):
         user_id = '191732j272'
         group_id = '019191' 
         route_id = '0202020'
+        org_name = 'fds'
 
-        self.db.put_user(user_id)
+        self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
                 'sdasdasd-',
@@ -251,13 +253,14 @@ class TestDB(unittest.TestCase):
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_updates_route_written_date_on_update(self):
         self.db.create_reading_db()
+        org_name = 'fds'
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
         route_id = '103'
         user_id = '3'
         group_id = '921929292'
 
-        self.db.put_user(user_id)
+        self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
             'sdasdasd-',
@@ -319,13 +322,14 @@ class TestDB(unittest.TestCase):
         user_id = '238282828'
         group_id = 'asjaaja8a8a'
         route_id = '99929292872'
+        org_name = 'fds'
 
         name = 'someName'
         self.db.create_reading_db()
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
 
-        self.db.put_user(user_id)
+        self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         reading = PredictionReading(
                 'sdasdasd-',
@@ -358,6 +362,7 @@ class TestDB(unittest.TestCase):
         route_id = '99227827'
         user_id = '202292922'
         group_id = 'ashasa7sa87a'
+        org_name = 'fds'
 
         self.db.create_reading_db()
         routes = self.db.routes_for_user(user_id)
@@ -379,7 +384,7 @@ class TestDB(unittest.TestCase):
                 annotator_id='someid'
         )
 
-        self.db.put_user(user_id)
+        self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
         self.db.put_reading(reading)
         layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
@@ -492,6 +497,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
+
     def test_creates_and_gets_orgs(self):
         self.db.create_reading_db()
 
@@ -504,7 +510,6 @@ class TestDB(unittest.TestCase):
         self.assertEqual(1, len(orgs))
         self.assertEqual('roora', orgs[0][Constants.ORG_NAME])
 
-
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -512,63 +517,78 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
+
     def test_gets_all_users(self):
         self.db.create_reading_db()
-        self.assertEqual(0, len(self.db.all_user_ids()))
+        self.db.put_org('roora')
+        self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
         self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
-        self.assertEqual(0, len(self.db.all_user_ids()))
+        self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
-        self.db.put_user('one-armed-larry')
-        self.assertEqual(1, len(self.db.all_user_ids()))
-        self.db.put_user('one-armed-larry')
-        self.db.put_user('jonny-the-wrench')
-        self.assertEqual(2, len(self.db.all_user_ids()))
+        self.db.put_user('roora', 'one-armed-larry')
+        self.assertEqual(1, len(self.db.all_user_ids('roora')))
+        self.db.put_user('roora', 'one-armed-larry')
+        self.db.put_user('roora', 'jonny-the-wrench')
+        self.assertEqual(2, len(self.db.all_user_ids('roora')))
 
     def test_gets_user_data(self):
         self.db.create_reading_db()
-        self.db.put_user('wendigo')
+        org_id = 'Frontline Data Systems'
+        self.db.put_user(org_id, 'wendigo')
 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
         self.db.user_add_group('wendigo', 'a8sa6d7asd')
 
-        user_data = self.db.user_data('wendigo')
+        user_data = self.db.user_data(org_id, 'wendigo')
         self.assertEqual('wendigo', user_data[Constants.USER_ID])
         groups = self.db.groups_for_user('wendigo')
         self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
 
     def test_creates_new_user(self):
         self.db.create_reading_db()
-        users = self.db.all_users()
+        org_id = 'Frontline Data Systems'
+        users = self.db.all_users(org_id)
         self.assertEqual(0, len(users))
 
         self.db.put_user(
+            org_id,
             'asd78asdgasiud-asd87agdasd7-asd78asd',
         )
-        users = self.db.all_users()
+        users = self.db.all_users(org_id)
         self.assertEqual(1, len(users))
         
         self.db.put_user(
+            org_id,
             'asdasd7as7das7d',
         )
-        users = self.db.all_users()
+        users = self.db.all_users(org_id)
         self.assertEqual(2, len(users))
 
-        self.db.put_user('akakakakakakak')
-        users = self.db.all_users()
+        self.db.put_user(org_id, 'akakakakakakak')
+        users = self.db.all_users(org_id)
         self.assertEqual(3, len(users))
 
     def test_inserts_data_access_groups(self):
         self.db.create_reading_db()
-        self.db.put_user('wendigo') 
+        org_name = 'ekekeke'
+        self.db.put_user(org_name, 'wendigo') 
 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
         self.db.user_add_group('wendigo', 'a8sa6d7asd')
-        usr = self.db.all_users()[0]
+        usr = self.db.all_users(org_name)[0]
 
         self.assertEqual(usr['UserID'], 'wendigo')
         groups = self.db.groups_for_user('wendigo')
         self.assertListEqual(['8a8a8a67a6a6a', 'a8sa6d7asd'], groups)
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- GROUP --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
     def test_names_access_groups(self):
         self.db.create_reading_db()
@@ -581,7 +601,8 @@ class TestDB(unittest.TestCase):
 
     def test_adds_name_to_existing_group(self):
         self.db.create_reading_db()
-        self.db.put_user('wendigo') 
+        org_name = 'fds'
+        self.db.put_user(org_name, 'wendigo') 
         self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
 
         self.db.set_group_name('8a8a8a67a6a6a', 'xxxx')

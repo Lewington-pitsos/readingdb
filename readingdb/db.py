@@ -515,28 +515,28 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def user_data(self, uid: str)-> Dict[str, Any]:
+    def user_data(self, org_name:str, user_id: str)-> Dict[str, Any]:
         response = self.org_table.query(
             KeyConditionExpression=
-                Key(Constants.PARTITION_KEY).eq(Constants.USER_PK) &
-                Key(Constants.SORT_KEY).eq(self.__user_sort_key(uid))
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name)) &
+                Key(Constants.SORT_KEY).eq(self.__user_sort_key(user_id))
         )
 
         return response[self.ITEM_KEY][0]
 
-    def all_users(self) -> List[Dict[str, Any]]:
+    def all_users(self, org_name:str) -> List[Dict[str, Any]]:
         resp = self.org_table.query(
             KeyConditionExpression=
-                Key(Constants.PARTITION_KEY).eq(Constants.USER_PK)
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name))
         )
 
         return resp[self.ITEM_KEY]
 
-    def all_user_ids(self) -> List[str]: 
+    def all_user_ids(self, org_name:str) -> List[str]: 
         user_ids = []
         response = self.org_table.query(
             KeyConditionExpression=
-                Key(Constants.PARTITION_KEY).eq(Constants.USER_PK)
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name))
         )
 
         for item in response[self.ITEM_KEY]:
@@ -544,14 +544,17 @@ class DB():
 
         return user_ids
 
-    def put_user(self, user_id: str) -> None:       
+    def put_user(self, org_name, user_id: str) -> None:       
         self.org_table.put_item(Item={
-            Constants.PARTITION_KEY: Constants.USER_PK,
+            Constants.PARTITION_KEY: self.__user_org_key(org_name),
             Constants.SORT_KEY: self.__user_sort_key(user_id),
             Constants.TIMESTAMP: timestamp(),
             Constants.USER_ID: user_id,
         })
 
+
+    def __user_org_key(self, org_name: str) -> str:
+        return f'Org#{org_name}'
 
     def __user_sort_key(self, user_id: str) -> str:
         return f'User#{user_id}'
