@@ -252,10 +252,10 @@ class DB():
 
     def delete_reading_items(self, readings: List[Dict[str, str]])-> None:
         for r in readings:
-            self.org_table.delete_item(
+            self.reading_table.delete_item(
                 Key={
                     Constants.PARTITION_KEY: r[Constants.GEOHASH],
-                    Constants.SORT_KEY: reading_sort_key(r[Constants.LAYER_ID], r[Constants.READING_ID])
+                    Constants.SORT_KEY: reading_sort_key(r[Constants.TYPE], r[Constants.READING_ID])
                 }
             )
 
@@ -356,20 +356,21 @@ class DB():
     def layer_readings(self, layers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         readings = []
         for layer in layers:
-            all_query_data = layer[Constants.LAYER_READINGS]
+            if layer is not None and Constants.LAYER_READINGS in layer:
+                all_query_data = layer[Constants.LAYER_READINGS]
 
-            geohashes = set() 
-            reading_ids = set()
+                geohashes = set() 
+                reading_ids = set()
 
-            for reading_data in all_query_data:
-                geohashes.add(reading_data[Constants.GEOHASH])
-                reading_ids.add(reading_data[Constants.READING_ID])
+                for reading_data in all_query_data:
+                    geohashes.add(reading_data[Constants.GEOHASH])
+                    reading_ids.add(reading_data[Constants.READING_ID])
 
-            for geohash in geohashes:
-                geohash_readings = self.geohash_readings(geohash)
-                for geohash_reading in geohash_readings:
-                    if geohash_reading[Constants.READING_ID] in reading_ids:
-                        readings.append(geohash_reading)
+                for geohash in geohashes:
+                    geohash_readings = self.geohash_readings(geohash)
+                    for geohash_reading in geohash_readings:
+                        if geohash_reading[Constants.READING_ID] in reading_ids:
+                            readings.append(geohash_reading)
         return readings
 
 
@@ -505,7 +506,7 @@ class DB():
 
         return user_ids
 
-    def put_user(self, user_id: str, groups: List[Dict[str, str]] = []) -> None:       
+    def put_user(self, user_id: str) -> None:       
         self.org_table.put_item(Item={
             Constants.PARTITION_KEY: Constants.USER_PK,
             Constants.SORT_KEY: self.__user_sort_key(user_id),

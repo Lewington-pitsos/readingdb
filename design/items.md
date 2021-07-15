@@ -10,7 +10,7 @@ Geohash @ around 100x100 meters
 
 ### Secondary Key
 
-Layer + ReadingID
+ReadingID
 
 ### Indices
 

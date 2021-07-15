@@ -67,7 +67,7 @@ class TestDB(unittest.TestCase):
             Constants.LONGITUDE: 151.0181246,
         })
         self.assertEqual(first_reading[Constants.TIMESTAMP], reading_time)
-        self.assertEqual(first_reading[Constants.LAYER_ID], DEFAULT_LAYER_ID)
+        self.assertEqual(first_reading[Constants.GEOHASH], 'r3gqu8')
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
 
     def test_saves_readings_with_severity(self):

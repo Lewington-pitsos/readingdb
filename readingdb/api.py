@@ -88,7 +88,6 @@ class API(DB):
                 raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
         
         self.delete_reading_items(to_delete.values())
-
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)
 
         if layer_id is not None:
@@ -133,7 +132,6 @@ class API(DB):
 
         if annotator_preference:
             readings = self.__preferred_readings(annotator_preference, readings)
-
 
         self.__inject_presigned_urls(readings)
         
@@ -242,7 +240,7 @@ class API(DB):
         return response, object_name
 
     def __save_entry_data(self, entry: Reading, save_img=True) -> PredictionReading:
-        if entry.readingType in Constants.IMAGE_TYPES and save_img:
+        if entry.reading_type in Constants.IMAGE_TYPES and save_img:
             self.__save_img_data(entry)
 
         return entry
@@ -325,6 +323,7 @@ class API(DB):
         self, 
         route_spec: RouteSpec, 
         user_id: str, 
+        layer_id: str
     ) -> Route:
         route_id = str(uuid.uuid1())
 
@@ -334,26 +333,31 @@ class API(DB):
         timestamp = 0
         geohashes = set()
 
+        all_entries = []
         for reading_spec in route_spec.reading_specs:
             print(f'starting upload for reading {reading_spec}')
 
             entries = reading_spec.load_readings()
 
             if len(entries) > 0:
-                finalized_entries = self.__save_entries(route_id, reading_spec.reading_type, entries)
+                finalized_readings = self.__save_entries(route_id, reading_spec.reading_type, entries)
 
-                for e in finalized_entries:
+                for e in finalized_readings:
                     geohashes.add(e.geohash())
 
-                first_entry: Reading = finalized_entries[0]
+                first_entry: Reading = finalized_readings[0]
                 initial_entries[reading_spec.reading_type] = first_entry
 
                 if timestamp == 0:
                     timestamp = first_entry.date
 
+                all_entries.extend([r.query_data() for r in finalized_readings])
+
                 print('Finished saving all readings to FDS database')
             else:
                 print(f'No entries found for reading specification {reading_spec}')
+
+        self.add_readings_to_layer(layer_id, all_entries)
 
         route = Route(
             user_id=user_id,
@@ -424,6 +428,6 @@ class API(DB):
             if u[Constants.USER_ID] == uid:
                 return False
         
-        return self.put_user(uid, data_access_groups)
+        return self.put_user(uid)
 
         
