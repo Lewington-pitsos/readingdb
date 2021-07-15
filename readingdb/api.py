@@ -421,13 +421,23 @@ class API(DB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def save_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []) -> bool:
+    def save_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []) -> None:
         all_users = self.all_users()
+
+        already_exists = False
 
         for u in all_users:
             if u[Constants.USER_ID] == uid:
-                return False
+                already_exists = True
+                break
         
-        return self.put_user(uid)
+        if not already_exists:
+            self.put_user(uid)
+
+        for ag in data_access_groups:
+            group_id = ag[Constants.GROUP_ID]
+            self.user_add_group(uid, group_id)
+            if Constants.GROUP_NAME in ag:
+                self.put_group(group_id, ag[Constants.GROUP_NAME])
 
         

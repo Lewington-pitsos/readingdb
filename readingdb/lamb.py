@@ -283,16 +283,11 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         data_access_groups, not_found = get_key(event, Constants.GROUPS)
 
         if not_found:
-            saved_access_groups = api.save_user(user_id)
+            api.save_user(user_id)
         else:
-            saved_access_groups = api.save_user(user_id, data_access_groups)
+            api.save_user(user_id, data_access_groups)
+        return success_response(None)
 
-        if not saved_access_groups:
-            return error_response(f'User ID {user_id} has already been registered')
-
-        return success_response({
-            Constants.GROUPS: saved_access_groups
-        })
     elif event_name == EVENT_ROAD_SNAP:
         points, err_resp = get_key(event, EVENT_POINTS)
         if err_resp:

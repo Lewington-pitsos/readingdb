@@ -34,7 +34,6 @@ class TestLambda(unittest.TestCase):
 class TestBasic(TestLambda):
     def test_error_response_on_bad_input(self):
         resp = test_handler({}, TEST_CONTEXT)
-
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Invalid Event Syntax'
@@ -300,7 +299,6 @@ class TestBasic(TestLambda):
             'Body': 'Unauthenticated request, unrecognized Access Token bad_access_token'
         }, resp)
 
-
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_nonexistant_type(self):
         resp = test_handler({
@@ -343,7 +341,6 @@ class TestLambdaRW(TestLambda):
             self.secret_key,
             self.bucket_name
         )      
-
 
 class TestLambdaW(TestLambdaRW):
     @unittest.skip('This make an actual call to fargate')
@@ -429,10 +426,7 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual({
             'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
-                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
-            ]}
+            'Body': None
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -460,34 +454,27 @@ class TestLambdaW(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
+            'UserID': 'aaaaaaaaaaaaaaaa-sd-asdas-dasd-asd',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual({
             'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                 {'GroupName': 'too-shorta-sd-asdas-dasd-asd', 'GroupID': 'too-shorta-sd-asdas-dasd-asd'}
-            ]}
-        }, resp)
-  
-        resp = test_handler({
-            'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'User ID too-shorta-sd-asdas-dasd-asd has already been registered'
-        }, resp)
+            'Body': None}
+        , resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
         with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -562,9 +549,15 @@ class TestLambdaW(TestLambdaRW):
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions_for_long_route(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -593,10 +586,15 @@ class TestLambdaW(TestLambdaRW):
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_returns_s3_url_if_response_body_too_large(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+        
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
-
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
 
         s3 = boto3.resource('s3', region_name=REGION_NAME)
         bucket = s3.Bucket(TEST_BUCKET)
@@ -642,6 +640,9 @@ class TestLambdaR(TestLambdaRW):
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
         self.twenty_route = r
+
+    def tearDown(self):
+        super().tearDown()
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
