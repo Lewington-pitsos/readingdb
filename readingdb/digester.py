@@ -31,6 +31,7 @@ class Digester():
         self, 
         bucket: str, 
         key: str, 
+        group_id: str,
         name: str = None,
         snap_to_roads=False
     ) -> Route: 
@@ -57,6 +58,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key.split(".")[0], 
             bucket, 
             z.namelist(), 
@@ -71,6 +73,7 @@ class Digester():
     def process_upload(
         self, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         name: str = None,
@@ -92,6 +95,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key, 
             bucket, 
             bucket_objects,
@@ -102,6 +106,7 @@ class Digester():
     def process_local(
         self, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         filenames: List[str],
@@ -127,6 +132,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key, 
             bucket, 
             filenames, 
@@ -139,6 +145,7 @@ class Digester():
         upload, 
         read_gps_file, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         filenames: List[str], 
@@ -175,6 +182,7 @@ class Digester():
 
         print('saving readings to route database')
         route = self.api.save_route(routeSpec, user_id)
+        self.api.group_add_layer(group_id, route.layer_id)
 
         return route
 

@@ -323,7 +323,7 @@ class API(DB):
         self, 
         route_spec: RouteSpec, 
         user_id: str, 
-        layer_id: str
+        layer_id: str = None
     ) -> Route:
         route_id = str(uuid.uuid1())
 
@@ -357,6 +357,10 @@ class API(DB):
             else:
                 print(f'No entries found for reading specification {reading_spec}')
 
+        if layer_id is None:
+            layer_id = str(uuid.uuid1())
+            self.put_layer(layer_id, name=f'RouteLayer#{route_id}')
+
         self.add_readings_to_layer(layer_id, all_entries)
 
         route = Route(
@@ -365,7 +369,8 @@ class API(DB):
             timestamp=timestamp,
             name=route_spec.name if route_spec.name else None,
             geohashes=geohashes,
-            sample_data=initial_entries
+            sample_data=initial_entries,
+            layer_id=layer_id
         )
 
         self.put_route(route)

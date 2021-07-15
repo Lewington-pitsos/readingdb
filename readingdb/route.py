@@ -16,7 +16,8 @@ class Route():
         timestamp: int, 
         name: str=None, 
         geohashes: List[str] = [],
-        sample_data: Dict[str, PredictionReading]=None
+        sample_data: Dict[str, PredictionReading]=None,
+        layer_id: str = None
     ) -> None:
         '''sample_data contains a small collection of readings that belong to
         this route. Allows users to get an idea of what kind of data the route
@@ -31,6 +32,7 @@ class Route():
         self.timestamp: int = timestamp
         self.update_timestamp: int = int(time.time())
         self.geohashes = geohashes
+        self.layer_id = layer_id
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
