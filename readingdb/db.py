@@ -297,7 +297,12 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def put_layer(self,  layer_id: str, reading_data: List[Dict[str, Any]]) -> str:
+    def put_layer(
+        self, 
+        layer_id: str, 
+        reading_data: List[Dict[str, Any]] = [],
+        name:str=None
+    ) -> str:
         formatted_reading_data = []
 
         # below we get rid of any other data that may be included
@@ -308,11 +313,16 @@ class DB():
                 Constants.GEOHASH: r[Constants.GEOHASH],
             })
 
-        self.org_table.put_item(Item={
+        item = {
             Constants.PARTITION_KEY: Constants.LAYER_PK,
             Constants.SORT_KEY: self.__layer_sort_key(layer_id),
             Constants.LAYER_READINGS: formatted_reading_data
-        })
+        }
+
+        if name is not None:
+            item[Constants.LAYER_NAME] = name
+
+        self.org_table.put_item(Item=item)
 
         return layer_id
 

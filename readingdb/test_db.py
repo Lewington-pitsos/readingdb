@@ -416,6 +416,17 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def test_saves_layer_names(self):
+        self.db.create_reading_db()
+        
+        layer_id = 'a9a9a9a9'
+        self.db.put_layer(layer_id, name='Default')
+
+        layer = self.db.get_layer(layer_id)
+
+        self.assertEqual('Default', layer[Constants.LAYER_NAME])
+        self.assertEqual(0, len(layer[Constants.LAYER_READINGS]))
+
     def test_creates_layer_when_adding_readings(self):
         self.db.create_reading_db()
 

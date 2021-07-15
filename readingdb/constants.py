@@ -85,6 +85,7 @@ class Constants():
     SEVERITY = 'Severity'
 
     # Layer Keys
+    LAYER_NAME = 'LayerName'
     LAYER_READINGS = 'LayerReadings'
 
 
