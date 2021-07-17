@@ -187,6 +187,35 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[Constants.NAME], 'Belgrave')
 
+    def test_user_without_group_access_cannot_get_route(self):
+        user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+        
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        api.save_route(route_spec, user_id, group_id, layer_id)
+        self.assertEqual(1, len(api.routes_for_user(user_id)))
+        
+        hacker_uid = 'a8a8a8a'
+        hacker_gid = 'a9a9a'
+        api.put_user(org_name, hacker_uid)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
+
+        api.user_add_group(hacker_uid, hacker_gid)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
+
+        api.group_add_layer(hacker_gid, layer_id)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
+
     def test_update_route_status(self):
         user_id = 'aghsghavgas'
         group_id = '10101010'

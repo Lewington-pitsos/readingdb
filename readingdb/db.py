@@ -142,7 +142,11 @@ class DB():
         for reading in layer_readings:
             route_ids.add(reading[Constants.ROUTE_ID])
                         
-        return [self.get_route(rid) for rid in route_ids]
+        routes = [self.get_route(rid) for rid in route_ids]
+
+        groups = self.groups_for_user(user_id)
+
+        return [r for r in routes if r[Constants.GROUP_ID] in groups] 
 
     def update_route_name(self, route_id: str, name: str) -> None:
         r: Dict[str, Any] = self.get_route(route_id)
@@ -454,6 +458,16 @@ class DB():
             group_ids.append(self.__id_from_key(item[Constants.SORT_KEY]))
 
         return group_ids
+
+    def user_has_group(self, user_id: str, group_id: str) -> bool:
+        response = self.org_table.query(KeyConditionExpression=
+            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id)))
+
+        for item in response[self.ITEM_KEY]:
+            if self.__id_from_key(item[Constants.SORT_KEY]) == group_id:
+                return True
+        
+        return False
 
     def __user_group_pk(self, user_id: str) -> str:
         return f'UserGroup#{user_id}'
