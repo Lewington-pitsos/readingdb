@@ -70,7 +70,7 @@ class API(DB):
         save_imgs: bool = True,
         layer_id: str = None
     ) -> None:
-        existing_readings = self.all_route_readings(route_id, user_id, size_limit=99999999999)
+        existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
         
         to_delete = {}
         for r in readings:
@@ -119,13 +119,12 @@ class API(DB):
     def all_route_readings(
         self, 
         route_id: str, 
-        user_id: str,
         key: str = None, 
         size_limit = None,
         predictions_only = False,
         annotator_preference = None
     ) -> List[Dict[str, Any]]:
-        readings = super().all_route_readings(route_id, user_id)
+        readings = super().all_route_readings(route_id)
 
         if predictions_only:
             readings = [r for r in readings if r['Type'] == Constants.PREDICTION]
@@ -159,7 +158,6 @@ class API(DB):
     def prediction_readings(
         self, 
         route_id: str, 
-        user_id: str,
         annotator_preference: List[str] = [],
         key: str = None, 
         size_limit: int = None,
@@ -167,7 +165,6 @@ class API(DB):
 
         return self.all_route_readings(
             route_id, 
-            user_id,
             key, 
             size_limit,
             predictions_only=True,
@@ -385,13 +382,13 @@ class API(DB):
         
         return routes
 
-    def set_as_predicting(self, route_id: str, user_id: str) -> None:
-        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
+    def set_as_predicting(self, route_id: str) -> None:
+        self.set_route_status(route_id, RouteStatus.PREDICTING)
 
-    def delete_route(self, route_id: str, user_sub: str) -> Any:
+    def delete_route(self, route_id: str) -> Any:
         deletedImgCount = 0
 
-        readings = self.all_route_readings(route_id, user_sub)
+        readings = self.all_route_readings(route_id)
 
         for r in readings:
             if r[Constants.TYPE] == Constants.PREDICTION:
@@ -405,12 +402,12 @@ class API(DB):
 
         deletedReadingCount = self.delete_reading_items(readings)
 
-        self.remove_route(route_id, user_sub)
+        self.remove_route(route_id)
 
         return (deletedReadingCount, deletedImgCount)
 
-    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        r = super().get_route(route_id, user_id)
+    def get_route(self, route_id: str) -> Dict[str, Any]:
+        r = super().get_route(route_id)
         if not r:
             return r
 

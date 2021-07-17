@@ -124,7 +124,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp
 
-        route = api.get_route(route_id, user_data.user_sub)
+        route = api.get_route(route_id)
         return success_response(route)
 
     if event_name == EVENT_DELETE_ROUTE:
@@ -132,7 +132,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp
 
-        api.delete_route(route_id, user_data.user_sub)
+        api.delete_route(route_id)
         return success_response('')
 
     if event_name == EVENT_GET_USER_ROUTES:
@@ -160,8 +160,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
             pred_only = True
 
         readings = api.all_route_readings(
-            route_id, 
-            user_data.user_sub,
+            route_id,
             key,
             predictions_only=pred_only,
             annotator_preference=annotator_preference
@@ -276,7 +275,7 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp 
 
-        api.update_route_name(route_id, user_data.user_sub, name)
+        api.update_route_name(route_id, name)
 
         return success_response(None)
 

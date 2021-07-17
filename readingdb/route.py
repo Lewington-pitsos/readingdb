@@ -32,7 +32,6 @@ class Route():
         self.timestamp: int = timestamp
         self.update_timestamp: int = int(time.time())
         self.geohashes = geohashes
-        self.layer_id = layer_id
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:

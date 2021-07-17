@@ -54,7 +54,7 @@ class TestDB(unittest.TestCase):
                 )
             )
         self.db.put_readings(finalized)
-        readings = self.db.all_route_readings(rid, uid)
+        readings = self.db.all_route_readings(rid)
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'someroute')
@@ -96,7 +96,7 @@ class TestDB(unittest.TestCase):
             )
         )
     
-        readings = self.db.all_route_readings(rid, uid)
+        readings = self.db.all_route_readings(rid)
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
@@ -133,7 +133,7 @@ class TestDB(unittest.TestCase):
 
         self.db.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
         self.db.put_readings(entity_readings)
-        readings = self.db.all_route_readings(route_id, '3')
+        readings = self.db.all_route_readings(route_id)
         self.assertEqual(3383, len(readings))
 
     # -----------------------------------------------------------------
@@ -294,22 +294,22 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(routes[0]['LastUpdated'], original_update_timestamp)
 
-        self.db.update_route_name(route_id, user_id, 'new_name')
+        self.db.update_route_name(route_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
         name_timestamp = routes[0]['LastUpdated']
         self.assertGreater(name_timestamp, original_update_timestamp)
 
-        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        self.db.set_route_status(route_id, RouteStatus.COMPLETE)
         routes = self.db.routes_for_user(user_id)
         status_timestamp = routes[0]['LastUpdated']
         self.assertGreater(status_timestamp, name_timestamp)
 
-        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        self.db.set_route_status(route_id, RouteStatus.COMPLETE)
         routes = self.db.routes_for_user(user_id)
         second_status_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_status_timestamp, status_timestamp)
 
-        self.db.update_route_name(route_id, user_id, 'new_name')
+        self.db.update_route_name(route_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
         second_name_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_name_timestamp, second_status_timestamp)
@@ -321,7 +321,7 @@ class TestDB(unittest.TestCase):
 
         route = Route(uid, rid, 31232143242)
         self.db.put_route(route)
-        self.db.remove_route(rid, uid)
+        self.db.remove_route(rid)
 
     def test_creates_new_route_with_name(self):
         user_id = '238282828'

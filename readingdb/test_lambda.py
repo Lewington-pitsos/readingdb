@@ -169,18 +169,6 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key Predictions missing from event'
         }, resp)
 
-        # resp = test_handler({
-        #     'Type': 'SavePredictions',
-        #     'RouteID': "1721739812-1238123",
-        #     'Predictions': {},
-        #     'AccessToken': self.access_token,
-        # }, TEST_CONTEXT)
-
-        # self.assertEqual({
-        #     'Status': 'Error',
-        #     'Body': 'Bad Format Error: key GroupID missing from event'
-        # }, resp)
-
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_road_snap_event(self):
         resp = test_handler({

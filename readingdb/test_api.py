@@ -101,12 +101,12 @@ class TestAPI(unittest.TestCase):
         self.api.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
         
 
-        readings =  self.api.all_route_readings(route_id, '3')
+        readings =  self.api.all_route_readings(route_id)
         self.assertIsInstance(readings, list)
         self.assertEqual(60, len(readings))
         
         self.api.size_limit = 400
-        uri = self.api.all_route_readings(route_id, '3')
+        uri = self.api.all_route_readings(route_id)
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
@@ -130,7 +130,7 @@ class TestAPI(unittest.TestCase):
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
-        uri = self.api.all_route_readings(route_id, '3', key='kingofkings.json')
+        uri = self.api.all_route_readings(route_id, key='kingofkings.json')
         
         self.assertIsInstance(uri, dict)
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
@@ -180,9 +180,9 @@ class TestAPI(unittest.TestCase):
         route = api.save_route(route_spec, user_id, layer_id)
 
         self.assertEqual(route.name, route.id[:Route.MAX_NAME_LENGTH])
-        api.update_route_name(route.id, user_id, 'Belgrave')
+        api.update_route_name(route.id, 'Belgrave')
 
-        loaded_route = api.get_route(route.id, user_id)
+        loaded_route = api.get_route(route.id)
         self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
         self.assertEqual(loaded_route[Constants.NAME], 'Belgrave')
 
@@ -204,9 +204,9 @@ class TestAPI(unittest.TestCase):
         route = api.save_route(route_spec, user_id, layer_id)
 
         self.assertEqual(RouteStatus.UPLOADED, route.status)
-        api.set_as_predicting(route.id, user_id)
+        api.set_as_predicting(route.id)
 
-        loaded_route = api.get_route(route.id, user_id)
+        loaded_route = api.get_route(route.id)
         self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
         preds = [{
@@ -261,7 +261,7 @@ class TestAPI(unittest.TestCase):
         }]
 
         saved = api.save_predictions(preds, route.id, route.user_id)
-        loaded_route = api.get_route(route.id, user_id)
+        loaded_route = api.get_route(route.id)
         self.assertEqual(len(preds), len(saved))
         self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
@@ -284,7 +284,7 @@ class TestAPI(unittest.TestCase):
         
         route = api.save_route(route_spec, user_id, layer_id)
 
-        readings = api.all_route_readings(route.id, user_id)
+        readings = api.all_route_readings(route.id)
         self.assertEqual(3, len(readings))
         first_reading = readings[0]
 
@@ -363,7 +363,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(len(user_routes), 1)
         self.assertNotIn('SampleData', user_routes[0])
 
-        readings = api.all_route_readings(route_id, user_id)
+        readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
         bucket_objects = []
@@ -413,7 +413,7 @@ class TestAPI(unittest.TestCase):
         api.put_route(r)
 
         api.save_predictions(raw_readings, route_id, user_id)
-        readings = api.all_route_readings(route_id, user_id)
+        readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
         self.maxDiff = None
@@ -432,14 +432,14 @@ class TestAPI(unittest.TestCase):
             )
 
         api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
-        readings = api.all_route_readings(route_id, user_id)
+        readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
 
         new_annotator_id = "9a9a9a9a9a9a9a9a9" 
         for r in raw_readings:
             r['AnnotatorID'] = new_annotator_id
         api.save_predictions(raw_readings, route_id, user_id, save_imgs=False)
-        readings = api.all_route_readings(route_id, user_id)
+        readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 44)
 
         self.maxDiff = None
@@ -601,12 +601,12 @@ class TestAPI(unittest.TestCase):
 
         route = api.save_route(route_spec, user_id, layer_id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
-        self.assertEqual(22, len(api.all_route_readings(route.id, route.user_id)))
+        self.assertEqual(22, len(api.all_route_readings(route.id)))
         self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
 
-        api.delete_route(route.id, user_id)
+        api.delete_route(route.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
-        self.assertEqual(0, len(api.all_route_readings(route.id, route.user_id)))
+        self.assertEqual(0, len(api.all_route_readings(route.id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
         
         route = api.save_route(route_spec, user_id, layer_id)
@@ -616,27 +616,27 @@ class TestAPI(unittest.TestCase):
         route3 = api.save_route(route_spec, user_id2, layer_id2)
         self.assertEqual(2, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
-        self.assertEqual(22, len(api.all_route_readings(route.id, route.user_id)))
-        self.assertEqual(22, len(api.all_route_readings(route2.id, route2.user_id)))
-        self.assertEqual(22, len(api.all_route_readings(route3.id, route3.user_id)))
+        self.assertEqual(22, len(api.all_route_readings(route.id)))
+        self.assertEqual(22, len(api.all_route_readings(route2.id)))
+        self.assertEqual(22, len(api.all_route_readings(route3.id)))
         self.assertEqual(7, len(self.__get_bucket_objects(bucket)))
         
-        api.delete_route(route.id, user_id)
+        api.delete_route(route.id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(6, len(self.__get_bucket_objects(bucket)))
 
-        api.delete_route(route2.id, user_id)
+        api.delete_route(route2.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
         
-        api.delete_route(route3.id, user_id2)
+        api.delete_route(route3.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(0, len(api.routes_for_user(user_id2)))
-        self.assertEqual(0, len(api.all_route_readings(route.id, route.user_id)))
-        self.assertEqual(0, len(api.all_route_readings(route2.id, route2.user_id)))
-        self.assertEqual(0, len(api.all_route_readings(route3.id, route3.user_id)))
+        self.assertEqual(0, len(api.all_route_readings(route.id)))
+        self.assertEqual(0, len(api.all_route_readings(route2.id)))
+        self.assertEqual(0, len(api.all_route_readings(route3.id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
 
     def __get_bucket_objects(self, bucket: str) -> List[str]:
@@ -662,9 +662,9 @@ class TestAPI(unittest.TestCase):
         api.group_add_layer(group_id, layer_id)
 
         route = api.save_route(route_spec, user_id, layer_id)
-        self.assertEqual(3, len(api.all_route_readings(route.id, route.user_id)))
+        self.assertEqual(3, len(api.all_route_readings(route.id)))
 
-        readings = api.prediction_readings(route.id, route.user_id, [DEFAULT_ANNOTATOR_ID])
+        readings = api.prediction_readings(route.id, [DEFAULT_ANNOTATOR_ID])
         self.assertEqual(2, len(readings))
 
         for r in readings:

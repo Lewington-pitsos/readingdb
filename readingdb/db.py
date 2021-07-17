@@ -99,7 +99,7 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def remove_route(self, route_id: str, user_sub: str):
+    def remove_route(self, route_id: str):
         self.org_table.delete_item(
             Key={
                 Constants.PARTITION_KEY: Constants.ROUTE_PK,
@@ -110,7 +110,7 @@ class DB():
     def put_route(self, route: Route): 
         return self.org_table.put_item(Item=route.item_data())
 
-    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
+    def get_route(self, route_id: str) -> Dict[str, Any]:
         response = self.org_table.query(
             KeyConditionExpression=
                 Key(Constants.PARTITION_KEY).eq(Constants.ROUTE_PK) &
@@ -125,8 +125,8 @@ class DB():
 
         return item
 
-    def route_geohashes(self, route_id: str, user_id: str) -> Set[str]:
-        route = self.get_route(route_id, user_id)
+    def route_geohashes(self, route_id: str) -> Set[str]:
+        route = self.get_route(route_id)
 
         if route is None:
             return set()
@@ -142,10 +142,10 @@ class DB():
         for reading in layer_readings:
             route_ids.add(reading[Constants.ROUTE_ID])
                         
-        return [self.get_route(rid, user_id) for rid in route_ids]
+        return [self.get_route(rid) for rid in route_ids]
 
-    def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
-        r: Dict[str, Any] = self.get_route(route_id, user_id)
+    def update_route_name(self, route_id: str, name: str) -> None:
+        r: Dict[str, Any] = self.get_route(route_id)
 
         if r[Constants.NAME] != name:        
             self.org_table.update_item(
@@ -160,8 +160,8 @@ class DB():
                 },
             )
 
-    def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
-        r: Dict[str, Any] = self.get_route(route_id, user_id)
+    def set_route_status(self, route_id: str, status: int) -> None:
+        r: Dict[str, Any] = self.get_route(route_id)
 
         if r[Constants.STATUS] != status:
             self.org_table.update_item(
@@ -218,8 +218,8 @@ class DB():
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
-    def all_route_readings(self, route_id: str, user_id: str) -> List[Dict[str, Any]]:
-        geohashes = self.route_geohashes(route_id, user_id)
+    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+        geohashes = self.route_geohashes(route_id)
         all_readings = []
 
         for h in geohashes:
