@@ -36,7 +36,8 @@ class TestDB(unittest.TestCase):
         reading_time = int(time.time())
         uid = 'someuser'
         rid = 'someroute'
-        self.db.put_route(Route(uid, rid, 123151234, geohashes=set(['r3gqu8'])))
+        group_id = 'a9a98a9a9a'
+        self.db.put_route(Route(uid, group_id, rid, 123151234, geohashes=set(['r3gqu8'])))
         finalized = []
         for i in range(21):
             finalized.append(
@@ -74,7 +75,8 @@ class TestDB(unittest.TestCase):
         self.db.create_reading_db()
         uid = '103'
         rid = 'xxxa'
-        self.db.put_route(Route(uid, rid, 123151234, geohashes=set(['q6nhhn'])))
+        group_id = 'a9a98a9a9a'
+        self.db.put_route(Route(uid, group_id, rid, 123151234, geohashes=set(['q6nhhn'])))
         reading_time = int(time.time())
 
         self.db.put_reading(
@@ -117,6 +119,7 @@ class TestDB(unittest.TestCase):
 
     def test_loads_large_dataset(self):
         route_id = '103'
+        group_id = 'a9a98a9a9a'
         self.db.create_reading_db()
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
@@ -131,7 +134,7 @@ class TestDB(unittest.TestCase):
             geohashes.add(r.geohash())
             entity_readings.append(r)
 
-        self.db.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
+        self.db.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.db.put_readings(entity_readings)
         readings = self.db.all_route_readings(route_id)
         self.assertEqual(3383, len(readings))
@@ -199,11 +202,12 @@ class TestDB(unittest.TestCase):
         self.assertEqual(set([group_id, default_org_group]), set(self.db.groups_for_user(uid)))
         self.assertEqual(1, len(self.db.layers_for_user(uid)))
 
-        self.db.put_route(Route(uid, rid, 123617823, geohashes=[reading.geohash()]))
+        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash()]))
         routes = self.db.routes_for_user(uid)
         self.assertEqual(len(routes), 1)
         self.assertEqual({
             'Geohashes': ['q6nhhn'],
+            'GroupID': group_id,
             'PK': 'Route',
             'SK': 'Route#3',
             'LastUpdated': 1619496880,
@@ -246,7 +250,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        r = Route(user_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
         last_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -287,7 +291,7 @@ class TestDB(unittest.TestCase):
         layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
-        r = Route(user_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
         original_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -317,9 +321,10 @@ class TestDB(unittest.TestCase):
     def deletes_route(self):
         rid = '292929922'
         uid = '287226281'
+        group_id = 'a9a9a9a8a8a'
         self.db.create_reading_db()
 
-        route = Route(uid, rid, 31232143242)
+        route = Route(uid, group_id, rid, 31232143242)
         self.db.put_route(route)
         self.db.remove_route(rid)
 
@@ -358,7 +363,7 @@ class TestDB(unittest.TestCase):
         self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(
-            Route(user_id, route_id, 123617823, name=name, geohashes=[reading.geohash()])
+            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash()])
         )
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 1)
@@ -399,6 +404,7 @@ class TestDB(unittest.TestCase):
 
         self.db.put_route(Route(
             user_id, 
+            group_id,
             route_id, 
             123617823,
             sample_data={'PredictionReading': json_to_reading('PredictionReading', reading.item_data())}
@@ -525,11 +531,12 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_gets_all_users(self):
+        group_id = 'aasd'
         self.db.create_reading_db()
         self.db.put_org('roora', 'a9a9a9a9a')
         self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
-        self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
+        self.db.put_route(Route('someuser_id', group_id, 'someRouteID', 123617823))
         self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
         self.db.put_user('roora', 'one-armed-larry')

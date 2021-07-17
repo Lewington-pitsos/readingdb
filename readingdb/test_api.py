@@ -85,6 +85,7 @@ class TestAPI(unittest.TestCase):
 
     def test_handles_large_queries_correctly(self):
         route_id = '103'
+        group_id = 'a9a9a9a9' 
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -98,9 +99,8 @@ class TestAPI(unittest.TestCase):
             geohashes.add(r.geohash())
             finalized.append(r)
         self.api.put_readings(finalized)
-        self.api.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
+        self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         
-
         readings =  self.api.all_route_readings(route_id)
         self.assertIsInstance(readings, list)
         self.assertEqual(60, len(readings))
@@ -113,6 +113,7 @@ class TestAPI(unittest.TestCase):
 
     def test_can_upload_readings_with_given_key(self):
         route_id = '103'
+        group_id = '9a9a9a9a'
         
         with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -126,7 +127,7 @@ class TestAPI(unittest.TestCase):
             finalized.append(r)
             geohashes.add(r.geohash())
 
-        self.api.put_route(Route('3', route_id, 123617823, geohashes=geohashes))
+        self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
@@ -333,6 +334,7 @@ class TestAPI(unittest.TestCase):
 
         r = Route(
             user_id,
+            group_id,
             route_id,
             0,
             geohashes=geohashes

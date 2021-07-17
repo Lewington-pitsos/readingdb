@@ -12,12 +12,12 @@ class Route():
     def __init__(
         self, 
         user_id: str, 
+        group_id: str,
         id: str, 
         timestamp: int, 
         name: str=None, 
         geohashes: List[str] = [],
         sample_data: Dict[str, PredictionReading]=None,
-        layer_id: str = None
     ) -> None:
         '''sample_data contains a small collection of readings that belong to
         this route. Allows users to get an idea of what kind of data the route
@@ -32,6 +32,7 @@ class Route():
         self.timestamp: int = timestamp
         self.update_timestamp: int = int(time.time())
         self.geohashes = geohashes
+        self.group_id = group_id
 
     @classmethod
     def decode_item(cls, item: Dict[str, Any]) -> None:
@@ -60,7 +61,8 @@ class Route():
             Constants.STATUS: int(self.status),
             Constants.TIMESTAMP: self.timestamp,
             Constants.LAST_UPDATED: self.update_timestamp,
-            Constants.ROUTE_HASHES: self.geohashes
+            Constants.ROUTE_HASHES: self.geohashes,
+            Constants.GROUP_ID: self.group_id
         }
 
         if self.name:
