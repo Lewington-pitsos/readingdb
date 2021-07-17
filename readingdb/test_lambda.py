@@ -696,17 +696,17 @@ class TestLambdaR(TestLambdaRW):
 
         with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
         self.long_route = r
 
         with open('readingdb/test_data/ftg_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
         self.tst_route = r
 
         with open('readingdb/test_data/ftg_20_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
         self.twenty_route = r
 
     def tearDown(self):
@@ -793,6 +793,8 @@ class TestLambdaR(TestLambdaRW):
                 }, 
                 'Geohashes': {'r1r291'},
                 'RouteID': self.twenty_route.id,
+                'GroupID': self.group_id,
+                'LayerID': self.layer_id,
                 'PK': 'Route',
                 'SK': 'Route#' + self.twenty_route.id,
                 'RouteName': self.twenty_route.name

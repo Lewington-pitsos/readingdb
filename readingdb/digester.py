@@ -181,7 +181,7 @@ class Digester():
         )
 
         print('saving readings to route database')
-        route = self.api.save_route(routeSpec, user_id)
+        route = self.api.save_route(routeSpec, user_id, group_id)
         self.api.group_add_layer(group_id, route.layer_id)
 
         return route

@@ -610,6 +610,16 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    # def test_gets_single_group_for_user(self):
+    #     self.db.create_reading_db()
+    #     group_id = 'as8s8s8s'
+    #     self.db.put_user('someorg', 'wendy')
+    #     self.assertFalse(self.db.user_has_group('wendy', group_id))
+    #     self.db.user_add_group('wendy', group_id)
+
+    #     self.assertTrue(self.db.user_has_group('wendy', group_id))
+
+
     def test_names_access_groups(self):
         self.db.create_reading_db()
         group_id = 'as8s8s8s'

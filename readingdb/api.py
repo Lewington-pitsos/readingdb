@@ -320,6 +320,7 @@ class API(DB):
         self, 
         route_spec: RouteSpec, 
         user_id: str, 
+        group_id: str,
         layer_id: str = None
     ) -> Route:
         route_id = str(uuid.uuid1())
@@ -362,6 +363,7 @@ class API(DB):
 
         route = Route(
             user_id=user_id,
+            group_id=group_id,
             id=route_id,
             timestamp=timestamp,
             name=route_spec.name if route_spec.name else None,
