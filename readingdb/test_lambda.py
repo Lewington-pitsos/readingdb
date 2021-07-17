@@ -122,6 +122,18 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key Key missing from event'
         }, resp)
 
+        resp = test_handler({
+             'Type': 'ProcessUpload',
+             'AccessToken': self.access_token,
+             'Key': "a9a9a9a9a9a9a.json",
+             'Bucket': 'somebucket'
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key GroupID missing from event'
+        }, resp)
+
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_delete_event(self):
         resp = test_handler({
@@ -156,6 +168,18 @@ class TestBasic(TestLambda):
             'Status': 'Error',
             'Body': 'Bad Format Error: key Predictions missing from event'
         }, resp)
+
+        # resp = test_handler({
+        #     'Type': 'SavePredictions',
+        #     'RouteID': "1721739812-1238123",
+        #     'Predictions': {},
+        #     'AccessToken': self.access_token,
+        # }, TEST_CONTEXT)
+
+        # self.assertEqual({
+        #     'Status': 'Error',
+        #     'Body': 'Bad Format Error: key GroupID missing from event'
+        # }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_road_snap_event(self):
@@ -380,6 +404,7 @@ class TestLambdaW(TestLambdaRW):
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': TEST_BUCKET,
+             'GroupID': self.default_group,
              'Key': 'mocks/route_1621394080578',
              'RouteName': 'Jenkins Way'
         }, TEST_CONTEXT)
@@ -421,6 +446,7 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'AddUser',
             'UserID': "a98s7das87dba0sa7gdas87",
+            "OrgName": self.org_name,
             'DataAccessGroups': [
                 {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
                 {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
@@ -640,19 +666,27 @@ class TestLambdaR(TestLambdaRW):
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
         super().setUp()
+
+        self.layer_id = 'omni-layer'
+        self.group_id = 'omni-group'
+        
+        self.api.user_add_group(self.user_id, self.group_id)
+        self.api.put_layer(self.layer_id)
+        self.api.group_add_layer(self.group_id, self.layer_id)
+
         with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
         self.long_route = r
 
         with open('readingdb/test_data/ftg_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
         self.tst_route = r
 
         with open('readingdb/test_data/ftg_20_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.layer_id)
         self.twenty_route = r
 
     def tearDown(self):
@@ -693,13 +727,11 @@ class TestLambdaR(TestLambdaRW):
             'Body': {
                 'RouteStatus': 1, 
                 'Timestamp': 1616116106935,
-                'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 
                 'SampleData': {
                     'PredictionReading': {
                         'AnnotationTimestamp': 2378910,
                         'AnnotatorID': '99994519-85d9-4726-9471-4c91a7677925',
                         'Geohash': 'r1r291',
-                        'LayerID': 'f9ddebe1-e054-11eb-b74d-04d9f584cf20',
                         'PK': 'r1r291',
                         'ReadingID': user_id, 
                         'Type': 'PredictionReading', 
@@ -732,16 +764,17 @@ class TestLambdaR(TestLambdaRW):
                                     'Name': 'Lineblur',
                                     'Severity': 1.1,
                                     'Present': False},
-
                             ],
                         }, 
-                        'RouteID': self.twenty_route.id, 
-                        'SK': 'f9ddebe1-e054-11eb-b74d-04d9f584cf20#' + user_id,
+                        'RouteID': self.twenty_route.id,
+                        'SK': 'PredictionReading#' + user_id,
                         'Timestamp': 1616116106935
                     }
                 }, 
                 'Geohashes': {'r1r291'},
-                'RouteID': self.twenty_route.id, 
+                'RouteID': self.twenty_route.id,
+                'PK': 'Route',
+                'SK': 'Route#' + self.twenty_route.id,
                 'RouteName': self.twenty_route.name
             }
         }, resp)

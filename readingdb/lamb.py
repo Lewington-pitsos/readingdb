@@ -219,12 +219,17 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp
   
+        group_id, err_resp = get_key(event, Constants.GROUP_ID)
+        if err_resp:
+            return err_resp
+
         name, missing = get_key(event, EVENT_ROUTE_NAME)
         if missing:
             name = None
         
         route = digester.process_upload(
             user_id=user_data.user_sub,
+            group_id=group_id,
             key=key,
             bucket=bucket,
             name=name,
