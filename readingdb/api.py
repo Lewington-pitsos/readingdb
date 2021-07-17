@@ -437,8 +437,8 @@ class API(DB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
-    def save_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []) -> None:
-        all_users = self.all_users()
+    def save_user(self, org_name:str, uid: str, data_access_groups: List[Dict[str, str]] = []) -> None:
+        all_users = self.all_users(org_name)
 
         already_exists = False
 
@@ -448,7 +448,7 @@ class API(DB):
                 break
         
         if not already_exists:
-            self.put_user(uid)
+            self.put_user(org_name, uid)
 
         for ag in data_access_groups:
             group_id = ag[Constants.GROUP_ID]

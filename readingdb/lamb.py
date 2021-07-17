@@ -278,14 +278,20 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         user_id, err_resp = get_key(event, Constants.USER_ID)
         if err_resp:
             return err_resp
+
         if len(user_id) < 20:
             return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
+
+        org_name, err_resp = get_key(event, Constants.ORG_NAME)
+        if err_resp:
+            return err_resp
+
         data_access_groups, not_found = get_key(event, Constants.GROUPS)
 
         if not_found:
-            api.save_user(user_id)
+            api.save_user(org_name, user_id)
         else:
-            api.save_user(user_id, data_access_groups)
+            api.save_user(org_name, user_id, data_access_groups)
         return success_response(None)
 
     elif event_name == EVENT_ROAD_SNAP:

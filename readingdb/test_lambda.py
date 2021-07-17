@@ -333,6 +333,10 @@ class TestLambdaRW(TestLambda):
         self.api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, tmp_bucket=self.tmp_bucket) 
         self.api.create_reading_db()
 
+        org_data = self.api.put_org('Frontline Data Systems')
+        self.default_group = org_data[Constants.ORG_GROUP]
+        self.org_name = org_data[Constants.ORG_NAME]
+
     def tearDown(self):
         self.api.teardown_reading_db()
         teardown_s3_bucket(
@@ -459,6 +463,18 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key OrgName missing from event'
+        }, resp)
+
+        resp = test_handler({
+            'Type': 'AddUser',
+            'UserID': 'aaaaaaaaaaaaaaaa-sd-asdas-dasd-asd',
+            'OrgName': self.org_name,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
             'Status': 'Success',
             'Body': None}
         , resp)
@@ -468,7 +484,7 @@ class TestLambdaW(TestLambdaRW):
     def test_uploads_predictions(self):
         group_id = 'apapapa'
         layer_id = 'aalalala'
-        self.api.put_user(self.user_id)
+        self.api.put_user(self.org_name, self.user_id)
         self.api.user_add_group(self.user_id, group_id)
         self.api.group_add_layer(group_id, layer_id)
 
@@ -551,7 +567,7 @@ class TestLambdaW(TestLambdaRW):
     def test_uploads_predictions_for_long_route(self):
         group_id = 'apapapa'
         layer_id = 'aalalala'
-        self.api.put_user(self.user_id)
+        self.api.put_user(self.org_name, self.user_id)
         self.api.user_add_group(self.user_id, group_id)
         self.api.group_add_layer(group_id, layer_id)
 
@@ -588,7 +604,7 @@ class TestLambdaW(TestLambdaRW):
     def test_returns_s3_url_if_response_body_too_large(self):
         group_id = 'apapapa'
         layer_id = 'aalalala'
-        self.api.put_user(self.user_id)
+        self.api.put_user(self.org_name, self.user_id)
         self.api.user_add_group(self.user_id, group_id)
         self.api.group_add_layer(group_id, layer_id)
         
@@ -603,7 +619,6 @@ class TestLambdaW(TestLambdaRW):
             bucket_objects.append(my_bucket_object.key)
 
         self.assertEqual(len(bucket_objects), 717)
-
         resp = test_handler({
             'Type': 'GetReadings',
             'RouteID': r.id,
@@ -625,7 +640,6 @@ class TestLambdaR(TestLambdaRW):
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def setUp(self) -> None:
         super().setUp()
-
         with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
         r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
