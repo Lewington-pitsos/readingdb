@@ -371,6 +371,38 @@ class TestLambdaRW(TestLambda):
         )      
 
 class TestLambdaW(TestLambdaRW):
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_saves_org(self):
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key OrgName missing from event'
+        }, resp)
+
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'OrgName': 'Roora Inc',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual('Success', resp['Status'])
+        self.assertIn('OrgGroup', resp['Body'])
+
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'OrgName': 'Roora Inc',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Org Roora Inc already exists'
+        }, resp)
+
     @unittest.skip('This make an actual call to fargate')
     def test_correct_upload_event_handling(self):
         test_handler({

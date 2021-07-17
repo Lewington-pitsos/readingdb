@@ -39,6 +39,7 @@ EVENT_SAVE_PREDICTIONS = 'SavePredictions'
 EVENT_BUCKET_KEY = 'BucketKey'
 EVENT_ROAD_SNAP = 'SnapToRoads'
 EVENT_ADD_USER = 'AddUser'
+EVENT_ADD_ORG = 'AddOrg'
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
@@ -298,6 +299,20 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         else:
             api.save_user(org_name, user_id, data_access_groups)
         return success_response(None)
+    
+    elif event_name == EVENT_ADD_ORG:
+        org_name, err_resp = get_key(event, Constants.ORG_NAME)
+        if err_resp:
+            return err_resp
+
+        existing_org = api.get_org(org_name)
+
+        if existing_org is not None:
+            return error_response(f'Org {org_name} already exists')
+
+        org = api.put_org(org_name)
+
+        return success_response(org)
 
     elif event_name == EVENT_ROAD_SNAP:
         points, err_resp = get_key(event, EVENT_POINTS)

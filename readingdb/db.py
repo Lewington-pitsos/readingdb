@@ -510,7 +510,7 @@ class DB():
         )
 
         return response[self.ITEM_KEY]
-    
+
     def get_org(self, org_name: str) -> Dict[str, Any]:
         response = self.org_table.query(
             KeyConditionExpression=
@@ -518,7 +518,9 @@ class DB():
                 Key(Constants.SORT_KEY).eq(self.__org_sk(org_name)),
         )
 
-        return response[self.ITEM_KEY][0]
+        if len(response[self.ITEM_KEY]) > 0:
+            return response[self.ITEM_KEY][0]
+        return None
 
     def __org_sk(self, org_id:str) -> str:
         return f'Org#{org_id}'
