@@ -163,6 +163,25 @@ class TestAPI(unittest.TestCase):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def test_route_access(self):
+        user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        api.save_route(route_spec, user_id, group_id, layer_id)
+
+        self.assertTrue(api.user_can_access())
+
     def test_updates_route_name(self):
         user_id = 'aghsghavgas'
         group_id = '10101010'
