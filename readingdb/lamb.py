@@ -125,6 +125,10 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp
 
+        print(user_data.user_sub)
+        if not api.can_access_route(user_data.user_sub, route_id):
+            return error_response(f'User {user_data.user_sub} cannot access route {route_id}')
+
         route = api.get_route(route_id)
         return success_response(route)
 
