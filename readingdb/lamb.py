@@ -55,6 +55,9 @@ RESPONSE_SUCCESS = 'Success'
 def key_missing_error_response(key):
     return error_response(f'Bad Format Error: key {key} missing from event')
 
+def unauthorized_route_response(user_id, route_id):
+    return error_response(f'User {user_id} cannot access route {route_id}')
+
 def error_response(body: Any) -> Dict[str, Any]:
     logger.info('Error response: %s', body)
     return response(body, False)
@@ -125,17 +128,22 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if err_resp:
             return err_resp
 
-        print(user_data.user_sub)
-        if not api.can_access_route(user_data.user_sub, route_id):
-            return error_response(f'User {user_data.user_sub} cannot access route {route_id}')
-
         route = api.get_route(route_id)
+        if route is None:
+            return error_response(f'Route {route_id} does not exist')
+
+        if not api.can_access_route(user_data.user_sub, route_id):
+            return unauthorized_route_response(user_data.user_sub, route_id)
+
         return success_response(route)
 
     if event_name == EVENT_DELETE_ROUTE:
         route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
             return err_resp
+
+        if not api.can_access_route(user_data.user_sub, route_id):
+            return unauthorized_route_response(user_data.user_sub, route_id)
 
         api.delete_route(route_id)
         return success_response('')
@@ -266,6 +274,9 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         name, err_resp = get_key(event, Constants.NAME)
         if err_resp:
             return err_resp 
+
+        if not api.can_access_route(user_data.user_sub, route_id):
+            return unauthorized_route_response(user_data.user_sub, route_id)
 
         api.update_route_name(route_id, name)
 

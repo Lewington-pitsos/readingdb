@@ -462,7 +462,7 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual({
             'Status': 'Error',
-            'Body': 'User 99bf4519-85d9-4726-9471-4c91a7677925 cannot access route route-that-doesnt-exist'
+            'Body': 'Route route-that-doesnt-exist does not exist'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -683,39 +683,116 @@ class TestLambdaW(TestLambdaRW):
         self.assertEqual(resp['Status'], 'Error')
         self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
 
-    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    # @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
-    # def test_prevents_unauthorized_route_access(self):
-    #     group_id = 'apapapa'
-    #     layer_id = 'aalalala'
-    #     self.api.put_user(self.org_name, self.user_id)
-    #     self.api.user_add_group(self.user_id, group_id)
-    #     self.api.group_add_layer(group_id, layer_id)
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_route_name_update(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
 
-    #     with open('readingdb/test_data/ftg_route.json') as f:
-    #         route_json = json.load(f) 
-    #     r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+        with open('readingdb/test_data/ftg_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
 
-    #     resp = test_handler({
-    #         'Type': 'GetRoute',
-    #         'RouteID': r.id,
-    #         'AnnotatorPreference': [
-    #             '99bf4519-85d9-4726-9471-4c91a7677925'
-    #         ],
-    #         'AccessToken': self.access_token,
-    #     }, TEST_CONTEXT)
-    #     self.assertEqual(resp['Status'], 'Success')
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], r.id[:21])   
 
-    #     resp = test_handler({
-    #         'Type': 'GetRoute',
-    #         'RouteID': r.id,
-    #         'AnnotatorPreference': [
-    #             '99bf4519-85d9-4726-9471-4c91a7677925'
-    #         ],
-    #         'AccessToken': self.access_token2,
-    #     }, TEST_CONTEXT)
-    #     self.assertEqual(resp['Status'], 'Error')
-    #     self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+        resp = test_handler({
+            'Type': 'UpdateRouteName',
+            'RouteID': r.id,
+            'RouteName': 'belgrave',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], 'belgrave')  
+
+
+        resp = test_handler({
+            'Type': 'UpdateRouteName',
+            'RouteID': r.id,
+            'RouteName': 'wallmart',
+            'AccessToken': self.access_token2,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], 'belgrave')  
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_route_deletion(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/ftg_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+
+        resp = test_handler({
+            'Type': 'DeleteRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token2,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+
+        resp = test_handler({
+            'Type': 'DeleteRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'Route {r.id} does not exist')
+
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
@@ -797,6 +874,13 @@ class TestLambdaR(TestLambdaRW):
             self.long_route.id,
             self.tst_route.id
         ])
+
+        resp = test_handler({
+            'Type': 'GetUserRoutes',
+            'AccessToken': self.access_token2,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
