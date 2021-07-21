@@ -178,9 +178,13 @@ class TestAPI(unittest.TestCase):
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        api.save_route(route_spec, user_id, group_id, layer_id)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
 
-        self.assertTrue(api.user_can_access())
+        self.assertTrue(api.can_access_route(user_id, route.id))
+
+        group_id2 = '282182611'
+        route = api.save_route(route_spec, user_id, group_id2, layer_id)
+        self.assertFalse(api.can_access_route(user_id, route.id))
 
     def test_updates_route_name(self):
         user_id = 'aghsghavgas'
@@ -667,7 +671,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(1, len(api.routes_for_user(user_id)))
         
         route2 = api.save_route(route_spec, user_id, group_id, layer_id)
-        route3 = api.save_route(route_spec, user_id2, group_id, layer_id2)
+        route3 = api.save_route(route_spec, user_id2, group_id2, layer_id2)
         self.assertEqual(2, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(22, len(api.all_route_readings(route.id)))

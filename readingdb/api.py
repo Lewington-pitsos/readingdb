@@ -436,6 +436,17 @@ class API(DB):
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
 
+    def can_access_route(self, user_id: str, route_id: str) -> bool:
+        group_ids = self.groups_for_user(user_id)
+
+        route = self.get_route(route_id)
+
+        for group_id in group_ids:
+            if route[Constants.GROUP_ID] == group_id:
+                return True
+        
+        return False
+
     def save_user(self, org_name:str, uid: str, data_access_groups: List[Dict[str, str]] = []) -> None:
         all_users = self.all_users(org_name)
 

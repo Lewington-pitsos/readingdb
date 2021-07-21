@@ -25,7 +25,15 @@ EVENT_OBJECT_KEY = 'Key'
 EVENT_ROUTE_NAME = 'RouteName'
 EVENT_POINTS = 'Points'
 
+
 # Event Types
+EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
+EVENT_SAVE_PREDICTIONS = 'SavePredictions'
+EVENT_BUCKET_KEY = 'BucketKey'
+EVENT_ROAD_SNAP = 'SnapToRoads'
+
+# User Permission Events
 EVENT_GET_ROUTE = 'GetRoute'
 EVENT_DELETE_ROUTE = 'DeleteRoute'
 EVENT_GET_USER_ROUTES = 'GetUserRoutes'
@@ -33,13 +41,11 @@ EVENT_GET_READINGS = 'GetReadings'
 EVENT_GET_PAGINATED_READINGS = 'GetPaginatedReadings'
 EVENT_GET_READINGS_ASYNC = 'GetReadingsAsync'
 EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
-EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
-EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
-EVENT_SAVE_PREDICTIONS = 'SavePredictions'
-EVENT_BUCKET_KEY = 'BucketKey'
-EVENT_ROAD_SNAP = 'SnapToRoads'
+
+# Admin Permission Events
 EVENT_ADD_USER = 'AddUser'
 EVENT_ADD_ORG = 'AddOrg'
+
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
