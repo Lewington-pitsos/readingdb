@@ -38,8 +38,6 @@ EVENT_GET_ROUTE = 'GetRoute'
 EVENT_DELETE_ROUTE = 'DeleteRoute'
 EVENT_GET_USER_ROUTES = 'GetUserRoutes'
 EVENT_GET_READINGS = 'GetReadings'
-EVENT_GET_PAGINATED_READINGS = 'GetPaginatedReadings'
-EVENT_GET_READINGS_ASYNC = 'GetReadingsAsync'
 EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 
 # Admin Permission Events
@@ -173,19 +171,6 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         )
 
         return success_response({Constants.READING_TABLE_NAME: readings})
-
-    elif event_name == EVENT_GET_READINGS_ASYNC:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp
-
-        access_token, err_resp = get_key(event, EVENT_ACCESS_TOKEN)
-        if err_resp:
-            return err_resp
-
-        s3_uri = api.all_route_readings_async(route_id, access_token)
-        return success_response(s3_uri)
-
     elif event_name == EVENT_PROCESS_UPLOADED_ROUTE:
         # Event Format:
         # Type: 'ProcessUpload',
