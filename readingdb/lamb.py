@@ -172,6 +172,9 @@ def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, 
         if missing:
             pred_only = True
 
+        if not api.can_access_route(user_data.user_sub, route_id):
+            return unauthorized_route_response(user_data.user_sub, route_id)
+
         readings = api.all_route_readings(
             route_id,
             key,

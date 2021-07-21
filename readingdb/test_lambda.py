@@ -10,7 +10,7 @@ from readingdb.routespec import RouteSpec
 from readingdb.api import API
 from readingdb.tutils import roads_api_test
 from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 import unittest
 from moto import mock_s3
 
@@ -540,7 +540,7 @@ class TestLambdaW(TestLambdaRW):
 
         with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -623,7 +623,7 @@ class TestLambdaW(TestLambdaRW):
 
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -632,18 +632,6 @@ class TestLambdaW(TestLambdaRW):
                 '99bf4519-85d9-4726-9471-4c91a7677925'
             ],
             'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 713)
-
-        resp = test_handler({
-            'Type': 'GetReadings',
-            'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
-            'AccessToken': self.access_token2,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
@@ -665,15 +653,44 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Success')
 
         resp = test_handler({
             'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token2,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_reading_access(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/sydney_route_short.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 713)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
             'RouteID': r.id,
             'AnnotatorPreference': [
                 '99bf4519-85d9-4726-9471-4c91a7677925'
@@ -699,9 +716,6 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Success')
@@ -716,14 +730,10 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(resp['Body']['RouteName'], 'belgrave')  
-
 
         resp = test_handler({
             'Type': 'UpdateRouteName',
@@ -736,9 +746,6 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Success')
@@ -760,9 +767,6 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Success')
@@ -785,9 +789,6 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Error')
@@ -805,7 +806,7 @@ class TestLambdaW(TestLambdaRW):
         
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         s3 = boto3.resource('s3', region_name=REGION_NAME)
         bucket = s3.Bucket(TEST_BUCKET)
