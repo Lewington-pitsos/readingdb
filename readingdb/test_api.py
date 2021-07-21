@@ -175,6 +175,8 @@ class TestAPI(unittest.TestCase):
         api.user_add_group(user_id, group_id)
         api.group_add_layer(group_id, layer_id)
 
+        self.assertFalse(api.can_access_route(user_id, 'non-existant-route'))
+
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)

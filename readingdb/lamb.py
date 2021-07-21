@@ -25,7 +25,6 @@ EVENT_OBJECT_KEY = 'Key'
 EVENT_ROUTE_NAME = 'RouteName'
 EVENT_POINTS = 'Points'
 
-
 # Event Types
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
@@ -44,7 +43,6 @@ EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 EVENT_ADD_USER = 'AddUser'
 EVENT_ADD_ORG = 'AddOrg'
 
-
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
 RESPONSE_BODY_KEY = 'Body'
@@ -53,7 +51,6 @@ RESPONSE_SAVED_READINGS = 'SavedReadings'
 # Response Statuses
 RESPONSE_ERROR = 'Error'
 RESPONSE_SUCCESS = 'Success'
-
 
 def key_missing_error_response(key):
     return error_response(f'Bad Format Error: key {key} missing from event')

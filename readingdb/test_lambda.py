@@ -328,8 +328,8 @@ class TestLambdaRW(TestLambda):
     region_name = 'ap-southeast-2'
     access_key = 'fake_access_key'
     secret_key = 'fake_secret_key'
-    bucket_name = TEST_BUCKET
     user_id = '99bf4519-85d9-4726-9471-4c91a7677925'
+    bucket_name = TEST_BUCKET
     tmp_bucket = TEST_BUCKET
 
     def setUp(self) -> None:
@@ -644,6 +644,22 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual(resp['Status'], 'Success')
         self.assertEqual(len(resp['Body']['Readings']), 713)
+
+    # @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    # @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    # def test_prevents_route_access(self):
+    #     group_id = 'apapapa'
+    #     layer_id = 'aalalala'
+    #     hacker_id = 'a9aa99aa9'
+    #     self.api.put_user(self.org_name, self.user_id)
+    #     self.api.put_user(self.org_name, hacker_id)
+    #     self.api.user_add_group(self.user_id, group_id)
+    #     self.api.group_add_layer(group_id, layer_id)
+
+    #     with open('readingdb/test_data/sydney_route_short.json') as f:
+    #         route_json = json.load(f) 
+    #     r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, layer_id)
+
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))

@@ -441,6 +441,9 @@ class API(DB):
 
         route = self.get_route(route_id)
 
+        if route is None:
+            return False
+
         for group_id in group_ids:
             if route[Constants.GROUP_ID] == group_id:
                 return True
