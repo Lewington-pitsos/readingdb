@@ -25,7 +25,8 @@ EVENT_OBJECT_KEY = 'Key'
 EVENT_ROUTE_NAME = 'RouteName'
 EVENT_POINTS = 'Points'
 
-# Event Types
+# Event Types -----------------------------------------------------
+
 EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
 EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
 EVENT_SAVE_PREDICTIONS = 'SavePredictions'
@@ -42,6 +43,8 @@ EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 # Admin Permission Events
 EVENT_ADD_USER = 'AddUser'
 EVENT_ADD_ORG = 'AddOrg'
+
+# End Event Types ---------------------------------------------------
 
 # Generic Response Keys
 RESPONSE_STATUS_KEY = 'Status'
@@ -93,7 +96,12 @@ def test_handler(
 ):
     return handler_request(event, context, endpoint, bucket, size_limit)
     
-def handler_request(event: Dict[str, Any], context, endpoint: str, bucket: str, size_limit: int):
+def handler_request(
+    event: Dict[str, Any], 
+    context, endpoint: str, 
+    bucket: str, 
+    size_limit: int
+    ):
     api = API(
         endpoint, 
         size_limit=size_limit, 

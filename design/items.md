@@ -19,17 +19,15 @@ Global Index - ImageHash - All Fields
 Global Index - Geohash @ 4x4 meters - All Fields
 
 
-
 | Item           | Primary Key  | Sort Key     |
 | :------------- | :----------: | -----------: |
 |  Route         | Route        | And Again    |
 | You Can Also   | Put Pipes In | Like this \| |
 
 
-
 ## AccessGroup
 
-This will be modelled exclusively using inverted indices
+This will be modelled using inverted indices and also an optional AccessGroup objects stored under their own PK
 
 ### Inverted Indices
 
