@@ -34,7 +34,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_26_863.jpg",
       "Latitude": -37.8714232,
       "Longitude": 145.2450816
     },
@@ -76,7 +76,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_26_863.jpg",
       "Latitude": -37.8714232,
       "Longitude": 145.2450816
     },
@@ -117,7 +117,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_094.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_27_094.jpg",
       "Latitude": -37.871398593720286,
       "Longitude": 145.24268514520602
     },
@@ -158,7 +158,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_27_330.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_27_330.jpg",
       "Latitude": -37.871399178110146,
       "Longitude": 145.24274206010298
     },
@@ -199,7 +199,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_121.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_28_121.jpg",
       "Latitude": -37.871401136806654,
       "Longitude": 145.24293282147386
     },
@@ -240,7 +240,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_149.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_28_149.jpg",
       "Latitude": -37.871401206141044,
       "Longitude": 145.24293957408872
     },
@@ -281,7 +281,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_391.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_28_391.jpg",
       "Latitude": -37.871401805388274,
       "Longitude": 145.2429979359746
     },
@@ -322,7 +322,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_28_618.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_28_618.jpg",
       "Latitude": -37.871402367492074,
       "Longitude": 145.24305268038825
     },
@@ -363,7 +363,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_250.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_29_250.jpg",
       "Latitude": -37.871403932468304,
       "Longitude": 145.24320509655308
     },
@@ -404,7 +404,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_29_289.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_29_289.jpg",
       "Latitude": -37.8714040290412,
       "Longitude": 145.24321450198096
     },
@@ -445,7 +445,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_30_457.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_30_457.jpg",
       "Latitude": -37.87140692127575,
       "Longitude": 145.24349618248812
     },
@@ -486,7 +486,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_554.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_31_554.jpg",
       "Latitude": -37.8714096376981,
       "Longitude": 145.24376074029317
     },
@@ -527,7 +527,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_31_603.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_31_603.jpg",
       "Latitude": -37.871409759033284,
       "Longitude": 145.24377255736925
     },
@@ -568,7 +568,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_465.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_32_465.jpg",
       "Latitude": -37.871411893541996,
       "Longitude": 145.24398044144215
     },
@@ -609,7 +609,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_32_658.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_32_658.jpg",
       "Latitude": -37.87141237145404,
       "Longitude": 145.24402698625198
     },
@@ -650,7 +650,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_467.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_33_467.jpg",
       "Latitude": -37.87141437472267,
       "Longitude": 145.24422208858954
     },
@@ -691,7 +691,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_33_568.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_33_568.jpg",
       "Latitude": -37.87141462482171,
       "Longitude": 145.2442464462361
     },
@@ -732,7 +732,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_34_827.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_34_827.jpg",
       "Latitude": -37.87141774239303,
       "Longitude": 145.24455007274167
     },
@@ -773,7 +773,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_35_872.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_35_872.jpg",
       "Latitude": -37.87142033005151,
       "Longitude": 145.24480208997625
     },
@@ -814,7 +814,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_625.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_36_625.jpg",
       "Latitude": -37.87142219465135,
       "Longitude": 145.244983687084
     },
@@ -855,7 +855,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_637.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_36_637.jpg",
       "Latitude": -37.871422224366086,
       "Longitude": 145.2449865810618
     },
@@ -896,7 +896,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_36_774.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_36_774.jpg",
       "Latitude": -37.87142256360935,
       "Longitude": 145.24501962064184
     },
@@ -938,7 +938,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8713982,
       "Longitude": 145.2426468
     },
@@ -979,7 +979,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_37_176.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_37_176.jpg",
       "Latitude": -37.87074550335,
       "Longitude": 145.24047406815
     },
@@ -1020,7 +1020,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_37_672.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_37_672.jpg",
       "Latitude": -37.87077835343,
       "Longitude": 145.24058342126997
     },
@@ -1061,7 +1061,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_38_084.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_38_084.jpg",
       "Latitude": -37.87080564019,
       "Longitude": 145.24067425491
     },
@@ -1102,7 +1102,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_38_356.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_38_356.jpg",
       "Latitude": -37.87082365475,
       "Longitude": 145.24073422274998
     },
@@ -1143,7 +1143,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_38_471.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_38_471.jpg",
       "Latitude": -37.870831271200004,
       "Longitude": 145.24075957679997
     },
@@ -1184,7 +1184,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_38_956.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_38_956.jpg",
       "Latitude": -37.870863392749996,
       "Longitude": 145.24086650475
     },
@@ -1225,7 +1225,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_39_251.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_39_251.jpg",
       "Latitude": -37.870882930600004,
       "Longitude": 145.2409315434
     },
@@ -1266,7 +1266,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_40_151.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_40_151.jpg",
       "Latitude": -37.8709425376,
       "Longitude": 145.2411299664
     },
@@ -1307,7 +1307,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_40_374.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_40_374.jpg",
       "Latitude": -37.87095730689,
       "Longitude": 145.24117913120998
     },
@@ -1348,7 +1348,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_40_453.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_40_453.jpg",
       "Latitude": -37.87096253906,
       "Longitude": 145.24119654833999
     },
@@ -1389,7 +1389,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_40_624.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_40_624.jpg",
       "Latitude": -37.87097386439,
       "Longitude": 145.24123424871
     },
@@ -1430,7 +1430,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_40_852.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_40_852.jpg",
       "Latitude": -37.870988964830005,
       "Longitude": 145.24128451586998
     },
@@ -1471,7 +1471,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_41_328.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_41_328.jpg",
       "Latitude": -37.87102049031,
       "Longitude": 145.24138945958998
     },
@@ -1512,7 +1512,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_42_319.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_42_319.jpg",
       "Latitude": -37.87108612424,
       "Longitude": 145.24160794536
     },
@@ -1553,7 +1553,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_42_430.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_42_430.jpg",
       "Latitude": -37.871093475769996,
       "Longitude": 145.24163241752998
     },
@@ -1594,7 +1594,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_43_183.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_43_183.jpg",
       "Latitude": -37.87114334696,
       "Longitude": 145.24179843144
     },
@@ -1635,7 +1635,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_44_153.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_44_153.jpg",
       "Latitude": -37.871207590059996,
       "Longitude": 145.24201228733997
     },
@@ -1676,7 +1676,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_45_051.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_45_051.jpg",
       "Latitude": -37.8712670646,
       "Longitude": 145.2422102694
     },
@@ -1717,7 +1717,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_45_509.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_45_509.jpg",
       "Latitude": -37.87129739794,
       "Longitude": 145.24231124466
     },
@@ -1759,7 +1759,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8707359,
       "Longitude": 145.2404421
     },
@@ -1800,7 +1800,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_48_245.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_48_245.jpg",
       "Latitude": -37.870215622177774,
       "Longitude": 145.23888758184447
     },
@@ -1841,7 +1841,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_49_083.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_49_083.jpg",
       "Latitude": -37.8702716192,
       "Longitude": 145.2390548932
     },
@@ -1882,7 +1882,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_49_522.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_49_522.jpg",
       "Latitude": -37.87030095415555,
       "Longitude": 145.23914254198888
     },
@@ -1923,7 +1923,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_50_036.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_50_036.jpg",
       "Latitude": -37.87033530077778,
       "Longitude": 145.23924516494446
     },
@@ -1964,7 +1964,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_50_090.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_50_090.jpg",
       "Latitude": -37.870338909177775,
       "Longitude": 145.23925594634446
     },
@@ -2005,7 +2005,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_50_478.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_50_478.jpg",
       "Latitude": -37.8703648362,
       "Longitude": 145.2393334127
     },
@@ -2046,7 +2046,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_50_502.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_50_502.jpg",
       "Latitude": -37.870366439933335,
       "Longitude": 145.23933820443335
     },
@@ -2087,7 +2087,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_50_621.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_50_621.jpg",
       "Latitude": -37.87037439177778,
       "Longitude": 145.23936196344445
     },
@@ -2128,7 +2128,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_51_241.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_51_241.jpg",
       "Latitude": -37.870415821555554,
       "Longitude": 145.2394857498889
     },
@@ -2169,7 +2169,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_51_723.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_51_723.jpg",
       "Latitude": -37.870448029866665,
       "Longitude": 145.23958198386669
     },
@@ -2210,7 +2210,7 @@
           "Present": true
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_52_179.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_52_179.jpg",
       "Latitude": -37.870478500800004,
       "Longitude": 145.2396730268
     },
@@ -2251,7 +2251,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_52_521.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_52_521.jpg",
       "Latitude": -37.870501354,
       "Longitude": 145.239741309
     },
@@ -2292,7 +2292,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_52_701.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_52_701.jpg",
       "Latitude": -37.870513382,
       "Longitude": 145.239777247
     },
@@ -2333,7 +2333,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_53_129.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_53_129.jpg",
       "Latitude": -37.87054198191111,
       "Longitude": 145.23986269957777
     },
@@ -2374,7 +2374,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_53_311.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_53_311.jpg",
       "Latitude": -37.87055414355555,
       "Longitude": 145.2398990368889
     },
@@ -2415,7 +2415,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_53_585.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_53_585.jpg",
       "Latitude": -37.87057245284444,
       "Longitude": 145.2399537425111
     },
@@ -2456,7 +2456,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_53_903.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_53_903.jpg",
       "Latitude": -37.87059370231111,
       "Longitude": 145.24001723297778
     },
@@ -2497,7 +2497,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_54_572.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_54_572.jpg",
       "Latitude": -37.87063840637778,
       "Longitude": 145.24015080254443
     },
@@ -2538,7 +2538,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_54_826.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_54_826.jpg",
       "Latitude": -37.87065537922222,
       "Longitude": 145.24020151505556
     },
@@ -2579,7 +2579,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_55_073.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_55_073.jpg",
       "Latitude": -37.870671884311115,
       "Longitude": 145.24025082997778
     },
@@ -2620,7 +2620,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_55_230.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_55_230.jpg",
       "Latitude": -37.870682375399994,
       "Longitude": 145.2402821759
     },
@@ -2661,7 +2661,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_55_465.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_55_465.jpg",
       "Latitude": -37.87069807862222,
       "Longitude": 145.24032909495557
     },
@@ -2702,7 +2702,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_55_914.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_55_914.jpg",
       "Latitude": -37.8707280818,
       "Longitude": 145.24041874030002
     },
@@ -2744,7 +2744,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8701345,
       "Longitude": 145.2386452
     },
@@ -2785,7 +2785,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_56_238.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_56_238.jpg",
       "Latitude": -37.86981347935858,
       "Longitude": 145.23756001704464
     },
@@ -2826,7 +2826,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_56_282.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_56_282.jpg",
       "Latitude": -37.86981492038165,
       "Longitude": 145.2375648883005
     },
@@ -2867,7 +2867,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_56_706.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_56_706.jpg",
       "Latitude": -37.86982880660405,
       "Longitude": 145.23761182949343
     },
@@ -2908,7 +2908,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_57_127.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_57_127.jpg",
       "Latitude": -37.86984259457488,
       "Longitude": 145.23765843855531
     },
@@ -2949,7 +2949,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_57_882.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_57_882.jpg",
       "Latitude": -37.8698673212209,
       "Longitude": 145.2377420248776
     },
@@ -2990,7 +2990,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_58_333.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_58_333.jpg",
       "Latitude": -37.86988209170746,
       "Longitude": 145.23779195525026
     },
@@ -3031,7 +3031,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_58_583.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_58_583.jpg",
       "Latitude": -37.86989027933859,
       "Longitude": 145.23781963284046
     },
@@ -3072,7 +3072,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_58_745.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_08_58_745.jpg",
       "Latitude": -37.86989558492357,
       "Longitude": 145.23783756791886
     },
@@ -3113,7 +3113,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_00_269.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_00_269.jpg",
       "Latitude": -37.86994549672295,
       "Longitude": 145.23800629050854
     },
@@ -3154,7 +3154,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_00_288.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_00_288.jpg",
       "Latitude": -37.86994611898292,
       "Longitude": 145.23800839400542
     },
@@ -3195,7 +3195,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_00_919.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_00_919.jpg",
       "Latitude": -37.869966784563886,
       "Longitude": 145.23807825224299
     },
@@ -3236,7 +3236,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_01_401.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_01_401.jpg",
       "Latitude": -37.86998257031671,
       "Longitude": 145.23813161463684
     },
@@ -3277,7 +3277,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_01_814.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_01_814.jpg",
       "Latitude": -37.869996096283344,
       "Longitude": 145.2381773380158
     },
@@ -3318,7 +3318,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_01_817.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_01_817.jpg",
       "Latitude": -37.86999619453492,
       "Longitude": 145.23817767014688
     },
@@ -3359,7 +3359,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_01_932.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_01_932.jpg",
       "Latitude": -37.869999960845234,
       "Longitude": 145.23819040183835
     },
@@ -3400,7 +3400,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_02_291.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_02_291.jpg",
       "Latitude": -37.87001171828354,
       "Longitude": 145.23823014685783
     },
@@ -3441,7 +3441,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_02_301.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_02_301.jpg",
       "Latitude": -37.87001204578879,
       "Longitude": 145.23823125396143
     },
@@ -3482,7 +3482,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_02_697.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_02_697.jpg",
       "Latitude": -37.8700250149965,
       "Longitude": 145.23827509526427
     },
@@ -3523,7 +3523,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_03_041.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_03_041.jpg",
       "Latitude": -37.87003628117694,
       "Longitude": 145.23831317962834
     },
@@ -3564,7 +3564,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_03_071.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_03_071.jpg",
       "Latitude": -37.87003726369267,
       "Longitude": 145.23831650093916
     },
@@ -3605,7 +3605,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_03_993.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_03_993.jpg",
       "Latitude": -37.87006745967629,
       "Longitude": 145.2384185758917
     },
@@ -3646,7 +3646,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_04_000.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_04_000.jpg",
       "Latitude": -37.870067688929964,
       "Longitude": 145.23841935086423
     },
@@ -3687,7 +3687,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_04_351.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_04_351.jpg",
       "Latitude": -37.87007918436407,
       "Longitude": 145.23845821020083
     },
@@ -3728,7 +3728,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_04_980.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_04_980.jpg",
       "Latitude": -37.870099784444,
       "Longitude": 145.2385278470177
     },
@@ -3769,7 +3769,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_05_429.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_05_429.jpg",
       "Latitude": -37.87011448942951,
       "Longitude": 145.23857755596964
     },
@@ -3810,7 +3810,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_05_510.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_05_510.jpg",
       "Latitude": -37.870117142222,
       "Longitude": 145.23858652350884
     },
@@ -3851,7 +3851,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_05_802.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_05_802.jpg",
       "Latitude": -37.87012670537516,
       "Longitude": 145.2386188509342
     },
@@ -3893,7 +3893,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8698067,
       "Longitude": 145.2375371
     },
@@ -3934,7 +3934,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_06_743.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_06_743.jpg",
       "Latitude": -37.8698882340734,
       "Longitude": 145.23776654822484
     },
@@ -3975,7 +3975,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_07_231.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_07_231.jpg",
       "Latitude": -37.86988395388539,
       "Longitude": 145.23775450318033
     },
@@ -4016,7 +4016,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_08_256.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_08_256.jpg",
       "Latitude": -37.86987496373637,
       "Longitude": 145.23772920365036
     },
@@ -4057,7 +4057,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_08_615.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_08_615.jpg",
       "Latitude": -37.8698718149915,
       "Longitude": 145.23772034264428
     },
@@ -4098,7 +4098,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_08_734.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_08_734.jpg",
       "Latitude": -37.869870771257126,
       "Longitude": 145.23771740543054
     },
@@ -4139,7 +4139,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_09_908.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_09_908.jpg",
       "Latitude": -37.869860474247425,
       "Longitude": 145.23768842821283
     },
@@ -4180,7 +4180,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8698596410141,
       "Longitude": 145.23768608337835
     },
@@ -4221,7 +4221,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_079.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_079.jpg",
       "Latitude": -37.869858974427444,
       "Longitude": 145.23768420751077
     },
@@ -4262,7 +4262,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_585.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_585.jpg",
       "Latitude": -37.86985453636363,
       "Longitude": 145.23767171818182
     },
@@ -4303,7 +4303,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_11_301.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_11_301.jpg",
       "Latitude": -37.86984825641564,
       "Longitude": 145.23765404553455
     },
@@ -4344,7 +4344,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_11_920.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_11_920.jpg",
       "Latitude": -37.86984282724272,
       "Longitude": 145.2376387670867
     },
@@ -4385,7 +4385,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_12_219.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_12_219.jpg",
       "Latitude": -37.869840204750474,
       "Longitude": 145.2376313870287
     },
@@ -4426,7 +4426,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_12_260.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_12_260.jpg",
       "Latitude": -37.86983984514451,
       "Longitude": 145.2376303750475
     },
@@ -4467,7 +4467,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_12_593.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_12_593.jpg",
       "Latitude": -37.869836924442446,
       "Longitude": 145.23762215578557
     },
@@ -4508,7 +4508,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_13_017.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_13_017.jpg",
       "Latitude": -37.86983320559055,
       "Longitude": 145.23761169041904
     },
@@ -4549,7 +4549,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_13_187.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_13_187.jpg",
       "Latitude": -37.86983171454145,
       "Longitude": 145.23760749439944
     },
@@ -4590,7 +4590,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_13_320.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_13_320.jpg",
       "Latitude": -37.869830548014804,
       "Longitude": 145.23760421163118
     },
@@ -4631,7 +4631,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_13_568.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_13_568.jpg",
       "Latitude": -37.86982837283728,
       "Longitude": 145.23759809037904
     },
@@ -4672,7 +4672,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_13_829.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_13_829.jpg",
       "Latitude": -37.86982608363836,
       "Longitude": 145.23759164825483
     },
@@ -4713,7 +4713,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_14_008.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_14_008.jpg",
       "Latitude": -37.869824513651366,
       "Longitude": 145.237587230093
     },
@@ -4754,7 +4754,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_14_876.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_14_876.jpg",
       "Latitude": -37.869816900530054,
       "Longitude": 145.23756580571057
     },
@@ -4795,7 +4795,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_15_464.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_15_464.jpg",
       "Latitude": -37.869811743254324,
       "Longitude": 145.23755129241923
     },
@@ -4836,7 +4836,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_15_893.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_15_893.jpg",
       "Latitude": -37.86980798054805,
       "Longitude": 145.23754070364038
     },
@@ -4878,7 +4878,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8698944,
       "Longitude": 145.2377839
     },
@@ -4919,7 +4919,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_16_098.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_16_098.jpg",
       "Latitude": -37.86989678581447,
       "Longitude": 145.2378235641655
     },
@@ -4960,7 +4960,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_16_740.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_16_740.jpg",
       "Latitude": -37.869896631456626,
       "Longitude": 145.23782099796634
     },
@@ -5001,7 +5001,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_17_186.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_17_186.jpg",
       "Latitude": -37.869896524223606,
       "Longitude": 145.2378192152174
     },
@@ -5042,7 +5042,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_17_604.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_17_604.jpg",
       "Latitude": -37.8698964237227,
       "Longitude": 145.23781754438988
     },
@@ -5083,7 +5083,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_18_049.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_18_049.jpg",
       "Latitude": -37.86989631673011,
       "Longitude": 145.23781576563815
     },
@@ -5124,7 +5124,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_18_606.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_18_606.jpg",
       "Latitude": -37.86989618280906,
       "Longitude": 145.23781353920054
     },
@@ -5165,7 +5165,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_18_868.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_18_868.jpg",
       "Latitude": -37.86989611981567,
       "Longitude": 145.2378124919355
     },
@@ -5206,7 +5206,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_19_035.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_19_035.jpg",
       "Latitude": -37.8698960796634,
       "Longitude": 145.23781182440393
     },
@@ -5247,7 +5247,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_19_873.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_19_873.jpg",
       "Latitude": -37.86989587818072,
       "Longitude": 145.23780847475456
     },
@@ -5288,7 +5288,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_20_112.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_20_112.jpg",
       "Latitude": -37.869895820717296,
       "Longitude": 145.23780751942496
     },
@@ -5329,7 +5329,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_20_511.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_20_511.jpg",
       "Latitude": -37.86989572478461,
       "Longitude": 145.2378059245442
     },
@@ -5370,7 +5370,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_20_963.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_20_963.jpg",
       "Latitude": -37.86989561610899,
       "Longitude": 145.23780411781206
     },
@@ -5411,7 +5411,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_21_089.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_21_089.jpg",
       "Latitude": -37.86989558581446,
       "Longitude": 145.2378036141655
     },
@@ -5452,7 +5452,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_21_308.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_21_308.jpg",
       "Latitude": -37.869895533159685,
       "Longitude": 145.2378027387798
     },
@@ -5493,7 +5493,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_22_045.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_22_045.jpg",
       "Latitude": -37.86989535596073,
       "Longitude": 145.2377997928471
     },
@@ -5534,7 +5534,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_22_106.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_22_106.jpg",
       "Latitude": -37.86989534129433,
       "Longitude": 145.23779954901823
     },
@@ -5575,7 +5575,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_22_808.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_22_808.jpg",
       "Latitude": -37.86989517251052,
       "Longitude": 145.2377967429874
     },
@@ -5616,7 +5616,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_23_368.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_23_368.jpg",
       "Latitude": -37.86989503786816,
       "Longitude": 145.23779450455822
     },
@@ -5657,7 +5657,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_24_244.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_24_244.jpg",
       "Latitude": -37.86989482724905,
       "Longitude": 145.23779100301545
     },
@@ -5698,7 +5698,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_24_776.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_24_776.jpg",
       "Latitude": -37.86989469933881,
       "Longitude": 145.23778887650772
     },
@@ -5739,7 +5739,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_25_004.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_25_004.jpg",
       "Latitude": -37.86989464452014,
       "Longitude": 145.23778796514728
     },
@@ -5780,7 +5780,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_25_165.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_25_165.jpg",
       "Latitude": -37.86989460581046,
       "Longitude": 145.2377873215989
     },
@@ -5821,7 +5821,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_25_385.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_25_385.jpg",
       "Latitude": -37.86989455291525,
       "Longitude": 145.23778644221602
     },
@@ -5863,7 +5863,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8698968,
       "Longitude": 145.2378238
     },
@@ -5904,7 +5904,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_26_106.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_26_106.jpg",
       "Latitude": -37.86988252241224,
       "Longitude": 145.23782756769677
     },
@@ -5945,7 +5945,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_26_388.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_26_388.jpg",
       "Latitude": -37.86988292853285,
       "Longitude": 145.23782746052606
     },
@@ -5986,7 +5986,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_26_620.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_26_620.jpg",
       "Latitude": -37.86988326264627,
       "Longitude": 145.23782737235723
     },
@@ -6027,7 +6027,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_26_756.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_26_756.jpg",
       "Latitude": -37.869883458505846,
       "Longitude": 145.23782732067207
     },
@@ -6068,7 +6068,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_26_804.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_26_804.jpg",
       "Latitude": -37.869883527632766,
       "Longitude": 145.23782730243025
     },
@@ -6109,7 +6109,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_27_202.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_27_202.jpg",
       "Latitude": -37.86988410081008,
       "Longitude": 145.2378271511751
     },
@@ -6150,7 +6150,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_27_689.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_27_689.jpg",
       "Latitude": -37.869884802160215,
       "Longitude": 145.2378269660966
     },
@@ -6191,7 +6191,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_27_722.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_27_722.jpg",
       "Latitude": -37.86988484968497,
       "Longitude": 145.23782695355536
     },
@@ -6232,7 +6232,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_28_118.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_28_118.jpg",
       "Latitude": -37.869885419982,
       "Longitude": 145.2378268030603
     },
@@ -6273,7 +6273,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_28_576.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_28_576.jpg",
       "Latitude": -37.869886079567955,
       "Longitude": 145.2378266290029
     },
@@ -6314,7 +6314,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_28_961.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_28_961.jpg",
       "Latitude": -37.8698866340234,
       "Longitude": 145.23782648268826
     },
@@ -6355,7 +6355,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_29_093.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_29_093.jpg",
       "Latitude": -37.86988682412242,
       "Longitude": 145.23782643252326
     },
@@ -6396,7 +6396,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_29_501.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_29_501.jpg",
       "Latitude": -37.86988741170117,
       "Longitude": 145.23782627746778
     },
@@ -6437,7 +6437,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_29_891.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_29_891.jpg",
       "Latitude": -37.869887973357336,
       "Longitude": 145.23782612925294
     },
@@ -6478,7 +6478,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_30_314.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_30_314.jpg",
       "Latitude": -37.86988858253825,
       "Longitude": 145.23782596849685
     },
@@ -6519,7 +6519,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_31_142.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_31_142.jpg",
       "Latitude": -37.8698897749775,
       "Longitude": 145.23782565382538
     },
@@ -6560,7 +6560,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_32_095.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_32_095.jpg",
       "Latitude": -37.86989114743474,
       "Longitude": 145.23782529164916
     },
@@ -6601,7 +6601,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_32_412.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_32_412.jpg",
       "Latitude": -37.8698916039604,
       "Longitude": 145.23782517117712
     },
@@ -6642,7 +6642,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_33_099.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_33_099.jpg",
       "Latitude": -37.86989259333933,
       "Longitude": 145.237824910091
     },
@@ -6683,7 +6683,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_33_391.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_33_391.jpg",
       "Latitude": -37.869893013861386,
       "Longitude": 145.23782479911992
     },
@@ -6724,7 +6724,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_33_731.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_33_731.jpg",
       "Latitude": -37.869893503510355,
       "Longitude": 145.23782466990698
     },
@@ -6765,7 +6765,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_34_200.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_34_200.jpg",
       "Latitude": -37.86989417893789,
       "Longitude": 145.23782449166916
     },
@@ -6806,7 +6806,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_34_201.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_34_201.jpg",
       "Latitude": -37.86989418037804,
       "Longitude": 145.23782449128913
     },
@@ -6847,7 +6847,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_34_595.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_34_595.jpg",
       "Latitude": -37.869894747794774,
       "Longitude": 145.23782434155416
     },
@@ -6888,7 +6888,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_35_253.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_35_253.jpg",
       "Latitude": -37.86989569540955,
       "Longitude": 145.23782409148916
     },
@@ -6930,7 +6930,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_10_003.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_10_003.jpg",
       "Latitude": -37.8698824,
       "Longitude": 145.2378276
     },
@@ -6971,7 +6971,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_36_423.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_36_423.jpg",
       "Latitude": -37.86988866173367,
       "Longitude": 145.23783174237767
     },
@@ -7012,7 +7012,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_36_628.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_36_628.jpg",
       "Latitude": -37.86988854053119,
       "Longitude": 145.23783166219755
     },
@@ -7053,7 +7053,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_36_633.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_36_633.jpg",
       "Latitude": -37.86988853757504,
       "Longitude": 145.23783166024197
     },
@@ -7094,7 +7094,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_36_901.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_36_901.jpg",
       "Latitude": -37.86988837912497,
       "Longitude": 145.23783155542114
     },
@@ -7135,7 +7135,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_37_439.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_37_439.jpg",
       "Latitude": -37.86988806104238,
       "Longitude": 145.2378313449973
     },
@@ -7176,7 +7176,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_38_859.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_38_859.jpg",
       "Latitude": -37.86988722149354,
       "Longitude": 145.23783078960344
     },
@@ -7217,7 +7217,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_39_197.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_39_197.jpg",
       "Latitude": -37.86988702165726,
       "Longitude": 145.23783065740406
     },
@@ -7258,7 +7258,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_39_749.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_39_749.jpg",
       "Latitude": -37.86988669529744,
       "Longitude": 145.23783044150446
     },
@@ -7299,7 +7299,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_39_930.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_39_930.jpg",
       "Latitude": -37.869886588284515,
       "Longitude": 145.2378303707113
     },
@@ -7340,7 +7340,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_40_322.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_40_322.jpg",
       "Latitude": -37.86988635652174,
       "Longitude": 145.23783021739132
     },
@@ -7381,7 +7381,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_40_620.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_40_620.jpg",
       "Latitude": -37.86988618033473,
       "Longitude": 145.23783010083685
     },
@@ -7422,7 +7422,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_41_211.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_41_211.jpg",
       "Latitude": -37.869885830916864,
       "Longitude": 145.23782986968348
     },
@@ -7463,7 +7463,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_41_916.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_41_916.jpg",
       "Latitude": -37.869885414098604,
       "Longitude": 145.23782959394217
     },
@@ -7504,7 +7504,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_42_156.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_42_156.jpg",
       "Latitude": -37.86988527220302,
       "Longitude": 145.2378295000728
     },
@@ -7545,7 +7545,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_42_671.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_42_671.jpg",
       "Latitude": -37.86988496771876,
       "Longitude": 145.23782929864473
     },
@@ -7586,7 +7586,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_43_051.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_43_051.jpg",
       "Latitude": -37.869884743050754,
       "Longitude": 145.2378291500182
     },
@@ -7627,7 +7627,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_43_166.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_43_166.jpg",
       "Latitude": -37.869884675059126,
       "Longitude": 145.2378291050391
     },
@@ -7668,7 +7668,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_43_955.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_43_955.jpg",
       "Latitude": -37.86988420857741,
       "Longitude": 145.23782879644352
     },
@@ -7709,7 +7709,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_44_411.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_44_411.jpg",
       "Latitude": -37.8698839389758,
       "Longitude": 145.23782861809167
     },
@@ -7750,7 +7750,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/faultnet/data/inference/route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_09_44_577.jpg",
+      "ImageFileName": "readingdb/test_data/images/snap_2021_03_19_12_09_44_577.jpg",
       "Latitude": -37.86988384083136,
       "Longitude": 145.23782855316537
     },

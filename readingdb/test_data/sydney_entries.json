@@ -2494,7 +2494,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96788821,
       "Longitude": 151.0181246
     },
@@ -3479,7 +3479,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96788819,
       "Longitude": 151.0181246
     },
@@ -4505,7 +4505,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96788822,
       "Longitude": 151.01812459
     },
@@ -5490,7 +5490,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96788031,
       "Longitude": 151.01812215
     },
@@ -6516,7 +6516,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96786754,
       "Longitude": 151.01812463
     },
@@ -7501,7 +7501,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96786107,
       "Longitude": 151.0181237
     },
@@ -8322,7 +8322,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9678262,
       "Longitude": 151.01812198
     },
@@ -9143,7 +9143,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96778262,
       "Longitude": 151.01812047
     },
@@ -10169,7 +10169,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96773654,
       "Longitude": 151.01811293
     },
@@ -11154,7 +11154,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9676592,
       "Longitude": 151.0180948
     },
@@ -12180,7 +12180,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96756399,
       "Longitude": 151.01805232
     },
@@ -13165,7 +13165,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96746635,
       "Longitude": 151.01801607
     },
@@ -14191,7 +14191,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9673683,
       "Longitude": 151.01797979
     },
@@ -15176,7 +15176,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96721983,
       "Longitude": 151.0179337
     },
@@ -16161,7 +16161,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96710139,
       "Longitude": 151.01788953
     },
@@ -17146,7 +17146,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96698639,
       "Longitude": 151.01783283
     },
@@ -18172,7 +18172,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96687531,
       "Longitude": 151.01778346
     },
@@ -19157,7 +19157,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96677596,
       "Longitude": 151.01771984
     },
@@ -20183,7 +20183,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96668706,
       "Longitude": 151.01765207
     },
@@ -21168,7 +21168,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96660507,
       "Longitude": 151.01756763
     },
@@ -22194,7 +22194,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96652819,
       "Longitude": 151.0174742
     },
@@ -22810,7 +22810,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96645522,
       "Longitude": 151.01736247
     },
@@ -23836,7 +23836,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9663826,
       "Longitude": 151.01725177
     },
@@ -24821,7 +24821,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96632,
       "Longitude": 151.01713484
     },
@@ -25847,7 +25847,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96626191,
       "Longitude": 151.01701048
     },
@@ -26832,7 +26832,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96622487,
       "Longitude": 151.01684698
     },
@@ -27858,7 +27858,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96619115,
       "Longitude": 151.0166982
     },
@@ -28843,7 +28843,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96615551,
       "Longitude": 151.01656147
     },
@@ -29869,7 +29869,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9661355,
       "Longitude": 151.01642347
     },
@@ -30854,7 +30854,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9661227,
       "Longitude": 151.01629134
     },
@@ -31880,7 +31880,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96611033,
       "Longitude": 151.0161648
     },
@@ -32865,7 +32865,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9660976,
       "Longitude": 151.01604984
     },
@@ -33891,7 +33891,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96608553,
       "Longitude": 151.01594303
     },
@@ -34753,7 +34753,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9660729,
       "Longitude": 151.01585524
     },
@@ -35779,7 +35779,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96605691,
       "Longitude": 151.01576264
     },
@@ -36764,7 +36764,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9660496,
       "Longitude": 151.01571064
     },
@@ -37790,7 +37790,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96605227,
       "Longitude": 151.01566308
     },
@@ -38775,7 +38775,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96604827,
       "Longitude": 151.01562631
     },
@@ -39801,7 +39801,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606696,
       "Longitude": 151.01562855
     },
@@ -40786,7 +40786,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606434,
       "Longitude": 151.01562067
     },
@@ -41812,7 +41812,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606206,
       "Longitude": 151.01561539
     },
@@ -42797,7 +42797,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606333,
       "Longitude": 151.01561198
     },
@@ -43331,7 +43331,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606875,
       "Longitude": 151.01560856
     },
@@ -44111,7 +44111,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96606875,
       "Longitude": 151.01560855
     },
@@ -45096,7 +45096,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96599164,
       "Longitude": 151.01553095
     },
@@ -45589,7 +45589,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96594304,
       "Longitude": 151.01549907
     },
@@ -46246,7 +46246,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96582678,
       "Longitude": 151.01555607
     },
@@ -47190,7 +47190,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96572637,
       "Longitude": 151.01558151
     },
@@ -47929,7 +47929,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96560856,
       "Longitude": 151.01560489
     },
@@ -48258,7 +48258,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96548776,
       "Longitude": 151.01563373
     },
@@ -49120,7 +49120,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96536665,
       "Longitude": 151.01564919
     },
@@ -49162,7 +49162,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96525108,
       "Longitude": 151.01566377
     },
@@ -49245,7 +49245,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96513183,
       "Longitude": 151.01565964
     },
@@ -49902,7 +49902,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96502893,
       "Longitude": 151.01566936
     },
@@ -50641,7 +50641,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96491421,
       "Longitude": 151.0156613
     },
@@ -51503,7 +51503,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96479837,
       "Longitude": 151.01565275
     },
@@ -52447,7 +52447,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96468178,
       "Longitude": 151.01563376
     },
@@ -53022,7 +53022,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96456403,
       "Longitude": 151.01562327
     },
@@ -54048,7 +54048,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96445586,
       "Longitude": 151.0156274
     },
@@ -55033,7 +55033,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96433545,
       "Longitude": 151.01564367
     },
@@ -56059,7 +56059,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96420865,
       "Longitude": 151.0156576
     },
@@ -57044,7 +57044,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96408549,
       "Longitude": 151.01567363
     },
@@ -58070,7 +58070,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96396252,
       "Longitude": 151.0156941
     },
@@ -59055,7 +59055,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9638393,
       "Longitude": 151.01571229
     },
@@ -60081,7 +60081,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96370958,
       "Longitude": 151.01572844
     },
@@ -61066,7 +61066,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96358266,
       "Longitude": 151.01574852
     },
@@ -62092,7 +62092,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96345599,
       "Longitude": 151.0157711
     },
@@ -63077,7 +63077,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96332685,
       "Longitude": 151.01580241
     },
@@ -64103,7 +64103,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96319797,
       "Longitude": 151.01582987
     },
@@ -65088,7 +65088,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96307063,
       "Longitude": 151.01585952
     },
@@ -66114,7 +66114,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96294239,
       "Longitude": 151.01587862
     },
@@ -66771,7 +66771,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96282024,
       "Longitude": 151.01590155
     },
@@ -67797,7 +67797,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96269094,
       "Longitude": 151.01592254
     },
@@ -68782,7 +68782,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96256973,
       "Longitude": 151.01595316
     },
@@ -69808,7 +69808,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96245398,
       "Longitude": 151.01598624
     },
@@ -70793,7 +70793,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96233046,
       "Longitude": 151.01601109
     },
@@ -71819,7 +71819,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96220945,
       "Longitude": 151.01603642
     },
@@ -72804,7 +72804,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96209808,
       "Longitude": 151.01605585
     },
@@ -73748,7 +73748,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96197124,
       "Longitude": 151.01608511
     },
@@ -74446,7 +74446,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96185103,
       "Longitude": 151.01611618
     },
@@ -74857,7 +74857,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96172451,
       "Longitude": 151.01616151
     },
@@ -74940,7 +74940,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96158101,
       "Longitude": 151.01620182
     },
@@ -75474,7 +75474,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96144452,
       "Longitude": 151.01622707
     },
@@ -76090,7 +76090,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96132463,
       "Longitude": 151.01624519
     },
@@ -76870,7 +76870,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96119714,
       "Longitude": 151.01627299
     },
@@ -77691,7 +77691,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96106562,
       "Longitude": 151.01630545
     },
@@ -78717,7 +78717,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96094217,
       "Longitude": 151.01632912
     },
@@ -79579,7 +79579,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96082576,
       "Longitude": 151.01634721
     },
@@ -80605,7 +80605,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9607013,
       "Longitude": 151.01637292
     },
@@ -81549,7 +81549,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96058179,
       "Longitude": 151.01639254
     },
@@ -82575,7 +82575,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9604629,
       "Longitude": 151.01641125
     },
@@ -83560,7 +83560,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96035371,
       "Longitude": 151.01642064
     },
@@ -84586,7 +84586,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96023597,
       "Longitude": 151.01642969
     },
@@ -85202,7 +85202,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.96010187,
       "Longitude": 151.016448
     },
@@ -86105,7 +86105,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95997615,
       "Longitude": 151.01646273
     },
@@ -87090,7 +87090,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9598542,
       "Longitude": 151.01647052
     },
@@ -88116,7 +88116,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95974421,
       "Longitude": 151.01649341
     },
@@ -88650,7 +88650,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95962073,
       "Longitude": 151.01650942
     },
@@ -89553,7 +89553,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95950788,
       "Longitude": 151.01652523
     },
@@ -90456,7 +90456,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95940818,
       "Longitude": 151.01653467
     },
@@ -91072,7 +91072,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9593141,
       "Longitude": 151.01654256
     },
@@ -92057,7 +92057,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95922476,
       "Longitude": 151.01655307
     },
@@ -93083,7 +93083,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95916156,
       "Longitude": 151.01656791
     },
@@ -93699,7 +93699,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95909683,
       "Longitude": 151.0165735
     },
@@ -94315,7 +94315,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9590427,
       "Longitude": 151.01657851
     },
@@ -95300,7 +95300,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9590008,
       "Longitude": 151.01657514
     },
@@ -96326,7 +96326,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95897493,
       "Longitude": 151.01658524
     },
@@ -97311,7 +97311,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9589463,
       "Longitude": 151.01658778
     },
@@ -98337,7 +98337,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95891056,
       "Longitude": 151.01659295
     },
@@ -99322,7 +99322,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95885139,
       "Longitude": 151.01660432
     },
@@ -100348,7 +100348,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95877931,
       "Longitude": 151.01660885
     },
@@ -101251,7 +101251,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95869441,
       "Longitude": 151.01661725
     },
@@ -101949,7 +101949,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95860782,
       "Longitude": 151.01661372
     },
@@ -102934,7 +102934,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95850547,
       "Longitude": 151.01661687
     },
@@ -103960,7 +103960,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95840276,
       "Longitude": 151.01662644
     },
@@ -104945,7 +104945,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9582854,
       "Longitude": 151.0166211
     },
@@ -105971,7 +105971,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95816788,
       "Longitude": 151.01663219
     },
@@ -106956,7 +106956,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9580527,
       "Longitude": 151.01664992
     },
@@ -107982,7 +107982,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95792432,
       "Longitude": 151.01665533
     },
@@ -108967,7 +108967,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95780336,
       "Longitude": 151.01667016
     },
@@ -109993,7 +109993,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95769041,
       "Longitude": 151.0166716
     },
@@ -110978,7 +110978,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95757999,
       "Longitude": 151.01668387
     },
@@ -112004,7 +112004,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95748071,
       "Longitude": 151.01669544
     },
@@ -112989,7 +112989,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95738448,
       "Longitude": 151.01670377
     },
@@ -114015,7 +114015,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95730131,
       "Longitude": 151.01670031
     },
@@ -115000,7 +115000,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95721313,
       "Longitude": 151.01671541
     },
@@ -116026,7 +116026,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95712493,
       "Longitude": 151.01672521
     },
@@ -117011,7 +117011,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95703333,
       "Longitude": 151.0167351
     },
@@ -118037,7 +118037,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95694143,
       "Longitude": 151.01674559
     },
@@ -119022,7 +119022,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95686179,
       "Longitude": 151.01674822
     },
@@ -120048,7 +120048,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.9567785,
       "Longitude": 151.01674727
     },
@@ -121033,7 +121033,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95670202,
       "Longitude": 151.01676015
     },
@@ -122059,7 +122059,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95662792,
       "Longitude": 151.01676912
     },
@@ -123044,7 +123044,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95655025,
       "Longitude": 151.01677071
     },
@@ -124070,7 +124070,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95648359,
       "Longitude": 151.01677869
     },
@@ -125055,7 +125055,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95642506,
       "Longitude": 151.01678066
     },
@@ -126081,7 +126081,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95636769,
       "Longitude": 151.0167896
     },
@@ -127066,7 +127066,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95631698,
       "Longitude": 151.01679609
     },
@@ -128092,7 +128092,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95626959,
       "Longitude": 151.01680237
     },
@@ -129077,7 +129077,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95622127,
       "Longitude": 151.01680865
     },
@@ -130103,7 +130103,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95617259,
       "Longitude": 151.01681578
     },
@@ -131088,7 +131088,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95612947,
       "Longitude": 151.01682144
     },
@@ -132114,7 +132114,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95608876,
       "Longitude": 151.01682861
     },
@@ -133099,7 +133099,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95605712,
       "Longitude": 151.01682263
     },
@@ -134125,7 +134125,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95600978,
       "Longitude": 151.0168262
     },
@@ -135110,7 +135110,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95596273,
       "Longitude": 151.01683837
     },
@@ -136136,7 +136136,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95589364,
       "Longitude": 151.01684697
     },
@@ -137121,7 +137121,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95582369,
       "Longitude": 151.01685329
     },
@@ -138147,7 +138147,7 @@
           "Present": false
         }
       ],
-      "ImageFileName": "/home/lewington/code/readingsdb/readingdb/test_data/images/road1.jpg",
+      "ImageFileName": "readingdb/test_data/images/road1.jpg",
       "Latitude": -33.95574798,
       "Longitude": 151.01686375
     },
