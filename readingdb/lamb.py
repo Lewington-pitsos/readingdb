@@ -163,9 +163,13 @@ def handler_request(
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp
+        route_id, missing = get_key(event, Constants.ROUTE_ID)
+
+        if missing:
+            geohash, missing_geohash = get_key(event, Constants.GEOHASH)
+
+            if missing_geohash:
+                return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
 
         if EVENT_BUCKET_KEY in event:
             key = event[EVENT_BUCKET_KEY]
@@ -341,6 +345,13 @@ def handler_request(
         return success_response({
             EVENT_POINTS: geolocator.geolocate(points, replacement=True)
         })
+
+    # Requirements:
+    # Handle an event where a user requests all readings that are located
+    # within a given geohash.
+    # This should ONLY return readings that the user has access to (through 
+    # groups -> layers).
+
     else:
         return error_response(f'Unrecognized event type {event_name}')
     

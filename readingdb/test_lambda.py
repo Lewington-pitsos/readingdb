@@ -149,6 +149,18 @@ class TestBasic(TestLambda):
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_get_geohash_readings_event(self):
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: event GetReadings requires one of RouteID, Geohash'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_save_predictions_event(self):
         resp = test_handler({
             'Type': 'SavePredictions',
