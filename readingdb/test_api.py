@@ -177,7 +177,7 @@ class TestAPI(unittest.TestCase):
 
         route_spec = RouteSpec.from_json(route_spec_data)
         route = self.api.save_route(route_spec, user_id, group_id, layer_id)
-        self.assertListEqual(list(route.geohashes), ['r3gqu2', 'r3gqu8'])
+        self.assertEqual(route.geohashes, set(['r3gqu2', 'r3gqu8']))
 
         readings = self.api.geohash_readings('r3gqu8')
         self.assertEqual(288, len(readings))

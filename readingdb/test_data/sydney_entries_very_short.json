@@ -33,7 +33,7 @@
               "Present": false
             }
           ],
-          "ImageFileName": "/home/lewington/code/faultnet/data/inference/sydney_fast/images/syd_1.jpg",
+          "ImageFileName": "readingdb/test_data/images/syd_1.jpg",
           "Latitude": -33.96788819,
           "Longitude": 151.0181246
         },
