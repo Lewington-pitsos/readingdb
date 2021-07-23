@@ -36,7 +36,6 @@ class API(DB):
 
         self.s3_client = boto3.client('s3', region_name=region_name, config=config)
         self.ecs = boto3.client('ecs', region_name=region_name, config=config)
-        self.lambda_client = boto3.client('lambda')
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -97,24 +96,6 @@ class API(DB):
             self.add_readings_to_layer(layer_id, reading_data)
 
         return saved_entries
-
-
-    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
-        bucket_key = str(uuid.uuid1()) + '.json'
-        pl = {
-            'Type': 'GetReadings',
-            'BucketKey': bucket_key,
-            'RouteID': route_id,
-            'AccessToken': access_token,
-        }
-
-        self.lambda_client.invoke(
-            FunctionName=LAMBDA_ENDPOINT,
-            InvocationType='Event',
-            Payload=json.dumps(pl)
-        )
-
-        return {Constants.BUCKET: self.tmp_bucket, Constants.KEY: bucket_key}
 
     def all_route_readings(
         self, 
