@@ -1,6 +1,10 @@
-from readingdb.endpoints import DYNAMO_ENDPOINT
-from readingdb.api import API
+import time
+import signal
+import sys
 
-api = API(DYNAMO_ENDPOINT)
+def signal_handler(sig, frame):
+    print('You pressed Ctrl+C!')
+    sys.exit(0)
 
-rs = api.all_route_readings('c6496334-b434-11eb-ac0e-0242e489f95d')
+signal.signal(signal.SIGINT, signal_handler)
+

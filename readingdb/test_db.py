@@ -1,3 +1,5 @@
+import signal
+import sys
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -18,10 +20,20 @@ class TestDB(unittest.TestCase):
         self.current_dir = os.path.dirname(__file__)
         self.db = DB('http://localhost:8000')
 
-    def tearDown(self):
+        def signal_handler(sig, frame):
+            self.__cleanup()
+            print('Ctrl+C detected, cleaning up test resources...')
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+
+    def __cleanup(self):
         tables = self.db.all_tables()
         if len(tables) > 0:
             self.db.teardown_reading_db()
+
+    def tearDown(self):
+        self.__cleanup()
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
