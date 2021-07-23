@@ -159,6 +159,33 @@ class TestAPI(unittest.TestCase):
         readings = self.api.geohash_readings('r3gqu2')
         self.assertEqual(32, len(readings))
 
+    def test_user_geohash_access(self):
+        group_id = 'a9a9a9a9'
+        user_id = 'a9a9a9a9s99ss'
+        layer_id = 'a9a99aa9aa9a99a'
+
+        with open(self.current_dir + '/test_data/sydney_route_very_short.json', 'r') as j:
+            route_spec_data = json.load(j)
+
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = self.api.save_route(route_spec, user_id, group_id, layer_id)
+        self.assertEqual(route.geohashes, set(['r3gqu2', 'r3gqu8']))
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', user_id)
+        self.assertEqual(0, len(readings))
+
+        org_name = "aws"
+        self.api.put_org(org_name)
+        self.api.put_user(org_name, user_id)
+        self.api.user_add_group(user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', user_id)
+        self.assertEqual(288, len(readings))
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', '2e2ee2mm')
+        self.assertEqual(0, len(readings))
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -184,6 +211,7 @@ class TestAPI(unittest.TestCase):
 
         readings = self.api.geohash_readings('r3gqu2')
         self.assertEqual(32, len(readings))
+
 
     def test_route_access(self):
         user_id = 'aghsghavgas'
