@@ -1,7 +1,7 @@
-Item, Primary Key, Secondary Key, Inverted Indices
-Route, Route, Route + RouteID
-Org, Org, Org + OrgID
-User, Org + OrgID, User + UserID
-Layer, Layer, Layer + LayerID
-UserAccessGroup, UAG + UserID, AccessGroup + AccessGroupID, Secondary Key
-LayerAccessGroup, AccessGroup + AccessGroupID, LAG + LayerID, Secondary Key
+Item," Primary Key"," Secondary Key"," Inverted Indices"
+Route," Route"," Route + RouteID",
+Org," Org"," Org + OrgID",
+User," Org + OrgID"," User + UserID",
+Layer," Layer"," Layer + LayerID",
+UserAccessGroup," UAG + UserID"," AccessGroup + AccessGroupID"," Secondary Key"
+LayerAccessGroup," AccessGroup + AccessGroupID"," LAG + LayerID"," Secondary Key"

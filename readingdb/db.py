@@ -488,8 +488,8 @@ class DB():
         
         return layer_ids
 
-    def __layer_group_pk(self, uid: str) -> str:
-        return f'LayerGroup#{uid}'
+    def __layer_group_pk(self, layer_id: str) -> str:
+        return f'LayerGroup#{layer_id}'
 
     def __group_key(self, acess_group_id: str) -> str:
         return f'Group#{acess_group_id}'

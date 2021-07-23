@@ -102,6 +102,17 @@ def handler_request(
     bucket: str, 
     size_limit: int
     ):
+
+    logger.info('Event: %s', event)
+
+    if EVENT_TYPE in event:
+        event_name = event[EVENT_TYPE]
+    else:
+        return error_response('Invalid Event Syntax')
+
+    if not EVENT_ACCESS_TOKEN in event:
+        return error_response('Unauthenticated request, no Access Token Provided')
+
     api = API(
         endpoint, 
         size_limit=size_limit, 
@@ -113,16 +124,7 @@ def handler_request(
     )
     geolocator = Geolocator()
     digester = Digester(endpoint, api=api)
-    logger.info('Event: %s', event)
     
-    if EVENT_TYPE in event:
-        event_name = event[EVENT_TYPE]
-    else:
-        return error_response('Invalid Event Syntax')
-
-    if not EVENT_ACCESS_TOKEN in event:
-        return error_response('Unauthenticated request, no Access Token Provided')
-
     auth: Auth = Auth(region_name=REGION_NAME)
     
     user_data: AuthResponse = auth.get_user(event[EVENT_ACCESS_TOKEN])
@@ -191,6 +193,7 @@ def handler_request(
         )
 
         return success_response({Constants.READING_TABLE_NAME: readings})
+        
     elif event_name == EVENT_PROCESS_UPLOADED_ROUTE:
         # Event Format:
         # Type: 'ProcessUpload',
