@@ -67,7 +67,7 @@ class TestDB(unittest.TestCase):
                 )
             )
         self.db.put_readings(finalized)
-        readings = self.db.all_route_readings(rid)
+        readings = self.db.get_route_readings(rid)
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'someroute')
@@ -110,7 +110,7 @@ class TestDB(unittest.TestCase):
             )
         )
     
-        readings = self.db.all_route_readings(rid)
+        readings = self.db.get_route_readings(rid)
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
@@ -148,7 +148,7 @@ class TestDB(unittest.TestCase):
 
         self.db.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.db.put_readings(entity_readings)
-        readings = self.db.all_route_readings(route_id)
+        readings = self.db.get_route_readings(route_id)
         self.assertEqual(3383, len(readings))
 
     # -----------------------------------------------------------------

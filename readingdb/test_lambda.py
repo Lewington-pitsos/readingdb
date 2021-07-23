@@ -896,6 +896,16 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_routes_by_geohash(self):
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': 'r1r291' ,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(86, len(resp['Body']['Readings']))
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
         resp = test_handler({
             'Type': 'GetRoute',

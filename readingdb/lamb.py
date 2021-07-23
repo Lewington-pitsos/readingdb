@@ -163,14 +163,6 @@ def handler_request(
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
-        route_id, missing = get_key(event, Constants.ROUTE_ID)
-
-        if missing:
-            geohash, missing_geohash = get_key(event, Constants.GEOHASH)
-
-            if missing_geohash:
-                return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
-
         if EVENT_BUCKET_KEY in event:
             key = event[EVENT_BUCKET_KEY]
         else:
@@ -182,21 +174,33 @@ def handler_request(
         else:
             annotator_preference += ANNOTATOR_PREFERENCE
 
-        pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
+        route_id, missing = get_key(event, Constants.ROUTE_ID)
+
         if missing:
-            pred_only = True
+            geohash, missing_geohash = get_key(event, Constants.GEOHASH)
 
-        if not api.can_access_route(user_data.user_sub, route_id):
-            return unauthorized_route_response(user_data.user_sub, route_id)
+            if missing_geohash:
+                return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
 
-        readings = api.all_route_readings(
-            route_id,
-            key,
-            predictions_only=pred_only,
-            annotator_preference=annotator_preference
-        )
+            readings = api.get_geohash_readings_by_user(geohash, user_data.user_sub)
+            return success_response({Constants.READING_TABLE_NAME: readings})
+        
+        else:
+            pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
+            if missing:
+                pred_only = True
 
-        return success_response({Constants.READING_TABLE_NAME: readings})
+            if not api.can_access_route(user_data.user_sub, route_id):
+                return unauthorized_route_response(user_data.user_sub, route_id)
+
+            readings = api.all_route_readings(
+                route_id,
+                key,
+                predictions_only=pred_only,
+                annotator_preference=annotator_preference
+            )
+
+            return success_response({Constants.READING_TABLE_NAME: readings})
         
     elif event_name == EVENT_PROCESS_UPLOADED_ROUTE:
         # Event Format:
