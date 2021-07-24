@@ -153,15 +153,25 @@ class API(DB):
             annotator_preference=annotator_preference,
         )
 
-    def get_geohash_readings_by_user(self, geohash: str, user_id: str) -> List[Dict[str, Any]]:
-        readings = self.geohash_readings(geohash)
+    def get_geohash_readings_by_user(self, geohashes, user_id: str) -> List[Dict[str, Any]]:
+        #check if list or single
+        if not isinstance(geohashes, list):
+            geohashes = set([geohashes])
+        else:
+            if len(geohashes) == 0:
+                raise ValueError
+            geohashes = set(geohashes)
+        
+        readings = []
+        for g in geohashes:
+            readings += self.geohash_readings(g)
 
         layers = self.layers_for_user(user_id)
 
         reading_id_set = set()
         for layer in layers:
             for reading_ref in layer[Constants.LAYER_READINGS]:
-                if reading_ref[Constants.GEOHASH] == geohash:
+                if reading_ref[Constants.GEOHASH] in geohashes:
                     reading_id_set.add(reading_ref[Constants.READING_ID])
 
         authorized_readings = []

@@ -174,18 +174,24 @@ def handler_request(
         else:
             annotator_preference += ANNOTATOR_PREFERENCE
 
-        route_id, missing = get_key(event, Constants.ROUTE_ID)
+        route_id, missing_id = get_key(event, Constants.ROUTE_ID)
+        geohashes, missing_geohash = get_key(event, Constants.GEOHASH)
 
-        if missing:
-            geohash, missing_geohash = get_key(event, Constants.GEOHASH)
-
-            if missing_geohash:
-                return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
-
-            readings = api.get_geohash_readings_by_user(geohash, user_data.user_sub)
+        if missing_id and missing_geohash:
+            #missing both
+            return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
+        elif not missing_id and not missing_geohash:
+            #given both options at once
+            return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}')
+        elif not missing_geohash:
+            #get by geohash
+            try:
+                readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
+            except ValueError:
+                return error_response(f'Value Error: event {EVENT_GET_READINGS} cannot be passed empty {Constants.GEOHASH} list')
             return success_response({Constants.READING_TABLE_NAME: readings})
-        
-        else:
+        elif not missing_id:
+            #get by RouteID
             pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
             if missing:
                 pred_only = True

@@ -133,7 +133,7 @@ class DB():
 
         return set(route[Constants.ROUTE_HASHES])
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]: 
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         layer_data = self.layers_for_user(user_id)
         route_ids = set()
 
