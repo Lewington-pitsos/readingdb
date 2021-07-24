@@ -186,6 +186,16 @@ class TestAPI(unittest.TestCase):
         readings = self.api.get_geohash_readings_by_user('r3gqu8', '2e2ee2mm')
         self.assertEqual(0, len(readings))
 
+        multi_readings = self.api.get_geohash_readings_by_user(['r3gqu8','r3gqu2'], user_id)
+        self.assertGreater(len(multi_readings), len(readings))
+
+        with self.assertRaises(ValueError):
+            self.api.get_geohash_readings_by_user(['r3gqu8','r3gqu8'], user_id)
+            self.api.get_geohash_readings_by_user([], user_id)
+
+        with self.assertRaises(TypeError):
+            self.api.get_geohash_readings_by_user(1,user_id)
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

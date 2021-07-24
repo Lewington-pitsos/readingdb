@@ -163,41 +163,40 @@ def handler_request(
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
-        if EVENT_BUCKET_KEY in event:
-            key = event[EVENT_BUCKET_KEY]
-        else:
-            key = None
 
-        annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
-        if missing:
-            annotator_preference = ANNOTATOR_PREFERENCE
-        else:
-            annotator_preference += ANNOTATOR_PREFERENCE
-
-        route_id, missing_id = get_key(event, Constants.ROUTE_ID)
+        route_id, missing_route_id = get_key(event, Constants.ROUTE_ID)
         geohashes, missing_geohash = get_key(event, Constants.GEOHASH)
 
-        if missing_id and missing_geohash:
-            #missing both
+        if missing_route_id and missing_geohash:
             return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
-        elif not missing_id and not missing_geohash:
-            #given both options at once
+        elif not missing_route_id and not missing_geohash:
             return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}')
         elif not missing_geohash:
-            #get by geohash
             try:
                 readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
             except ValueError:
                 return error_response(f'Value Error: event {EVENT_GET_READINGS} cannot be passed empty {Constants.GEOHASH} list')
+            except TypeError:
+                return error_response(f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings')
             return success_response({Constants.READING_TABLE_NAME: readings})
-        elif not missing_id:
-            #get by RouteID
+        elif not missing_route_id:
             pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
             if missing:
                 pred_only = True
 
             if not api.can_access_route(user_data.user_sub, route_id):
                 return unauthorized_route_response(user_data.user_sub, route_id)
+
+            if EVENT_BUCKET_KEY in event:
+                key = event[EVENT_BUCKET_KEY]
+            else:
+                key = None
+
+            annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
+            if missing:
+                annotator_preference = ANNOTATOR_PREFERENCE
+            else:
+                annotator_preference += ANNOTATOR_PREFERENCE
 
             readings = api.all_route_readings(
                 route_id,
@@ -355,12 +354,6 @@ def handler_request(
         return success_response({
             EVENT_POINTS: geolocator.geolocate(points, replacement=True)
         })
-
-    # Requirements:
-    # Handle an event where a user requests all readings that are located
-    # within a given geohash.
-    # This should ONLY return readings that the user has access to (through 
-    # groups -> layers).
 
     else:
         return error_response(f'Unrecognized event type {event_name}')

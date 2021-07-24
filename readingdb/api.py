@@ -154,13 +154,18 @@ class API(DB):
         )
 
     def get_geohash_readings_by_user(self, geohashes, user_id: str) -> List[Dict[str, Any]]:
-        #check if list or single
         if not isinstance(geohashes, list):
-            geohashes = set([geohashes])
-        else:
-            if len(geohashes) == 0:
-                raise ValueError
-            geohashes = set(geohashes)
+            if not isinstance(geohashes, str):
+                raise TypeError('must be a string or list of strings')
+            geohashes = [geohashes]
+        
+        if len(geohashes) == 0:
+            raise ValueError('must pass in at least one geohash')
+
+        if len(geohashes) != len(set(geohashes)):
+            raise ValueError('passed in duplicate geohashes')
+            
+        geohashes = set(geohashes)
         
         readings = []
         for g in geohashes:

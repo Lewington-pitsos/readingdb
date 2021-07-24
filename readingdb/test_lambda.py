@@ -906,7 +906,6 @@ class TestLambdaR(TestLambdaRW):
 
         self.assertEquals(86, len(resp['Body']['Readings']))
 
-        #test get multiple geohashes
         resp_multi = test_handler({
             'Type': 'GetReadings',
             'Geohash': ['r1r291','r1r28f'],
@@ -915,7 +914,6 @@ class TestLambdaR(TestLambdaRW):
 
         self.assertGreater(len(resp_multi['Body']['Readings']), len(resp['Body']['Readings']) )
         
-        #test passing empty list returns error
         resp_multi = test_handler({
             'Type': 'GetReadings',
             'Geohash': [],
@@ -927,7 +925,6 @@ class TestLambdaR(TestLambdaRW):
                 'Body': f'Value Error: event GetReadings cannot be passed empty {Constants.GEOHASH} list'
             } ,resp_multi)
 
-        #test passing both geohash and routeID returns error
         resp = test_handler({
             'Type': 'GetReadings',
             'Geohash': 'r1r291',
@@ -940,7 +937,6 @@ class TestLambdaR(TestLambdaRW):
                 'Body': f'Bad Format Error: event GetReadings cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}'
             } ,resp)
 
-        # test that different user gets no routes
         resp = test_handler({
             'Type': 'GetReadings',
             'Geohash': 'r1r291' ,
@@ -948,6 +944,26 @@ class TestLambdaR(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': 'ex8erk',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': 1,
+            'RouteID' : self.long_route.id ,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+                'Status': 'Error',
+                'Body': f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings'
+            } ,resp)
 
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
