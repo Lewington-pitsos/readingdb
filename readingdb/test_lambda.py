@@ -956,14 +956,13 @@ class TestLambdaR(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetReadings',
             'Geohash': 1,
-            'RouteID' : self.long_route.id ,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual({
-                'Status': 'Error',
-                'Body': f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings'
-            } ,resp)
+            'Status': 'Error',
+            'Body': f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings'
+        } ,resp)
 
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
