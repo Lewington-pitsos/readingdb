@@ -14,10 +14,11 @@ Then install [Poetry](https://python-poetry.org/docs/), it's better than virtual
 
 Finally start the local dynamodb server on port 8000, and confirm that everything is set up correctly by running unittests (some of which rely on the server running on that port):
 
-    poetry run python -m unittest -c
+    poetry run python -W ignore:unclosed:ResourceWarning -m unittest -c
 
     -f/--failfast option can be used to have it stop running at the first failure/error
     -c/--catch should be used for graceful exits when exiting with ctr-c
+    -W ignores the unclosed socket warning from boto3 to clean up test results 
 
 Then you can start running scripts, e.g.:
 

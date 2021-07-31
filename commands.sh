@@ -4,7 +4,7 @@ java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
 
 aws dynamodb list-tables --endpoint-url http://localhost:8000
 
-python -m unittest -c
+python -W ignore:unclosed:ResourceWarning -m unittest -c
 
 # docker lambda related
 
