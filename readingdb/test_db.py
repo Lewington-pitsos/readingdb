@@ -1,4 +1,3 @@
-import signal
 import sys
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
@@ -19,13 +18,6 @@ class TestDB(unittest.TestCase):
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
         self.db = DB('http://localhost:8000')
-
-        def signal_handler(sig, frame):
-            self.__cleanup()
-            print('Ctrl+C detected, cleaning up test resources...')
-            sys.exit(0)
-
-        signal.signal(signal.SIGINT, signal_handler)
 
     def __cleanup(self):
         tables = self.db.all_tables()
