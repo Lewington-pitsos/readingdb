@@ -898,9 +898,13 @@ class TestLambdaR(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_by_geohash(self):
+        test_geohash = 'r1r291'
+        test_geohash_list = ['r1r291','r1r28f']
+        test_geohash_empty = 'ex8erk'
+
         resp = test_handler({
             'Type': 'GetReadings',
-            'Geohash': 'r1r291',
+            'Geohash': test_geohash,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -908,7 +912,7 @@ class TestLambdaR(TestLambdaRW):
 
         resp_multi = test_handler({
             'Type': 'GetReadings',
-            'Geohash': ['r1r291','r1r28f'],
+            'Geohash': test_geohash_list,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
@@ -927,7 +931,7 @@ class TestLambdaR(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'GetReadings',
-            'Geohash': 'r1r291',
+            'Geohash': test_geohash,
             'RouteID' : self.long_route.id ,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
@@ -939,7 +943,7 @@ class TestLambdaR(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'GetReadings',
-            'Geohash': 'r1r291' ,
+            'Geohash': test_geohash ,
             'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
 
@@ -947,7 +951,7 @@ class TestLambdaR(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'GetReadings',
-            'Geohash': 'ex8erk',
+            'Geohash': test_geohash_empty,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
