@@ -16,9 +16,13 @@ Finally start the local dynamodb server on port 8000, and confirm that everythin
 
     poetry run python -W ignore:unclosed:ResourceWarning -m unittest -c
 
-    -f/--failfast option can be used to have it stop running at the first failure/error
-    -c/--catch should be used for graceful exits when exiting with ctr-c
-    -W ignores the unclosed socket warning from boto3 to clean up test results 
+    [-f/--failfast](https://docs.python.org/3/library/unittest.html#cmdoption-unittest-f) option can be used to have it stop running at the first failure/error
+    [-c/--catch](https://docs.python.org/3/library/unittest.html#cmdoption-unittest-c) should be used for graceful exits when exiting with ctrl-c
+        Be warned however, a second ctrl-c will still cause an immediate exit
+    [-W](https://docs.python.org/3.8/using/cmdline.html#cmdoption-w) allows some options for error handling:
+        In this case we ignore unclosed socket warnings as boto3 was causing them to be thrown likely due to the way that it handles connection pooling.
+        They have the form: 
+            ResourceWarning: unclosed <socket.socket fd=1, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=[local address], raddr=[remote address]>
 
 Then you can start running scripts, e.g.:
 
