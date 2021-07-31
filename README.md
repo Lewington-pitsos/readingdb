@@ -10,7 +10,7 @@ Then install [Poetry](https://python-poetry.org/docs/), it's better than virtual
 
 Finally start the local dynamodb server on port 8000, and confirm that everything is set up correctly by running unittests (some of which rely on the server running on that port):
 
-    poetry run python -m unittest discover
+    poetry run python -m unittest
 
 Then you can start running scripts, e.g.:
 

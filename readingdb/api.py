@@ -1,6 +1,7 @@
 from collections import defaultdict
 import json
 import sys
+from readingdb import constants
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
@@ -105,7 +106,7 @@ class API(DB):
         predictions_only = False,
         annotator_preference = None
     ) -> List[Dict[str, Any]]:
-        readings = super().all_route_readings(route_id)
+        readings = self.get_route_readings(route_id)
 
         if predictions_only:
             readings = [r for r in readings if r['Type'] == Constants.PREDICTION]
@@ -151,6 +152,40 @@ class API(DB):
             predictions_only=True,
             annotator_preference=annotator_preference,
         )
+
+    def get_geohash_readings_by_user(self, geohashes, user_id: str) -> List[Dict[str, Any]]:
+        if not isinstance(geohashes, list):
+            if not isinstance(geohashes, str):
+                raise TypeError('must be a string or list of strings')
+            geohashes = [geohashes]
+        
+        if len(geohashes) == 0:
+            raise ValueError('must pass in at least one geohash')
+
+        if len(geohashes) != len(set(geohashes)):
+            raise ValueError('passed in duplicate geohashes')
+            
+        geohashes = set(geohashes)
+        
+        readings = []
+        for g in geohashes:
+            readings += self.geohash_readings(g)
+
+        layers = self.layers_for_user(user_id)
+
+        reading_id_set = set()
+        for layer in layers:
+            for reading_ref in layer[Constants.LAYER_READINGS]:
+                if reading_ref[Constants.GEOHASH] in geohashes:
+                    reading_id_set.add(reading_ref[Constants.READING_ID])
+
+        authorized_readings = []
+
+        for reading in readings:
+            if reading[Constants.READING_ID] in reading_id_set:
+                authorized_readings.append(reading)
+            
+        return authorized_readings
 
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
         reading_groups = defaultdict(lambda: [])

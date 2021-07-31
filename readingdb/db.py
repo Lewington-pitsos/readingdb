@@ -133,7 +133,7 @@ class DB():
 
         return set(route[Constants.ROUTE_HASHES])
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]: 
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
         layer_data = self.layers_for_user(user_id)
         route_ids = set()
 
@@ -222,7 +222,7 @@ class DB():
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
-    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+    def get_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
         geohashes = self.route_geohashes(route_id)
         all_readings = []
 
@@ -244,6 +244,8 @@ class DB():
         return response[self.ITEM_KEY]
 
     def get_reading(self, geohash:str, reading_id: str) -> Dict[str, Any]:
+        # TODO: this should be a query with a PK and SK rather than
+        # going through geohash_readings.
         hash_readings = self.geohash_readings(geohash)
 
         for r in hash_readings:
@@ -352,7 +354,7 @@ class DB():
 
             self.put_layer(layer_id, new_reading_query_data, )
 
-    def layers_for_user(self, uid:str) -> str:
+    def layers_for_user(self, uid:str) -> List[Dict[str, Any]]:
         layers = []
 
         group_ids = self.groups_for_user(uid)

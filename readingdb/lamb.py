@@ -132,7 +132,6 @@ def handler_request(
         return error_response(f'Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}')
 
     #  ------------ Per-Event-Type handling -------------
-    
     if event_name == EVENT_GET_ROUTE:
         route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
@@ -163,36 +162,53 @@ def handler_request(
         return success_response(routes)
 
     elif event_name == EVENT_GET_READINGS:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp
 
-        if EVENT_BUCKET_KEY in event:
-            key = event[EVENT_BUCKET_KEY]
-        else:
-            key = None
+        route_id, missing_route_id = get_key(event, Constants.ROUTE_ID)
+        geohashes, missing_geohash = get_key(event, Constants.GEOHASH)
 
-        annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
-        if missing:
-            annotator_preference = ANNOTATOR_PREFERENCE
-        else:
-            annotator_preference += ANNOTATOR_PREFERENCE
+        if missing_route_id and missing_geohash:
+            return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} requires one of {Constants.ROUTE_ID}, {Constants.GEOHASH}')
+        elif not missing_route_id and not missing_geohash:
+            return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}')
+        elif not missing_geohash:
+            if isinstance(geohashes, list):
+                if len(geohashes) == 0:
+                    return error_response(f'Value Error: event {EVENT_GET_READINGS} cannot be passed empty {Constants.GEOHASH} list')
+                elif not all(isinstance(elem, str) for elem in geohashes):
+                    return error_response(f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings')
+            elif not isinstance(geohashes,str):
+                return error_response(f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings')
 
-        pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
-        if missing:
-            pred_only = True
+            readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
 
-        if not api.can_access_route(user_data.user_sub, route_id):
-            return unauthorized_route_response(user_data.user_sub, route_id)
+            return success_response({Constants.READING_TABLE_NAME: readings})
+        elif not missing_route_id:
+            pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
+            if missing:
+                pred_only = True
 
-        readings = api.all_route_readings(
-            route_id,
-            key,
-            predictions_only=pred_only,
-            annotator_preference=annotator_preference
-        )
+            if not api.can_access_route(user_data.user_sub, route_id):
+                return unauthorized_route_response(user_data.user_sub, route_id)
 
-        return success_response({Constants.READING_TABLE_NAME: readings})
+            if EVENT_BUCKET_KEY in event:
+                key = event[EVENT_BUCKET_KEY]
+            else:
+                key = None
+
+            annotator_preference, missing = get_key(event, EVENT_ANNOTATOR_PREFERENCE)
+            if missing:
+                annotator_preference = ANNOTATOR_PREFERENCE
+            else:
+                annotator_preference += ANNOTATOR_PREFERENCE
+
+            readings = api.all_route_readings(
+                route_id,
+                key,
+                predictions_only=pred_only,
+                annotator_preference=annotator_preference
+            )
+
+            return success_response({Constants.READING_TABLE_NAME: readings})
         
     elif event_name == EVENT_PROCESS_UPLOADED_ROUTE:
         # Event Format:
@@ -341,6 +357,7 @@ def handler_request(
         return success_response({
             EVENT_POINTS: geolocator.geolocate(points, replacement=True)
         })
+
     else:
         return error_response(f'Unrecognized event type {event_name}')
     

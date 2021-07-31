@@ -4,6 +4,7 @@ import os
 import zipfile
 import boto3
 import json
+from readingdb import constants
 from readingdb.constants import *
 from unittest import mock
 from readingdb.routespec import RouteSpec
@@ -28,10 +29,10 @@ class TestLambda(unittest.TestCase):
     def setUpClass(cls):
         if credentials_present():
             cls.access_token = get_access_token()
-            cls.access_token2 = get_access_token(os.path.dirname(__file__) + '/test_data/fdsguest.json')
+            cls.unauthorized_access_token = get_access_token(os.path.dirname(__file__) + '/test_data/fdsguest.json')
         else:
             cls.access_token = ''
-            cls.access_token2 = ''
+            cls.unauthorized_access_token = ''
 
 class TestBasic(TestLambda):
     def test_error_response_on_bad_input(self):
@@ -146,6 +147,18 @@ class TestBasic(TestLambda):
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Bad Format Error: key RouteID missing from event'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_get_geohash_readings_event(self):
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: event GetReadings requires one of RouteID, Geohash'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -660,7 +673,7 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'GetRoute',
             'RouteID': r.id,
-            'AccessToken': self.access_token2,
+            'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Error')
         self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
@@ -695,7 +708,7 @@ class TestLambdaW(TestLambdaRW):
             'AnnotatorPreference': [
                 '99bf4519-85d9-4726-9471-4c91a7677925'
             ],
-            'AccessToken': self.access_token2,
+            'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Error')
         self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
@@ -739,7 +752,7 @@ class TestLambdaW(TestLambdaRW):
             'Type': 'UpdateRouteName',
             'RouteID': r.id,
             'RouteName': 'wallmart',
-            'AccessToken': self.access_token2,
+            'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Error')
 
@@ -774,7 +787,7 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'DeleteRoute',
             'RouteID': r.id,
-            'AccessToken': self.access_token2,
+            'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
         self.assertEqual(resp['Status'], 'Error')
         self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
@@ -878,10 +891,83 @@ class TestLambdaR(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'GetUserRoutes',
-            'AccessToken': self.access_token2,
+            'AccessToken': self.unauthorized_access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(len(resp['Body']), 0)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_routes_by_geohash(self):
+        test_geohash = 'r1r291'
+        test_geohash_list = ['r1r291','r1r28f']
+        test_geohash_empty = 'ex8erk'
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(86, len(resp['Body']['Readings']))
+
+        resp_multi = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash_list,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertGreater(len(resp_multi['Body']['Readings']), len(resp['Body']['Readings']) )
+        
+        resp_multi = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': [],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+                'Status': 'Error',
+                'Body': f'Value Error: event GetReadings cannot be passed empty {Constants.GEOHASH} list'
+            } ,resp_multi)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash,
+            'RouteID' : self.long_route.id ,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+                'Status': 'Error',
+                'Body': f'Bad Format Error: event GetReadings cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}'
+            } ,resp)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash ,
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash_empty,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': 1,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings'
+        } ,resp)
+
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
