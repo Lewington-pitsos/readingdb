@@ -132,7 +132,6 @@ def handler_request(
         return error_response(f'Unauthenticated request, unrecognized Access Token {event[EVENT_ACCESS_TOKEN]}')
 
     #  ------------ Per-Event-Type handling -------------
-    
     if event_name == EVENT_GET_ROUTE:
         route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:
@@ -172,12 +171,16 @@ def handler_request(
         elif not missing_route_id and not missing_geohash:
             return error_response(f'Bad Format Error: event {EVENT_GET_READINGS} cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}')
         elif not missing_geohash:
-            try:
-                readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
-            except ValueError:
-                return error_response(f'Value Error: event {EVENT_GET_READINGS} cannot be passed empty {Constants.GEOHASH} list')
-            except TypeError:
+            if isinstance(geohashes, list):
+                if len(geohashes) == 0:
+                    return error_response(f'Value Error: event {EVENT_GET_READINGS} cannot be passed empty {Constants.GEOHASH} list')
+                elif not all(isinstance(elem, str) for elem in geohashes):
+                    return error_response(f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings')
+            elif not isinstance(geohashes,str):
                 return error_response(f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings')
+
+            readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
+
             return success_response({Constants.READING_TABLE_NAME: readings})
         elif not missing_route_id:
             pred_only, missing = get_key(event, EVENT_PREDICTION_ONLY)
