@@ -457,7 +457,11 @@ class DB():
         })
 
     def group_remove_layer(self, group_id: str, layer_id: str) -> None:
-        pass
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__group_key(group_id),
+            Constants.SORT_KEY: self.__layer_group_pk(layer_id),
+        })
+
 
     def groups_for_user(self, user_id: str) -> List[str]:
         response = self.org_table.query(KeyConditionExpression=

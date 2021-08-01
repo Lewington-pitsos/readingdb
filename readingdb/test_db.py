@@ -671,4 +671,36 @@ class TestDB(unittest.TestCase):
         self.assertFalse(self.db.user_has_group(test_user, test_group))
 
     def test_layer_adds_removes_group(self):
-        pass
+        route_id = '103'
+        test_layer_id = '919191919'
+        test_group = 'testgoup'
+        
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        query_data = []
+        for e in entities[:10]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+        
+        self.db.put_layer(test_layer_id, query_data)
+        self.db.put_group(test_group)
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+        
+        self.db.group_remove_layer(test_group,test_layer_id)
+        self.assertNotIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertEqual(1, len(self.db.layer_ids_for_group(test_group)))
+
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.assertEqual(0, len(self.db.layer_ids_for_group(test_group)))
