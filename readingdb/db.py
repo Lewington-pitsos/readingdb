@@ -444,11 +444,24 @@ class DB():
             Constants.SORT_KEY: self.__group_key(group_id),
         })
 
+    def user_remove_group(self, user_id: str, group_id: str) -> None:
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__user_group_pk(user_id),
+            Constants.SORT_KEY: self.__group_key(group_id)
+        })
+
     def group_add_layer(self, group_id: str, layer_id: str) -> None:
         self.org_table.put_item(Item={
             Constants.PARTITION_KEY: self.__group_key(group_id),
             Constants.SORT_KEY: self.__layer_group_pk(layer_id),
         })
+
+    def group_remove_layer(self, group_id: str, layer_id: str) -> None:
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__group_key(group_id),
+            Constants.SORT_KEY: self.__layer_group_pk(layer_id),
+        })
+
 
     def groups_for_user(self, user_id: str) -> List[str]:
         response = self.org_table.query(KeyConditionExpression=
@@ -463,7 +476,8 @@ class DB():
 
     def user_has_group(self, user_id: str, group_id: str) -> bool:
         response = self.org_table.query(KeyConditionExpression=
-            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id)))
+            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id))
+        )
 
         for item in response[self.ITEM_KEY]:
             if self.__id_from_key(item[Constants.SORT_KEY]) == group_id:

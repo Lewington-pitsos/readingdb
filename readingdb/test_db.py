@@ -18,6 +18,7 @@ class TestDB(unittest.TestCase):
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
         self.db = DB('http://localhost:8000')
+        self.db.create_reading_db()
 
     def __cleanup(self):
         tables = self.db.all_tables()
@@ -36,7 +37,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_saves_readings(self):
-        self.db.create_reading_db()
+        
         reading_time = int(time.time())
         uid = 'someuser'
         rid = 'someroute'
@@ -76,7 +77,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
 
     def test_saves_readings_with_severity(self):
-        self.db.create_reading_db()
+        
         uid = '103'
         rid = 'xxxa'
         group_id = 'a9a98a9a9a'
@@ -124,7 +125,7 @@ class TestDB(unittest.TestCase):
     def test_loads_large_dataset(self):
         route_id = '103'
         group_id = 'a9a98a9a9a'
-        self.db.create_reading_db()
+        
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
@@ -152,7 +153,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_creates_and_deletes_tables(self):
-        self.db.create_reading_db()
+        
         tables = self.db.all_tables()
         self.assertEqual(len(tables), 2)
 
@@ -170,7 +171,7 @@ class TestDB(unittest.TestCase):
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
-        self.db.create_reading_db()
+        
         routes = self.db.routes_for_user('103')
         org_name = 'xero'
         self.assertEqual(len(routes), 0)
@@ -222,7 +223,7 @@ class TestDB(unittest.TestCase):
         }, routes[0])
 
     def test_saves_route_written_date(self):
-        self.db.create_reading_db()
+        
         user_id = '191732j272'
         group_id = '019191' 
         route_id = '0202020'
@@ -263,7 +264,7 @@ class TestDB(unittest.TestCase):
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_updates_route_written_date_on_update(self):
-        self.db.create_reading_db()
+        
         org_name = 'fds'
         self.db.put_org(org_name)
         routes = self.db.routes_for_user('103')
@@ -326,7 +327,7 @@ class TestDB(unittest.TestCase):
         rid = '292929922'
         uid = '287226281'
         group_id = 'a9a9a9a8a8a'
-        self.db.create_reading_db()
+        
 
         route = Route(uid, group_id, rid, 31232143242)
         self.db.put_route(route)
@@ -339,7 +340,7 @@ class TestDB(unittest.TestCase):
         org_name = 'fds'
 
         name = 'someName'
-        self.db.create_reading_db()
+        
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
 
@@ -379,7 +380,7 @@ class TestDB(unittest.TestCase):
         group_id = 'ashasa7sa87a'
         org_name = 'fds'
 
-        self.db.create_reading_db()
+        
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
         reading = PredictionReading(
@@ -439,7 +440,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_saves_layer_names(self):
-        self.db.create_reading_db()
+        
         
         layer_id = 'a9a9a9a9'
         self.db.put_layer(layer_id, name='Default')
@@ -450,7 +451,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(0, len(layer[Constants.LAYER_READINGS]))
 
     def test_creates_layer_when_adding_readings(self):
-        self.db.create_reading_db()
+        
 
         route_id = '103'
         layer_id = '919191919'
@@ -475,7 +476,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(20, len(readings))
 
     def test_adds_readings_to_existing_layer(self):
-        self.db.create_reading_db()
+        
 
         route_id = '103'
         layer_id = '919191919'
@@ -516,7 +517,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_creates_and_gets_orgs(self):
-        self.db.create_reading_db()
+        
         orgs = self.db.get_orgs()
         self.assertEqual(0, len(orgs))
 
@@ -536,7 +537,7 @@ class TestDB(unittest.TestCase):
 
     def test_gets_all_users(self):
         group_id = 'aasd'
-        self.db.create_reading_db()
+        
         self.db.put_org('roora', 'a9a9a9a9a')
         self.assertEqual(0, len(self.db.all_user_ids('roora')))
 
@@ -550,7 +551,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(2, len(self.db.all_user_ids('roora')))
 
     def test_gets_user_data(self):
-        self.db.create_reading_db()
+        
         org_name = 'Frontline Data Systems'
         org_data = self.db.put_org(org_name)
         default_org_group = org_data[Constants.ORG_GROUP]
@@ -565,7 +566,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(set(['8a8a8a67a6a6a', 'a8sa6d7asd', default_org_group]), set(groups))
 
     def test_creates_new_user(self):
-        self.db.create_reading_db()
+        
         org_name = 'Frontline Data Systems'
         users = self.db.all_users(org_name)
         self.assertEqual(0, len(users))
@@ -591,7 +592,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(3, len(users))
 
     def test_inserts_data_access_groups(self):
-        self.db.create_reading_db()
+        
         org_name = 'ekekeke'
 
         org_data = self.db.put_org(org_name)
@@ -615,7 +616,7 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_gets_single_group_for_user(self):
-        self.db.create_reading_db()
+        
         group_id = 'as8s8s8s'
         self.db.put_org('someorg')
         self.db.put_user('someorg', 'wendy')
@@ -627,7 +628,7 @@ class TestDB(unittest.TestCase):
         self.assertFalse(self.db.user_has_group('wendy', 'asdasddsa'))
 
     def test_names_access_groups(self):
-        self.db.create_reading_db()
+        
         group_id = 'as8s8s8s'
         self.db.put_group(group_id, 'good_group')
 
@@ -636,7 +637,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(group[Constants.GROUP_NAME], 'good_group')
 
     def test_adds_name_to_existing_group(self):
-        self.db.create_reading_db()
+        
         org_name = 'fds'
         self.db.put_org(org_name)
         self.db.put_user(org_name, 'wendigo') 
@@ -654,3 +655,52 @@ class TestDB(unittest.TestCase):
         self.assertEqual(group[Constants.GROUP_ID], '8a8a8a67a6a6a')
         self.assertEqual(group[Constants.GROUP_NAME], 'yyyy')
 
+    def test_user_adds_removes_group(self):
+        test_user = 'wendigo'
+        test_group = '8a8a8a67a6a6a'
+        
+        org_name = 'fds'
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, test_user) 
+        self.assertFalse(self.db.user_has_group(test_user, test_group))
+
+        self.db.user_add_group(test_user, test_group)
+        self.assertTrue(self.db.user_has_group(test_user,test_group))
+
+        self.db.user_remove_group(test_user, test_group)
+        self.assertFalse(self.db.user_has_group(test_user, test_group))
+
+    def test_layer_adds_removes_group(self):
+        route_id = '103'
+        test_layer_id = '919191919'
+        test_group = 'testgoup'
+        
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        query_data = []
+        for e in entities[:10]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+        
+        self.db.put_layer(test_layer_id, query_data)
+        self.db.put_group(test_group)
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+        
+        self.db.group_remove_layer(test_group,test_layer_id)
+        self.assertNotIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertEqual(1, len(self.db.layer_ids_for_group(test_group)))
+
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.assertEqual(0, len(self.db.layer_ids_for_group(test_group)))
