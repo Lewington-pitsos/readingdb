@@ -14,6 +14,7 @@ from readingdb.authresponse import AuthResponse
 logger = logging.getLogger('main')
 logger.setLevel(logging.INFO)
 
+#### HELPERS #####
 def key_missing_error_response(key):
     return error_response(f'Bad Format Error: key {key} missing from event')
 
@@ -37,6 +38,13 @@ def response(body: Any, success: bool) -> Dict[str, Any]:
     resp[Constants.RESPONSE_BODY_KEY] = body
     return resp
 
+def get_key(event, key):
+    if not key in event:
+        return None, key_missing_error_response(key)
+
+    return event[key], None
+
+####### EVENT HANDLERS ########
 def get_route(event: Dict[str,Any], api, user_data):
         route_id, err_resp = get_key(event, Constants.ROUTE_ID)
         if err_resp:

@@ -125,7 +125,16 @@ class Constants():
     EVENT_ADD_ORG = 'AddOrg'
 
     # End Event Types ---------------------------------------------------
-    
+   
+    #Generic Response Keys
+   
+    RESPONSE_STATUS_KEY = 'Status'
+    RESPONSE_BODY_KEY = 'Body'
+    RESPONSE_SAVED_READINGS = 'SavedReadings'
+
+    # Response Statuses
+    RESPONSE_ERROR = 'Error'
+    RESPONSE_SUCCESS = 'Success'
 
 DEFAULT_ANNOTATOR_NAME = 'LoukaSean'
 DEFAULT_ANNOTATOR_ID = '99bf4519-85d9-4726-9471-4c91a7677925'
