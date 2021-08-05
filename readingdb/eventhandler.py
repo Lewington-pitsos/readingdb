@@ -6,17 +6,16 @@ from readingdb.api import API
 from readingdb.constants import *
 from readingdb.auth import Auth, AuthResponse
 
-#discuss extra coupling here
-from readingdb.lambda_event_handlers import error_response
+#TODO: go full generic
+from readingdb.lambda_event_functions import error_response
 
 class EventHandler():
 
     def __init__(
         self, 
-        endpoint: str,
-        bucket: str,
-        size_limit: str,
-        handlers: Dict[str, Callable[[str], Dict[str, Any]]] = dict()
+        validator: Callable[[], Dict] = None,
+        event_setup: Callable[[], Dict] = None,
+        handlers: Dict[str, Callable[[str], Dict[str, Any]]] = dict(),
         ) -> None:
         
         for eventname, callback in handlers.items():
@@ -26,46 +25,25 @@ class EventHandler():
                 raise TypeError('must pass in a valid handler function')
         self.__event_handlers = handlers
 
-        self.api = API(
-            endpoint, 
-            size_limit=size_limit, 
-            bucket=bucket, 
-            tmp_bucket=bucket, 
-            config=Config(
-                region_name=REGION_NAME,
-            )
-        )
-        self.auth: Auth = Auth(region_name=REGION_NAME)
+        self.__validator = validator
+        self.__event_setup = event_setup
 
-    def __event_validate(self,event):
-        if Constants.EVENT_TYPE in event:
-                event_name = event[Constants.EVENT_TYPE]
+    def handle(self, event: Dict[str, Any], *args, **kwargs) -> Dict[str, Any]:
+        if self.__validator:
+            is_valid, err_resp = self.__validator(event)
+            if not is_valid:
+                return err_resp
+    
+        if self.__event_setup:
+            setup_data = self.__event_setup(event)
         else:
-            return error_response('Invalid Event Syntax')
+            setup_data = {}
 
-        if not Constants.EVENT_ACCESS_TOKEN in event:
-            return error_response('Unauthenticated request, no Access Token Provided')
-        
-        user_data: AuthResponse = self.auth.get_user(event[Constants.EVENT_ACCESS_TOKEN])
-        if not user_data.is_authenticated():
-            return error_response(f'Unauthenticated request, unrecognized Access Token {event[Constants.EVENT_ACCESS_TOKEN]}')
+        event_name = event[LambdaConstants.EVENT_TYPE]
+        if event_name in self.__event_handlers:
+            return self.__event_handlers[event[LambdaConstants.EVENT_TYPE]](event, *args, **kwargs, **setup_data)
         else:
-            return user_data
-
-    def register_event(self, event_type: str, handler_function: Callable[[str], Dict[str, Any]]) -> None:
-        if not isinstance(event_type, str): 
-            raise TypeError('event type must be a string')
-        elif not callable(handler_function):
-            raise TypeError('must pass in a valid handler function')
-
-        self.__event_handlers[event_type] = handler_function
-
-    def handler(self, event: Dict[str, Any]) -> Dict[str, Any]:
-        user_data = self.__event_validate(event)
-        if event[Constants.EVENT_TYPE] in self.__event_handlers:
-            return self.__event_handlers[event[Constants.EVENT_TYPE]](event, self.api, user_data)
-        else:
-            return {'an error': 'todo'}
+            return error_response(f'There is no handler registered for event {event_name}')
 
     @property
     def event_handlers(self):

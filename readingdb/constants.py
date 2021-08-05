@@ -94,6 +94,7 @@ class Constants():
     GROUP_NAME = 'GroupName'
     GROUP_ID = 'GroupID'
     
+class LambdaConstants():
     # Generic Event Keys
     EVENT_TYPE = 'Type'
     EVENT_ACCESS_TOKEN = 'AccessToken'
@@ -135,6 +136,7 @@ class Constants():
     # Response Statuses
     RESPONSE_ERROR = 'Error'
     RESPONSE_SUCCESS = 'Success'
+
 
 DEFAULT_ANNOTATOR_NAME = 'LoukaSean'
 DEFAULT_ANNOTATOR_ID = '99bf4519-85d9-4726-9471-4c91a7677925'

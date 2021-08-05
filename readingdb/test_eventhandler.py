@@ -6,39 +6,30 @@ from readingdb.eventhandler import EventHandler
 
 class TestEventHandler(unittest.TestCase):
 
-    def test_register_event(self):
-        handler = EventHandler()
-
-        handler.register_event('dummy event', lambda event, context : {'Status': 'Success'})
-        self.assertIn('dummy event', handler.event_handlers)
-
-        with self.assertRaises(TypeError):
-            handler.register_event('no callback', None)
-
-        with self.assertRaises(TypeError):
-            handler.register_event(1, lambda event, context : {'Status': 'Success'})
-
     def test_init_with_handlers(self):
-        handler = EventHandler({
-            'eventname1': lambda event, context : {'Status': 'Success'},
-            'eventname2': lambda event, context : {'Status': 'Error'}
+        handler = EventHandler(
+            event_setup= lambda event: {'userdata': 'nope'},
+            validator= lambda event : True, 
+            handlers={
+                'eventname1': lambda event,  **kwargs: {'Status': 'Success'},
+                'eventname2': lambda event,  **kwargs: {'Status': 'Error'}
         })
 
         self.assertIn('eventname1', handler.event_handlers)
         self.assertIn('eventname2', handler.event_handlers)
 
         with self.assertRaises(TypeError):
-            handler = EventHandler({
+            handler = EventHandler(handlers = {
                 'eventname1': lambda event, context : {'Status': 'Success'},
                 1 : lambda event, context : {'Status': 'Error'}
             })
 
     def test_handler(self):
-        handler = EventHandler({
+        handler = EventHandler(handlers={
             'eventname1': Mock(return_value={'Status':'Error'}),
             'eventname2': Mock(return_value={'Status':'Error'}),
         })
-        handler.handler({'Type': 'eventname1'})
-        handler.event_handlers['eventname1'].assert_called_with({'Type':'eventname1'})
+        handler.handle({'Type': 'eventname1'}, api = 'not present yo')
+        handler.event_handlers['eventname1'].assert_called_with({'Type':'eventname1'}, api = 'not present yo')
 
         
