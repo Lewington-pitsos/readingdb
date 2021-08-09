@@ -1,15 +1,9 @@
 import logging
 from readingdb.geolocator import Geolocator
 from readingdb.digester import Digester
-from typing import Dict, Any, List
+from typing import Dict, Any
 
-from botocore.config import Config
-
-from readingdb.api import API
 from readingdb.constants import *
-from readingdb.auth import Auth
-from readingdb.endpoints import BUCKET, DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
-from readingdb.authresponse import AuthResponse
 
 logger = logging.getLogger('main')
 logger.setLevel(logging.INFO)
@@ -200,116 +194,103 @@ def process_uploaded_route(event, **kwargs):
 
     return success_response({Constants.ROUTE_ID: route.id})
 
+def event_upload_new_route(event, **kwargs):
+    api, *_ = arg_check('api', **kwargs)
+    
+    bucket, err_resp = get_key(event, LambdaConstants.EVENT_BUCKET)
+    if err_resp:
+        return err_resp
+    key, err_resp = get_key(event, LambdaConstants.EVENT_OBJECT_KEY)
+    if err_resp:
+        return err_resp
 
+    routeName = event[LambdaConstants.EVENT_ROUTE_NAME] if LambdaConstants.EVENT_ROUTE_NAME in event else None
 
+    readings = api.save_new_route(bucket, key, routeName)
+    return success_response(readings)
 
-#################################
-def handler_request(
-    event: Dict[str, Any], 
-    context, endpoint: str, 
-    bucket: str, 
-    size_limit: int
-    ):
+def event_save_predictions(event, **kwargs):
+    api, user_data = arg_check('api', 'user_data', **kwargs)
 
-    logger.info('Event: %s', event)
+    route_id, err_resp = get_key(event, Constants.ROUTE_ID)
+    if err_resp:
+        return err_resp
+    readings, err_resp = get_key(event, LambdaConstants.EVENT_PREDICTIONS)
+    if err_resp:
+        return err_resp
+
+    api.save_predictions(
+        readings, 
+        route_id,
+        user_data.user_sub,
+        save_imgs=True
+    )
+    return success_response({LambdaConstants.RESPONSE_SAVED_READINGS: readings})
+
+def event_update_route_name(event, **kwargs):
+    api, user_data = arg_check('api', 'user_data', **kwargs)
+    route_id, err_resp = get_key(event, Constants.ROUTE_ID)
+
+    if err_resp:
+        return err_resp 
+    name, err_resp = get_key(event, Constants.NAME)
+    if err_resp:
+        return err_resp 
+
+    if not api.can_access_route(user_data.user_sub, route_id):
+        return unauthorized_route_response(user_data.user_sub, route_id)
+
+    api.update_route_name(route_id, name)
+
+    return success_response(None)
+
+def event_add_user(event, **kwargs): 
+    api, *_ = arg_check('api', **kwargs)
+    user_id, err_resp = get_key(event, Constants.USER_ID)
+
+    if err_resp:
+        return err_resp
+
+    if len(user_id) < 20:
+        return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
+
+    org_name, err_resp = get_key(event, Constants.ORG_NAME)
+    if err_resp:
+        return err_resp
+
+    data_access_groups, not_found = get_key(event, Constants.GROUPS)
+
+    if not_found:
+        api.save_user(org_name, user_id)
+    else:
+        api.save_user(org_name, user_id, data_access_groups)
+    return success_response(None)
+ 
+def event_add_org(event, **kwargs):
+    api, *_ = arg_check('api', **kwargs)
+    org_name, err_resp = get_key(event, Constants.ORG_NAME)
+    if err_resp:
+        return err_resp
+
+    existing_org = api.get_org(org_name)
+
+    if existing_org is not None:
+        return error_response(f'Org {org_name} already exists')
+
+    org = api.put_org(org_name)
+
+    return success_response(org)
+
+def event_road_snap(event, **kwargs):
+    points, err_resp = get_key(event, LambdaConstants.EVENT_POINTS)
+
+    if err_resp:
+        return err_resp
+
+    if len(points) < 2:
+        return error_response(f'Not Enough Points Given ({len(points)})')
 
     geolocator = Geolocator()
-    digester = Digester(endpoint, api=api)
-
-    #  ------------ Per-Event-Type handling -------------
-
-    
-
-    if event_name == EVENT_UPLOAD_NEW_ROUTE:
-        bucket, err_resp = get_key(event, LambdaConstants.EVENT_BUCKET)
-        if err_resp:
-            return err_resp
-        key, err_resp = get_key(event, Constants.EVENT_OBJECT_KEY)
-        if err_resp:
-            return err_resp
-
-        routeName = event[Constants.EVENT_ROUTE_NAME] if Constants.EVENT_ROUTE_NAME in event else None
-
-        readings = api.save_new_route(bucket, key, routeName)
-        return success_response(readings)
-
-    elif event_name == EVENT_SAVE_PREDICTIONS:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp
-        readings, err_resp = get_key(event, Constants.EVENT_PREDICTIONS)
-        if err_resp:
-            return err_resp
-
-        api.save_predictions(
-            readings, 
-            route_id,
-            user_data.user_sub,
-            save_imgs=True
-        )
-        return success_response({RESPONSE_SAVED_READINGS: readings})
-
-    elif event_name == EVENT_UPDATE_ROUTE_NAME:
-        route_id, err_resp = get_key(event, Constants.ROUTE_ID)
-        if err_resp:
-            return err_resp 
-        name, err_resp = get_key(event, Constants.NAME)
-        if err_resp:
-            return err_resp 
-
-        if not api.can_access_route(user_data.user_sub, route_id):
-            return unauthorized_route_response(user_data.user_sub, route_id)
-
-        api.update_route_name(route_id, name)
-
-        return success_response(None)
-
-    elif event_name == EVENT_ADD_USER:
-        user_id, err_resp = get_key(event, Constants.USER_ID)
-        if err_resp:
-            return err_resp
-
-        if len(user_id) < 20:
-            return error_response(f'User ID {user_id} was too short, must be at least 20 characters long')
-
-        org_name, err_resp = get_key(event, Constants.ORG_NAME)
-        if err_resp:
-            return err_resp
-
-        data_access_groups, not_found = get_key(event, Constants.GROUPS)
-
-        if not_found:
-            api.save_user(org_name, user_id)
-        else:
-            api.save_user(org_name, user_id, data_access_groups)
-        return success_response(None)
-    
-    elif event_name == EVENT_ADD_ORG:
-        org_name, err_resp = get_key(event, Constants.ORG_NAME)
-        if err_resp:
-            return err_resp
-
-        existing_org = api.get_org(org_name)
-
-        if existing_org is not None:
-            return error_response(f'Org {org_name} already exists')
-
-        org = api.put_org(org_name)
-
-        return success_response(org)
-
-    elif event_name == EVENT_ROAD_SNAP:
-        points, err_resp = get_key(event, EVENT_POINTS)
-        if err_resp:
-            return err_resp
-
-        if len(points) < 2:
-            return error_response(f'Not Enough Points Given ({len(points)})')
-
-        return success_response({
-            EVENT_POINTS: geolocator.geolocate(points, replacement=True)
-        })
-
-    else:
-        return error_response(f'Unrecognized event type {event_name}')
-    
+    return success_response({
+        LambdaConstants.EVENT_POINTS: geolocator.geolocate(points, replacement=True)
+    })

@@ -1,12 +1,8 @@
 from typing import Any, Dict, Callable
+import logging
 
-from botocore.config import Config
-
-from readingdb.api import API
 from readingdb.constants import *
-from readingdb.auth import Auth, AuthResponse
 
-#TODO: go full generic
 from readingdb.lambda_event_functions import error_response
 
 class EventHandler():
@@ -28,14 +24,20 @@ class EventHandler():
         self.__validator = validator
         self.__event_setup = event_setup
 
+        self.logger = logging.getLogger('main')
+        self.logger.setLevel(logging.INFO)
+
     def handle(self, event: Dict[str, Any], *args, **kwargs) -> Dict[str, Any]:
+        self.logger.info('Event: %s', event)
         if self.__validator:
             is_valid, err_resp = self.__validator(event)
             if not is_valid:
                 return err_resp
     
         if self.__event_setup:
-            setup_data = self.__event_setup(event)
+            setup_data, err_resp = self.__event_setup(event)
+            if not setup_data:
+                return err_resp
         else:
             setup_data = {}
 
@@ -43,7 +45,7 @@ class EventHandler():
         if event_name in self.__event_handlers:
             return self.__event_handlers[event[LambdaConstants.EVENT_TYPE]](event, *args, **kwargs, **setup_data)
         else:
-            return error_response(f'There is no handler registered for event {event_name}')
+            return error_response(f'Unrecognized event type {event_name}')
 
     @property
     def event_handlers(self):
