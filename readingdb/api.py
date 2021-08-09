@@ -1,7 +1,6 @@
 from collections import defaultdict
 import json
 import sys
-from readingdb import constants
 from readingdb.routestatus import RouteStatus
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri

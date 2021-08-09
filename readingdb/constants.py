@@ -18,7 +18,7 @@ class Constants():
     GROUPS = 'DataAccessGroups'
     
     # Database
-    READING_TABLE_NAME = 'Readings'
+    READING_TABLE_NAME = 'Readings2'
     ORG_TABLE_NAME = 'Org'
     PAGINATION_KEY_NAME = 'PaginationKey'
     USER_TABLE_NAME = 'Annotators'
@@ -46,6 +46,7 @@ class Constants():
     READING = 'Reading'
     TIMESTAMP = 'Timestamp'
     LAYER_ID = 'LayerID'
+    READING_NAME = 'Readings'
     
 
     # Positional Reading Keys

@@ -75,4 +75,3 @@ def test_handler(
     )
 
     return event_handler.handle(event, api = test_api)
-    
