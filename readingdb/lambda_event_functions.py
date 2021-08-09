@@ -118,7 +118,7 @@ def get_readings(event, **kwargs):
 
         readings = api.get_geohash_readings_by_user(geohashes, user_data.user_sub)
 
-        return success_response({Constants.READING_TABLE_NAME: readings})
+        return success_response({Constants.READING_NAME: readings})
     elif not missing_route_id:
         pred_only, missing = get_key(event, LambdaConstants.EVENT_PREDICTION_ONLY)
         if missing:
@@ -145,7 +145,7 @@ def get_readings(event, **kwargs):
             annotator_preference=annotator_preference
         )
 
-        return success_response({Constants.READING_TABLE_NAME: readings})
+        return success_response({Constants.READING_NAME: readings})
         
 def process_uploaded_route(event, **kwargs):
     # Event Format:
