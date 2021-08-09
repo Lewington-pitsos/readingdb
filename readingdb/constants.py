@@ -95,6 +95,49 @@ class Constants():
     GROUP_NAME = 'GroupName'
     GROUP_ID = 'GroupID'
     
+class LambdaConstants():
+    # Generic Event Keys
+    EVENT_TYPE = 'Type'
+    EVENT_ACCESS_TOKEN = 'AccessToken'
+    EVENT_PREDICTIONS = 'Predictions'
+    EVENT_ANNOTATOR_PREFERENCE = 'AnnotatorPreference'
+    EVENT_PREDICTION_ONLY = 'PredictionOnly'
+    EVENT_BUCKET = 'Bucket'
+    EVENT_OBJECT_KEY = 'Key'
+    EVENT_ROUTE_NAME = 'RouteName'
+    EVENT_POINTS = 'Points'
+
+    # Event Types -----------------------------------------------------
+
+    EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+    EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
+    EVENT_SAVE_PREDICTIONS = 'SavePredictions'
+    EVENT_BUCKET_KEY = 'BucketKey'
+    EVENT_ROAD_SNAP = 'SnapToRoads'
+
+    # User Permission Events
+    EVENT_GET_ROUTE = 'GetRoute'
+    EVENT_DELETE_ROUTE = 'DeleteRoute'
+    EVENT_GET_USER_ROUTES = 'GetUserRoutes'
+    EVENT_GET_READINGS = 'GetReadings'
+    EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
+
+    # Admin Permission Events
+    EVENT_ADD_USER = 'AddUser'
+    EVENT_ADD_ORG = 'AddOrg'
+
+    # End Event Types ---------------------------------------------------
+   
+    #Generic Response Keys
+   
+    RESPONSE_STATUS_KEY = 'Status'
+    RESPONSE_BODY_KEY = 'Body'
+    RESPONSE_SAVED_READINGS = 'SavedReadings'
+
+    # Response Statuses
+    RESPONSE_ERROR = 'Error'
+    RESPONSE_SUCCESS = 'Success'
+
 
 DEFAULT_ANNOTATOR_NAME = 'LoukaSean'
 DEFAULT_ANNOTATOR_ID = '99bf4519-85d9-4726-9471-4c91a7677925'

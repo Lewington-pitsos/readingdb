@@ -408,6 +408,35 @@ class TestLambdaW(TestLambdaRW):
             'Body': 'Org Roora Inc already exists'
         }, resp)
 
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_deletes_route(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/long_route.json') as f:
+            route_json = json.load(f) 
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
+
+        self.assertNotEqual(None, self.api.get_route(route.id))
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_DELETE_ROUTE,
+            Constants.ROUTE_ID: route.id,
+            LambdaConstants.EVENT_ACCESS_TOKEN: self.access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(None, self.api.get_route(route.id))
+
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_DELETE_ROUTE,
+            Constants.ROUTE_ID: route.id,
+            LambdaConstants.EVENT_ACCESS_TOKEN: self.unauthorized_access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+
+
     @unittest.skip('This make an actual call to fargate')
     def test_correct_upload_event_handling(self):
         test_handler({
@@ -897,7 +926,7 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_routes_by_geohash(self):
+    def test_gets_readings_by_geohash(self):
         test_geohash = 'r1r291'
         test_geohash_list = ['r1r291','r1r28f']
         test_geohash_empty = 'ex8erk'
