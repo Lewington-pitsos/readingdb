@@ -11,7 +11,7 @@ class EventHandler():
         self, 
         validator: Callable[[], Dict] = None,
         event_setup: Callable[[], Dict] = None,
-        handlers: Dict[str, Callable[[str], Dict[str, Any]]] = dict(),
+        handlers: Dict[str, Callable[[str], Dict[str, Any]]] = {},
         ) -> None:
         
         for eventname, callback in handlers.items():
@@ -27,7 +27,7 @@ class EventHandler():
         self.logger = logging.getLogger('main')
         self.logger.setLevel(logging.INFO)
 
-    def handle(self, event: Dict[str, Any], *args, **kwargs) -> Dict[str, Any]:
+    def handle(self, event: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         self.logger.info('Event: %s', event)
         if self.__validator:
             is_valid, err_resp = self.__validator(event)
@@ -43,7 +43,7 @@ class EventHandler():
 
         event_name = event[LambdaConstants.EVENT_TYPE]
         if event_name in self.__event_handlers:
-            return self.__event_handlers[event[LambdaConstants.EVENT_TYPE]](event, *args, **kwargs, **setup_data)
+            return self.__event_handlers[event[LambdaConstants.EVENT_TYPE]](event, **kwargs, **setup_data)
         else:
             return error_response(f'Unrecognized event type {event_name}')
 

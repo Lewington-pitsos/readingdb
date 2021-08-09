@@ -41,7 +41,18 @@ event_handler = EventHandler(
     validate_event,
     get_auth_setup(auth),
     handlers = {
-        LambdaConstants.EVENT_GET_ROUTE: get_route,
+        LambdaConstants.EVENT_GET_ROUTE : get_route,
+        LambdaConstants.EVENT_DELETE_ROUTE : delete_route,
+        LambdaConstants.EVENT_GET_USER_ROUTES : get_user_routes,
+        LambdaConstants.EVENT_GET_READINGS : get_readings,
+        LambdaConstants.EVENT_PROCESS_UPLOADED_ROUTE : process_uploaded_route,
+        LambdaConstants.EVENT_UPLOAD_NEW_ROUTE : event_upload_new_route,
+        LambdaConstants.EVENT_SAVE_PREDICTIONS : event_save_predictions,
+        LambdaConstants.EVENT_UPDATE_ROUTE_NAME : event_update_route_name,
+        LambdaConstants.EVENT_ADD_USER : event_add_user,
+        LambdaConstants.EVENT_ADD_ORG : event_add_org,
+        LambdaConstants.EVENT_ROAD_SNAP : event_road_snap
+
     }
 )
 
@@ -62,26 +73,6 @@ def test_handler(
         size_limit=size_limit,
         region_name=REGION_NAME
     )
-    auth = Auth(region_name=REGION_NAME) 
 
-    test_event_handler = EventHandler(
-        validate_event,
-        get_auth_setup(auth),
-        handlers = {
-            LambdaConstants.EVENT_GET_ROUTE : get_route,
-            LambdaConstants.EVENT_DELETE_ROUTE : delete_route,
-            LambdaConstants.EVENT_GET_USER_ROUTES : get_user_routes,
-            LambdaConstants.EVENT_GET_READINGS : get_readings,
-            LambdaConstants.EVENT_PROCESS_UPLOADED_ROUTE : process_uploaded_route,
-            LambdaConstants.EVENT_UPLOAD_NEW_ROUTE : event_upload_new_route,
-            LambdaConstants.EVENT_SAVE_PREDICTIONS : event_save_predictions,
-            LambdaConstants.EVENT_UPDATE_ROUTE_NAME : event_update_route_name,
-            LambdaConstants.EVENT_ADD_USER : event_add_user,
-            LambdaConstants.EVENT_ADD_ORG : event_add_org,
-            LambdaConstants.EVENT_ROAD_SNAP : event_road_snap
-
-        }
-    )
-
-    return test_event_handler.handle(event, api = test_api)
+    return event_handler.handle(event, api = test_api)
     
