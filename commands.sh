@@ -35,8 +35,18 @@ pippush 'commit name' hotfix master
 
 # creating and deleting dynamodb tables
 
+aws dynamodb delete-table --table-name Readings2
+
+aws dynamodb create-table \
+    --table-name Readings2\
+    --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
+    --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST
+
+aws dynamodb delete-table --table-name Org
 aws dynamodb create-table \
     --table-name Org\
     --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
     --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
     --billing-mode PAY_PER_REQUEST
+

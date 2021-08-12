@@ -167,7 +167,7 @@ class API(DB):
         geohashes = set(geohashes)
         readings = []
         for g in geohashes:
-            readings += self.geohash_readings(g)
+            readings += self.geohash_readings(g, Constants.PREDICTION)
 
         layer_ids = self.layer_ids_for_user(user_id)
         reading_id_set = set()

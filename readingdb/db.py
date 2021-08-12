@@ -8,7 +8,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import PredictionReading, ddb_to_dict, reading_sort_key
+from readingdb.reading import PredictionReading, ddb_to_dict, Reading, geohash_partition_key
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -225,44 +225,30 @@ class DB():
         geohashes = self.route_geohashes(route_id)
         all_readings = []
 
-        for h in geohashes:
+        for geohash in geohashes:
             hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
                 ddb_to_dict,
                 Constants.PARTITION_KEY,
-                h,
+                geohash_partition_key(geohash, Constants.PREDICTION),
             )
             all_readings.extend([r for r in hash_readings if r[Constants.ROUTE_ID] == route_id])
         
         return all_readings
 
-    def geohash_readings(self, geohash: str) -> List[Dict[str, Any]]:
+    def geohash_readings(self, geohash: str, reading_type: str) -> List[Dict[str, Any]]:
         response = self.reading_table.query(
-            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(geohash)
+            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(geohash_partition_key(geohash, reading_type))
         )
         return response[self.ITEM_KEY]
-
-    def get_reading(self, geohash:str, reading_id: str) -> Dict[str, Any]:
-        # TODO: this should be a query with a PK and SK rather than
-        # going through geohash_readings.
-        hash_readings = self.geohash_readings(geohash)
-
-        for r in hash_readings:
-            if r[Constants.READING_ID] == reading_id:
-                return r
-        
-        raise ValueError(f'reading {reading_id} could not be located in geohash {geohash}')
 
     def put_reading(self, reading: PredictionReading):
         return self.reading_table.put_item(Item=reading.item_data())
 
     def delete_reading_items(self, readings: List[Dict[str, str]])-> None:
-        for r in readings:
+        for reading in readings:
             self.reading_table.delete_item(
-                Key={
-                    Constants.PARTITION_KEY: r[Constants.GEOHASH],
-                    Constants.SORT_KEY: reading_sort_key(r[Constants.READING_TYPE], r[Constants.READING_ID])
-                }
+                Key=Reading.get_key(reading)
             )
 
     def __make_reading_table(self):
@@ -398,12 +384,11 @@ class DB():
             identifiers = self.__layer_reading_identifiers(layer_id)            
 
             for identifier in identifiers:
-
                 geohashes.add(identifier[Constants.GEOHASH])
                 reading_ids.add(identifier[Constants.SORT_KEY])
 
         for geohash in geohashes:
-            geohash_readings = self.geohash_readings(geohash)
+            geohash_readings = self.geohash_readings(geohash, Constants.PREDICTION)
             for geohash_reading in geohash_readings:
                 if geohash_reading[Constants.READING_ID] in reading_ids:
                     readings.append(geohash_reading)

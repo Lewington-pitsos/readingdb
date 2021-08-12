@@ -36,7 +36,6 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_saves_readings(self):
-        
         reading_time = int(time.time())
         uid = 'someuser'
         rid = 'someroute'

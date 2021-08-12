@@ -154,9 +154,9 @@ class TestAPI(unittest.TestCase):
             finalized.append(r)
         self.api.put_readings(finalized)
 
-        readings = self.api.geohash_readings('r3gqu8')
+        readings = self.api.geohash_readings('r3gqu8', Constants.PREDICTION)
         self.assertEqual(288, len(readings))
-        readings = self.api.geohash_readings('r3gqu2')
+        readings = self.api.geohash_readings('r3gqu2', Constants.PREDICTION)
         self.assertEqual(32, len(readings))
 
     def test_user_geohash_access(self):
@@ -216,10 +216,10 @@ class TestAPI(unittest.TestCase):
         route = self.api.save_route(route_spec, user_id, group_id, layer_id)
         self.assertEqual(route.geohashes, set(['r3gqu2', 'r3gqu8']))
 
-        readings = self.api.geohash_readings('r3gqu8')
+        readings = self.api.geohash_readings('r3gqu8', Constants.PREDICTION)
         self.assertEqual(288, len(readings))
 
-        readings = self.api.geohash_readings('r3gqu2')
+        readings = self.api.geohash_readings('r3gqu2', Constants.PREDICTION)
         self.assertEqual(32, len(readings))
 
 
@@ -619,11 +619,11 @@ class TestAPI(unittest.TestCase):
                     'AnnotationTimestamp': 1623124150112,
                     'AnnotatorID': '3f01d5ec-c80b-11eb-acfa-02428ee80691',
                     'Geohash': 'r1r291',
-                    'PK': 'r1r291',
+                    'PK': 'r1r291#PredictionReading',
                     'ReadingID': saved_reading_id,
                     'Type': 'PredictionReading',
                     'RouteID': route.id,
-                    'SK': f"PredictionReading#{saved_reading_id}",
+                    'SK': saved_reading_id,
                     'Timestamp': 1616116106935,
                     'Reading': {
                         'ImageFileName': 'readingdb/test_data/images/road1.jpg',
