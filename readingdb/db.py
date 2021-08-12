@@ -134,10 +134,9 @@ class DB():
         return set(route[Constants.ROUTE_HASHES])
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
-        layer_data = self.layers_for_user(user_id)
+        layer_ids = self.layer_ids_for_user(user_id)
         route_ids = set()
-
-        layer_readings = self.layer_readings(layer_data)
+        layer_readings = self.layer_readings(layer_ids)
 
         for reading in layer_readings:
             route_ids.add(reading[Constants.ROUTE_ID])
@@ -262,7 +261,7 @@ class DB():
             self.reading_table.delete_item(
                 Key={
                     Constants.PARTITION_KEY: r[Constants.GEOHASH],
-                    Constants.SORT_KEY: reading_sort_key(r[Constants.TYPE], r[Constants.READING_ID])
+                    Constants.SORT_KEY: reading_sort_key(r[Constants.READING_TYPE], r[Constants.READING_ID])
                 }
             )
 
@@ -307,23 +306,30 @@ class DB():
     def put_layer(
         self, 
         layer_id: str, 
-        reading_data: List[Dict[str, Any]] = [],
+        readings: List[Dict[str, Any]] = None,
         name:str=None
     ) -> str:
-        formatted_reading_data = []
+        if readings is not None:
+            existing_readings = self.layer_readings([layer_id])
+            existing_reading_ids = set()
+            current_reading_ids = set()
 
-        # below we get rid of any other data that may be included
-        # in reading_data
-        for r in reading_data:
-            formatted_reading_data.append({
-                Constants.READING_ID: r[Constants.READING_ID],
-                Constants.GEOHASH: r[Constants.GEOHASH],
-            })
+            for reading in readings:
+                current_reading_ids.add(reading[Constants.READING_ID])
+
+            for reading in existing_readings:
+                reading_id = reading[Constants.READING_ID]
+                existing_reading_ids.add(reading_id)
+                if reading_id not in current_reading_ids:
+                    self.remove_reading_from_layer(layer_id, reading)
+
+            for reading in readings:
+                if reading[Constants.READING_ID] not in existing_reading_ids:
+                    self.add_reading_to_layer(layer_id, reading)
 
         item = {
             Constants.PARTITION_KEY: Constants.LAYER_PK,
             Constants.SORT_KEY: self.__layer_sort_key(layer_id),
-            Constants.LAYER_READINGS: formatted_reading_data
         }
 
         if name is not None:
@@ -333,33 +339,46 @@ class DB():
 
         return layer_id
 
-    def add_readings_to_layer(self, layer_id:str, reading_data: List[Dict[str, Any]]) -> None:
-        layer = self.get_layer(layer_id)
+    def remove_readings_from_layer(self, layer_id: str, readings: List[Dict[str, Any]]):
+        for reading in readings:        
+            self.remove_reading_from_layer(layer_id, reading)
 
-        if layer == None:
-            self.put_layer(layer_id, reading_data)
-        else:
-            new_reading_query_data = []
-            reading_ids = set()
+    def remove_reading_from_layer(self, layer_id: str, reading: Dict[str, Any]):
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__layer_reading_primary_key(layer_id),
+            Constants.SORT_KEY: reading[Constants.READING_ID]
+        })
 
-            for r in reading_data:
-                new_reading_query_data.append(r)
-                reading_ids.add(r[Constants.READING_ID])
+    def add_readings_to_layer(self, layer_id:str, readings: List[Dict[str, Any]]) -> None:
+        for reading in readings:
+            self.add_reading_to_layer(layer_id, reading)
 
-            for r in layer[Constants.LAYER_READINGS]:
-                reading_id = r[Constants.READING_ID]
-                if reading_id not in reading_ids:
-                    reading_ids.add(reading_id)
-                    new_reading_query_data.append(r)
+    def add_reading_to_layer(self, layer_id: str, reading: Dict[str, Any]):
+        self.org_table.put_item(Item={
+            Constants.PARTITION_KEY: self.__layer_reading_primary_key(layer_id),
+            Constants.SORT_KEY: reading[Constants.READING_ID],
+            Constants.READING_ID: reading[Constants.READING_ID],
+            Constants.GEOHASH: reading[Constants.GEOHASH],
+            Constants.READING_TYPE: reading[Constants.READING_TYPE],
+        })
 
-            self.put_layer(layer_id, new_reading_query_data, )
+    def layer_ids_for_user(self, user_id: str):
+        layer_ids = []
 
-    def layers_for_user(self, uid:str) -> List[Dict[str, Any]]:
+        group_ids = self.groups_for_user(user_id)
+        for id in group_ids:
+            layer_ids.extend(self.layer_ids_for_group(id))
+
+        return layer_ids
+    
+    def layers_for_user(self, user_id:str) -> List[Dict[str, Any]]:
         layers = []
 
-        group_ids = self.groups_for_user(uid)
+        group_ids = self.groups_for_user(user_id)
         for id in group_ids:
             layer_ids = self.layer_ids_for_group(id)
+
+            print('layer ids', layer_ids)
 
             for layer_id in layer_ids:
                 layers.append(self.get_layer(layer_id))        
@@ -367,29 +386,45 @@ class DB():
         return layers
 
     def readings_for_layer_id(self, layer_id:str) -> List[Dict[str, Any]]:
-        layer = self.get_layer(layer_id)
-        return self.layer_readings([layer])
+        return self.layer_readings([layer_id])
 
-    def layer_readings(self, layers: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def layer_readings(self, layer_ids: str) -> List[Dict[str, Any]]:
         readings = []
-        for layer in layers:
-            if layer is not None and Constants.LAYER_READINGS in layer:
-                all_query_data = layer[Constants.LAYER_READINGS]
 
-                geohashes = set() 
-                reading_ids = set()
+        geohashes = set() 
+        reading_ids = set()
 
-                for reading_data in all_query_data:
-                    geohashes.add(reading_data[Constants.GEOHASH])
-                    reading_ids.add(reading_data[Constants.READING_ID])
+        for layer_id in layer_ids:
+            identifiers = self.__layer_reading_identifiers(layer_id)            
 
-                for geohash in geohashes:
-                    geohash_readings = self.geohash_readings(geohash)
-                    for geohash_reading in geohash_readings:
-                        if geohash_reading[Constants.READING_ID] in reading_ids:
-                            readings.append(geohash_reading)
+            for identifier in identifiers:
+
+                geohashes.add(identifier[Constants.GEOHASH])
+                reading_ids.add(identifier[Constants.SORT_KEY])
+
+        for geohash in geohashes:
+            geohash_readings = self.geohash_readings(geohash)
+            for geohash_reading in geohash_readings:
+                if geohash_reading[Constants.READING_ID] in reading_ids:
+                    readings.append(geohash_reading)
+                    
         return readings
 
+    def identifiers_for_layers(self, layer_ids: List[str]):
+        all_identifiers = []
+
+        for layer_id in layer_ids:
+            all_identifiers.extend(self.__layer_reading_identifiers(layer_id))
+
+        return all_identifiers
+
+    def __layer_reading_identifiers(self, layer_id: str) -> Dict[str, Any]:
+        resp = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__layer_reading_primary_key(layer_id))
+        )
+
+        return resp[self.ITEM_KEY] 
 
     def get_layer(self, layer_id: str) -> Dict[str, Any]:
         response = self.org_table.query(
@@ -403,9 +438,14 @@ class DB():
         
         return response[self.ITEM_KEY][0]
 
+    def __layer_id_from_layer_data(self, layer_data: List[Dict[str, Any]]) -> str:
+        return layer_data[Constants.SORT_KEY].split('#')[1]
+
     def __layer_sort_key(self, layer_id: str) -> str:
         return f'Layer#{layer_id}'
 
+    def __layer_reading_primary_key(self, layer_id: str):
+        return f'LayerReading#{layer_id}'
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

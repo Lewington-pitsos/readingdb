@@ -9,7 +9,7 @@ class RUtils():
 
     @classmethod
     def get_type(cls, reading: Dict[str, Any]) -> str:
-        return reading[Constants.TYPE]
+        return reading[Constants.READING_TYPE]
 
     @classmethod
     def get_lat(cls, reading: Dict[str, Any]) -> float:

@@ -282,6 +282,7 @@ class TestAPI(unittest.TestCase):
         api.put_org(org_name)
         api.put_user(org_name, user_id)
         api.user_add_group(user_id, group_id)
+        api.put_layer(layer_id)
         api.group_add_layer(group_id, layer_id)
         
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
@@ -823,4 +824,3 @@ class TestAPI(unittest.TestCase):
 
         groups = api.groups_for_user('sally')
         self.assertEqual(1, len(groups))
-        print(org[Constants.ORG_GROUP], groups[0])

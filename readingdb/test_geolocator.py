@@ -12,8 +12,8 @@ class TestGeolocator(unittest.TestCase):
         with open('readingdb/test_data/melb_gps_img.json', 'r') as f:
             allReadings = json.load(f)
         
-        cls.pos_readings = [r for r in allReadings if r[Constants.TYPE] == 'PositionalReading'] 
-        cls.img_readings = [r for r in allReadings if r[Constants.TYPE] == 'ImageReading'] 
+        cls.pos_readings = [r for r in allReadings if r[Constants.READING_TYPE] == 'PositionalReading'] 
+        cls.img_readings = [r for r in allReadings if r[Constants.READING_TYPE] == 'ImageReading'] 
 
     @roads_api_test
     def test_snapping(self):

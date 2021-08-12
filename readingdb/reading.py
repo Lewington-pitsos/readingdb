@@ -9,8 +9,18 @@ from readingdb.clean import encode_as_float, decode_bool, decode_float
 
 def reading_sort_key(reading_type: str, reading_id: str) -> str:
     return f'{reading_type}#{reading_id}'
+
 def get_geohash(lat: float, lng: float) -> str:
     return pgh.encode(lat, lng, precision=GEOHASH_PRECISION)
+
+def reading_partition_key(reading: Dict[str, Any]) -> str:
+    geohash = get_geohash(
+        reading[Constants.READING][Constants.LATITUDE],
+        reading[Constants.READING][Constants.LONGITUDE],
+
+    )
+    return f'{geohash}#{reading[Constants.READING_TYPE]}'
+
 
 class Reading():
     def __init__(
@@ -36,7 +46,7 @@ class Reading():
             Constants.GEOHASH: self.geohash(),
             Constants.ROUTE_ID: self.route_id,
             Constants.READING_ID: self.id,
-            Constants.TYPE: self.reading_type,  
+            Constants.READING_TYPE: self.reading_type,  
             Constants.TIMESTAMP: self.date, 
             Constants.READING: {
                 Constants.LATITUDE: encode_as_float(self.lat),
@@ -46,9 +56,11 @@ class Reading():
 
     def query_data(self) -> Dict[str, str]:
         return {
+            Constants.READING_TYPE: self.reading_type,
             Constants.READING_ID: self.id,
             Constants.GEOHASH: self.geohash()
-        }    
+        }
+            
     def geohash(self) -> str:
         return get_geohash(self.lat, self.lng)
 
@@ -130,7 +142,7 @@ READING_TYPE_MAP: Dict[str, PredictionReading] = {
 }
 
 def ddb_to_dict(reading) -> None:
-    reading_type = reading[Constants.TYPE]
+    reading_type = reading[Constants.READING_TYPE]
     READING_TYPE_MAP[reading_type].decode(reading)
 
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:

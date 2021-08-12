@@ -33,7 +33,7 @@ def has_defect(reading: Dict[str, Any]) -> bool:
     return False
 
 for rid in args.routes:
-    all_readings = [r for r in api.all_route_readings(rid, annotator_preference=[args.aid]) if r[Constants.TYPE] == Constants.PREDICTION]
+    all_readings = [r for r in api.all_route_readings(rid, annotator_preference=[args.aid]) if r[Constants.READING_TYPE] == Constants.PREDICTION]
     print(f'count of readings for {rid}: {len(all_readings)}')
 
     fault_readings = []

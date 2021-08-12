@@ -198,7 +198,7 @@ class Geolocator():
 
     def __prediction_reading(self, img_reading: Dict[str, Any], point: Dict[str, Any]) -> Dict[str, Any]:
         pred_reading = copy.deepcopy(img_reading)
-        pred_reading[Constants.TYPE] = Constants.PREDICTION
+        pred_reading[Constants.READING_TYPE] = Constants.PREDICTION
         pred_reading[Constants.READING][Constants.ENTITIES] = []
         pred_reading[Constants.ANNOTATION_TIMESTAMP] = int(time.time() * 1000)
         pred_reading[Constants.ANNOTATOR_ID] = FAUX_ANNOTATOR_ID

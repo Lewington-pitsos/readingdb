@@ -32,3 +32,11 @@ docker push 950765595897.dkr.ecr.ap-southeast-2.amazonaws.com/readingdb2:latest
 
 
 pippush 'commit name' hotfix master
+
+# creating and deleting dynamodb tables
+
+aws dynamodb create-table \
+    --table-name Org\
+    --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
+    --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST
