@@ -36,7 +36,6 @@ pippush 'commit name' hotfix master
 # creating and deleting dynamodb tables
 
 aws dynamodb delete-table --table-name Readings2
-
 aws dynamodb create-table \
     --table-name Readings2\
     --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \

@@ -83,8 +83,8 @@ class API(DB):
                     if (er[Constants.READING_TYPE] == Constants.PREDICTION and er[Constants.ANNOTATOR_ID] == r[Constants.ANNOTATOR_ID]):
                         to_delete[er[Constants.READING_ID]] = er 
             
-            if not saved and not save_imgs:
-                raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
+            # if not saved and not save_imgs:
+            #     raise ValueError(f'could not find an existing reading with the same image as {r} and saving images has been disallowed')
         
         self.delete_reading_items(to_delete.values())
         saved_entries = self.__save_entries(route_id, Constants.PREDICTION, readings, save_imgs)

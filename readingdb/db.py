@@ -34,8 +34,9 @@ class DB():
         # DynamoDB only returns 1MB of data in a single query
         # use paginator on queries that stand a chance of returning
         # > 1MB of data.
-        self.paginator = self.db.meta.client.get_paginator('query')
-        self.scan_paginator = self.db.meta.client.get_paginator('scan')
+        self.client = self.db.meta.client
+        self.paginator = self.client.get_paginator('query')
+        self.scan_paginator = self.client.get_paginator('scan')
         self.max_page_readings = max_page_readings
 
         self.reading_table = self.db.Table(Constants.READING_TABLE_NAME)
@@ -134,18 +135,17 @@ class DB():
         return set(route[Constants.ROUTE_HASHES])
 
     def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
-        layer_ids = self.layer_ids_for_user(user_id)
-        route_ids = set()
-        layer_readings = self.layer_readings(layer_ids)
-
-        for reading in layer_readings:
-            route_ids.add(reading[Constants.ROUTE_ID])
-                        
-        routes = [self.get_route(rid) for rid in route_ids]
-
         groups = self.groups_for_user(user_id)
+        routes = self.all_routes()
 
         return [r for r in routes if r[Constants.GROUP_ID] in groups] 
+
+    def all_routes(self) -> List[Dict[str, Any]]:
+        response = self.org_table.query(
+            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(Constants.ROUTE_PK)
+        )
+
+        return [Route.decode_item(item) for item in response[self.ITEM_KEY]]
 
     def update_route_name(self, route_id: str, name: str) -> None:
         r: Dict[str, Any] = self.get_route(route_id)
