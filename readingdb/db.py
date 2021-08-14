@@ -226,6 +226,7 @@ class DB():
         all_readings = []
 
         for geohash in geohashes:
+            print(geohash)
             hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
                 ddb_to_dict,
