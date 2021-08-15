@@ -226,7 +226,6 @@ class DB():
         all_readings = []
 
         for geohash in geohashes:
-            print(geohash)
             hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
                 ddb_to_dict,
@@ -364,8 +363,6 @@ class DB():
         group_ids = self.groups_for_user(user_id)
         for id in group_ids:
             layer_ids = self.layer_ids_for_group(id)
-
-            print('layer ids', layer_ids)
 
             for layer_id in layer_ids:
                 layers.append(self.get_layer(layer_id))        
