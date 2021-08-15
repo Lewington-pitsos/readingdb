@@ -1,4 +1,3 @@
-import logging
 from typing import Dict, Any, Callable, Tuple
 
 from readingdb.constants import *
@@ -52,7 +51,6 @@ event_handler = EventHandler(
         LambdaConstants.EVENT_ADD_USER : event_add_user,
         LambdaConstants.EVENT_ADD_ORG : event_add_org,
         LambdaConstants.EVENT_ROAD_SNAP : event_road_snap
-
     }
 )
 

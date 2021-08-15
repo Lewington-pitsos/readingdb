@@ -80,7 +80,7 @@ class API(DB):
                         r[Constants.READING][Constants.URI] = er[Constants.READING][Constants.URI]
                     saved=True
 
-                    if (er[Constants.TYPE] == Constants.PREDICTION and er[Constants.ANNOTATOR_ID] == r[Constants.ANNOTATOR_ID]):
+                    if (er[Constants.READING_TYPE] == Constants.PREDICTION and er[Constants.ANNOTATOR_ID] == r[Constants.ANNOTATOR_ID]):
                         to_delete[er[Constants.READING_ID]] = er 
             
             if not saved and not save_imgs:
@@ -165,18 +165,15 @@ class API(DB):
             raise ValueError('passed in duplicate geohashes')
             
         geohashes = set(geohashes)
-        
         readings = []
         for g in geohashes:
-            readings += self.geohash_readings(g)
+            readings += self.geohash_readings(g, Constants.PREDICTION)
 
-        layers = self.layers_for_user(user_id)
-
+        layer_ids = self.layer_ids_for_user(user_id)
         reading_id_set = set()
-        for layer in layers:
-            for reading_ref in layer[Constants.LAYER_READINGS]:
-                if reading_ref[Constants.GEOHASH] in geohashes:
-                    reading_id_set.add(reading_ref[Constants.READING_ID])
+        reading_identifiers = self.identifiers_for_layers(layer_ids)
+        for reading_identifier in reading_identifiers:
+            reading_id_set.add(reading_identifier[Constants.READING_ID])
 
         authorized_readings = []
 
@@ -209,7 +206,7 @@ class API(DB):
         return uri[Constants.BUCKET] + '/' + uri[Constants.KEY]
 
     def __is_prediction_reading(self, r: Dict[str, Any]) -> bool:
-        return r[Constants.TYPE] == Constants.PREDICTION
+        return r[Constants.READING_TYPE] == Constants.PREDICTION
 
     def __annotator_precedence(self, annotators: List[str], annotator: str) -> int:
         if annotator == FAUX_ANNOTATOR_ID:
@@ -408,7 +405,7 @@ class API(DB):
         readings = self.all_route_readings(route_id)
 
         for r in readings:
-            if r[Constants.TYPE] == Constants.PREDICTION:
+            if r[Constants.READING_TYPE] == Constants.PREDICTION:
                 reading = r[Constants.READING]
                 if Constants.URI in reading:
                     uri = reading[Constants.URI]

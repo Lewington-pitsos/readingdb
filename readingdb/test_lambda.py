@@ -1024,7 +1024,7 @@ class TestLambdaR(TestLambdaRW):
                         'AnnotationTimestamp': 2378910,
                         'AnnotatorID': '99994519-85d9-4726-9471-4c91a7677925',
                         'Geohash': 'r1r291',
-                        'PK': 'r1r291',
+                        'PK': 'r1r291#PredictionReading',
                         'ReadingID': user_id, 
                         'Type': 'PredictionReading', 
                         'Reading': {
@@ -1059,7 +1059,7 @@ class TestLambdaR(TestLambdaRW):
                             ],
                         }, 
                         'RouteID': self.twenty_route.id,
-                        'SK': 'PredictionReading#' + user_id,
+                        'SK': user_id,
                         'Timestamp': 1616116106935
                     }
                 }, 

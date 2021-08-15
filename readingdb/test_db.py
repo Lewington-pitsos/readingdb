@@ -1,4 +1,3 @@
-import sys
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -37,7 +36,6 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_saves_readings(self):
-        
         reading_time = int(time.time())
         uid = 'someuser'
         rid = 'someroute'
@@ -64,7 +62,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'someroute')
-        self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
+        self.assertEqual(first_reading[Constants.READING_TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
         self.assertDictEqual(first_reading[Constants.READING], {
             Constants.ENTITIES: [],
@@ -107,7 +105,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
         self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[Constants.TYPE], Constants.PREDICTION)
+        self.assertEqual(first_reading[Constants.READING_TYPE], Constants.PREDICTION)
         self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-')
         self.assertEqual(first_reading[Constants.READING][Constants.ENTITIES][0], {
             'Name': 'Crocodile Cracks',
@@ -171,7 +169,6 @@ class TestDB(unittest.TestCase):
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
-        
         routes = self.db.routes_for_user('103')
         org_name = 'xero'
         self.assertEqual(len(routes), 0)
@@ -184,28 +181,30 @@ class TestDB(unittest.TestCase):
         self.db.put_user(org_name, uid)
         self.db.user_add_group(uid, group_id)
         reading = PredictionReading(
-                'sdasdasd-',
-                rid,
-                123617823,
-                Constants.PREDICTION,
-                -33.0089,
-                109.868887601,
-                'https://aws/s3/somebucket/file.jpg', 
-                entities=[
-                    Entity('Crocodile Cracks', 0.432, True, 1.876),
-                    Entity('Rutting', 0.432, True, 2.1),
-                    Entity('Ravelling', 0.432, True, 0.1),
-                ],
-                annotation_timestamp=1231238,
-                annotator_id='someid'
-            )
+            'sdasdasd-',
+            rid,
+            123617823,
+            Constants.PREDICTION,
+            -33.0089,
+            109.868887601,
+            'https://aws/s3/somebucket/file.jpg', 
+            entities=[
+                Entity('Crocodile Cracks', 0.432, True, 1.876),
+                Entity('Rutting', 0.432, True, 2.1),
+                Entity('Ravelling', 0.432, True, 0.1),
+            ],
+            annotation_timestamp=1231238,
+            annotator_id='someid'
+        )
         self.db.put_reading(reading)
         layer_id = self.db.put_layer(DEFAULT_LAYER_ID, [reading.query_data()])
+        self.assertEqual(1, len(self.db.readings_for_layer_id(layer_id)))
         self.assertEqual(DEFAULT_LAYER_ID, layer_id)
         self.db.group_add_layer(group_id, DEFAULT_LAYER_ID)
 
         self.assertEqual(set([group_id, default_org_group]), set(self.db.groups_for_user(uid)))
         self.assertEqual(1, len(self.db.layers_for_user(uid)))
+
 
         self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash()]))
         routes = self.db.routes_for_user(uid)
@@ -223,7 +222,6 @@ class TestDB(unittest.TestCase):
         }, routes[0])
 
     def test_saves_route_written_date(self):
-        
         user_id = '191732j272'
         group_id = '019191' 
         route_id = '0202020'
@@ -440,19 +438,14 @@ class TestDB(unittest.TestCase):
     # -----------------------------------------------------------------
 
     def test_saves_layer_names(self):
-        
-        
         layer_id = 'a9a9a9a9'
         self.db.put_layer(layer_id, name='Default')
 
         layer = self.db.get_layer(layer_id)
 
         self.assertEqual('Default', layer[Constants.LAYER_NAME])
-        self.assertEqual(0, len(layer[Constants.LAYER_READINGS]))
 
     def test_creates_layer_when_adding_readings(self):
-        
-
         route_id = '103'
         layer_id = '919191919'
         
@@ -476,8 +469,6 @@ class TestDB(unittest.TestCase):
         self.assertEqual(20, len(readings))
 
     def test_adds_readings_to_existing_layer(self):
-        
-
         route_id = '103'
         layer_id = '919191919'
         
@@ -486,28 +477,32 @@ class TestDB(unittest.TestCase):
 
         geohashes = set([])
         prediction_readings = []
-        query_data = []
+        reading_dicts = []
         for e in entities[:100]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: PredictionReading = json_to_reading('PredictionReading', e)
             geohashes.add(r.geohash())
-            query_data.append(r.query_data())
             prediction_readings.append(r)
+            reading_dicts.append(r.item_data())
         
         self.db.put_readings(prediction_readings[:50])
-        self.db.put_layer(layer_id, query_data[:30])
+        self.db.put_layer(layer_id, reading_dicts[:30])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(30, len(readings))
 
-        self.db.put_layer(layer_id, query_data[:40])
+        self.db.put_layer(layer_id, reading_dicts[:40])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(40, len(readings))
 
-        self.db.add_readings_to_layer(layer_id, query_data[40:50])
+        self.db.add_readings_to_layer(layer_id, reading_dicts[40:50])
         readings = self.db.readings_for_layer_id(layer_id)
         self.assertEqual(50, len(readings))
         
+        self.db.put_layer(layer_id, reading_dicts[:20])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(20, len(readings))
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------

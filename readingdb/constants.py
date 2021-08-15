@@ -42,7 +42,7 @@ class Constants():
     GEOHASH = 'Geohash'
     ROUTE_ID = 'RouteID'
     READING_ID = 'ReadingID'
-    TYPE = 'Type'
+    READING_TYPE = 'Type'
     READING = 'Reading'
     TIMESTAMP = 'Timestamp'
     LAYER_ID = 'LayerID'
