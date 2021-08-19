@@ -909,9 +909,15 @@ class TestLambdaR(TestLambdaRW):
         resp = test_handler({
             LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
             'AccessToken' : self.access_token
-        }, TEST_CONTEXT)
-
+        }, TEST_CONTEXT)    
         self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body'], [self.api.get_layer(self.layer_id)])
+
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
+            'AccessToken' : self.unauthorized_access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):

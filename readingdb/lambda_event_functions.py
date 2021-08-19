@@ -98,7 +98,9 @@ def get_user_routes(event, **kwargs):
     return success_response(routes)
 
 def get_user_layers(event, **kwargs):
-    return success_response('oop')
+    api, user_data = arg_check('api', 'user_data', **kwargs)
+    layers = api.layers_for_user(user_data.user_sub)
+    return success_response(layers)
 
 def get_readings(event, **kwargs):
     route_id, missing_route_id = get_key(event, Constants.ROUTE_ID)
