@@ -43,6 +43,7 @@ event_handler = EventHandler(
         LambdaConstants.EVENT_GET_ROUTE : get_route,
         LambdaConstants.EVENT_DELETE_ROUTE : delete_route,
         LambdaConstants.EVENT_GET_USER_ROUTES : get_user_routes,
+        LambdaConstants.EVENT_GET_USER_LAYERS : get_user_layers,
         LambdaConstants.EVENT_GET_READINGS : get_readings,
         LambdaConstants.EVENT_PROCESS_UPLOADED_ROUTE : process_uploaded_route,
         LambdaConstants.EVENT_UPLOAD_NEW_ROUTE : event_upload_new_route,

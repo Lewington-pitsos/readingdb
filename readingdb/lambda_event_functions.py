@@ -97,6 +97,9 @@ def get_user_routes(event, **kwargs):
     routes = api.routes_for_user(user_data.user_sub)
     return success_response(routes)
 
+def get_user_layers(event, **kwargs):
+    return success_response('oop')
+
 def get_readings(event, **kwargs):
     route_id, missing_route_id = get_key(event, Constants.ROUTE_ID)
     geohashes, missing_geohash = get_key(event, Constants.GEOHASH)
