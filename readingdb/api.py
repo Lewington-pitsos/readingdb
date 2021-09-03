@@ -96,6 +96,42 @@ class API(DB):
             self.add_readings_to_layer(layer_id, reading_data)
 
         return saved_entries
+        
+    def save_xml_predictions(
+        self,
+        xml_data: List[str],
+        image_uris: List[str],
+        route_id: int,
+        user_id: str,
+        save_imgs: bool = True
+    ):
+        #transform xml to proper format
+        for x in xml_data:
+            annotations = elementTree.fromstringlist(x)
+        readings = []
+
+        #save the readings
+        self.save_predictions(readings, route_id, user_id, save_imgs)
+
+    def set_as_predicting(self, route_id: str, user_id: str) -> None:
+        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
+
+    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
+        bucket_key = str(uuid.uuid1()) + '.json'
+        pl = {
+            'Type': 'GetReadings',
+            'BucketKey': bucket_key,
+            'RouteID': route_id,
+            'AccessToken': access_token,
+        }
+
+        self.lambda_client.invoke(
+            FunctionName=LAMBDA_ENDPOINT,
+            InvocationType='Event',
+            Payload=json.dumps(pl)
+        )
+
+        return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
 
     def all_route_readings(
         self, 

@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import List
 from unittest import mock
 from readingdb.reading import PredictionReading, get_geohash, json_to_reading
@@ -495,6 +496,24 @@ class TestAPI(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
         ]))
+
+    def test_saves_xml_readings(self):
+        user_id = "testestest"
+        route_id = "testroute"
+        self.api.put_route(
+            Route(user_id, route_id, 0)
+        )
+
+        xml_data = []
+        xml_file_paths = Path('/test_data/xml_test_readings/').rglob('*.xml')
+        image_file_paths = Path('/test_data/xml_test_readings/').rglob('*.jpg')
+        for xfp in xml_file_paths:
+            xml_data.append(xfp.read_text().replace('\n',''))
+
+        self.api.save_xml_predictions(xml_data, image_file_paths, route_id, user_id)
+        
+        readings = self.api.all_route_readings(route_id)
+        print(readings)
     
     def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
