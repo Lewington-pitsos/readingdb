@@ -2,6 +2,7 @@ from collections import defaultdict
 import json
 import sys
 from readingdb.routestatus import RouteStatus
+from readingdb.converter import Converter
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
@@ -100,15 +101,16 @@ class API(DB):
     def save_xml_predictions(
         self,
         xml_data: List[str],
-        image_uris: List[str],
+        image_file_paths: List[str],
         route_id: int,
         user_id: str,
         save_imgs: bool = True
     ):
-        #transform xml to proper format
+        readings = []
+        for xml, filepath in zip(xml_data, image_file_paths):
+            readings.append(Converter.XML_to_single_reading(xml, filepath))
         
-        #save the readings
-        self.save_predictions(readings, route_id, user_id, save_imgs)
+        return self.save_predictions(readings, route_id, user_id, save_imgs)
 
     def set_as_predicting(self, route_id: str, user_id: str) -> None:
         self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)

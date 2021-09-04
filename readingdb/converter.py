@@ -1,10 +1,11 @@
 import xml.etree.ElementTree as elementTree
 import time
-from constants import *
+from pathlib import Path
+from readingdb.constants import *
 
 class Converter():
 
-    def XML_to_single_reading(xml_data: str):
+    def XML_to_single_reading(xml_data: str, image_uri: str = None):
         root = elementTree.fromstring(xml_data)
         reading = {
             "Timestamp": int(time.time()),
@@ -14,29 +15,23 @@ class Converter():
             "Bearing": 0.0,
             "Row": 0,
             "AnnotationTimestamp": 0,
-            "AnnotatorID": "xmldefault",
+            "AnnotatorID": DEFAULT_ANNOTATOR_ID,
             "Reading": {
                 "Latitude": -50,
                 "Longitude": 140,
-                "ImageFileName": None,
-                "Entities": [
-                    {
-                        "Name": "LongCrack",
-                        "Confidence": 0.6557837,
-                        "Severity": 1.3,
-                        "Present": False
-                    }
-                ]
+                Constants.FILENAME: image_uri,
+                "Entities": []
             }
         }
 
         for obj in root.findall('object'):
-            reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES].append(
+            reading[Constants.READING][Constants.ENTITIES].append(
                 {
-                    EntityKeys.NAME : obj.find('name').text,
-                    EntityKeys.CONFIDENCE : 0,
-                    EntityKeys.SEVERITY : obj.find('severity').text,
-                    'boundingbox' : {
+                    Constants.ENTITY_NAME : obj.find('name').text,
+                    Constants.CONFIDENCE : 0,
+                    Constants.SEVERITY : obj.find('severity').text,
+                    Constants.PRESENT : True,
+                    Constants.BOUNDING_BOX : {
                         'xmin' : obj.find('./bndbox/xmin').text,
                         'ymin' : obj.find('./bndbox/ymin').text,
                         'xmax' : obj.find('./bndbox/xmax').text,
@@ -44,3 +39,5 @@ class Converter():
                     }
                 }
             )
+
+        return reading

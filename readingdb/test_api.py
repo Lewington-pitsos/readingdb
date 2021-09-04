@@ -498,22 +498,34 @@ class TestAPI(unittest.TestCase):
         ]))
 
     def test_saves_xml_readings(self):
-        user_id = "testestest"
-        route_id = "testroute"
-        self.api.put_route(
-            Route(user_id, route_id, 0)
+        user_id = 'asdy7asdh'
+        route_id = 'asdasdasdasd'
+        group_id = '0a0a0a0a'
+        org_name = 'fds'
+
+        self.api.put_org(org_name)
+        self.api.put_user(org_name, user_id)
+        self.api.user_add_group(user_id, group_id)
+
+        r = Route(
+            user_id,
+            group_id,
+            route_id,
+            0,
+            geohashes= ['pp5e9c']
+            
         )
+        self.api.put_route(r)
 
         xml_data = []
-        xml_file_paths = Path('/test_data/xml_test_readings/').rglob('*.xml')
-        image_file_paths = Path('/test_data/xml_test_readings/').rglob('*.jpg')
+        xml_file_paths = Path('readingdb/test_data/xml_test_readings/').rglob('*.xml')
+        image_file_paths = list(map(str, Path('readingdb/test_data/xml_test_readings/').rglob('*.jpg')))
         for xfp in xml_file_paths:
             xml_data.append(xfp.read_text().replace('\n',''))
 
         self.api.save_xml_predictions(xml_data, image_file_paths, route_id, user_id)
-        
         readings = self.api.all_route_readings(route_id)
-        print(readings)
+        self.assertEqual(len(readings),10)
     
     def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
