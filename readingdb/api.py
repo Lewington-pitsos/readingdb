@@ -106,10 +106,7 @@ class API(DB):
         save_imgs: bool = True
     ):
         #transform xml to proper format
-        for x in xml_data:
-            annotations = elementTree.fromstringlist(x)
-        readings = []
-
+        
         #save the readings
         self.save_predictions(readings, route_id, user_id, save_imgs)
 
