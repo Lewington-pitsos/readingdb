@@ -1,31 +1,34 @@
+from typing import Container
 import xml.etree.ElementTree as elementTree
 import time
 from pathlib import Path
 from readingdb.constants import *
+from readingdb.reading import PredictionReading
 
 class Converter():
 
-    def XML_to_single_reading(xml_data: str, image_uri: str = None):
+    def XML_to_single_reading(xml_data: str, **additional_reading_data):
         root = elementTree.fromstring(xml_data)
-        reading = {
-            "Timestamp": int(time.time()),
+        readingjson = {
+            Constants.TIMESTAMP: int(time.time()),
             "MillisecondPrecision": True,
             "Accuracy": 0,
             "Speed": 0.0,
             "Bearing": 0.0,
             "Row": 0,
-            "AnnotationTimestamp": 0,
-            "AnnotatorID": DEFAULT_ANNOTATOR_ID,
-            "Reading": {
-                "Latitude": -50,
-                "Longitude": 140,
-                Constants.FILENAME: image_uri,
-                "Entities": []
+            Constants.ANNOTATION_TIMESTAMP: 0,
+            Constants.ANNOTATOR_ID: DEFAULT_ANNOTATOR_ID,
+            Constants.READING: {
+                Constants.LATITUDE: -50,
+                Constants.LONGITUDE: 140,
+                Constants.ENTITIES: []
             }
         }
 
+        readingjson['Reading'].update(additional_reading_data)
+
         for obj in root.findall('object'):
-            reading[Constants.READING][Constants.ENTITIES].append(
+            readingjson[Constants.READING][Constants.ENTITIES].append(
                 {
                     Constants.ENTITY_NAME : obj.find('name').text,
                     Constants.CONFIDENCE : 0,
@@ -40,4 +43,4 @@ class Converter():
                 }
             )
 
-        return reading
+        return readingjson

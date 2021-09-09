@@ -521,12 +521,46 @@ class TestAPI(unittest.TestCase):
         xml_file_paths = Path('readingdb/test_data/xml_test_readings/').rglob('*.xml')
         image_file_paths = list(map(str, Path('readingdb/test_data/xml_test_readings/').rglob('*.jpg')))
         for xfp in xml_file_paths:
-            xml_data.append(xfp.read_text().replace('\n',''))
+            xml_data.append({
+                'xml' : xfp.read_text().replace('\n',''),
+                Constants.FILENAME : [f for f in image_file_paths if xfp.name.replace('.xml','.jpg') in f][0]
+            }
+        )
 
-        self.api.save_xml_predictions(xml_data, image_file_paths, route_id, user_id)
+        saved = self.api.save_xml_predictions(xml_data, user_id, route_id=route_id)
         readings = self.api.all_route_readings(route_id)
-        self.assertEqual(len(readings),10)
+        self.assertEqual(len(readings),len(saved))
+        for s,r in zip(saved,readings):
+            self.assertCountEqual(s.item_data(), r)
+            if '2021_05_10_09_57_11_218-242' in r[Constants.READING][Constants.FILENAME]:
+                self.assertEqual(len(r[Constants.READING][Constants.ENTITIES]),2)
+
+    def test_saves_xml_readings_without_route(self):
+        user_id = 'asdy7asdh'
+        group_id = '0a0a0a0a'
+        org_name = 'fds'
+
+        self.api.put_org(org_name)
+        self.api.put_user(org_name, user_id)
+        self.api.user_add_group(user_id, group_id)
+
+        xml_data = []
+        xml_file_paths = Path('readingdb/test_data/xml_test_readings/').rglob('*.xml')
+        image_file_paths = list(map(str, Path('readingdb/test_data/xml_test_readings/').rglob('*.jpg')))
+        for xfp in xml_file_paths:
+            xml_data.append({
+                'xml' : xfp.read_text().replace('\n',''),
+                Constants.FILENAME : [f for f in image_file_paths if xfp.name.replace('.xml','.jpg') in f][0],
+                Constants.TIMESTAMP: 2
+            }
+        )
     
+        saved = self.api.save_xml_predictions(xml_data, user_id, group_id=group_id, geohashes=['pp5e9c'], timestamp=3)
+        readings = self.api.all_route_readings(saved[0].item_data()['RouteID'])
+        self.assertEqual(len(readings),10)
+        for s,r in zip(saved,readings):
+            self.assertCountEqual(s.item_data(), r)
+
     def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'

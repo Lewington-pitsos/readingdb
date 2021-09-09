@@ -1,6 +1,7 @@
 from collections import defaultdict
 import json
 import sys
+import time
 from readingdb.routestatus import RouteStatus
 from readingdb.converter import Converter
 from typing import Any, Dict, List, Tuple
@@ -100,37 +101,41 @@ class API(DB):
         
     def save_xml_predictions(
         self,
-        xml_data: List[str],
-        image_file_paths: List[str],
-        route_id: int,
-        user_id: str,
+        xml_data: List[dict],
+        user_id: int,
+        layer_id: str = None,
+        route_id: str = None,
+        group_id: str = None,
+        geohashes: List = [],
+        timestamp: int= None,
         save_imgs: bool = True
     ):
+        if layer_id is None:
+            layer_id = str(uuid.uuid1())
+            self.put_layer(layer_id, name=f'RouteLayer#{route_id}')
+
+        if route_id is None:
+            if geohashes is None:
+                raise ValueError('must provide geohashes when no routeid is given')
+            if timestamp is None:
+                timestamp = time.time()
+            route_id = str(uuid.uuid1())
+            route = Route(
+                user_id=user_id,
+                group_id=group_id,
+                id=route_id,
+                timestamp=timestamp,
+                geohashes=geohashes,
+                layer_id=layer_id
+            )
+            self.put_route(route)
+
         readings = []
-        for xml, filepath in zip(xml_data, image_file_paths):
-            readings.append(Converter.XML_to_single_reading(xml, filepath))
+        for data in xml_data:
+            xml = data.pop('xml')
+            readings.append(Converter.XML_to_single_reading(xml, **data))
         
-        return self.save_predictions(readings, route_id, user_id, save_imgs)
-
-    def set_as_predicting(self, route_id: str, user_id: str) -> None:
-        self.set_route_status(route_id, user_id, RouteStatus.PREDICTING)
-
-    def all_route_readings_async(self, route_id: str, access_token: str) -> str:
-        bucket_key = str(uuid.uuid1()) + '.json'
-        pl = {
-            'Type': 'GetReadings',
-            'BucketKey': bucket_key,
-            'RouteID': route_id,
-            'AccessToken': access_token,
-        }
-
-        self.lambda_client.invoke(
-            FunctionName=LAMBDA_ENDPOINT,
-            InvocationType='Event',
-            Payload=json.dumps(pl)
-        )
-
-        return {S3Path.BUCKET: self.tmp_bucket, S3Path.KEY: bucket_key}
+        return self.save_predictions(readings, route_id, user_id, save_imgs, layer_id)
 
     def all_route_readings(
         self, 
