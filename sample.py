@@ -27,13 +27,13 @@ api = API(DYNAMO_ENDPOINT)
 to_assess = []
 
 def has_defect(reading: Dict[str, Any]) -> bool:
-    for e in reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]:
-        if e[EntityKeys.PRESENT] and e[EntityKeys.NAME] == 'D1001':
+    for e in reading[Constants.READING][Constants.ENTITIES]:
+        if e[Constants.PRESENT] and e[Constants.ENTITY_NAME] == 'D1001':
             return True
     return False
 
 for rid in args.routes:
-    all_readings = [r for r in api.all_route_readings(rid, annotator_preference=[args.aid]) if r[ReadingKeys.TYPE] == ReadingTypes.PREDICTION]
+    all_readings = [r for r in api.all_route_readings(rid, annotator_preference=[args.aid]) if r[Constants.READING_TYPE] == Constants.PREDICTION]
     print(f'count of readings for {rid}: {len(all_readings)}')
 
     fault_readings = []
@@ -52,10 +52,10 @@ img_dir = directory + 'imgs/'
 os.mkdir(img_dir)
 
 for r in to_assess:
-    rid = r[ReadingKeys.READING_ID]
+    rid = r[Constants.READING_ID]
     print('saving', rid)
     urllib.request.urlretrieve(
-        r[ReadingKeys.READING][ImageReadingKeys.PRESIGNED_URL], 
+        r[Constants.READING][Constants.PRESIGNED_URL], 
         img_dir + rid + '.jpg'
     )
 

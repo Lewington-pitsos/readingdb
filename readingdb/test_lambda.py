@@ -1,20 +1,22 @@
+from collections import defaultdict
 from io import BytesIO
 import os
 import zipfile
 import boto3
 import json
+from readingdb import constants
 from readingdb.constants import *
 from unittest import mock
 from readingdb.routespec import RouteSpec
 from readingdb.api import API
 from readingdb.tutils import roads_api_test
 from readingdb.tutils import Increment, create_bucket, teardown_s3_bucket
-from readingdb.endpoints import DYNAMO_ENDPOINT, TEST_BUCKET, TEST_DYNAMO_ENDPOINT
+from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 import unittest
 from moto import mock_s3
 
 from readingdb.lamb import test_handler
-from readingdb.getat import get_access_token, CREDENTIALS_FILE
+from readingdb.getat import ACCESS_TOKEN_KEY, get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f'no credentials file located at {CREDENTIALS_FILE}'
 TEST_CONTEXT = 'TEST_STUB'
@@ -27,13 +29,14 @@ class TestLambda(unittest.TestCase):
     def setUpClass(cls):
         if credentials_present():
             cls.access_token = get_access_token()
+            cls.unauthorized_access_token = get_access_token(os.path.dirname(__file__) + '/test_data/fdsguest.json')
         else:
             cls.access_token = ''
+            cls.unauthorized_access_token = ''
 
 class TestBasic(TestLambda):
     def test_error_response_on_bad_input(self):
         resp = test_handler({}, TEST_CONTEXT)
-
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Invalid Event Syntax'
@@ -122,6 +125,18 @@ class TestBasic(TestLambda):
             'Body': 'Bad Format Error: key Key missing from event'
         }, resp)
 
+        resp = test_handler({
+             'Type': 'ProcessUpload',
+             'AccessToken': self.access_token,
+             'Key': "a9a9a9a9a9a9a.json",
+             'Bucket': 'somebucket'
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key GroupID missing from event'
+        }, resp)
+
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_delete_event(self):
         resp = test_handler({
@@ -132,6 +147,18 @@ class TestBasic(TestLambda):
         self.assertEqual({
             'Status': 'Error',
             'Body': 'Bad Format Error: key RouteID missing from event'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_error_response_on_get_geohash_readings_event(self):
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: event GetReadings requires one of RouteID, Geohash'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -154,31 +181,7 @@ class TestBasic(TestLambda):
 
         self.assertEqual({
             'Status': 'Error',
-            'Body': 'Bad Format Error: key UserID missing from event'
-        }, resp)
-
-        resp = test_handler({
-            'Type': 'SavePredictions',
-            'RouteID': "1721739812-1238123",
-            'UserID': 'asbdasd-asdasvdy',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Error',
             'Body': 'Bad Format Error: key Predictions missing from event'
-        }, resp)
-
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_error_response_on_paginated_readings_event(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Error',
-            'Body': 'Bad Format Error: key RouteID missing from event'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -323,7 +326,6 @@ class TestBasic(TestLambda):
             'Body': 'Unauthenticated request, unrecognized Access Token bad_access_token'
         }, resp)
 
-
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_error_response_on_nonexistant_type(self):
         resp = test_handler({
@@ -341,8 +343,9 @@ class TestLambdaRW(TestLambda):
     region_name = 'ap-southeast-2'
     access_key = 'fake_access_key'
     secret_key = 'fake_secret_key'
-    bucket_name = TEST_BUCKET
     user_id = '99bf4519-85d9-4726-9471-4c91a7677925'
+    user_id2 = 'e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04'
+    bucket_name = TEST_BUCKET
     tmp_bucket = TEST_BUCKET
 
     def setUp(self) -> None:
@@ -358,6 +361,11 @@ class TestLambdaRW(TestLambda):
         self.api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, tmp_bucket=self.tmp_bucket) 
         self.api.create_reading_db()
 
+        org_data = self.api.put_org('Frontline Data Systems')
+        self.default_group = org_data[Constants.ORG_GROUP]
+        self.api.user_add_group(self.user_id, self.default_group)
+        self.org_name = org_data[Constants.ORG_NAME]
+
     def tearDown(self):
         self.api.teardown_reading_db()
         teardown_s3_bucket(
@@ -367,8 +375,68 @@ class TestLambdaRW(TestLambda):
             self.bucket_name
         )      
 
-
 class TestLambdaW(TestLambdaRW):
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_saves_org(self):
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Bad Format Error: key OrgName missing from event'
+        }, resp)
+
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'OrgName': 'Roora Inc',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual('Success', resp['Status'])
+        self.assertIn('OrgGroup', resp['Body'])
+
+        resp = test_handler({
+            'Type': 'AddOrg',
+            'OrgName': 'Roora Inc',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': 'Org Roora Inc already exists'
+        }, resp)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_deletes_route(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/long_route.json') as f:
+            route_json = json.load(f) 
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
+
+        self.assertNotEqual(None, self.api.get_route(route.id))
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_DELETE_ROUTE,
+            Constants.ROUTE_ID: route.id,
+            LambdaConstants.EVENT_ACCESS_TOKEN: self.access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(None, self.api.get_route(route.id))
+
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_DELETE_ROUTE,
+            Constants.ROUTE_ID: route.id,
+            LambdaConstants.EVENT_ACCESS_TOKEN: self.unauthorized_access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+
+
     @unittest.skip('This make an actual call to fargate')
     def test_correct_upload_event_handling(self):
         test_handler({
@@ -402,6 +470,7 @@ class TestLambdaW(TestLambdaRW):
              'Type': 'ProcessUpload',
              'AccessToken': self.access_token,
              'Bucket': TEST_BUCKET,
+             'GroupID': self.default_group,
              'Key': 'mocks/route_1621394080578',
              'RouteName': 'Jenkins Way'
         }, TEST_CONTEXT)
@@ -410,7 +479,7 @@ class TestLambdaW(TestLambdaRW):
         self.assertIn('RouteID', resp['Body'])
         rid = resp['Body']['RouteID']
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
+            'Type': 'GetReadings',
             'RouteID': rid,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
@@ -434,8 +503,8 @@ class TestLambdaW(TestLambdaRW):
         }, TEST_CONTEXT)
 
         self.assertEqual({
-            'Status': 'Success',
-            'Body': None
+            'Status': 'Error',
+            'Body': 'Route route-that-doesnt-exist does not exist'
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -443,6 +512,7 @@ class TestLambdaW(TestLambdaRW):
         resp = test_handler({
             'Type': 'AddUser',
             'UserID': "a98s7das87dba0sa7gdas87",
+            "OrgName": self.org_name,
             'DataAccessGroups': [
                 {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
                 {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
@@ -452,10 +522,7 @@ class TestLambdaW(TestLambdaRW):
 
         self.assertEqual({
             'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                {'GroupName': 'Roora', 'GroupID': 'a9sd6a7s128123'},
-                {'GroupName': 'Vicroads', 'GroupID': '12--1tg122168'}
-            ]}
+            'Body': None
         }, resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
@@ -483,57 +550,49 @@ class TestLambdaW(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual({
-            'Status': 'Success',
-            'Body': {'DataAccessGroups': [
-                 {'GroupName': 'too-shorta-sd-asdas-dasd-asd', 'GroupID': 'too-shorta-sd-asdas-dasd-asd'}
-            ]}
-        }, resp)
-  
-        resp = test_handler({
-            'Type': 'AddUser',
-            'UserID': 'too-shorta-sd-asdas-dasd-asd',
+            'UserID': 'aaaaaaaaaaaaaaaa-sd-asdas-dasd-asd',
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual({
             'Status': 'Error',
-            'Body': 'User ID too-shorta-sd-asdas-dasd-asd has already been registered'
+            'Body': 'Bad Format Error: key OrgName missing from event'
         }, resp)
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_success_on_paginated_readings_for_absent_route(self):
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': 'INVALID_ID',
+            'Type': 'AddUser',
+            'UserID': 'aaaaaaaaaaaaaaaa-sd-asdas-dasd-asd',
+            'OrgName': self.org_name,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual({
             'Status': 'Success',
-            'Body': None
-        }, resp)
+            'Body': None}
+        , resp)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions(self):
-        with open('readingdb/test_data/gps_img_route.json') as f:
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        route = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': r.id,
+            'Type': 'GetReadings',
+            'RouteID': route.id,
             'PredictionOnly': False,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 116)
+        self.assertEqual(len(resp['Body']['Readings']), 181)
 
         with open('readingdb/test_data/ftg_imgs.json') as f:
             pred_json = json.load(f)
@@ -543,43 +602,70 @@ class TestLambdaW(TestLambdaRW):
 
         resp = test_handler({
             'Type': 'SavePredictions',
-            'RouteID': r.id,
-            'UserID': self.user_id,
+            'RouteID': route.id,
             'Predictions': pred_json,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(22, len(resp['Body']['SavedReadings']))
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': r.id,
+            'Type': 'GetReadings',
+            'RouteID': route.id,
             'PredictionOnly': False,
-            'AnnotatorPreference': None,
             'AccessToken': self.access_token,
         }, TEST_CONTEXT)
 
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 138)
-    
+        self.assertEqual(len(resp['Body']['Readings']), 182)
+
+        annotator_count = defaultdict(lambda: 0)
+        for r in resp['Body']['Readings']:
+            if r['Type'] == 'PredictionReading':
+                annotator_count[r['AnnotatorID']] += 1
+
+        self.assertEqual(annotator_count["99994519-85d9-4726-9471-4c91a7677925"], 1)
+
+        for reading in pred_json:
+            reading['AnnotatorID'] = 'a8s8as78a7a7a7a7a'
+
+        resp = test_handler({
+            'Type': 'SavePredictions',
+            'RouteID': route.id,
+            'Predictions': pred_json,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': route.id,
+            'PredictionOnly': False,
+            'AnnotatorPreference': ['a8s8as78a7a7a7a7a'],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 182)
+
+        annotator_count = defaultdict(lambda: 0)
+        for r in resp['Body']['Readings']:
+            if r['Type'] == 'PredictionReading':
+                annotator_count[r['AnnotatorID']] += 1
+
+        self.assertEqual(annotator_count['a8s8as78a7a7a7a7a'], 1)
+        self.assertEqual(annotator_count["99994519-85d9-4726-9471-4c91a7677925"], 0)
+
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_predictions_for_long_route(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
-
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': r.id,
-            'AnnotatorPreference': [
-                '99bf4519-85d9-4726-9471-4c91a7677925'
-            ],
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 713)
-        self.assertIsNone(resp['Body']['PaginationKey'])
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         resp = test_handler({
             'Type': 'GetReadings',
@@ -595,11 +681,174 @@ class TestLambdaW(TestLambdaRW):
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
-    def test_returns_s3_url_if_response_body_too_large(self):
+    def test_prevents_unauthorized_route_access(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/ftg_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_reading_access(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
         with open('readingdb/test_data/sydney_route_short.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
 
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(len(resp['Body']['Readings']), 713)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'RouteID': r.id,
+            'AnnotatorPreference': [
+                '99bf4519-85d9-4726-9471-4c91a7677925'
+            ],
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_route_name_update(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/ftg_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], r.id[:21])   
+
+        resp = test_handler({
+            'Type': 'UpdateRouteName',
+            'RouteID': r.id,
+            'RouteName': 'belgrave',
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], 'belgrave')  
+
+        resp = test_handler({
+            'Type': 'UpdateRouteName',
+            'RouteID': r.id,
+            'RouteName': 'wallmart',
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body']['RouteName'], 'belgrave')  
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_prevents_unauthorized_route_deletion(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        with open('readingdb/test_data/ftg_route.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, group_id, layer_id)
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+
+        resp = test_handler({
+            'Type': 'DeleteRoute',
+            'RouteID': r.id,
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'User e3ba2e2b-6ab7-4c83-9781-0b392f8b7b04 cannot access route {r.id}')
+
+        resp = test_handler({
+            'Type': 'DeleteRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Success')
+
+        resp = test_handler({
+            'Type': 'GetRoute',
+            'RouteID': r.id,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+        self.assertEqual(resp['Status'], 'Error')
+        self.assertEqual(resp['Body'], f'Route {r.id} does not exist')
+
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
+    def test_returns_s3_url_if_response_body_too_large(self):
+        group_id = 'apapapa'
+        layer_id = 'aalalala'
+        self.api.put_user(self.org_name, self.user_id)
+        self.api.user_add_group(self.user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+        
+        with open('readingdb/test_data/sydney_route_short.json') as f:
+            route_json = json.load(f) 
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.default_group, layer_id)
 
         s3 = boto3.resource('s3', region_name=REGION_NAME)
         bucket = s3.Bucket(TEST_BUCKET)
@@ -608,7 +857,6 @@ class TestLambdaW(TestLambdaRW):
             bucket_objects.append(my_bucket_object.key)
 
         self.assertEqual(len(bucket_objects), 717)
-
         resp = test_handler({
             'Type': 'GetReadings',
             'RouteID': r.id,
@@ -631,77 +879,45 @@ class TestLambdaR(TestLambdaRW):
     def setUp(self) -> None:
         super().setUp()
 
-        with open('readingdb/test_data/gps_img_route.json') as f:
+        self.layer_id = 'omni-layer'
+        self.group_id = 'omni-group'
+        
+        self.api.user_add_group(self.user_id, self.group_id)
+        self.api.put_layer(self.layer_id)
+        self.api.group_add_layer(self.group_id, self.layer_id)
+
+        with open('readingdb/test_data/long_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
-        self.gps_img_route = r
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
+        self.long_route = r
 
         with open('readingdb/test_data/ftg_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
         self.tst_route = r
 
         with open('readingdb/test_data/ftg_20_route.json') as f:
             route_json = json.load(f) 
-        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id)
+        r = self.api.save_route(RouteSpec.from_json(route_json), self.user_id, self.group_id, self.layer_id)
         self.twenty_route = r
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_pagination_filters_non_prediction_readings(self):
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 0)
-        self.assertIsNone(resp['Body']['PaginationKey'])
+    def tearDown(self):
+        super().tearDown()
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_paginated_readings_for_user(self):
+    def test_gets_all_layers_for_user(self):
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.twenty_route.id,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
+            'AccessToken' : self.access_token
+        }, TEST_CONTEXT)    
         self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 1)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.twenty_route.id)
+        self.assertEqual(resp['Body'], [self.api.get_layer(self.layer_id)])
 
-    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
-    def test_gets_paginated_readings_with_start_key(self):
-        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'PositionalReading'][0]
-        key1 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
-        key_reading = [r for r in self.gps_img_route.sample_data.values() if r.readingType == 'ImageReading'][0]
-        key2 = { "ReadingID": key_reading.id, "RouteID": key_reading.route_id }
         resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
-            'PredictionOnly': False,
-            'PaginationKey': key1,
-            'AccessToken': self.access_token,
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
+            'AccessToken' : self.unauthorized_access_token
         }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 86)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
-    
-        resp = test_handler({
-            'Type': 'GetPaginatedReadings',
-            'RouteID': self.gps_img_route.id,
-            'PredictionOnly': False,
-            'PaginationKey': key2,
-            'AccessToken': self.access_token,
-        }, TEST_CONTEXT)
-
-        self.assertEqual(resp['Status'], 'Success')
-        self.assertEqual(len(resp['Body']['Readings']), 115)
-        self.assertIsNone(resp['Body']['PaginationKey'])
-        self.assertEqual(resp['Body']['Readings'][0]['RouteID'], self.gps_img_route.id)
+        self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):
@@ -713,9 +929,89 @@ class TestLambdaR(TestLambdaRW):
         self.assertEqual(len(resp['Body']), 3)
         self.assertTrue(resp['Body'][0]['RouteID'] in [
             self.twenty_route.id,
-            self.gps_img_route.id,
+            self.long_route.id,
             self.tst_route.id
         ])
+
+        resp = test_handler({
+            'Type': 'GetUserRoutes',
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual(len(resp['Body']), 0)
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_readings_by_geohash(self):
+        test_geohash = 'r1r291'
+        test_geohash_list = ['r1r291','r1r28f']
+        test_geohash_empty = 'ex8erk'
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(86, len(resp['Body']['Readings']))
+
+        resp_multi = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash_list,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertGreater(len(resp_multi['Body']['Readings']), len(resp['Body']['Readings']) )
+        
+        resp_multi = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': [],
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+                'Status': 'Error',
+                'Body': f'Value Error: event GetReadings cannot be passed empty {Constants.GEOHASH} list'
+            } ,resp_multi)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash,
+            'RouteID' : self.long_route.id ,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+                'Status': 'Error',
+                'Body': f'Bad Format Error: event GetReadings cannot be specified with both {Constants.ROUTE_ID} AND {Constants.GEOHASH}'
+            } ,resp)
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash ,
+            'AccessToken': self.unauthorized_access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': test_geohash_empty,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEquals(0,len(resp['Body']['Readings']))
+
+        resp = test_handler({
+            'Type': 'GetReadings',
+            'Geohash': 1,
+            'AccessToken': self.access_token,
+        }, TEST_CONTEXT)
+
+        self.assertEqual({
+            'Status': 'Error',
+            'Body': f'Type Error: event GetReadings by {Constants.GEOHASH} must pass a string or list of strings'
+        } ,resp)
+
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_route(self):
@@ -732,17 +1028,19 @@ class TestLambdaR(TestLambdaRW):
 
         self.assertIn('LastUpdated', resp['Body'])
         del resp['Body']['LastUpdated']
+        user_id = resp['Body']['SampleData']['PredictionReading']['ReadingID']
         self.assertEqual({
             'Status': 'Success', 
             'Body': {
                 'RouteStatus': 1, 
                 'Timestamp': 1616116106935,
-                'UserID': '99bf4519-85d9-4726-9471-4c91a7677925', 
                 'SampleData': {
                     'PredictionReading': {
                         'AnnotationTimestamp': 2378910,
                         'AnnotatorID': '99994519-85d9-4726-9471-4c91a7677925',
-                        'ReadingID': resp['Body']['SampleData']['PredictionReading']['ReadingID'], 
+                        'Geohash': 'r1r291',
+                        'PK': 'r1r291#PredictionReading',
+                        'ReadingID': user_id, 
                         'Type': 'PredictionReading', 
                         'Reading': {
                             'S3Uri': {
@@ -773,14 +1071,19 @@ class TestLambdaR(TestLambdaRW):
                                     'Name': 'Lineblur',
                                     'Severity': 1.1,
                                     'Present': False},
-
                             ],
                         }, 
-                        'RouteID': self.twenty_route.id, 
+                        'RouteID': self.twenty_route.id,
+                        'SK': user_id,
                         'Timestamp': 1616116106935
                     }
                 }, 
-                'RouteID': self.twenty_route.id, 
+                'Geohashes': {'r1r291'},
+                'RouteID': self.twenty_route.id,
+                'GroupID': self.group_id,
+                'LayerID': self.layer_id,
+                'PK': 'Route',
+                'SK': 'Route#' + self.twenty_route.id,
                 'RouteName': self.twenty_route.name
             }
         }, resp)

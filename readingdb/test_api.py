@@ -2,13 +2,13 @@ import json
 import os
 from typing import List
 from unittest import mock
-from readingdb.reading import AbstractReading, json_to_reading
+from readingdb.reading import PredictionReading, get_geohash, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
 from readingdb.constants import *
 from readingdb.routestatus import RouteStatus
-from readingdb.constants import ReadingRouteKeys, RouteKeys
+from readingdb.constants import Constants
 from readingdb.routespec import RouteSpec
 import tempfile
 import unittest
@@ -44,7 +44,6 @@ class TestAPI(unittest.TestCase):
             self.secret_key, 
             self.tmp_bucket,
         )
-
         self.api = API(
             TEST_DYNAMO_ENDPOINT,  
             bucket=self.bucket_name,
@@ -65,7 +64,6 @@ class TestAPI(unittest.TestCase):
             self.secret_key,
             self.tmp_bucket
         )
-
         self.api.teardown_reading_db()
     
     def test_mocking_works(self):
@@ -77,33 +75,32 @@ class TestAPI(unittest.TestCase):
             desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
-    def test_adds_presigned_urls_to_paginated_readings(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
-
-        page0, _ = self.api.paginated_route_readings(route.id)
-        self.assertEqual(22, len(page0))
-        self.assertIn('PresignedURL', page0[0]['Reading'])
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- READING ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
     def test_handles_large_queries_correctly(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823))
+        group_id = 'a9a9a9a9' 
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
+        geohashes = set()
         finalized = []
         for e in entities[:60]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
             finalized.append(r)
         self.api.put_readings(finalized)
-
+        self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
+        
         readings =  self.api.all_route_readings(route_id)
         self.assertIsInstance(readings, list)
         self.assertEqual(60, len(readings))
@@ -116,17 +113,21 @@ class TestAPI(unittest.TestCase):
 
     def test_can_upload_readings_with_given_key(self):
         route_id = '103'
-        self.api.put_route(Route('3', route_id, 123617823))
+        group_id = '9a9a9a9a'
         
-        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+        with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
+        geohashes = set()
         finalized = []
         for e in entities[:60]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
             finalized.append(r)
+            geohashes.add(r.geohash())
+
+        self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.api.put_readings(finalized)
 
         self.api.size_limit = 400
@@ -136,35 +137,193 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(uri['Bucket'], self.tmp_bucket)
         self.assertEqual(uri['Key'], 'kingofkings.json')
 
-    def test_updates_route_name(self):
+    def test_can_return_readings_via_geohash(self):
+        route_id = '103'
+        group_id = 'a9a9a9a9'
+        user_id = 'a9a9a9a9'
+        self.api.put_route(Route(user_id, group_id, route_id, 123617823))
+        
+        with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        finalized = []
+        for e in entities[:320]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r = json_to_reading('PredictionReading', e)
+            finalized.append(r)
+        self.api.put_readings(finalized)
+
+        readings = self.api.geohash_readings('r3gqu8', Constants.PREDICTION)
+        self.assertEqual(288, len(readings))
+        readings = self.api.geohash_readings('r3gqu2', Constants.PREDICTION)
+        self.assertEqual(32, len(readings))
+
+    def test_user_geohash_access(self):
+        group_id = 'a9a9a9a9'
+        user_id = 'a9a9a9a9s99ss'
+        layer_id = 'a9a99aa9aa9a99a'
+
+        with open(self.current_dir + '/test_data/sydney_route_very_short.json', 'r') as j:
+            route_spec_data = json.load(j)
+
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = self.api.save_route(route_spec, user_id, group_id, layer_id)
+        self.assertEqual(route.geohashes, set(['r3gqu2', 'r3gqu8']))
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', user_id)
+        self.assertEqual(0, len(readings))
+
+        org_name = "aws"
+        self.api.put_org(org_name)
+        self.api.put_user(org_name, user_id)
+        self.api.user_add_group(user_id, group_id)
+        self.api.group_add_layer(group_id, layer_id)
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', user_id)
+        self.assertEqual(288, len(readings))
+
+        readings = self.api.get_geohash_readings_by_user('r3gqu8', '2e2ee2mm')
+        self.assertEqual(0, len(readings))
+
+        multi_readings = self.api.get_geohash_readings_by_user(['r3gqu8','r3gqu2'], user_id)
+        self.assertGreater(len(multi_readings), len(readings))
+
+        with self.assertRaises(ValueError):
+            self.api.get_geohash_readings_by_user(['r3gqu8','r3gqu8'], user_id)
+            self.api.get_geohash_readings_by_user([], user_id)
+
+        with self.assertRaises(TypeError):
+            self.api.get_geohash_readings_by_user(1,user_id)
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- ROUTE --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_saves_route_geohashes_correctly(self):
+        group_id = 'a9a9a9a9'
+        user_id = 'a9a9a9a9s99ss'
+        layer_id = 'a9a99aa9aa9a99a'
+
+        with open(self.current_dir + '/test_data/sydney_route_very_short.json', 'r') as j:
+            route_spec_data = json.load(j)
+
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = self.api.save_route(route_spec, user_id, group_id, layer_id)
+        self.assertEqual(route.geohashes, set(['r3gqu2', 'r3gqu8']))
+
+        readings = self.api.geohash_readings('r3gqu8', Constants.PREDICTION)
+        self.assertEqual(288, len(readings))
+
+        readings = self.api.geohash_readings('r3gqu2', Constants.PREDICTION)
+        self.assertEqual(32, len(readings))
+
+
+    def test_route_access(self):
         user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
+        self.assertFalse(api.can_access_route(user_id, 'non-existant-route'))
+
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
+
+        self.assertTrue(api.can_access_route(user_id, route.id))
+
+        group_id2 = '282182611'
+        route = api.save_route(route_spec, user_id, group_id2, layer_id)
+        self.assertFalse(api.can_access_route(user_id, route.id))
+
+    def test_updates_route_name(self):
+        user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
 
         self.assertEqual(route.name, route.id[:Route.MAX_NAME_LENGTH])
-        api.update_route_name(route.id, user_id, 'Belgrave')
+        api.update_route_name(route.id, 'Belgrave')
 
-        loaded_route = api.get_route(route.id, user_id)
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.NAME], 'Belgrave')
+        loaded_route = api.get_route(route.id)
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
+        self.assertEqual(loaded_route[Constants.NAME], 'Belgrave')
+
+    def test_user_without_group_access_cannot_get_route(self):
+        user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.put_layer(layer_id)
+        api.group_add_layer(group_id, layer_id)
+        
+        with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+        api.save_route(route_spec, user_id, group_id, layer_id)
+        self.assertEqual(1, len(api.routes_for_user(user_id)))
+        
+        hacker_uid = 'a8a8a8a'
+        hacker_gid = 'a9a9a'
+        api.put_user(org_name, hacker_uid)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
+
+        api.user_add_group(hacker_uid, hacker_gid)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
+
+        api.group_add_layer(hacker_gid, layer_id)
+        self.assertEqual(0, len(api.routes_for_user(hacker_uid)))
 
     def test_update_route_status(self):
         user_id = 'aghsghavgas'
+        group_id = '10101010'
+        layer_id = 's9s9s9s9s9'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
 
         self.assertEqual(RouteStatus.UPLOADED, route.status)
-        api.set_as_predicting(route.id, user_id)
+        api.set_as_predicting(route.id)
 
-        loaded_route = api.get_route(route.id, user_id)
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.PREDICTING)
+        loaded_route = api.get_route(route.id)
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
         preds = [{
             'Reading': {
@@ -217,26 +376,36 @@ class TestAPI(unittest.TestCase):
             'Timestamp': 1616116106935,
         }]
 
-        saved = api.save_predictions(preds, route.id)
-        loaded_route = api.get_route(route.id, user_id)
+        saved = api.save_predictions(preds, route.id, route.user_id)
+        loaded_route = api.get_route(route.id)
         self.assertEqual(len(preds), len(saved))
-        self.assertEqual(loaded_route[ReadingRouteKeys.ROUTE_ID], route.id)
-        self.assertEqual(loaded_route[RouteKeys.STATUS], RouteStatus.COMPLETE)
+        self.assertEqual(loaded_route[Constants.ROUTE_ID], route.id)
 
     def test_saves_severity(self):
         user_id = 'aghsghavgas'
+        group_id = 'a9a9a9a'
+        layer_id = '2828282828'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+        
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+        
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
+
+        
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
 
         readings = api.all_route_readings(route.id)
         self.assertEqual(3, len(readings))
         first_reading = readings[0]
 
-        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], 1616116106935)
-        entites = first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES]
+        self.assertEqual(first_reading[Constants.TIMESTAMP], 1616116106935)
+        entites = first_reading[Constants.READING][Constants.ENTITIES]
 
         longCrack = None
         crockCrack = None
@@ -254,17 +423,37 @@ class TestAPI(unittest.TestCase):
     def test_saves_readings_to_existing_route(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
+        layer_id = '1018171187'
+        group_id = '0a0a0a0a'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
 
-        user_routes = api.routes_for_user(user_id)
-        self.assertEqual(len(user_routes), 0)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+
+        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
+            route_spec_data = json.load(j)
+
+        geohashes = set()
+        reading_query_data = []
+
+        for reading in route_spec_data:
+            reading_data = reading[Constants.READING]
+            geohash = get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE])
+            geohashes.add(geohash)
+            reading_query_data.append(reading)
+        # you should be able to add a layer to save_predictions
+        api.save_predictions(route_spec_data, route_id, user_id, layer_id=layer_id)
+        api.group_add_layer(group_id, layer_id)
 
         r = Route(
             user_id,
+            group_id,
             route_id,
             0,
+            geohashes=geohashes
         )
-        updated_time = r.update_timestamp
         api.put_route(r)
 
         s3 = boto3.resource(
@@ -283,23 +472,13 @@ class TestAPI(unittest.TestCase):
             'mocks/apple.json', 
             'mocks/file.json',
             'mocks/route_2021_04_07_17_14_36_709.zip',
-            'mocks/route_1621394080578.zip'
+            'mocks/route_1621394080578.zip',
+            'asdasdasdasdreadingdb/test_data/images/road1.jpg'
         ]))
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
-        self.assertEqual(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
         self.assertNotIn('SampleData', user_routes[0])
-
-        readings = api.all_route_readings(route_id)
-        self.assertEqual(len(readings), 0)
-
-        with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
-            route_spec_data = json.load(j)
-
-        api.save_predictions(route_spec_data, route_id, user_id)
-        user_routes = api.routes_for_user(user_id)
-        self.assertGreater(user_routes[0][RouteKeys.LAST_UPDATED], updated_time)
 
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
@@ -320,11 +499,13 @@ class TestAPI(unittest.TestCase):
     def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
+        group_id = 'a9a9a9a9a'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
         r = Route(
             user_id,
+            group_id,
             route_id,
             0,
         )
@@ -336,13 +517,21 @@ class TestAPI(unittest.TestCase):
     def test_saves_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
+        group_id = 'a9a9a9a9a'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 0)
-        r = Route(user_id, route_id, 0)
-        api.put_route(r)
+
         with open(self.current_dir + '/test_data/ftg_imgs.json', 'r') as j:
-            raw_readings = json.load(j)        
+            raw_readings = json.load(j)   
+        
+        geohashes = set()
+        for r in raw_readings:
+            reading_data = r[Constants.READING]
+            geohashes.add(get_geohash(reading_data[Constants.LATITUDE], reading_data[Constants.LONGITUDE]))
+        r = Route(user_id, group_id, route_id, 0, geohashes=geohashes)
+        api.put_route(r)
+
         api.save_predictions(raw_readings, route_id, user_id)
         readings = api.all_route_readings(route_id)
         self.assertEqual(len(readings), 22)
@@ -391,13 +580,22 @@ class TestAPI(unittest.TestCase):
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_uploads_small_route(self):
         user_id = 'asdy7asdh'
+        group_id = '1818176111'
+        layer_id = '1919191919'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
 
         with open(self.current_dir + '/test_data/ftg_route.json', 'r') as j:
             route_spec_data = json.load(j)
 
         route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
 
         user_routes = api.routes_for_user(user_id)
         self.assertEqual(len(user_routes), 1)
@@ -405,16 +603,28 @@ class TestAPI(unittest.TestCase):
         self.assertIn('PresignedURL', user_routes[0]['SampleData']['PredictionReading']['Reading'])
         del user_routes[0]['SampleData']['PredictionReading']['Reading']['PresignedURL']
         self.maxDiff = None
+        saved_reading_id = user_routes[0]['SampleData']['PredictionReading']['ReadingID']
         expected_sample_data = {
-            'LastUpdated': 1619496879,
+            'Geohashes': {'r1r291'},
+            'PK': 'Route',
+            'SK': f'Route#{route.id}',
+            'LastUpdated': 1619496880,
+            'GroupID': group_id,
+            'LayerID': layer_id,
             'RouteStatus': 1,
             'RouteID': route.id,
             'Timestamp': 1616116106935,
-            'UserID': 'asdy7asdh',
             'SampleData': {
                 'PredictionReading': {
                     'AnnotationTimestamp': 1623124150112,
                     'AnnotatorID': '3f01d5ec-c80b-11eb-acfa-02428ee80691',
+                    'Geohash': 'r1r291',
+                    'PK': 'r1r291#PredictionReading',
+                    'ReadingID': saved_reading_id,
+                    'Type': 'PredictionReading',
+                    'RouteID': route.id,
+                    'SK': saved_reading_id,
+                    'Timestamp': 1616116106935,
                     'Reading': {
                         'ImageFileName': 'readingdb/test_data/images/road1.jpg',
                         'S3Uri': {
@@ -445,11 +655,7 @@ class TestAPI(unittest.TestCase):
                         ],
                         'Longitude': 145.2450816,
                         'Latitude': -37.8714232,
-                    },
-                'ReadingID': user_routes[0]['SampleData']['PredictionReading']['ReadingID'],
-                'Type': 'PredictionReading',
-                'RouteID': route.id,
-                'Timestamp': 1616116106935
+                    }
                 }
             },
             'RouteName': route.name,
@@ -480,7 +686,15 @@ class TestAPI(unittest.TestCase):
         ]))
 
     def test_deletes_route(self):
+        org_name = 'fds'
         user_id = 'aghsghavgas'
+        user_id2 = "9a8a7ssa7s"
+
+        layer_id = '929239292'
+        layer_id2 = 'a99aa78a7a'
+
+        group_id = 'aiaiaia'
+        group_id2 = 's99s9s'
         s3 = boto3.resource(
             's3',
             region_name=self.region_name,
@@ -489,29 +703,38 @@ class TestAPI(unittest.TestCase):
         )
         bucket = s3.Bucket(self.bucket_name)
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-        
+
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
+        api.put_user(org_name, user_id2)
+        api.user_add_group(user_id2, group_id2)
+        api.group_add_layer(group_id2, layer_id2)
+
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
 
-        route = api.save_route(route_spec, user_id)
+        with open(self.current_dir + '/test_data/ftg_20_route.json', 'r') as j:
+            route_spec_data = json.load(j)
+        route_spec = RouteSpec.from_json(route_spec_data)
+
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
         self.assertEqual(22, len(api.all_route_readings(route.id)))
         self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
 
-        api.delete_route(route.id, user_id)
+        api.delete_route(route.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(0, len(api.all_route_readings(route.id)))
         self.assertEqual(4, len(self.__get_bucket_objects(bucket)))
         
-        route = api.save_route(route_spec, user_id)
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
         
-        user_id2 = "9a8a7ssa7s"
-        route2 = api.save_route(route_spec, user_id)
-        route3 = api.save_route(route_spec, user_id2)
+        route2 = api.save_route(route_spec, user_id, group_id, layer_id)
+        route3 = api.save_route(route_spec, user_id2, group_id2, layer_id2)
         self.assertEqual(2, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(22, len(api.all_route_readings(route.id)))
@@ -519,17 +742,17 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(22, len(api.all_route_readings(route3.id)))
         self.assertEqual(7, len(self.__get_bucket_objects(bucket)))
         
-        api.delete_route(route.id, user_id)
+        api.delete_route(route.id)
         self.assertEqual(1, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(6, len(self.__get_bucket_objects(bucket)))
 
-        api.delete_route(route2.id, user_id)
+        api.delete_route(route2.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(1, len(api.routes_for_user(user_id2)))
         self.assertEqual(5, len(self.__get_bucket_objects(bucket)))
         
-        api.delete_route(route3.id, user_id2)
+        api.delete_route(route3.id)
         self.assertEqual(0, len(api.routes_for_user(user_id)))
         self.assertEqual(0, len(api.routes_for_user(user_id2)))
         self.assertEqual(0, len(api.all_route_readings(route.id)))
@@ -546,12 +769,20 @@ class TestAPI(unittest.TestCase):
 
     def test_can_filter_moot_readings(self):
         user_id = 'aghsghavgas'
+        group_id = '8s8ss'
+        layer_id = '29292'
+        org_name = 'fds'
         api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
         with open(self.current_dir + '/test_data/ann_route.json', 'r') as j:
             route_spec_data = json.load(j)
         route_spec = RouteSpec.from_json(route_spec_data)
 
-        route = api.save_route(route_spec, user_id)
+        api.put_org(org_name)
+        api.put_user(org_name, user_id)
+        api.user_add_group(user_id, group_id)
+        api.group_add_layer(group_id, layer_id)
+
+        route = api.save_route(route_spec, user_id, group_id, layer_id)
         self.assertEqual(3, len(api.all_route_readings(route.id)))
 
         readings = api.prediction_readings(route.id, [DEFAULT_ANNOTATOR_ID])
@@ -562,95 +793,34 @@ class TestAPI(unittest.TestCase):
                 self.assertEqual(r['AnnotatorID'], '99bf4519-85d9-4726-9471-4c91a7677925')
             else:
                 self.assertEqual(r['AnnotatorID'], '3f01d5ec-c80b-11eb-acfa-02428ee80691')
-        
-    def test_can_filter_non_prediction_readings(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-
-        route = api.save_route(route_spec, user_id)
-        self.assertEqual(116, len(api.all_route_readings(route.id)))
-        self.assertEqual(0, len(api.prediction_readings(route.id)))
-
-        with open(self.current_dir + '/test_data/gps_img_route.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-
-        route = api.save_route(route_spec, user_id)
-        self.assertEqual(116, len(api.all_route_readings(route.id)))
-        self.assertEqual(0, len(api.prediction_readings(route.id)))
-
-    def test_filters_paginated_readings_correctly(self):
-        user_id = 'aghsghavgas'
-        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
-        api.max_page_readings = 300
-        with open(self.current_dir + '/test_data/sydney_route_short.json', 'r') as j:
-            route_spec_data = json.load(j)
-        route_spec = RouteSpec.from_json(route_spec_data)
-        route = api.save_route(route_spec, user_id)
-
-        readings = api.all_route_readings(route.id)
-        self.assertEqual(971, len(readings))
-
-        preference = [
-            DEFAULT_ANNOTATOR_ID
-        ]
-        all_readings = []
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            annotator_preference=preference
-        )
-        all_readings += pag
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-
-        pag, key = api.filtered_paginated_readings(
-            route.id, 
-            annotator_preference=preference,
-            last_key=key,
-        )
-        all_readings += pag
-        self.assertIsNone(key)
-        self.assertEqual(713, len(all_readings))
-
-        well_annotated = [r for r in all_readings if r['AnnotatorID'] == DEFAULT_ANNOTATOR_ID]
-        self.assertEqual(227, len(well_annotated))
-
-    def test_save_user(self):
-        usrs = self.api.all_users()
-        self.assertEqual(0, len(usrs))
-
-        success = self.api.save_user('some-user-id-that-is')
-        self.assertTrue(success)
-        usrs = self.api.all_users()
-        self.assertEqual(1, len(usrs))
-
-        success = self.api.save_user('some-user-id-that-is')
-        self.assertFalse(success)
-        usrs = self.api.all_users()
-        self.assertEqual(1, len(usrs))
     
-    # def test_gets_accessible_routes(self):
-    #     uid = "ahsd78astdy87asdgha87s"
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- LAYER --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
-    #     access_groups = self.api.save_user(uid)
-    #     routes = self.api.routes_for_user(uid)
-    #     self.assertEqual(0, len(routes))
 
-    #     rid = '17231-12312321'
-    #     self.api.put_route(Route('3', rid, 123617823, access_groups))
-    #     routes = self.api.routes_for_user(uid)
-    #     self.assertEqual(1, len(routes))
-        
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # ---------------------------- ORG --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_creates_new_org(self):
+        api = API(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name)
+
+        api.create_org('roora')
+
+        org = api.get_org('roora')
+        self.assertEqual('roora', org[Constants.ORG_NAME])
+        self.assertIn(Constants.ORG_GROUP, org)
+
+        api.put_user('roora', 'sally')
+
+        groups = api.groups_for_user('sally')
+        self.assertEqual(1, len(groups))

@@ -1,3 +1,4 @@
+GEOHASH_PRECISION = 6
 REGION_NAME = 'ap-southeast-2'
 
 LAT = 'lat'
@@ -7,92 +8,139 @@ ANNOTATOR_PREFERENCE = [
     '2f11b71a-cecf-40b8-ab6b-8c73e4254b26'
 ]
 
-class UserKeys(): 
+class Constants():
+    # Generic
+    PARTITION_KEY = 'PK'
+    SORT_KEY = 'SK'
+
+    # User
     USER_ID = 'UserID'
-    DATA_ACCESS_GROUPS = 'DataAccessGroups'
-class Database():
-    READING_TABLE_NAME = 'Readings'
-    ROUTE_TABLE_NAME = 'Routes'
+    GROUPS = 'DataAccessGroups'
+    
+    # Database
+    READING_TABLE_NAME = 'Readings2'
+    ORG_TABLE_NAME = 'Org'
     PAGINATION_KEY_NAME = 'PaginationKey'
     USER_TABLE_NAME = 'Annotators'
-class ReadingRouteKeys():
+
+    # Org Table Partitions
+    READING_PK = 'Reading'
+    ROUTE_PK = 'Route'
+    LAYER_PK = 'Layer'
+    ORG_PK = 'Org'
+    USER_PK = 'User'
+    GROUP_PK = 'Group'
+
+    # AccessGroups
+    GROUP_NAME = 'GroupName'
+
+    # Reading Types
+    PREDICTION = 'PredictionReading'
+    IMAGE_TYPES = [PREDICTION]
+
+    # Reading Keys
+    GEOHASH = 'Geohash'
     ROUTE_ID = 'RouteID'
-class ReadingKeys():
     READING_ID = 'ReadingID'
-    TYPE = 'Type'
+    READING_TYPE = 'Type'
     READING = 'Reading'
     TIMESTAMP = 'Timestamp'
-class RouteKeys():
+    LAYER_ID = 'LayerID'
+    READING_NAME = 'Readings'
+    
+
+    # Positional Reading Keys
+    LATITUDE = 'Latitude'
+    LONGITUDE = 'Longitude'
+    PLACE_ID = 'PlaceID'
+
+    # Image Reading Keys
+    FILENAME = 'ImageFileName'
+    URI = 'S3Uri'
+    PRESIGNED_URL = 'PresignedURL'
+
+    # Prediction Reading Keys
+    ENTITIES = 'Entities'
+    ANNOTATOR_ID = 'AnnotatorID'
+    ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
+
+    # Route Keys
     USER_ID = 'UserID'
     NAME = 'RouteName'
     SAMPLE_DATA = 'SampleData'
     STATUS = 'RouteStatus'
     TIMESTAMP = 'Timestamp'
     LAST_UPDATED = 'LastUpdated'
+    ROUTE_HASHES = 'Geohashes'
 
-class ReadingTypes():
-    POSITIONAL = 'PositionalReading'
-    IMAGE = 'ImageReading'
-    PREDICTION = 'PredictionReading'
-
-    IMAGE_TYPES = [
-        PREDICTION,
-        IMAGE
-    ]
-class PositionReadingKeys():
-    LATITUDE = 'Latitude'
-    LONGITUDE = 'Longitude'
-    PLACE_ID = 'PlaceID'
-
-    FLOAT_FIELDS = [
-        LATITUDE, 
-        LONGITUDE
-    ]
-    BOOL_FIELDS = []
-class EntryKeys():
-    TIMESTAMP = 'Date'
-class ImageReadingKeys():
-    FILENAME = 'ImageFileName'
-    URI = 'S3Uri'
-    PRESIGNED_URL = 'PresignedURL'
-class S3Path():
+    # S3 Path
     BUCKET = 'Bucket'
     KEY = 'Key'
-class EntityKeys():
-    NAME = 'Name'
+
+    # Entity Keys
+    ENTITY_NAME = 'Name'
     CONFIDENCE = 'Confidence'
     PRESENT = 'Present'
     SEVERITY = 'Severity'
-class PredictionReadingKeys(ImageReadingKeys):
-    TIMESTAMP = EntryKeys.TIMESTAMP
-    FILENAME = ImageReadingKeys.FILENAME
 
-    LATCRACK_CONFIDENCE = 'LatCrackConfidence'
-    LONGCRACK_CONFIDENCE = 'LongCrackConfidence'
-    CROCODILECRACK_CONFIDENCE =  'CrocodileCrackConfidence'
-    POTHOLE_CONFIDENCE = 'PotholeConfidence'
-    LINEBLUR_CONFIDENCE = 'LineblurConfidence'
-    GOOD_CONDITION_CONFIDENCE = 'GoodConditionConfidence'
+    # Layer Keys
+    LAYER_NAME = 'LayerName'
+    LAYER_READINGS = 'LayerReadings'
 
-    LATITUDE = 'Latitude'
-    LONGITUDE = 'Longitude'
+    # Org Keys
+    ORG_NAME = 'OrgName'
+    ORG_GROUP = 'OrgGroup'
 
-    IS_LATCRACK = 'IsLatCrackFault'
-    IS_LONGCRACK = 'IsLongCrackFault'
-    IS_CROCODILECRACK =  'IsCrocodileCrackFault'
-    IS_POTHOLE = 'IsPotholeFault'
-    IS_LINEBLUR = 'IsLineblurFault'
-    IS_GOOD_CONDITION = 'IsGoodCondition'
-    
-    ENTITIES = 'Entities'
-    
-    ANNOTATOR_ID = 'AnnotatorID'
-    ANNOTATION_TIMESTAMP = 'AnnotationTimestamp'
-
-class DataAccessGroupKeys():
+    # Data Access Group
     GROUP_NAME = 'GroupName'
     GROUP_ID = 'GroupID'
+    
+class LambdaConstants():
+    # Generic Event Keys
+    EVENT_TYPE = 'Type'
+    EVENT_ACCESS_TOKEN = 'AccessToken'
+    EVENT_PREDICTIONS = 'Predictions'
+    EVENT_ANNOTATOR_PREFERENCE = 'AnnotatorPreference'
+    EVENT_PREDICTION_ONLY = 'PredictionOnly'
+    EVENT_BUCKET = 'Bucket'
+    EVENT_OBJECT_KEY = 'Key'
+    EVENT_ROUTE_NAME = 'RouteName'
+    EVENT_POINTS = 'Points'
 
-DEFAULT_ANNOTATOR_NAME = "LoukaSean"
-DEFAULT_ANNOTATOR_ID = "99bf4519-85d9-4726-9471-4c91a7677925"
-FAUX_ANNOTATOR_ID = "3f01d5ec-c80b-11eb-acfa-02428ee80691"
+    # Event Types -----------------------------------------------------
+
+    EVENT_UPLOAD_NEW_ROUTE = 'NotifyUploadComplete'
+    EVENT_PROCESS_UPLOADED_ROUTE = 'ProcessUpload'
+    EVENT_SAVE_PREDICTIONS = 'SavePredictions'
+    EVENT_BUCKET_KEY = 'BucketKey'
+    EVENT_ROAD_SNAP = 'SnapToRoads'
+
+    # User Permission Events
+    EVENT_GET_ROUTE = 'GetRoute'
+    EVENT_DELETE_ROUTE = 'DeleteRoute'
+    EVENT_GET_USER_ROUTES = 'GetUserRoutes'
+    EVENT_GET_USER_LAYERS = 'GetUserLayers'
+    EVENT_GET_READINGS = 'GetReadings'
+    EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
+
+    # Admin Permission Events
+    EVENT_ADD_USER = 'AddUser'
+    EVENT_ADD_ORG = 'AddOrg'
+
+    # End Event Types ---------------------------------------------------
+   
+    #Generic Response Keys
+   
+    RESPONSE_STATUS_KEY = 'Status'
+    RESPONSE_BODY_KEY = 'Body'
+    RESPONSE_SAVED_READINGS = 'SavedReadings'
+
+    # Response Statuses
+    RESPONSE_ERROR = 'Error'
+    RESPONSE_SUCCESS = 'Success'
+
+
+DEFAULT_ANNOTATOR_NAME = 'LoukaSean'
+DEFAULT_ANNOTATOR_ID = '99bf4519-85d9-4726-9471-4c91a7677925'
+FAUX_ANNOTATOR_ID = '3f01d5ec-c80b-11eb-acfa-02428ee80691'
+DEFAULT_LAYER_ID = 'f9ddebe1-e054-11eb-b74d-04d9f584cf20'

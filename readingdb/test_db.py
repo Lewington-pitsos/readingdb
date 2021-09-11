@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from readingdb.entity import Entity
 from readingdb.tutils import Increment
 from readingdb.routestatus import RouteStatus
@@ -11,69 +10,84 @@ from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import AbstractReading, ImageReading, PredictionReading, json_to_reading
+from readingdb.reading import PredictionReading, json_to_reading
 from readingdb.route import Route
 
 class TestDB(unittest.TestCase):
     def setUp(self):
         self.current_dir = os.path.dirname(__file__)
         self.db = DB('http://localhost:8000')
-    
-    def test_saves_readings(self):
         self.db.create_reading_db()
-        readings = self.db.routes_for_user('103')
-        self.assertEqual(len(readings), 0)
-        reading_time = int(time.time())
 
+    def __cleanup(self):
+        tables = self.db.all_tables()
+        if len(tables) > 0:
+            self.db.teardown_reading_db()
+
+    def tearDown(self):
+        self.__cleanup()
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- READING ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_saves_readings(self):
+        reading_time = int(time.time())
+        uid = 'someuser'
+        rid = 'someroute'
+        group_id = 'a9a98a9a9a'
+        self.db.put_route(Route(uid, group_id, rid, 123151234, geohashes=set(['r3gqu8'])))
         finalized = []
         for i in range(21):
             finalized.append(
-                ImageReading(
+                PredictionReading(
                     'sdasdasd-' + str(i),
-                    'xxxa',
+                    rid,
                     reading_time,
-                    ReadingTypes.IMAGE,
-                    'https://aws/s3/somebucket/file.jpg', 
+                    Constants.PREDICTION,
+                    -33.96788819,
+                    151.0181246,
+                    'https://aws/s3/somebucket/file.jpg',
+                    [],
+                    reading_time,
+                    DEFAULT_ANNOTATOR_ID,
                 )
             )
         self.db.put_readings(finalized)
-        readings = self.db.all_route_readings('xxxa')
+        readings = self.db.get_route_readings(rid)
         self.assertEqual(len(readings), 21)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.IMAGE)
-        self.assertEqual(first_reading[ReadingKeys.READING_ID], 'sdasdasd-0')
-        self.assertEqual(first_reading[ReadingKeys.READING], {
-                ImageReadingKeys.FILENAME: 'https://aws/s3/somebucket/file.jpg' 
+        self.assertEqual(first_reading[Constants.ROUTE_ID], 'someroute')
+        self.assertEqual(first_reading[Constants.READING_TYPE], Constants.PREDICTION)
+        self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
+        self.assertDictEqual(first_reading[Constants.READING], {
+            Constants.ENTITIES: [],
+            Constants.FILENAME: 'https://aws/s3/somebucket/file.jpg', 
+            Constants.LATITUDE: -33.96788819,
+            Constants.LONGITUDE: 151.0181246,
         })
-        self.assertEqual(first_reading[ReadingKeys.TIMESTAMP], reading_time)
-
-    def test_gets_all_users(self):
-        self.db.create_reading_db()
-        self.assertEqual(0, len(self.db.all_known_users()))
-
-        self.db.put_route(Route('someuser_id', 'someRouteID', 123617823))
-        self.assertEqual(1, len(self.db.all_known_users()))
-        self.assertEqual('someuser_id', self.db.all_known_users()[0])
-
-        self.db.put_route(Route('one-armed-larry', '2123y1h`278', 123617823))
-        self.db.put_route(Route('one-armed-larry', '87218t238', 123617823))
-        self.db.put_route(Route('jonny-the-wrench', '929298227', 123617823))
-        self.assertEqual(3, len(self.db.all_known_users()))
+        self.assertEqual(first_reading[Constants.TIMESTAMP], reading_time)
+        self.assertEqual(first_reading[Constants.GEOHASH], 'r3gqu8')
+        self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-0')
 
     def test_saves_readings_with_severity(self):
-        self.db.create_reading_db()
-        readings = self.db.routes_for_user('103')
-        self.assertEqual(len(readings), 0)
-
+        
+        uid = '103'
+        rid = 'xxxa'
+        group_id = 'a9a98a9a9a'
+        self.db.put_route(Route(uid, group_id, rid, 123151234, geohashes=set(['q6nhhn'])))
         reading_time = int(time.time())
 
         self.db.put_reading(
             PredictionReading(
                 'sdasdasd-',
-                'xxxa',
+                rid,
                 reading_time,
-                ReadingTypes.PREDICTION,
+                Constants.PREDICTION,
                 -33.0089,
                 109.868887601,
                 'https://aws/s3/somebucket/file.jpg', 
@@ -87,345 +101,601 @@ class TestDB(unittest.TestCase):
             )
         )
     
-        readings = self.db.all_route_readings('xxxa')
+        readings = self.db.get_route_readings(rid)
         self.assertEqual(len(readings), 1)
         first_reading = readings[0]
-        self.assertEqual(first_reading[ReadingRouteKeys.ROUTE_ID], 'xxxa')
-        self.assertEqual(first_reading[ReadingKeys.TYPE], ReadingTypes.PREDICTION)
-        self.assertEqual(first_reading[ReadingKeys.READING_ID], 'sdasdasd-')
-        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][0], {
+        self.assertEqual(first_reading[Constants.ROUTE_ID], 'xxxa')
+        self.assertEqual(first_reading[Constants.READING_TYPE], Constants.PREDICTION)
+        self.assertEqual(first_reading[Constants.READING_ID], 'sdasdasd-')
+        self.assertEqual(first_reading[Constants.READING][Constants.ENTITIES][0], {
             'Name': 'Crocodile Cracks',
             'Confidence': 0.432,
             'Severity': 1.876,
             'Present': True
         })
-        self.assertEqual(first_reading[ReadingKeys.READING][PredictionReadingKeys.ENTITIES][1], {
+        self.assertEqual(first_reading[Constants.READING][Constants.ENTITIES][1], {
             'Name': 'Rutting',
             'Confidence': 0.432,
             'Severity': 2.1,
             'Present': True
         })
 
+    def test_loads_large_dataset(self):
+        route_id = '103'
+        group_id = 'a9a98a9a9a'
+        
+        
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        entity_readings = []
+        for e in entities:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            entity_readings.append(r)
+
+        self.db.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
+        self.db.put_readings(entity_readings)
+        readings = self.db.get_route_readings(route_id)
+        self.assertEqual(3383, len(readings))
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- GENERAL ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_creates_and_deletes_tables(self):
+        
+        tables = self.db.all_tables()
+        self.assertEqual(len(tables), 2)
+
+        self.db.teardown_reading_db()
+        tables = self.db.all_tables()
+        self.assertEqual(len(tables), 0)
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- ROUTE --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_creates_new_route(self):
-        self.db.create_reading_db()
         routes = self.db.routes_for_user('103')
+        org_name = 'xero'
         self.assertEqual(len(routes), 0)
+        rid = '3'
+        uid = '103'
+        group_id = '12312543'
 
-        self.db.put_route(Route('3', '103', 123617823))
-        
-        routes = self.db.routes_for_user('3')
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
+        self.db.put_user(org_name, uid)
+        self.db.user_add_group(uid, group_id)
+        reading = PredictionReading(
+            'sdasdasd-',
+            rid,
+            123617823,
+            Constants.PREDICTION,
+            -33.0089,
+            109.868887601,
+            'https://aws/s3/somebucket/file.jpg', 
+            entities=[
+                Entity('Crocodile Cracks', 0.432, True, 1.876),
+                Entity('Rutting', 0.432, True, 2.1),
+                Entity('Ravelling', 0.432, True, 0.1),
+            ],
+            annotation_timestamp=1231238,
+            annotator_id='someid'
+        )
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID, [reading.query_data()])
+        self.assertEqual(1, len(self.db.readings_for_layer_id(layer_id)))
+        self.assertEqual(DEFAULT_LAYER_ID, layer_id)
+        self.db.group_add_layer(group_id, DEFAULT_LAYER_ID)
+
+        self.assertEqual(set([group_id, default_org_group]), set(self.db.groups_for_user(uid)))
+        self.assertEqual(1, len(self.db.layers_for_user(uid)))
+
+
+        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash()]))
+        routes = self.db.routes_for_user(uid)
         self.assertEqual(len(routes), 1)
         self.assertEqual({
-            'LastUpdated': 1619496879,
-            'RouteID': '103',
-            'RouteName': '103',
-            'UserID': '3',
+            'Geohashes': ['q6nhhn'],
+            'GroupID': group_id,
+            'PK': 'Route',
+            'SK': 'Route#3',
+            'LastUpdated': 1619496880,
+            'RouteID': '3',
+            'RouteName': '3',
             'RouteStatus': 1,
             'Timestamp': 123617823
         }, routes[0])
 
     def test_saves_route_written_date(self):
-        self.db.create_reading_db()
+        user_id = '191732j272'
+        group_id = '019191' 
+        route_id = '0202020'
+        org_name = 'fds'
+
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, user_id)
+        self.db.user_add_group(user_id, group_id)
+        reading = PredictionReading(
+                'sdasdasd-',
+                route_id,
+                123617823,
+                Constants.PREDICTION,
+                -33.0089,
+                109.868887601,
+                'https://aws/s3/somebucket/file.jpg', 
+                entities=[
+                    Entity('Crocodile Cracks', 0.432, True, 1.876),
+                    Entity('Rutting', 0.432, True, 2.1),
+                    Entity('Ravelling', 0.432, True, 0.1),
+                ],
+                annotation_timestamp=1231238,
+                annotator_id='someid'
+            )
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID, [reading.query_data()])
+        self.db.group_add_layer(group_id, layer_id)
+
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        r = Route('3', '103', 123617823)
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
         last_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
-        routes = self.db.routes_for_user('3')
+        routes = self.db.routes_for_user(user_id)
         self.assertEqual(routes[0]['LastUpdated'], last_update_timestamp)
 
     @mock.patch('time.time', mock.MagicMock(side_effect=Increment(1619496879)))
     def test_updates_route_written_date_on_update(self):
-        self.db.create_reading_db()
+        
+        org_name = 'fds'
+        self.db.put_org(org_name)
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
         route_id = '103'
         user_id = '3'
+        group_id = '921929292'
 
-        r = Route(user_id, route_id, 123617823)
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, user_id)
+        self.db.user_add_group(user_id, group_id)
+        reading = PredictionReading(
+            'sdasdasd-',
+            route_id,
+            123617823,
+            Constants.PREDICTION,
+            -33.0089,
+            109.868887601,
+            'https://aws/s3/somebucket/file.jpg', 
+            entities=[
+                Entity('Crocodile Cracks', 0.432, True, 1.876),
+                Entity('Rutting', 0.432, True, 2.1),
+                Entity('Ravelling', 0.432, True, 0.1),
+            ],
+            annotation_timestamp=1231238,
+            annotator_id='someid'
+        )
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
+        self.db.group_add_layer(group_id, layer_id)
+
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
         original_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(routes[0]['LastUpdated'], original_update_timestamp)
 
-        self.db.update_route_name(route_id, user_id, 'new_name')
+        self.db.update_route_name(route_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
         name_timestamp = routes[0]['LastUpdated']
         self.assertGreater(name_timestamp, original_update_timestamp)
 
-        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        self.db.set_route_status(route_id, RouteStatus.COMPLETE)
         routes = self.db.routes_for_user(user_id)
         status_timestamp = routes[0]['LastUpdated']
         self.assertGreater(status_timestamp, name_timestamp)
 
-        self.db.set_route_status(route_id, user_id, RouteStatus.COMPLETE)
+        self.db.set_route_status(route_id, RouteStatus.COMPLETE)
         routes = self.db.routes_for_user(user_id)
         second_status_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_status_timestamp, status_timestamp)
 
-        self.db.update_route_name(route_id, user_id, 'new_name')
+        self.db.update_route_name(route_id, 'new_name')
         routes = self.db.routes_for_user(user_id)
         second_name_timestamp = routes[0]['LastUpdated']
         self.assertEqual(second_name_timestamp, second_status_timestamp)
 
-    def test_loads_large_dataset(self):
-        route_id = '103'
-        self.db.create_reading_db()
-        routes = self.db.routes_for_user(route_id)
-        self.assertEqual(len(routes), 0)
-
-        self.db.put_route(Route('3', route_id, 123617823))
+    def deletes_route(self):
+        rid = '292929922'
+        uid = '287226281'
+        group_id = 'a9a9a9a8a8a'
         
-        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
-            entities = json.load(f)
 
-        entity_readings = []
-        for e in entities:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
-            entity_readings.append(r)
-
-        self.db.put_readings(entity_readings)
-
-        readings = self.db.all_route_readings(route_id)
-    
-        self.assertEqual(3383, len(readings))
+        route = Route(uid, group_id, rid, 31232143242)
+        self.db.put_route(route)
+        self.db.remove_route(rid)
 
     def test_creates_new_route_with_name(self):
+        user_id = '238282828'
+        group_id = 'asjaaja8a8a'
+        route_id = '99929292872'
+        org_name = 'fds'
+
         name = 'someName'
-        self.db.create_reading_db()
-        routes = self.db.routes_for_user('103')
+        
+        routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
 
-        self.db.put_route(Route('3', '103', 123617823, name=name))
-        routes = self.db.routes_for_user('3')
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, user_id)
+        self.db.user_add_group(user_id, group_id)
+        reading = PredictionReading(
+                'sdasdasd-',
+                route_id,
+                123617823,
+                Constants.PREDICTION,
+                -33.0089,
+                109.868887601,
+                'https://aws/s3/somebucket/file.jpg', 
+                entities=[
+                    Entity('Crocodile Cracks', 0.432, True, 1.876),
+                    Entity('Rutting', 0.432, True, 2.1),
+                    Entity('Ravelling', 0.432, True, 0.1),
+                ],
+                annotation_timestamp=1231238,
+                annotator_id='someid'
+            )
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
+        self.db.group_add_layer(group_id, layer_id)
+
+        self.db.put_route(
+            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash()])
+        )
+        routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0][RouteKeys.NAME], name)
+        self.assertEqual(routes[0][Constants.NAME], name)
 
     def test_creates_new_route_with_sample_data(self):
-        self.maxDiff = None
-        sample_entry = {
-            'ReadingID': 78,
-            'Type': 'PredictionReading',
-            'AnnotationTimestamp': 2136789,
-            'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
-            'Reading': {
-                'Entities': [
-                    {
-                        'Name': 'CrocodileCrack',
-                        'Confidence': 0.17722677,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LatCrack', 
-                        'Confidence': 0.07661053,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'LongCrack', 
-                        'Confidence': 0.6557837,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Pothole',
-                        'Confidence': 0.14074452,
-                        'Present': False,
-                    },
-                    {
-                        'Name': 'Lineblur',
-                        'Confidence': 0.09903459,
-                        'Present': False,
-                    }
-                ],
-                'Latitude': -37.8714232,
-                'Longitude': 145.2450816,
-                'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
-            },
-            'RouteID': '45',
-            'Timestamp': 1616116106935,
-            'MillisecondPrecision': True,
-            'Row': 30,
-        }
-   
-        expected_entry = {
-            'PredictionReading': {
-                'AnnotationTimestamp': 2136789,
-                'AnnotatorID': '99bf4519-85d9-4726-9471-4c91a7677925',
-                'ReadingID': 78,
-                'Type': 'PredictionReading',
-                'Reading': {
-                    'Entities': [
-                        {
-                            'Name': 'CrocodileCrack',
-                            'Confidence': 0.17722677,
-                            'Severity': 1.0,
-                            'Present': False,
-                        },
-                        {
-                            'Name': 'LatCrack', 
-                            'Confidence': 0.07661053,
-                            'Severity': 1.0,
-                            'Present': False,
-                        },
-                        {
-                            'Name': 'LongCrack', 
-                            'Confidence': 0.6557837,
-                            'Severity': 1.0,
-                            'Present': False,
-                        },
-                        {
-                            'Name': 'Pothole',
-                            'Confidence': 0.14074452,
-                            'Severity': 1.0,
-                            'Present': False,
-                        },
-                        {
-                            'Name': 'Lineblur',
-                            'Confidence': 0.09903459,
-                            'Severity': 1.0,
-                            'Present': False,
-                        }
-                    ],
-                    'Latitude': -37.8714232,
-                    'Longitude': 145.2450816,
-                    'ImageFileName': 'route_2021_03_19_12_08_03_249/images/snap_2021_03_19_12_08_26_863.jpg',
-                },
-            'RouteID': '45',
-            'Timestamp': 1616116106935,
-        }}
+        route_id = '99227827'
+        user_id = '202292922'
+        group_id = 'ashasa7sa87a'
+        org_name = 'fds'
 
-        self.db.create_reading_db()
-        routes = self.db.routes_for_user('103')
+        
+        routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
+        reading = PredictionReading(
+                'sdasdasd-',
+                route_id,
+                123617823,
+                Constants.PREDICTION,
+                -33.0089,
+                109.868887601,
+                'https://aws/s3/somebucket/file.jpg', 
+                entities=[
+                    Entity('Crocodile Cracks', 0.432, True, 1.876),
+                    Entity('Rutting', 0.432, True, 2.1),
+                    Entity('Ravelling', 0.432, True, 0.1),
+                ],
+                annotation_timestamp=1231238,
+                annotator_id='someid'
+        )
+
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, user_id)
+        self.db.user_add_group(user_id, group_id)
+        self.db.put_reading(reading)
+        layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
+        self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(Route(
-            '3', 
-            '103', 
+            user_id, 
+            group_id,
+            route_id, 
             123617823,
-            sample_data={'PredictionReading': json_to_reading('PredictionReading', sample_entry)}
+            sample_data={'PredictionReading': json_to_reading('PredictionReading', reading.item_data())}
         ))
+        routes = self.db.routes_for_user(user_id)
         
-        routes = self.db.routes_for_user('3')
         self.assertEqual(len(routes), 1)
-        self.assertEqual(routes[0][RouteKeys.SAMPLE_DATA], expected_entry)
+        sample_reading = routes[0][Constants.SAMPLE_DATA][Constants.PREDICTION] 
+        self.assertEqual(
+            sample_reading[Constants.READING_ID], 
+            reading.item_data()[Constants.READING_ID]
+        )
+        self.assertEqual(
+            sample_reading[Constants.TIMESTAMP], 
+            reading.item_data()[Constants.TIMESTAMP]
+        )
+        self.assertEqual(
+            len(sample_reading[Constants.READING][Constants.ENTITIES]), 
+            len(reading.item_data()[Constants.READING][Constants.ENTITIES])
+        )
 
-    def test_returns_paginated_results_correctly(self):
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- LAYER --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_saves_layer_names(self):
+        layer_id = 'a9a9a9a9'
+        self.db.put_layer(layer_id, name='Default')
+
+        layer = self.db.get_layer(layer_id)
+
+        self.assertEqual('Default', layer[Constants.LAYER_NAME])
+
+    def test_creates_layer_when_adding_readings(self):
         route_id = '103'
-        self.db.create_reading_db()
-        self.db.max_page_readings = 100
-        self.db.put_route(Route('3', route_id, 12, 3617823))
+        layer_id = '919191919'
+        
+        with open(self.current_dir + '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        prediction_readings = []
+        query_data = []
+        for e in entities[:50]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+            prediction_readings.append(r)
+
+        self.db.put_readings(prediction_readings[:20])
+        self.db.add_readings_to_layer(layer_id, query_data[:20])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(20, len(readings))
+
+    def test_adds_readings_to_existing_layer(self):
+        route_id = '103'
+        layer_id = '919191919'
         
         with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
             entities = json.load(f)
 
-        entity_readings = []
-        for e in entities[:250]:
-            e[ReadingKeys.READING_ID] = str(uuid.uuid1())
-            e[ReadingRouteKeys.ROUTE_ID] = route_id
-            r: AbstractReading = json_to_reading('PredictionReading', e)
-            entity_readings.append(r)
-        self.db.put_readings(entity_readings)
-
-        readings = self.db.all_route_readings(route_id)
-        self.assertEqual(250, len(readings))
-
-        page0, key0 = self.db.paginated_route_readings(route_id)
-        self.assertEqual(100, len(page0))
-
-        newReadings = set([r['ReadingID'] for r in page0]) - set([r['ReadingID'] for r in readings])
-        self.assertEqual(len(newReadings), 0)
- 
-        page0_retry, _ = self.db.paginated_route_readings(route_id)
-        self.assertEqual(page0, page0_retry)
-
-        page1, key1 = self.db.paginated_route_readings(route_id, key0)
-        self.assertEqual(100, len(page1))
-
-        newReadings = set([r['ReadingID'] for r in page1]) - set([r['ReadingID'] for r in page0])
-        self.assertEqual(len(newReadings), 100)
-
-        page2, key2 = self.db.paginated_route_readings(route_id, key1)
-        self.assertIsNone(key2)
-        self.assertEqual(50, len(page2))
+        geohashes = set([])
+        prediction_readings = []
+        reading_dicts = []
+        for e in entities[:100]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            prediction_readings.append(r)
+            reading_dicts.append(r.item_data())
         
-        newReadings = set([r['ReadingID'] for r in page2]) - set([r['ReadingID'] for r in page1]) - set([r['ReadingID'] for r in page0])
-        self.assertEqual(len(newReadings), 50)
+        self.db.put_readings(prediction_readings[:50])
+        self.db.put_layer(layer_id, reading_dicts[:30])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(30, len(readings))
 
-    def test_creates_and_deletes_tables(self):
-        self.db.create_reading_db()
-        tables = self.db.all_tables()
-        self.assertEqual(len(tables), 3)
+        self.db.put_layer(layer_id, reading_dicts[:40])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(40, len(readings))
 
-        self.db.teardown_reading_db()
-        tables = self.db.all_tables()
-        self.assertEqual(len(tables), 0)
-
-    def test_creates_new_user(self):
-        self.db.create_reading_db()
-        users = self.db.all_users()
-
-        self.assertEqual(0, len(users))
-
-        self.db.put_user(
-            'asd78asdgasiud-asd87agdasd7-asd78asd',
-        )
-        users = self.db.all_users()
-        self.assertEqual(1, len(users))
+        self.db.add_readings_to_layer(layer_id, reading_dicts[40:50])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(50, len(readings))
         
-        self.db.put_user(
-            'asdasd7as7das7d',
-        )
-        users = self.db.all_users()
-        self.assertEqual(2, len(users))
+        self.db.put_layer(layer_id, reading_dicts[:20])
+        readings = self.db.readings_for_layer_id(layer_id)
+        self.assertEqual(20, len(readings))
 
-        self.db.put_user('akakakakakakak')
-        users = self.db.all_users()
-        self.assertEqual(3, len(users))
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # --------------------------- ORG ---------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
 
-    def test_creates_default_data_access_groups(self):
-        self.db.create_reading_db()
-        self.db.put_user('asdasd7as7das7d')
-        usr = self.db.all_users()[0]
-        self.assertEqual(usr['UserID'], 'asdasd7as7das7d')
-        self.assertEqual(usr['DataAccessGroups'], [
-            {'GroupName': 'asdasd7as7das7d', 'GroupID': 'asdasd7as7das7d'}
-        ])
+    def test_creates_and_gets_orgs(self):
+        
+        orgs = self.db.get_orgs()
+        self.assertEqual(0, len(orgs))
 
-    def test_inserts_data_access_groups(self):
-        self.db.create_reading_db()
-        self.assertRaises(AssertionError, self.db.put_user, 'wendigo', ['qqqq', 'bread'])
-        self.db.put_user( 'wendigo', [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
-        usr = self.db.all_users()[0]
+        self.db.put_org('roora', 'sdasdadasd')
 
-        self.assertEqual(usr['UserID'], 'wendigo')
-        self.assertEqual(usr['DataAccessGroups'], [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        orgs = self.db.get_orgs()
+        self.assertEqual(1, len(orgs))
+        self.assertEqual('roora', orgs[0][Constants.ORG_NAME])
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- USER ---------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_gets_all_users(self):
+        group_id = 'aasd'
+        
+        self.db.put_org('roora', 'a9a9a9a9a')
+        self.assertEqual(0, len(self.db.all_user_ids('roora')))
+
+        self.db.put_route(Route('someuser_id', group_id, 'someRouteID', 123617823))
+        self.assertEqual(0, len(self.db.all_user_ids('roora')))
+
+        self.db.put_user('roora', 'one-armed-larry')
+        self.assertEqual(1, len(self.db.all_user_ids('roora')))
+        self.db.put_user('roora', 'one-armed-larry')
+        self.db.put_user('roora', 'jonny-the-wrench')
+        self.assertEqual(2, len(self.db.all_user_ids('roora')))
 
     def test_gets_user_data(self):
-        self.db.create_reading_db()
-        self.db.put_user( 'wendigo', [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        
+        org_name = 'Frontline Data Systems'
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
+        self.db.put_user(org_name, 'wendigo')
 
-        user_data = self.db.user_data('wendigo')
-        self.assertIn(UserKeys.DATA_ACCESS_GROUPS, user_data)
-        self.assertEqual(user_data['DataAccessGroups'], [
-            {'GroupName': 'qqqq', 'GroupID': '8a8a8a67a6a6a'},
-            {'GroupName': 'bread', 'GroupID': 'a8sa6d7asd'}
-        ])
+        self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
+        self.db.user_add_group('wendigo', 'a8sa6d7asd')
 
-    def tearDown(self):
-        tables = self.db.all_tables()
-        if len(tables) > 0:
-            self.db.teardown_reading_db()
+        user_data = self.db.user_data(org_name, 'wendigo')
+        self.assertEqual('wendigo', user_data[Constants.USER_ID])
+        groups = self.db.groups_for_user('wendigo')
+        self.assertEqual(set(['8a8a8a67a6a6a', 'a8sa6d7asd', default_org_group]), set(groups))
+
+    def test_creates_new_user(self):
+        
+        org_name = 'Frontline Data Systems'
+        users = self.db.all_users(org_name)
+        self.assertEqual(0, len(users))
+
+        self.db.put_org(org_name)
+        self.db.put_user(
+            org_name,
+            'asd78asdgasiud-asd87agdasd7-asd78asd',
+        )
+        users = self.db.all_users(org_name)
+        self.assertEqual(1, len(users))
+        self.assertEqual('Frontline Data Systems', users[0][Constants.ORG_NAME])
+        
+        self.db.put_user(
+            org_name,
+            'asdasd7as7das7d',
+        )
+        users = self.db.all_users(org_name)
+        self.assertEqual(2, len(users))
+
+        self.db.put_user(org_name, 'akakakakakakak')
+        users = self.db.all_users(org_name)
+        self.assertEqual(3, len(users))
+
+    def test_inserts_data_access_groups(self):
+        
+        org_name = 'ekekeke'
+
+        org_data = self.db.put_org(org_name)
+        default_org_group = org_data[Constants.ORG_GROUP]
+        self.db.put_user(org_name, 'wendigo') 
+
+        self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
+        self.db.user_add_group('wendigo', 'a8sa6d7asd')
+        usr = self.db.all_users(org_name)[0]
+
+        self.assertEqual(usr['UserID'], 'wendigo')
+        groups = self.db.groups_for_user('wendigo')
+        self.assertEqual(set([default_org_group, '8a8a8a67a6a6a', 'a8sa6d7asd']), set(groups))
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -------------------------- GROUP --------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def test_gets_single_group_for_user(self):
+        
+        group_id = 'as8s8s8s'
+        self.db.put_org('someorg')
+        self.db.put_user('someorg', 'wendy')
+        self.assertFalse(self.db.user_has_group('wendy', group_id))
+        self.db.user_add_group('wendy', group_id)
+
+        self.assertTrue(self.db.user_has_group('wendy', group_id))
+        self.assertFalse(self.db.user_has_group('wendy', 'othergroup'))
+        self.assertFalse(self.db.user_has_group('wendy', 'asdasddsa'))
+
+    def test_names_access_groups(self):
+        
+        group_id = 'as8s8s8s'
+        self.db.put_group(group_id, 'good_group')
+
+        group = self.db.get_group(group_id)
+        self.assertEqual(group[Constants.GROUP_ID], group_id)
+        self.assertEqual(group[Constants.GROUP_NAME], 'good_group')
+
+    def test_adds_name_to_existing_group(self):
+        
+        org_name = 'fds'
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, 'wendigo') 
+        self.db.user_add_group('wendigo', '8a8a8a67a6a6a')
+
+        self.db.set_group_name('8a8a8a67a6a6a', 'xxxx')
+
+        group = self.db.get_group('8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_ID], '8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_NAME], 'xxxx')
+
+        self.db.set_group_name('8a8a8a67a6a6a', 'yyyy')
+
+        group = self.db.get_group('8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_ID], '8a8a8a67a6a6a')
+        self.assertEqual(group[Constants.GROUP_NAME], 'yyyy')
+
+    def test_user_adds_removes_group(self):
+        test_user = 'wendigo'
+        test_group = '8a8a8a67a6a6a'
+        
+        org_name = 'fds'
+        self.db.put_org(org_name)
+        self.db.put_user(org_name, test_user) 
+        self.assertFalse(self.db.user_has_group(test_user, test_group))
+
+        self.db.user_add_group(test_user, test_group)
+        self.assertTrue(self.db.user_has_group(test_user,test_group))
+
+        self.db.user_remove_group(test_user, test_group)
+        self.assertFalse(self.db.user_has_group(test_user, test_group))
+
+    def test_layer_adds_removes_group(self):
+        route_id = '103'
+        test_layer_id = '919191919'
+        test_group = 'testgoup'
+        
+        with open(self.current_dir +  '/test_data/sydney_entries.json', 'r') as f:
+            entities = json.load(f)
+
+        geohashes = set([])
+        query_data = []
+        for e in entities[:10]:
+            e[Constants.READING_ID] = str(uuid.uuid1())
+            e[Constants.ROUTE_ID] = route_id
+            r: PredictionReading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash())
+            query_data.append(r.query_data())
+        
+        self.db.put_layer(test_layer_id, query_data)
+        self.db.put_group(test_group)
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+        
+        self.db.group_remove_layer(test_group,test_layer_id)
+        self.assertNotIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertIn(test_layer_id, self.db.layer_ids_for_group(test_group))
+
+        self.db.group_add_layer(test_group, test_layer_id)
+        self.assertEqual(1, len(self.db.layer_ids_for_group(test_group)))
+
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.db.group_remove_layer(test_group, test_layer_id)
+        self.assertEqual(0, len(self.db.layer_ids_for_group(test_group)))

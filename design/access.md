@@ -6,9 +6,9 @@ According to AWS, you should design your DynamoDB schema based on the kind of ac
 
 ### Users
 - All Access groups for the current user
-- All Routes associated with a data access group (annotating)
+- All Routes associated with a data access group (when annotating)
 - All readings associated with a route (when annotating)
-- All readings within a geographic area and assoaicted with an access group
+- All readings within a geographic area that the current user can access
 - All readings associated with a given image (when saving annotations)
 - Get particular route (for deletion/update)
 

@@ -31,12 +31,13 @@ class Digester():
         self, 
         bucket: str, 
         key: str, 
+        group_id: str,
         name: str = None,
         snap_to_roads=False
     ) -> Route: 
         zip_obj = self.s3_resource.Object(bucket_name=bucket, key=key)
         print('metadata', zip_obj.metadata)
-        user_id = zip_obj.metadata[RouteKeys.USER_ID.lower()]
+        user_id = zip_obj.metadata[Constants.USER_ID.lower()]
         buffer = BytesIO(zip_obj.get()[self.OBJ_BODY_KEY].read())
         z = zipfile.ZipFile(buffer)
 
@@ -57,6 +58,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key.split(".")[0], 
             bucket, 
             z.namelist(), 
@@ -71,6 +73,7 @@ class Digester():
     def process_upload(
         self, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         name: str = None,
@@ -92,6 +95,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key, 
             bucket, 
             bucket_objects,
@@ -102,6 +106,7 @@ class Digester():
     def process_local(
         self, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         filenames: List[str],
@@ -127,6 +132,7 @@ class Digester():
             upload, 
             read_gps_file, 
             user_id, 
+            group_id,
             key, 
             bucket, 
             filenames, 
@@ -139,6 +145,7 @@ class Digester():
         upload, 
         read_gps_file, 
         user_id: str, 
+        group_id: str,
         key: str, 
         bucket: str, 
         filenames: List[str], 
@@ -162,11 +169,11 @@ class Digester():
         for r in pred_readings:
             uri = RUtils.get_uri(r)
             print('uploading', uri)
-            upload(filename_map[uri[S3Path.KEY]], uri[S3Path.BUCKET], uri[S3Path.KEY])
+            upload(filename_map[uri[Constants.KEY]], uri[Constants.BUCKET], uri[Constants.KEY])
 
         routeSpec = RouteSpec(
             [ReadingSpec(
-                ReadingTypes.PREDICTION, 
+                Constants.PREDICTION, 
                 ReadingSpec.S3_FILES_FORMAT,
                 pred_readings
             )], 
@@ -174,7 +181,8 @@ class Digester():
         )
 
         print('saving readings to route database')
-        route = self.api.save_route(routeSpec, user_id)
+        route = self.api.save_route(routeSpec, user_id, group_id)
+        self.api.group_add_layer(group_id, route.layer_id)
 
         return route
 

@@ -1,6 +1,6 @@
 from readingdb.rutils import RUtils
 from typing import Any, Dict, List
-from readingdb.constants import PositionReadingKeys, ReadingKeys
+from readingdb.constants import Constants
 
 def interpolate_lat(p1, a1, p2, a2) -> float:
     return p1.lat * a1 + p2.lat * a2    
@@ -21,8 +21,8 @@ class LinePoint():
     def from_point(cls, entry: Dict[str, Any]):
         return LinePoint(
             RUtils.get_ts(entry),
-            entry[PositionReadingKeys.LATITUDE],
-            entry[PositionReadingKeys.LONGITUDE],
+            entry[Constants.LATITUDE],
+            entry[Constants.LONGITUDE],
         )
 
     def __init__(self, timestamp: int, lat: float, lng: float) -> None:

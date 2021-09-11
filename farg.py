@@ -12,11 +12,11 @@ parser.add_argument('name', help='the name of the new route', type=str, default=
 args = parser.parse_args()
 
 def perform_unzip(bucket: str, key: str, name: str=None):
-    print('initializing unzipper')
+    print('initializing digester')
     z = Digester(DYNAMO_ENDPOINT, region_name=args.region)
 
-    print('unzipping')
+    print('digesting')
     z.process(bucket, key, name)
-    print('unzipping and saving complete')
+    print('digesting and saving complete')
 
 perform_unzip(args.bucket, args.key, args.name)

@@ -1,6 +1,7 @@
 from io import BytesIO
 import io
 import os
+from readingdb.constants import Constants
 import zipfile
 
 from readingdb.route import Route
@@ -37,6 +38,9 @@ class TestDigester(unittest.TestCase):
         self.api = API(TEST_DYNAMO_ENDPOINT) 
         self.api.create_reading_db()
 
+        org_data = self.api.put_org('fds')
+        self.default_group = org_data[Constants.ORG_GROUP]
+
         self.sqs = boto3.client('sqs')
         self.queue_name = str(uuid.uuid1())
         self.sqs_url = self.sqs.create_queue(
@@ -64,9 +68,9 @@ class TestDigester(unittest.TestCase):
             desired_result = ['file.json', 'apple.json']
             self.assertCountEqual(result, desired_result)
 
-    def test_digester_adds_to_queue(self):
+    def test_digester_adds_to_queue(self): 
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
+        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', self.default_group)
         readings = self.api.all_route_readings(route.id)
 
         self.assertEqual(len(readings), 28)
@@ -86,7 +90,7 @@ class TestDigester(unittest.TestCase):
 
     def test_digester_uploads_route_with_unix_timestamps(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = d.process(self.bucket_name, 'mocks/route_1621394080578.zip')
+        route: Route = d.process(self.bucket_name, 'mocks/route_1621394080578.zip', self.default_group)
         readings = self.api.all_route_readings(route.id)
         self.assertEqual(len(readings), 70)
 
@@ -176,7 +180,7 @@ class TestDigester(unittest.TestCase):
 
     def test_digester_uploads(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip')
+        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', self.default_group)
         readings = self.api.all_route_readings(route.id)
 
         self.assertEqual(len(readings), 28)
@@ -225,7 +229,12 @@ class TestDigester(unittest.TestCase):
         
     def test_digester_uploads_with_route_name(self):
         d = Digester(TEST_DYNAMO_ENDPOINT, bucket=self.bucket_name, sqs_url=self.sqs_url)
-        route: Route = d.process(self.bucket_name, 'mocks/route_2021_04_07_17_14_36_709.zip', 'bennet court')
+        route: Route = d.process(
+            self.bucket_name, 
+            'mocks/route_2021_04_07_17_14_36_709.zip',
+             self.default_group, 
+             name='bennet court'
+        )
 
         readings = self.api.all_route_readings(route.id)
         self.assertEqual(len(readings), 28)
@@ -239,6 +248,7 @@ class TestDigester(unittest.TestCase):
 
         route = d.process_local(
             'some_user_id',
+            self.default_group,
             'route_2021_04_29_14_15_34_999',
             self.bucket_name,
             files,
@@ -381,9 +391,13 @@ class TestDigester(unittest.TestCase):
             'mocks/route_1621394080578/GPS.txt',
         ]))
 
+        layer_ids = self.api.layer_ids_for_group(self.default_group)
+        self.assertEqual(0, len(layer_ids))
+
         d = Digester(TEST_DYNAMO_ENDPOINT, sqs_url=self.sqs_url)
         route = d.process_upload(  
-            user_id='someuderid',      
+            user_id='someuderid',     
+            group_id=self.default_group, 
             key='mocks/route_1621394080578', 
             bucket=self.bucket_name, 
             name='hedge cresent',
@@ -391,5 +405,11 @@ class TestDigester(unittest.TestCase):
         )
 
         readings = self.api.all_route_readings(route.id)
-        self.assertEqual(len(readings), 42)
+        self.assertEqual(42, len(readings))
         self.assertEqual('hedge cresent', route.name)
+
+        layer_ids = self.api.layer_ids_for_group(self.default_group)
+        self.assertEqual(1, len(layer_ids))
+
+        layer_readings = self.api.readings_for_layer_id(layer_ids[0])
+        self.assertEqual(42, len(layer_readings))

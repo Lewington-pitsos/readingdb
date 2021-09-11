@@ -1,14 +1,14 @@
-from random import sample
+import uuid
+from readingdb.format import route_sort_key
 from readingdb.utils import timestamp
 import time
-from readingdb.routestatus import RouteStatus
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Set, Tuple
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import AbstractReading, ddb_to_dict
+from readingdb.reading import PredictionReading, ddb_to_dict, Reading, geohash_partition_key
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -34,9 +34,13 @@ class DB():
         # DynamoDB only returns 1MB of data in a single query
         # use paginator on queries that stand a chance of returning
         # > 1MB of data.
-        self.paginator = self.db.meta.client.get_paginator('query')
-        self.scan_paginator = self.db.meta.client.get_paginator('scan')
+        self.client = self.db.meta.client
+        self.paginator = self.client.get_paginator('query')
+        self.scan_paginator = self.client.get_paginator('scan')
         self.max_page_readings = max_page_readings
+
+        self.reading_table = self.db.Table(Constants.READING_TABLE_NAME)
+        self.org_table = self.db.Table(Constants.ORG_TABLE_NAME)
 
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -45,23 +49,6 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-    # -----------------------------------------------------------------
-
-    def __ddb_query(
-        self,
-        table_name: str,
-        query_key: str, 
-        query_value: str,
-        decode_fn: Callable[[Dict[str, Any]], Dict[str, Any]] = lambda item: item
-    ) -> List[Dict[str, Any]]:
-        table = self.db.Table(table_name)
-        response = table.query(KeyConditionExpression=Key(query_key).eq(query_value))
-
-        items = []
-        for item in response[self.ITEM_KEY]:
-            items.append(decode_fn(item))
-
-        return items
 
     def __paginate_table(
         self, 
@@ -94,21 +81,17 @@ class DB():
     def create_reading_db(
         self, 
     ) -> Tuple[Any, Any]:
-        return (
-            self.__make_reading_table(), 
-            self.__make_route_table(),
-            self.__make_user_table()
-        )
-
-    def delete_table(self, table_name) -> None:
-        self.db.Table(table_name).delete()
+        self.reading_table = self.__make_reading_table()
+        self.org_table = self.__make_org_table()
+        return (self.reading_table, self.org_table)
 
     def teardown_reading_db(self) -> None:
-        self.delete_table(Database.READING_TABLE_NAME)
-        self.delete_table(Database.ROUTE_TABLE_NAME)
-        self.delete_table(Database.USER_TABLE_NAME)
-
+        self.__delete_table(Constants.READING_TABLE_NAME)
+        self.__delete_table(Constants.ORG_TABLE_NAME)
     
+    def __delete_table(self, table_name) -> None:
+        self.db.Table(table_name).delete()
+
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
@@ -116,25 +99,23 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-    # -----------------------------------------------------------------
 
-    def all_known_users(self) -> List[str]: 
-        user_ids = set()
-        pg = self.scan_paginator.paginate(TableName=Database.ROUTE_TABLE_NAME)
-        for page in pg:
-            for item in page[self.ITEM_KEY]:
-                user_ids.add(item[RouteKeys.USER_ID])
-
-        return list(user_ids)
+    def remove_route(self, route_id: str):
+        self.org_table.delete_item(
+            Key={
+                Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                Constants.SORT_KEY: route_sort_key(route_id)
+            }
+        )
 
     def put_route(self, route: Route): 
-        route_table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        return route_table.put_item(Item=route.item_data())
+        return self.org_table.put_item(Item=route.item_data())
 
-    def get_route(self, route_id: str, user_id: str) -> Dict[str, Any]:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        response = table.query(
-            KeyConditionExpression=Key(ReadingRouteKeys.ROUTE_ID).eq(route_id) & Key(RouteKeys.USER_ID).eq(user_id)
+    def get_route(self, route_id: str) -> Dict[str, Any]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.ROUTE_PK) &
+                Key(Constants.SORT_KEY).eq(route_sort_key(route_id))
         )
 
         if len(response[self.ITEM_KEY]) < 1:
@@ -145,76 +126,85 @@ class DB():
 
         return item
 
-    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:     
-        return self.__ddb_query(
-            Database.ROUTE_TABLE_NAME,
-            RouteKeys.USER_ID,
-            user_id,
-            Route.decode_item
+    def route_geohashes(self, route_id: str) -> Set[str]:
+        route = self.get_route(route_id)
+
+        if route is None:
+            return set()
+
+        return set(route[Constants.ROUTE_HASHES])
+
+    def routes_for_user(self, user_id: str) -> List[Dict[str, Any]]:
+        groups = self.groups_for_user(user_id)
+        routes = self.all_routes()
+
+        return [r for r in routes if r[Constants.GROUP_ID] in groups] 
+
+    def all_routes(self) -> List[Dict[str, Any]]:
+        response = self.org_table.query(
+            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(Constants.ROUTE_PK)
         )
 
-    def update_route_name(self, route_id: str, user_id: str, name: str) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
+        return [Route.decode_item(item) for item in response[self.ITEM_KEY]]
 
-        r: Dict[str, Any] = self.get_route(route_id, user_id)
+    def update_route_name(self, route_id: str, name: str) -> None:
+        r: Dict[str, Any] = self.get_route(route_id)
 
-        if r[RouteKeys.NAME] != name:        
-            table.update_item(
+        if r[Constants.NAME] != name:        
+            self.org_table.update_item(
                 Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    RouteKeys.USER_ID: user_id
+                    Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                    Constants.SORT_KEY: route_sort_key(route_id)
                 },
-                UpdateExpression=f'set {RouteKeys.NAME} = :r, {RouteKeys.LAST_UPDATED} = :l',
+                UpdateExpression=f'set {Constants.NAME} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': name,
                     ':l': int(time.time())
                 },
             )
 
-    def set_route_status(self, route_id: str, user_id: str, status: int) -> None:
-        table = self.db.Table(Database.ROUTE_TABLE_NAME)
-        
-        r: Dict[str, Any] = self.get_route(route_id, user_id)
+    def set_route_status(self, route_id: str, status: int) -> None:
+        r: Dict[str, Any] = self.get_route(route_id)
 
-        if r[RouteKeys.STATUS] != status:
-            table.update_item(
+        if r[Constants.STATUS] != status:
+            self.org_table.update_item(
                 Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    RouteKeys.USER_ID: user_id
+                    Constants.PARTITION_KEY: Constants.ROUTE_PK,
+                    Constants.SORT_KEY: route_sort_key(route_id)
                 },
-                UpdateExpression=f'set {RouteKeys.STATUS} = :r, {RouteKeys.LAST_UPDATED} = :l',
+                UpdateExpression=f'set {Constants.STATUS} = :r, {Constants.LAST_UPDATED} = :l',
                 ExpressionAttributeValues={
                     ':r': status,
                     ':l': int(time.time())
                 },
             )
 
-    def __make_route_table(self):
+    def __make_org_table(self):
         return self.db.create_table(
-            TableName=Database.ROUTE_TABLE_NAME,
+            TableName=Constants.ORG_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName':  RouteKeys.USER_ID,
+                    'AttributeName':  Constants.PARTITION_KEY,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': RouteKeys.USER_ID,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'AttributeType': 'S'
                 },
             ],
             ProvisionedThroughput={
-                'ReadCapacityUnits': 50,
-                'WriteCapacityUnits': 50
+                'ReadCapacityUnits': 100,
+                'WriteCapacityUnits': 100
             }
         )
 
@@ -225,82 +215,62 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-    # -----------------------------------------------------------------
 
-    def put_readings(self, readings: List[AbstractReading]):
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        with table.batch_writer() as batch:
+    def put_readings(self, readings: List[PredictionReading]):
+        with self.reading_table.batch_writer() as batch:
             for r in readings:
                 batch.put_item(Item=r.item_data())
 
-    def all_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
-        return self.__paginate_table(
-            Database.READING_TABLE_NAME,
-            ddb_to_dict,
-            ReadingRouteKeys.ROUTE_ID,
-            route_id,
-        )
+    def get_route_readings(self, route_id: str) -> List[Dict[str, Any]]:
+        geohashes = self.route_geohashes(route_id)
+        all_readings = []
 
-    def paginated_route_readings(self, route_id: str, last_key: str = None) -> Tuple[List[Dict[str, Any]], str]:
-        table = self.db.Table(Database.READING_TABLE_NAME)
-
-        query_params = {
-            'KeyConditionExpression': Key('RouteID').eq(route_id),
-            'Limit': self.max_page_readings
-        }
-
-        if last_key is not None:
-            query_params['ExclusiveStartKey']= last_key
-
-        resp = table.query(**query_params)
-
-        next_key = None
-        if self.LAST_EVAL_KEY in resp:
-            next_key = resp[self.LAST_EVAL_KEY]
-
-        items = []
-        for item in resp[self.ITEM_KEY]:
-            ddb_to_dict(item)
-            items.append(item)
-
-        return items, next_key
-
-    def put_reading(self, reading: AbstractReading):
-        table = self.db.Table(Database.READING_TABLE_NAME)
-        response = table.put_item(Item=reading.item_data())
-        return response
-
-    def delete_reading_items(self, route_id: str, reading_ids: List[str])-> None:
-        table = self.db.Table('Readings')
+        for geohash in geohashes:
+            hash_readings = self.__paginate_table(
+                Constants.READING_TABLE_NAME,
+                ddb_to_dict,
+                Constants.PARTITION_KEY,
+                geohash_partition_key(geohash, Constants.PREDICTION),
+            )
+            all_readings.extend([r for r in hash_readings if r[Constants.ROUTE_ID] == route_id])
         
-        for r in reading_ids:
-            table.delete_item(
-                Key={
-                    ReadingRouteKeys.ROUTE_ID: route_id,
-                    ReadingKeys.READING_ID: r
-                }
+        return all_readings
+
+    def geohash_readings(self, geohash: str, reading_type: str) -> List[Dict[str, Any]]:
+        response = self.reading_table.query(
+            KeyConditionExpression=Key(Constants.PARTITION_KEY).eq(geohash_partition_key(geohash, reading_type))
+        )
+        return response[self.ITEM_KEY]
+
+    def put_reading(self, reading: PredictionReading):
+        return self.reading_table.put_item(Item=reading.item_data())
+
+    def delete_reading_items(self, readings: List[Dict[str, str]])-> None:
+        for reading in readings:
+            self.reading_table.delete_item(
+                Key=Reading.get_key(reading)
             )
 
     def __make_reading_table(self):
         return self.db.create_table(
-            TableName=Database.READING_TABLE_NAME,
+            TableName=Constants.READING_TABLE_NAME,
             KeySchema=[
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'KeyType': 'RANGE'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': ReadingRouteKeys.ROUTE_ID,
+                    'AttributeName': Constants.PARTITION_KEY,
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': ReadingKeys.READING_ID,
+                    'AttributeName': Constants.SORT_KEY,
                     'AttributeType': 'S'
                 },
 
@@ -314,64 +284,352 @@ class DB():
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
+    # --------------------------- LAYERS ------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def put_layer(
+        self, 
+        layer_id: str, 
+        readings: List[Dict[str, Any]] = None,
+        name:str=None
+    ) -> str:
+        if readings is not None:
+            existing_readings = self.layer_readings([layer_id])
+            existing_reading_ids = set()
+            current_reading_ids = set()
+
+            for reading in readings:
+                current_reading_ids.add(reading[Constants.READING_ID])
+
+            for reading in existing_readings:
+                reading_id = reading[Constants.READING_ID]
+                existing_reading_ids.add(reading_id)
+                if reading_id not in current_reading_ids:
+                    self.remove_reading_from_layer(layer_id, reading)
+
+            for reading in readings:
+                if reading[Constants.READING_ID] not in existing_reading_ids:
+                    self.add_reading_to_layer(layer_id, reading)
+
+        item = {
+            Constants.PARTITION_KEY: Constants.LAYER_PK,
+            Constants.SORT_KEY: self.__layer_sort_key(layer_id),
+        }
+
+        if name is not None:
+            item[Constants.LAYER_NAME] = name
+
+        self.org_table.put_item(Item=item)
+
+        return layer_id
+
+    def remove_readings_from_layer(self, layer_id: str, readings: List[Dict[str, Any]]):
+        for reading in readings:        
+            self.remove_reading_from_layer(layer_id, reading)
+
+    def remove_reading_from_layer(self, layer_id: str, reading: Dict[str, Any]):
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__layer_reading_primary_key(layer_id),
+            Constants.SORT_KEY: reading[Constants.READING_ID]
+        })
+
+    def add_readings_to_layer(self, layer_id:str, readings: List[Dict[str, Any]]) -> None:
+        for reading in readings:
+            self.add_reading_to_layer(layer_id, reading)
+
+    def add_reading_to_layer(self, layer_id: str, reading: Dict[str, Any]):
+        self.org_table.put_item(Item={
+            Constants.PARTITION_KEY: self.__layer_reading_primary_key(layer_id),
+            Constants.SORT_KEY: reading[Constants.READING_ID],
+            Constants.READING_ID: reading[Constants.READING_ID],
+            Constants.GEOHASH: reading[Constants.GEOHASH],
+            Constants.READING_TYPE: reading[Constants.READING_TYPE],
+        })
+
+    def layer_ids_for_user(self, user_id: str):
+        layer_ids = []
+
+        group_ids = self.groups_for_user(user_id)
+        for id in group_ids:
+            layer_ids.extend(self.layer_ids_for_group(id))
+
+        return layer_ids
+    
+    def layers_for_user(self, user_id:str) -> List[Dict[str, Any]]:
+        layers = []
+
+        group_ids = self.groups_for_user(user_id)
+        for id in group_ids:
+            layer_ids = self.layer_ids_for_group(id)
+
+            for layer_id in layer_ids:
+                layers.append(self.get_layer(layer_id))        
+
+        return layers
+
+    def readings_for_layer_id(self, layer_id:str) -> List[Dict[str, Any]]:
+        return self.layer_readings([layer_id])
+
+    def layer_readings(self, layer_ids: str) -> List[Dict[str, Any]]:
+        readings = []
+
+        geohashes = set() 
+        reading_ids = set()
+
+        for layer_id in layer_ids:
+            identifiers = self.__layer_reading_identifiers(layer_id)            
+
+            for identifier in identifiers:
+                geohashes.add(identifier[Constants.GEOHASH])
+                reading_ids.add(identifier[Constants.SORT_KEY])
+
+        for geohash in geohashes:
+            geohash_readings = self.geohash_readings(geohash, Constants.PREDICTION)
+            for geohash_reading in geohash_readings:
+                if geohash_reading[Constants.READING_ID] in reading_ids:
+                    readings.append(geohash_reading)
+                    
+        return readings
+
+    def identifiers_for_layers(self, layer_ids: List[str]):
+        all_identifiers = []
+
+        for layer_id in layer_ids:
+            all_identifiers.extend(self.__layer_reading_identifiers(layer_id))
+
+        return all_identifiers
+
+    def __layer_reading_identifiers(self, layer_id: str) -> Dict[str, Any]:
+        resp = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__layer_reading_primary_key(layer_id))
+        )
+
+        return resp[self.ITEM_KEY] 
+
+    def get_layer(self, layer_id: str) -> Dict[str, Any]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.LAYER_PK) &
+                Key(Constants.SORT_KEY).eq(self.__layer_sort_key(layer_id))
+        )
+
+        if len(response[self.ITEM_KEY]) == 0:
+            return None 
+        
+        return response[self.ITEM_KEY][0]
+
+    def __layer_id_from_layer_data(self, layer_data: List[Dict[str, Any]]) -> str:
+        return layer_data[Constants.SORT_KEY].split('#')[1]
+
+    def __layer_sort_key(self, layer_id: str) -> str:
+        return f'Layer#{layer_id}'
+
+    def __layer_reading_primary_key(self, layer_id: str):
+        return f'LayerReading#{layer_id}'
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # ---------------------------- GROUPS -----------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def put_group(self, group_id: str, name=None) -> None:
+        item = {
+            Constants.PARTITION_KEY: Constants.GROUP_PK,
+            Constants.SORT_KEY: self.__group_key(group_id),
+            Constants.GROUP_ID: group_id
+        }
+
+        if name is not None:
+            item[Constants.GROUP_NAME] = name
+
+        self.org_table.put_item(Item=item)
+
+    def set_group_name(self, group_id:str, name:str) -> None:
+        self.put_group(group_id, name)
+
+    def get_group(self, group_id: str) -> Dict[str, Any]:
+        resp = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.GROUP_PK) &
+                Key(Constants.SORT_KEY).eq(self.__group_key(group_id))
+        )
+
+        return resp[self.ITEM_KEY][0]
+
+    def user_add_group(self, user_id: str, group_id: str) -> None:
+        self.org_table.put_item(Item={
+            Constants.PARTITION_KEY: self.__user_group_pk(user_id),
+            Constants.SORT_KEY: self.__group_key(group_id),
+        })
+
+    def user_remove_group(self, user_id: str, group_id: str) -> None:
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__user_group_pk(user_id),
+            Constants.SORT_KEY: self.__group_key(group_id)
+        })
+
+    def group_add_layer(self, group_id: str, layer_id: str) -> None:
+        self.org_table.put_item(Item={
+            Constants.PARTITION_KEY: self.__group_key(group_id),
+            Constants.SORT_KEY: self.__layer_group_pk(layer_id),
+        })
+
+    def group_remove_layer(self, group_id: str, layer_id: str) -> None:
+        self.org_table.delete_item(Key={
+            Constants.PARTITION_KEY: self.__group_key(group_id),
+            Constants.SORT_KEY: self.__layer_group_pk(layer_id),
+        })
+
+
+    def groups_for_user(self, user_id: str) -> List[str]:
+        response = self.org_table.query(KeyConditionExpression=
+            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id)))
+
+        group_ids = []
+
+        for item in response[self.ITEM_KEY]:
+            group_ids.append(self.__id_from_key(item[Constants.SORT_KEY]))
+
+        return group_ids
+
+    def user_has_group(self, user_id: str, group_id: str) -> bool:
+        response = self.org_table.query(KeyConditionExpression=
+            Key(Constants.PARTITION_KEY).eq(self.__user_group_pk(user_id))
+        )
+
+        for item in response[self.ITEM_KEY]:
+            if self.__id_from_key(item[Constants.SORT_KEY]) == group_id:
+                return True
+        
+        return False
+
+    def __user_group_pk(self, user_id: str) -> str:
+        return f'UserGroup#{user_id}'
+    
+    def __id_from_key(self, agid: str) -> str:
+        return agid.split("#")[-1]
+
+    def layer_ids_for_group(self, group_id: str) -> str:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__group_key(group_id))
+        )
+
+        layer_ids = []
+
+        for item in response[self.ITEM_KEY]:
+            layer_ids.append(self.__id_from_key(item[Constants.SORT_KEY]))
+        
+        return layer_ids
+
+    def __layer_group_pk(self, layer_id: str) -> str:
+        return f'LayerGroup#{layer_id}'
+
+    def __group_key(self, acess_group_id: str) -> str:
+        return f'Group#{acess_group_id}'
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # --------------------------- ORG ---------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+
+    def put_org(self, org_name:str, default_group_id: str = None) -> Dict[str, Any]:
+        if default_group_id is None:
+            default_group_id = str(uuid.uuid1())
+        
+        item = {
+            Constants.PARTITION_KEY: Constants.ORG_PK,
+            Constants.SORT_KEY: self.__org_sk(org_name),
+            Constants.ORG_NAME: org_name,
+            Constants.ORG_GROUP: default_group_id
+        }
+
+        self.org_table.put_item(Item=item)
+
+        return item
+
+    def get_orgs(self) -> List[Dict[str, Any]]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.ORG_PK)
+        )
+
+        return response[self.ITEM_KEY]
+
+    def get_org(self, org_name: str) -> Dict[str, Any]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(Constants.ORG_PK) &
+                Key(Constants.SORT_KEY).eq(self.__org_sk(org_name)),
+        )
+
+        if len(response[self.ITEM_KEY]) > 0:
+            return response[self.ITEM_KEY][0]
+        return None
+
+    def __org_sk(self, org_id:str) -> str:
+        return f'Org#{org_id}'
+
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
+    # -----------------------------------------------------------------
     # -------------------------- USER ---------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
     # -----------------------------------------------------------------
-    # -----------------------------------------------------------------
 
-    def user_data(self, uid: str)-> Dict[str, Any]:
-        return self.__ddb_query(
-            Database.USER_TABLE_NAME,
-            UserKeys.USER_ID,
-            uid,
-        )[0]
-
-    def all_users(self) -> List[Dict[str, Any]]:
-        return self.__paginate_table(
-            Database.USER_TABLE_NAME,
-            lambda item: item
+    def user_data(self, org_name:str, user_id: str)-> Dict[str, Any]:
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name)) &
+                Key(Constants.SORT_KEY).eq(self.__user_sort_key(user_id))
         )
 
-    def put_user(self, uid: str, data_access_groups: List[Dict[str, str]] = []):
-        if len(data_access_groups) == 0:
-            data_access_groups = [{
-                DataAccessGroupKeys.GROUP_NAME: uid,
-                DataAccessGroupKeys.GROUP_ID: uid
-            }]
+        return response[self.ITEM_KEY][0]
 
-        for g in data_access_groups:
-            assert DataAccessGroupKeys.GROUP_NAME in g 
-            assert DataAccessGroupKeys.GROUP_ID in g 
+    def all_users(self, org_name:str) -> List[Dict[str, Any]]:
+        resp = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name))
+        )
 
-        route_table = self.db.Table(Database.USER_TABLE_NAME)
-        route_table.put_item(Item={
-            ReadingKeys.TIMESTAMP: timestamp(),
-            UserKeys.USER_ID: uid,
-            UserKeys.DATA_ACCESS_GROUPS: data_access_groups 
+        return resp[self.ITEM_KEY]
+
+    def all_user_ids(self, org_name:str) -> List[str]: 
+        user_ids = []
+        response = self.org_table.query(
+            KeyConditionExpression=
+                Key(Constants.PARTITION_KEY).eq(self.__user_org_key(org_name))
+        )
+
+        for item in response[self.ITEM_KEY]:
+            user_ids.append(item[Constants.USER_ID])
+
+        return user_ids
+
+    def put_user(self, org_name, user_id: str) -> None:       
+        self.org_table.put_item(Item={
+            Constants.PARTITION_KEY: self.__user_org_key(org_name),
+            Constants.SORT_KEY: self.__user_sort_key(user_id),
+            Constants.TIMESTAMP: timestamp(),
+            Constants.USER_ID: user_id,
+            Constants.ORG_NAME: org_name
         })
 
-        return data_access_groups
+        org = self.get_org(org_name)
 
-    def __make_user_table(self):
-        return self.db.create_table(
-            TableName=Database.USER_TABLE_NAME,
-            KeySchema=[
-                {
-                    'AttributeName':  RouteKeys.USER_ID,
-                    'KeyType': 'HASH'  
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': RouteKeys.USER_ID,
-                    'AttributeType': 'S'
-                },
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 50,
-                'WriteCapacityUnits': 50
-            }
-        )
+        self.user_add_group(user_id, org[Constants.ORG_GROUP])
 
+    def __user_org_key(self, org_name: str) -> str:
+        return f'Org#{org_name}'
 
+    def __user_sort_key(self, user_id: str) -> str:
+        return f'User#{user_id}'

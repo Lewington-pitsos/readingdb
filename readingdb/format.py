@@ -18,11 +18,11 @@ def unix_from_key(key: str) -> int:
 
 def entry_from_file(bucket: str, key: str) -> Dict[str, Any]:
     return {
-        ReadingKeys.TIMESTAMP: unix_from_key(key),
-        ReadingKeys.READING: {
-            ImageReadingKeys.URI: {
-                S3Path.BUCKET: bucket,
-                S3Path.KEY: key
+        Constants.TIMESTAMP: unix_from_key(key),
+        Constants.READING: {
+            Constants.URI: {
+                Constants.BUCKET: bucket,
+                Constants.KEY: key
             }
         },
 }
@@ -34,13 +34,24 @@ def txt_to_points(lines):
         if len(line) > 10:
             segments = [s.strip('\n').strip('\r') for s in line.split(' ') if s != '']    
             point = {
-                ReadingKeys.TIMESTAMP: int(segments[0].split(':')[-1]),
-                ReadingKeys.READING: {
-                    PositionReadingKeys.LATITUDE: float(segments[1].split(':')[-1]),
-                    PositionReadingKeys.LONGITUDE: float(segments[2].split(':')[-1])
+                Constants.TIMESTAMP: int(segments[0].split(':')[-1]),
+                Constants.READING: {
+                    Constants.LATITUDE: float(segments[1].split(':')[-1]),
+                    Constants.LONGITUDE: float(segments[2].split(':')[-1])
                 },
             }
 
             points.append(point)
 
     return points
+
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
+# ------------------------ DDB KEYS -------------------------------
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
+
+def route_sort_key(route_id: str) -> str:
+    return f'Route#{route_id}'

@@ -9,7 +9,8 @@ COPY readingdb/lamb.py ./
 
 # This (and later layers) cannot be cached because we're
 # copying an entire directory
-COPY aws/credentials ./
+RUN mkdir ./aws
+RUN echo "$CRED" > ./aws/credentials
 RUN mkdir ./google
 COPY google/credentials.json ./google/credentials.json
 ADD readingdb ./readingdb 
