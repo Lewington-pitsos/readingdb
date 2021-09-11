@@ -12,7 +12,7 @@ api = API(
     bucket = BUCKET ,
     size_limit = 2_400_000,
     region_name= REGION_NAME
-    )
+)
 auth = Auth(region_name=REGION_NAME)    
 
 def get_auth_setup(auth) -> Callable:

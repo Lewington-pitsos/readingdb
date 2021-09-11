@@ -181,6 +181,8 @@ class API(DB):
             if reading[Constants.READING_ID] in reading_id_set:
                 authorized_readings.append(reading)
             
+        self.__inject_presigned_urls(authorized_readings)
+
         return authorized_readings
 
     def __preferred_readings(self, preference: List[str], readings: Dict[str, Any]) -> None:
