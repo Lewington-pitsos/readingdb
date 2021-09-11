@@ -16,7 +16,7 @@ import unittest
 from moto import mock_s3
 
 from readingdb.lamb import test_handler
-from readingdb.getat import get_access_token, CREDENTIALS_FILE
+from readingdb.getat import ACCESS_TOKEN_KEY, get_access_token, CREDENTIALS_FILE
 
 NO_CREDS_REASON = f'no credentials file located at {CREDENTIALS_FILE}'
 TEST_CONTEXT = 'TEST_STUB'
@@ -903,6 +903,21 @@ class TestLambdaR(TestLambdaRW):
 
     def tearDown(self):
         super().tearDown()
+
+    @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
+    def test_gets_all_layers_for_user(self):
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
+            'AccessToken' : self.access_token
+        }, TEST_CONTEXT)    
+        self.assertEqual(resp['Status'], 'Success')
+        self.assertEqual(resp['Body'], [self.api.get_layer(self.layer_id)])
+
+        resp = test_handler({
+            LambdaConstants.EVENT_TYPE : LambdaConstants.EVENT_GET_USER_LAYERS,
+            'AccessToken' : self.unauthorized_access_token
+        }, TEST_CONTEXT)
+        self.assertEqual(len(resp['Body']), 0)
 
     @unittest.skipIf(not credentials_present(), NO_CREDS_REASON)
     def test_gets_routes_for_user(self):

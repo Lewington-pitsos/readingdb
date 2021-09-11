@@ -119,6 +119,7 @@ class LambdaConstants():
     EVENT_GET_ROUTE = 'GetRoute'
     EVENT_DELETE_ROUTE = 'DeleteRoute'
     EVENT_GET_USER_ROUTES = 'GetUserRoutes'
+    EVENT_GET_USER_LAYERS = 'GetUserLayers'
     EVENT_GET_READINGS = 'GetReadings'
     EVENT_UPDATE_ROUTE_NAME = 'UpdateRouteName'
 
