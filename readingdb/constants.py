@@ -82,6 +82,11 @@ class Constants():
     CONFIDENCE = 'Confidence'
     PRESENT = 'Present'
     SEVERITY = 'Severity'
+    BOUNDING_BOX = 'BoundingBox'
+    XMIN = 'xmin'
+    YMIN = 'ymin'
+    XMAX = 'xmax'
+    YMAX = 'ymax'
 
     # Layer Keys
     LAYER_NAME = 'LayerName'

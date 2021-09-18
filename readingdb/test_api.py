@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import List
 from unittest import mock
 from readingdb.reading import PredictionReading, get_geohash, json_to_reading
@@ -495,7 +496,35 @@ class TestAPI(unittest.TestCase):
             'mocks/route_2021_04_07_17_14_36_709.zip',
             'mocks/route_1621394080578.zip'
         ]))
-    
+
+    def test_saves_xml_readings(self):
+        user_id = 'asdy7asdh'
+        route_id = 'asdasdasdasd'
+        group_id = '0a0a0a0a'
+        org_name = 'fds'
+
+        self.api.put_org(org_name)
+        self.api.put_user(org_name, user_id)
+        self.api.user_add_group(user_id, group_id)
+
+        xml_data = []
+        xml_file_paths = Path('readingdb/test_data/xml_test_readings/').rglob('*.xml')
+        image_file_paths = list(map(str, Path('readingdb/test_data/xml_test_readings/').rglob('*.jpg')))
+        for xfp in xml_file_paths:
+            xml_data.append({
+                'xml' : xfp.read_text().replace('\n',''),
+                Constants.FILENAME : [f for f in image_file_paths if xfp.name.replace('.xml','.jpg') in f][0]
+            }
+        )
+
+        saved = self.api.save_xml_predictions(xml_data, user_id)
+        readings = self.api.all_route_readings(saved[0].item_data()[Constants.ROUTE_ID])
+        self.assertEqual(len(readings),len(saved))
+        for s,r in zip(saved,readings):
+            self.assertCountEqual(s.item_data(), r)
+            if '2021_05_10_09_57_11_218-242' in r[Constants.READING][Constants.FILENAME]:
+                self.assertEqual(len(r[Constants.READING][Constants.ENTITIES]),2)
+
     def test_raises_while_saving_readings_to_existing_route_with_unknown_images(self):
         user_id = 'asdy7asdh'
         route_id = 'asdasdasdasd'
