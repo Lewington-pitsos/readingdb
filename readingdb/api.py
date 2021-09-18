@@ -7,7 +7,7 @@ from readingdb.converter import Converter
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
-from readingdb.reading import PredictionReading, Reading, json_to_reading
+from readingdb.reading import PredictionReading, Reading, json_to_reading, get_geohash
 from readingdb.routespec import RouteSpec
 import boto3
 import uuid
@@ -70,7 +70,7 @@ class API(DB):
         user_id: str,
         save_imgs: bool = True,
         layer_id: str = None
-    ) -> None:
+    ) -> List[PredictionReading]:
         existing_readings = self.all_route_readings(route_id, size_limit=99999999999)
         
         to_delete = {}
@@ -102,39 +102,38 @@ class API(DB):
     def save_xml_predictions(
         self,
         xml_data: List[dict],
-        user_id: int,
+        user_id: str,
         layer_id: str = None,
-        route_id: str = None,
         group_id: str = None,
-        geohashes: List = [],
         timestamp: int= None,
         save_imgs: bool = True
     ):
-        if layer_id is None:
-            layer_id = str(uuid.uuid1())
-            self.put_layer(layer_id, name=f'RouteLayer#{route_id}')
-
-        if route_id is None:
-            if geohashes is None:
-                raise ValueError('must provide geohashes when no routeid is given')
-            if timestamp is None:
-                timestamp = time.time()
-            route_id = str(uuid.uuid1())
-            route = Route(
-                user_id=user_id,
-                group_id=group_id,
-                id=route_id,
-                timestamp=timestamp,
-                geohashes=geohashes,
-                layer_id=layer_id
-            )
-            self.put_route(route)
-
         readings = []
         for data in xml_data:
             xml = data.pop('xml')
             readings.append(Converter.XML_to_single_reading(xml, **data))
         
+        geohashes = set()
+        for r in readings:    
+            geohashes.add(get_geohash(r[Constants.READING][Constants.LATITUDE], r[Constants.READING][Constants.LONGITUDE]))
+
+        if timestamp is None:
+            timestamp = int(time.time()*1000)
+        route_id = str(uuid.uuid1())
+        route = Route(
+            user_id=user_id,
+            group_id=group_id,
+            id=route_id,
+            timestamp=timestamp,
+            geohashes=list(geohashes),
+            layer_id=layer_id
+        )
+        self.put_route(route)  
+        
+        if layer_id is None:
+            layer_id = str(uuid.uuid1())
+            self.put_layer(layer_id, name=f'RouteLayer#{route_id}')          
+    
         return self.save_predictions(readings, route_id, user_id, save_imgs, layer_id)
 
     def all_route_readings(

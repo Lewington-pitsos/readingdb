@@ -11,11 +11,6 @@ class Converter():
         root = elementTree.fromstring(xml_data)
         readingjson = {
             Constants.TIMESTAMP: int(time.time()),
-            "MillisecondPrecision": True,
-            "Accuracy": 0,
-            "Speed": 0.0,
-            "Bearing": 0.0,
-            "Row": 0,
             Constants.ANNOTATION_TIMESTAMP: 0,
             Constants.ANNOTATOR_ID: DEFAULT_ANNOTATOR_ID,
             Constants.READING: {
@@ -35,10 +30,10 @@ class Converter():
                     Constants.SEVERITY : obj.find('severity').text,
                     Constants.PRESENT : True,
                     Constants.BOUNDING_BOX : {
-                        'xmin' : obj.find('./bndbox/xmin').text,
-                        'ymin' : obj.find('./bndbox/ymin').text,
-                        'xmax' : obj.find('./bndbox/xmax').text,
-                        'ymax' : obj.find('./bndbox/ymax').text,
+                        Constants.XMIN : obj.find('./bndbox/xmin').text,
+                        Constants.YMIN : obj.find('./bndbox/ymin').text,
+                        Constants.XMAX : obj.find('./bndbox/xmax').text,
+                        Constants.YMAX : obj.find('./bndbox/ymax').text,
                     }
                 }
             )
