@@ -8,7 +8,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 from readingdb.clean import *
-from readingdb.reading import Reading, ddb_to_dict, Reading, geohash_partition_key
+from readingdb.reading import Reading, geohash_partition_key
 from readingdb.route import Route
 from readingdb.constants import *
 
@@ -228,7 +228,7 @@ class DB():
         for geohash in geohashes:
             hash_readings = self.__paginate_table(
                 Constants.READING_TABLE_NAME,
-                ddb_to_dict,
+                Reading.decode,
                 Constants.PARTITION_KEY,
                 geohash_partition_key(geohash, Constants.PREDICTION),
             )

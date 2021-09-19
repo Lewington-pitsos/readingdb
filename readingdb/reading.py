@@ -25,7 +25,7 @@ class Reading():
     def __init__(
         self, id: int, 
         route_id: str, 
-        date: int, 
+        timestamp: int, 
         readingType: str, 
         lat: int, 
         lng: int,
@@ -37,10 +37,11 @@ class Reading():
     ):
         self.id: str = id
         self.route_id: str = route_id
-        self.date: int = int(date) if isinstance(date, float) else date
+        self.timestamp: int = int(timestamp) if isinstance(timestamp, float) else timestamp
         self.reading_type: str = readingType
         self.lat: int = lat
         self.lng: int = lng
+        self.geohash = get_geohash(lat, lng)
         self.url = url
         self.uri = uri
         self.entites: List[Entity] = entities
@@ -50,7 +51,8 @@ class Reading():
         self.data: Dict = {
             Constants.LATITUDE: lat,
             Constants.LONGITUDE: lng,
-            Constants.ENTITIES: entities
+            Constants.ENTITIES: entities,
+            Constants.URI: uri
         }
     
     @classmethod
@@ -89,7 +91,7 @@ class Reading():
             Constants.ROUTE_ID: self.route_id,
             Constants.READING_ID: self.id,
             Constants.READING_TYPE: self.reading_type,  
-            Constants.TIMESTAMP: self.date, 
+            Constants.TIMESTAMP: self.timestamp, 
             Constants.READING: {
                 Constants.LATITUDE: encode_as_float(self.lat),
                 Constants.LONGITUDE: encode_as_float(self.lng),
@@ -129,14 +131,6 @@ class Reading():
             Constants.READING_ID: self.id,
             Constants.GEOHASH: self.geohash
         }
-
-    @property
-    def geohash(self) -> str:
-        return get_geohash(self.lat, self.lng)
-
-def  ddb_to_dict(reading) -> None:
-    reading_type = reading[Constants.READING_TYPE]
-    Reading.decode(reading)
 
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not Constants.URI in reading_data else S3Uri.from_json(reading_data[Constants.URI])

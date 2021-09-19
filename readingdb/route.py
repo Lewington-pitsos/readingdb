@@ -4,7 +4,7 @@ import time
 from typing import Any, Dict, List
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
-from readingdb.reading import Reading, ddb_to_dict
+from readingdb.reading import Reading
 
 class Route():
     MAX_NAME_LENGTH = 21
@@ -40,7 +40,7 @@ class Route():
     def decode_item(cls, item: Dict[str, Any]) -> None:
         if Constants.SAMPLE_DATA in item:
             for k, v in item[Constants.SAMPLE_DATA].items():
-                ddb_to_dict(v)
+                Reading.decode(v)
                 item[Constants.SAMPLE_DATA][k] = v
                 
         item[Constants.STATUS] = int(item[Constants.STATUS])

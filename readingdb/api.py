@@ -361,7 +361,7 @@ class API(DB):
                 initial_entries[reading_spec.reading_type] = first_entry
 
                 if timestamp == 0:
-                    timestamp = first_entry.date
+                    timestamp = first_entry.timestamp
 
                 all_entries.extend([r.query_data() for r in finalized_readings])
 
