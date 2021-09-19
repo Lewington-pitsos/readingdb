@@ -46,7 +46,12 @@ class Reading():
         self.entites: List[Entity] = entities
         self.annotator_id = annotator_id
         self.annotation_timestamp = annotation_timestamp
-        self.data: Dict
+        
+        self.data: Dict = {
+            Constants.LATITUDE: lat,
+            Constants.LONGITUDE: lng,
+            Constants.ENTITIES: entities
+        }
     
     @classmethod
     def decode(cls, item: Dict[str, Any]):
@@ -80,7 +85,7 @@ class Reading():
         data = {
             Constants.PARTITION_KEY: reading_partition_key(self.lat, self.lng, self.reading_type),
             Constants.SORT_KEY: self.id,
-            Constants.GEOHASH: self.geohash(),
+            Constants.GEOHASH: self.geohash,
             Constants.ROUTE_ID: self.route_id,
             Constants.READING_ID: self.id,
             Constants.READING_TYPE: self.reading_type,  
@@ -122,20 +127,16 @@ class Reading():
         return {
             Constants.READING_TYPE: self.reading_type,
             Constants.READING_ID: self.id,
-            Constants.GEOHASH: self.geohash()
+            Constants.GEOHASH: self.geohash
         }
 
+    @property
     def geohash(self) -> str:
         return get_geohash(self.lat, self.lng)
 
-#TODO: needed?
-READING_TYPE_MAP: Dict[str, Reading] = {
-    Constants.PREDICTION: Reading,
-}
-
 def  ddb_to_dict(reading) -> None:
     reading_type = reading[Constants.READING_TYPE]
-    READING_TYPE_MAP[reading_type].decode(reading)
+    Reading.decode(reading)
 
 def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not Constants.URI in reading_data else S3Uri.from_json(reading_data[Constants.URI])
@@ -143,7 +144,6 @@ def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not Constants.FILENAME in reading_data else reading_data[Constants.FILENAME]
 
-#TODO: need to convert to regular reading
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type in [Constants.PREDICTION]:
         binaries: Dict[str, bool] = {}

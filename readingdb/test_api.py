@@ -96,7 +96,7 @@ class TestAPI(unittest.TestCase):
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
             finalized.append(r)
         self.api.put_readings(finalized)
         self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
@@ -125,7 +125,7 @@ class TestAPI(unittest.TestCase):
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
             finalized.append(r)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
 
         self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.api.put_readings(finalized)

@@ -355,7 +355,7 @@ class API(DB):
                 finalized_readings = self.__save_entries(route_id, reading_spec.reading_type, entries)
 
                 for e in finalized_readings:
-                    geohashes.add(e.geohash())
+                    geohashes.add(e.geohash)
 
                 first_entry: Reading = finalized_readings[0]
                 initial_entries[reading_spec.reading_type] = first_entry

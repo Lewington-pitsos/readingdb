@@ -134,7 +134,7 @@ class TestDB(unittest.TestCase):
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
             entity_readings.append(r)
 
         self.db.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
@@ -206,7 +206,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(1, len(self.db.layers_for_user(uid)))
 
 
-        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash()]))
+        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash]))
         routes = self.db.routes_for_user(uid)
         self.assertEqual(len(routes), 1)
         self.assertEqual({
@@ -253,7 +253,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash])
         last_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -294,7 +294,7 @@ class TestDB(unittest.TestCase):
         layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
-        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash])
         original_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -366,7 +366,7 @@ class TestDB(unittest.TestCase):
         self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(
-            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash()])
+            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash])
         )
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 1)
@@ -459,7 +459,7 @@ class TestDB(unittest.TestCase):
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
             query_data.append(r.query_data())
             prediction_readings.append(r)
 
@@ -482,7 +482,7 @@ class TestDB(unittest.TestCase):
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
             prediction_readings.append(r)
             reading_dicts.append(r.item_data())
         
@@ -679,7 +679,7 @@ class TestDB(unittest.TestCase):
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
             r: Reading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
             query_data.append(r.query_data())
         
         self.db.put_layer(test_layer_id, query_data)
