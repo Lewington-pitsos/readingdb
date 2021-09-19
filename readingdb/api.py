@@ -7,7 +7,7 @@ from readingdb.converter import Converter
 from typing import Any, Dict, List, Tuple
 from readingdb.s3uri import S3Uri
 from readingdb.route import Route
-from readingdb.reading import PredictionReading, Reading, json_to_reading, get_geohash
+from readingdb.reading import Reading, json_to_reading
 from readingdb.routespec import RouteSpec
 import boto3
 import uuid
@@ -289,13 +289,13 @@ class API(DB):
 
         return response, object_name
 
-    def __save_entry_data(self, entry: Reading, save_img=True) -> PredictionReading:
+    def __save_entry_data(self, entry: Reading, save_img=True) -> Reading:
         if entry.reading_type in Constants.IMAGE_TYPES and save_img:
             self.__save_img_data(entry)
 
         return entry
 
-    def __save_img_data(self, entry: PredictionReading):
+    def __save_img_data(self, entry: Reading):
         if not entry.has_uri():
             uri: S3Uri = self.__upload_entry_file(entry)
             entry.set_uri(uri)
@@ -312,8 +312,8 @@ class API(DB):
             object_name,
         )
 
-    def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[PredictionReading]:
-        finalized: List[PredictionReading] = []
+    def __save_entries(self, route_id, entry_type, entries, save_img=True) -> List[Reading]:
+        finalized: List[Reading] = []
         n_entries = len(entries)
         for i, e in enumerate(entries):
             if i % 10 == 0:
@@ -394,13 +394,13 @@ class API(DB):
                 finalized_readings = self.__save_entries(route_id, reading_spec.reading_type, entries)
 
                 for e in finalized_readings:
-                    geohashes.add(e.geohash())
+                    geohashes.add(e.geohash)
 
                 first_entry: Reading = finalized_readings[0]
                 initial_entries[reading_spec.reading_type] = first_entry
 
                 if timestamp == 0:
-                    timestamp = first_entry.date
+                    timestamp = first_entry.timestamp
 
                 all_entries.extend([r.query_data() for r in finalized_readings])
 

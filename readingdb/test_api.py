@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import List
 from unittest import mock
-from readingdb.reading import PredictionReading, get_geohash, json_to_reading
+from readingdb.reading import Reading, get_geohash, json_to_reading
 import uuid
 from readingdb.endpoints import TEST_BUCKET, TEST_DYNAMO_ENDPOINT
 from readingdb.route import Route
@@ -96,8 +96,8 @@ class TestAPI(unittest.TestCase):
         for e in entities[:60]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            r: Reading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash)
             finalized.append(r)
         self.api.put_readings(finalized)
         self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
@@ -124,9 +124,9 @@ class TestAPI(unittest.TestCase):
         for e in entities[:60]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
+            r: Reading = json_to_reading('PredictionReading', e)
             finalized.append(r)
-            geohashes.add(r.geohash())
+            geohashes.add(r.geohash)
 
         self.api.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
         self.api.put_readings(finalized)

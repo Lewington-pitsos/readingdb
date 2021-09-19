@@ -10,7 +10,7 @@ from unittest import mock
 
 from readingdb.db import DB
 from readingdb.constants import *
-from readingdb.reading import PredictionReading, json_to_reading
+from readingdb.reading import Reading, json_to_reading
 from readingdb.route import Route
 
 class TestDB(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestDB(unittest.TestCase):
         finalized = []
         for i in range(21):
             finalized.append(
-                PredictionReading(
+                Reading(
                     'sdasdasd-' + str(i),
                     rid,
                     reading_time,
@@ -83,7 +83,7 @@ class TestDB(unittest.TestCase):
         reading_time = int(time.time())
 
         self.db.put_reading(
-            PredictionReading(
+            Reading(
                 'sdasdasd-',
                 rid,
                 reading_time,
@@ -133,8 +133,8 @@ class TestDB(unittest.TestCase):
         for e in entities:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            r: Reading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash)
             entity_readings.append(r)
 
         self.db.put_route(Route('3', group_id, route_id, 123617823, geohashes=geohashes))
@@ -180,7 +180,7 @@ class TestDB(unittest.TestCase):
         default_org_group = org_data[Constants.ORG_GROUP]
         self.db.put_user(org_name, uid)
         self.db.user_add_group(uid, group_id)
-        reading = PredictionReading(
+        reading = Reading(
             'sdasdasd-',
             rid,
             123617823,
@@ -206,7 +206,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(1, len(self.db.layers_for_user(uid)))
 
 
-        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash()]))
+        self.db.put_route(Route(uid, group_id, rid, 123617823, geohashes=[reading.geohash]))
         routes = self.db.routes_for_user(uid)
         self.assertEqual(len(routes), 1)
         self.assertEqual({
@@ -230,7 +230,7 @@ class TestDB(unittest.TestCase):
         self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
-        reading = PredictionReading(
+        reading = Reading(
                 'sdasdasd-',
                 route_id,
                 123617823,
@@ -253,7 +253,7 @@ class TestDB(unittest.TestCase):
         routes = self.db.routes_for_user('103')
         self.assertEqual(len(routes), 0)
 
-        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash])
         last_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -274,7 +274,7 @@ class TestDB(unittest.TestCase):
         self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
-        reading = PredictionReading(
+        reading = Reading(
             'sdasdasd-',
             route_id,
             123617823,
@@ -294,7 +294,7 @@ class TestDB(unittest.TestCase):
         layer_id = self.db.put_layer(DEFAULT_LAYER_ID,[reading.query_data()])
         self.db.group_add_layer(group_id, layer_id)
 
-        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash()])
+        r = Route(user_id, group_id, route_id, 123617823, geohashes=[reading.geohash])
         original_update_timestamp = r.update_timestamp 
         self.db.put_route(r)
 
@@ -345,7 +345,7 @@ class TestDB(unittest.TestCase):
         self.db.put_org(org_name)
         self.db.put_user(org_name, user_id)
         self.db.user_add_group(user_id, group_id)
-        reading = PredictionReading(
+        reading = Reading(
                 'sdasdasd-',
                 route_id,
                 123617823,
@@ -366,7 +366,7 @@ class TestDB(unittest.TestCase):
         self.db.group_add_layer(group_id, layer_id)
 
         self.db.put_route(
-            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash()])
+            Route(user_id, group_id, route_id, 123617823, name=name, geohashes=[reading.geohash])
         )
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 1)
@@ -381,7 +381,7 @@ class TestDB(unittest.TestCase):
         
         routes = self.db.routes_for_user(user_id)
         self.assertEqual(len(routes), 0)
-        reading = PredictionReading(
+        reading = Reading(
                 'sdasdasd-',
                 route_id,
                 123617823,
@@ -458,8 +458,8 @@ class TestDB(unittest.TestCase):
         for e in entities[:50]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            r: Reading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash)
             query_data.append(r.query_data())
             prediction_readings.append(r)
 
@@ -481,8 +481,8 @@ class TestDB(unittest.TestCase):
         for e in entities[:100]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            r: Reading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash)
             prediction_readings.append(r)
             reading_dicts.append(r.item_data())
         
@@ -678,8 +678,8 @@ class TestDB(unittest.TestCase):
         for e in entities[:10]:
             e[Constants.READING_ID] = str(uuid.uuid1())
             e[Constants.ROUTE_ID] = route_id
-            r: PredictionReading = json_to_reading('PredictionReading', e)
-            geohashes.add(r.geohash())
+            r: Reading = json_to_reading('PredictionReading', e)
+            geohashes.add(r.geohash)
             query_data.append(r.query_data())
         
         self.db.put_layer(test_layer_id, query_data)
