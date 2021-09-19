@@ -20,7 +20,51 @@ def reading_partition_key(lat: str, lng: str, reading_type: str) -> str:
 def geohash_partition_key(geohash: str, reading_type: str) -> str:
     return f'{geohash}#{reading_type}' 
 
+#TODO: ask louka about the route id and if that is a necessary attribute
 class Reading():
+    def __init__(
+        self, id: int, 
+        route_id: str, 
+        date: int, 
+        readingType: str, 
+        lat: int, 
+        lng: int,
+        url: str,
+        entities: List[Entity],
+        annotation_timestamp: int,
+        annotator_id: str,
+        uri: str = None,
+    ):
+        self.id: str = id
+        self.route_id: str = route_id
+        self.date: int = int(date) if isinstance(date, float) else date
+        self.reading_type: str = readingType
+        self.lat: int = lat
+        self.lng: int = lng
+        self.url = url
+        self.uri = uri
+        self.entites: List[Entity] = entities
+        self.annotator_id = annotator_id
+        self.annotation_timestamp = annotation_timestamp
+        self.data: Dict
+    
+    @classmethod
+    def decode(cls, item: Dict[str, Any]):
+        item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
+        item[Constants.READING][Constants.LATITUDE] = decode_float(
+            item[Constants.READING][Constants.LATITUDE]
+        )
+        item[Constants.READING][Constants.LONGITUDE] = decode_float(
+            item[Constants.READING][Constants.LONGITUDE]
+        )
+
+        for e in item[Constants.READING][Constants.ENTITIES]:
+            e[Constants.CONFIDENCE] = decode_float(e[Constants.CONFIDENCE])
+            e[Constants.PRESENT] = decode_bool(e[Constants.PRESENT])
+            e[Constants.SEVERITY] = decode_float(e[Constants.SEVERITY]) if Constants.SEVERITY in e else 1.0
+        
+        item[Constants.ANNOTATION_TIMESTAMP] = int(item[Constants.ANNOTATION_TIMESTAMP])
+
     @staticmethod
     def get_key(reading: Dict[str, Any]) -> Dict[str, str]:
         return {
@@ -31,22 +75,6 @@ class Reading():
             ),
             Constants.SORT_KEY: reading[Constants.READING_ID]
         }
-
-    def __init__(
-        self, 
-        id: str, 
-        route_id: str, 
-        date: int, 
-        readingType: str,
-        lat: int, 
-        lng: int,
-    ) -> None:
-        self.id: str = id
-        self.route_id: str = route_id
-        self.date: int = int(date) if isinstance(date, float) else date
-        self.reading_type: str = readingType
-        self.lat: int = lat
-        self.lng: int = lng
 
     def item_data(self):
         data = {
@@ -62,64 +90,6 @@ class Reading():
                 Constants.LONGITUDE: encode_as_float(self.lng),
             }
         }
-
-        return data
-
-    def query_data(self) -> Dict[str, str]:
-        return {
-            Constants.READING_TYPE: self.reading_type,
-            Constants.READING_ID: self.id,
-            Constants.GEOHASH: self.geohash()
-        }
-            
-    def geohash(self) -> str:
-        return get_geohash(self.lat, self.lng)
-
-    @classmethod
-    def decode(cls, item: Dict[str, Any]):
-        item[Constants.TIMESTAMP] = int(item[Constants.TIMESTAMP])
-
-class PredictionReading(Reading):
-    def __init__(
-        self, id: int, 
-        route_id: str, 
-        date: int, 
-        readingType: str, 
-        lat: int, 
-        lng: int,
-        url: str,
-        entities: List[Entity],
-        annotation_timestamp: int,
-        annotator_id: str,
-        uri: str = None,
-    ):
-        super().__init__(id, route_id, date, readingType, lat, lng)
-
-        self.url = url
-        self.uri = uri
-        self.entites: List[Entity] = entities
-        self.annotator_id = annotator_id
-        self.annotation_timestamp = annotation_timestamp
-    
-    @classmethod
-    def decode(cls, item: Dict[str, Any]):
-        super().decode(item)
-        item[Constants.READING][Constants.LATITUDE] = decode_float(
-            item[Constants.READING][Constants.LATITUDE]
-        )
-        item[Constants.READING][Constants.LONGITUDE] = decode_float(
-            item[Constants.READING][Constants.LONGITUDE]
-        )
-
-        for e in item[Constants.READING][Constants.ENTITIES]:
-            e[Constants.CONFIDENCE] = decode_float(e[Constants.CONFIDENCE])
-            e[Constants.PRESENT] = decode_bool(e[Constants.PRESENT])
-            e[Constants.SEVERITY] = decode_float(e[Constants.SEVERITY]) if Constants.SEVERITY in e else 1.0
-        
-        item[Constants.ANNOTATION_TIMESTAMP] = int(item[Constants.ANNOTATION_TIMESTAMP])
-            
-    def item_data(self):
-        data = super().item_data()
         self.__add_file_data(data[Constants.READING])
 
         encoded_entities = []
@@ -148,8 +118,19 @@ class PredictionReading(Reading):
                 Constants.KEY: self.uri.object_name
             }
 
-READING_TYPE_MAP: Dict[str, PredictionReading] = {
-    Constants.PREDICTION: PredictionReading,
+    def query_data(self) -> Dict[str, str]:
+        return {
+            Constants.READING_TYPE: self.reading_type,
+            Constants.READING_ID: self.id,
+            Constants.GEOHASH: self.geohash()
+        }
+
+    def geohash(self) -> str:
+        return get_geohash(self.lat, self.lng)
+
+#TODO: needed?
+READING_TYPE_MAP: Dict[str, Reading] = {
+    Constants.PREDICTION: Reading,
 }
 
 def  ddb_to_dict(reading) -> None:
@@ -161,7 +142,8 @@ def get_uri(reading_data: Dict[str, Any]) -> S3Uri:
 
 def get_filename(reading_data: Dict[str, Any]) -> S3Uri:
     return None if not Constants.FILENAME in reading_data else reading_data[Constants.FILENAME]
-    
+
+#TODO: need to convert to regular reading
 def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
     if reading_type in [Constants.PREDICTION]:
         binaries: Dict[str, bool] = {}
@@ -181,7 +163,7 @@ def json_to_reading(reading_type: str, reading: Dict[str, Any]) -> Reading:
                 e[Constants.SEVERITY] if Constants.SEVERITY in e else 1.0
             ))
 
-        return PredictionReading(
+        return Reading(
             reading[Constants.READING_ID],
             reading[Constants.ROUTE_ID],
             reading[Constants.TIMESTAMP],

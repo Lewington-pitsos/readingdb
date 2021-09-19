@@ -4,7 +4,7 @@ import time
 from typing import Any, Dict, List
 from readingdb.routestatus import RouteStatus
 from readingdb.constants import *
-from readingdb.reading import PredictionReading, ddb_to_dict
+from readingdb.reading import Reading, ddb_to_dict
 
 class Route():
     MAX_NAME_LENGTH = 21
@@ -17,7 +17,7 @@ class Route():
         timestamp: int, 
         name: str=None, 
         geohashes: List[str] = [],
-        sample_data: Dict[str, PredictionReading]=None,
+        sample_data: Dict[str, Reading]=None,
         layer_id: str = None
     ) -> None:
         '''sample_data contains a small collection of readings that belong to
@@ -28,7 +28,7 @@ class Route():
         self.user_id: str = user_id
         self.id: str = id
         self.name: str = name if name else id[:self.MAX_NAME_LENGTH]
-        self.sample_data: Dict[str, PredictionReading] = copy.deepcopy(sample_data)  
+        self.sample_data: Dict[str, Reading] = copy.deepcopy(sample_data)  
         self.status = RouteStatus.UPLOADED
         self.timestamp: int = timestamp
         self.update_timestamp: int = int(time.time())
